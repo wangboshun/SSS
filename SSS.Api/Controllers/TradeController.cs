@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using SSS.Api.Seedwork;
 using SSS.Application.Trade.Service;
 using SSS.Domain.Trade.Dto;
-using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Api.Controllers
 {

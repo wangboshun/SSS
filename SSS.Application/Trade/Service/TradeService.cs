@@ -81,7 +81,7 @@ namespace SSS.Application.Trade.Service
             input.id = Guid.NewGuid().ToString();
             //input.last_time = DateTime.Now;
             //input.last_price = curruent_price;
-            //input.first_trade_no = order_list.FirstOrDefault()?.first_trade_no;
+            input.first_trade_no = order_list.FirstOrDefault()?.first_trade_no;
             var null_cmd = _mapper.Map<TradeNullCommand>(input);
             _bus.SendCommand(null_cmd);
             _logger.LogInformation($"无符合的交易规则  input:{input.ToJson()}");

@@ -15,15 +15,20 @@ namespace SSS.Api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class CodeController : ApiBaseController
-    {
-        [Autowired]
+    { 
         private IHostingEnvironment _env;
 
-        private static string current_path;
+        private static string current_path;  
+
+        public CodeController(IHostingEnvironment env)
+        {
+            _env = env;
+            current_path = _env.ContentRootPath;
+        }
 
         [HttpGet("index")]
         public ContentResult Index()
-        {
+        { 
             string html = "";
             string filepath = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? current_path + "//codegenerator.html" : current_path + "\\codegenerator.html";
 
@@ -46,7 +51,11 @@ namespace SSS.Api.Controllers
             var class_name = HttpContext.Request.Form["class_name"];
             var fields = HttpContext.Request.Form["fields"];
             var list = JsonConvert.DeserializeObject<List<Field>>(fields);
-            Generator_Api("UserInfo");
+            Generator_Domain(class_name);
+            Generator_Infrastructure(class_name);
+            Generator_CQRS(class_name);
+            Generator_Application(class_name);
+            Generator_Api(class_name); 
             return Response(null);
         }
 

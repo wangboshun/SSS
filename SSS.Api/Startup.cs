@@ -113,7 +113,8 @@ namespace SSS.Api
 
             services.AddHangfire(config =>
             {
-                config.UseStorage(new MySqlStorage(Configuration.GetConnectionString("MYSQLConnection")));
+                //config.UseStorage(new MySqlStorage(Configuration.GetConnectionString("MYSQLConnection")));
+                config.UseSqlServerStorage(Configuration.GetConnectionString("MSSQLConnection")); 
             });
 
             services.AddHangfireServer();

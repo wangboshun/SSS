@@ -165,32 +165,6 @@
             <param name="trade">TradeInputDto</param>
             <returns></returns> 
         </member>
-        <member name="T:SSS.Api.Controllers.UserInfoController">
-            <summary>
-            UserInfoController
-            </summary>
-        </member>
-        <member name="M:SSS.Api.Controllers.UserInfoController.AddUserInfo(SSS.Domain.UserInfo.Dto.UserInfoInputDto)">
-            <summary>
-            AddUserInfo
-            </summary>
-            <param name="input">UserInfoInputDto</param>
-            <returns></returns> 
-        </member>
-        <member name="M:SSS.Api.Controllers.UserInfoController.ListUser(SSS.Domain.UserInfo.Dto.UserInfoInputDto)">
-            <summary>
-            ListUserInfo
-            </summary>
-            <param name="input">UserInfoInputDto</param>
-            <returns></returns> 
-        </member>
-        <member name="M:SSS.Api.Controllers.UserInfoController.GetByPhone(SSS.Domain.UserInfo.Dto.UserInfoInputDto)">
-            <summary>
-            getbyphone
-            </summary>
-            <param name="input">UserInfoInputDto</param>
-            <returns></returns> 
-        </member>
         <member name="T:SSS.Api.Startup">
             <summary>
             Startup
