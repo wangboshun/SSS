@@ -76,11 +76,11 @@ namespace SSS.Api.Controllers
 
             var Class_Path = parent_path + $"\\SSS.Domain\\{name}\\{name}.cs";
 
-            StringBuilder str = new StringBuilder("\r\n");
+            StringBuilder str = new StringBuilder();
             foreach (var item in fields)
             {
-                string content = "        public " + item.field_type + " " + System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(item.field_name) + " { set; get; } \r\n";
-                str.Append("\r\n" + content);
+                string content = "        public " + item.field_type + " " + System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(item.field_name) + " { set; get; }";
+                str.Append("\r\n\r\n" + content);
             }
 
             string Class_Content = IO.ReadAllText(Class_Path);

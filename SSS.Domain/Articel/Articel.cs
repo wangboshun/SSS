@@ -15,13 +15,6 @@ namespace SSS.Domain.Articel
 
         public int Sort { set; get; }
 
-        public int IsMain { set; get; }  
-
-        public string Abc1 { set; get; } 
-
-        public string Efg2 { set; get; } 
-
-        public string Aaa3 { set; get; } 
-
+        public int IsMain { set; get; }      
     }
 }
