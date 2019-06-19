@@ -7,7 +7,13 @@ namespace SSS.Domain.CQRS.Articel.Command.Commands
     {
         public ArticelAddCommand(ArticelInputDto input)
         {
-            this.id = input.id; 
+            id = input.id;
+            title = input.title;
+            content = input.content;
+            mainimage = input.mainimage;
+            sort = input.sort;
+            issmain = input.issmain;
+            contenttype = input.contenttype;
         }
 
         public override bool IsValid()

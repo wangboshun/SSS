@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SSS.Domain.CQRS.Articel.Command.Commands;
 using SSS.Domain.CQRS.Articel.Event.Events;
-using SSS.Domain.Seedwork.Attribute; 
+using SSS.Domain.Seedwork.Attribute;
 using SSS.Domain.Seedwork.Command;
 using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Notice;
@@ -33,7 +33,7 @@ namespace SSS.Domain.CQRS.Articel.Command.Handlers
                                       IEventBus bus,
                                       INotificationHandler<ErrorNotice> Notice,
                                       ILogger<ArticelCommandHandler> logger)
-									  : base(uow, logger,bus, Notice)
+                                      : base(uow, logger, bus, Notice)
         {
             _logger = logger;
             _repository = repository;
@@ -46,7 +46,7 @@ namespace SSS.Domain.CQRS.Articel.Command.Handlers
                 NotifyValidationErrors(request);
                 return Task.FromResult(false);
             }
-            var model = new SSS.Domain.Articel.Articel(request.id);
+            var model = new SSS.Domain.Articel.Articel(request.id, request.title, request.content,request.contenttype, request.mainimage, request.sort, request.issmain);
             model.CreateTime = DateTime.Now;
             model.IsDelete = 0;
 

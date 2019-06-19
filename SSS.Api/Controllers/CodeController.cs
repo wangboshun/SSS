@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SSS.Api.Seedwork;
-using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.IO;
 using System.Collections.Generic;
 using System.IO;
