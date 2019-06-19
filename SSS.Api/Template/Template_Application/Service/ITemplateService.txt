@@ -1,9 +1,13 @@
 ﻿using SSS.Domain.Template.Dto;
+using SSS.Domain.Seedwork.Model;
+using System.Collections.Generic;
 
 namespace SSS.Application.Template
 {
     public interface ITemplateService
     {
         void AddTemplate(TemplateInputDto input);
+
+		Pages<List<TemplateOutputDto>> GetListTemplate(TemplateInputDto input);
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SSS.Domain.Articel;
 using SSS.Domain.Seedwork.Attribute;
 using SSS.Domain.Student;
 using SSS.Domain.Trade;
@@ -24,6 +25,8 @@ namespace SSS.Infrastructure.Seedwork.DbContext
         public DbSet<Trade> Trade { get; set; }
 
         public DbSet<UserInfo> userinfo { get; set; }
+
+        public DbSet<Articel> articel { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

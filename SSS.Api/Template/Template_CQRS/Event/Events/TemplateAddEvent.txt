@@ -4,7 +4,7 @@ namespace SSS.Domain.CQRS.Template.Event.Events
 {
     public class TemplateAddEvent : Seedwork.Events.Event
     {
-        public Guid id { set; get; } 
+         public string id { set; get; } 
 
         public TemplateAddEvent(Domain.Template.Template model)
         {

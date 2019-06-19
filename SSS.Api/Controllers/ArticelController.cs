@@ -1,55 +1,55 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SSS.Api.Seedwork;
-using SSS.Application.Template;
-using SSS.Domain.Template.Dto;
+using SSS.Application.Articel;
+using SSS.Domain.Articel.Dto;
 
 namespace SSS.Api.Controllers
 {
     /// <summary>
-    /// TemplateController
+    /// ArticelController
     /// </summary>
     [Authorize]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
     [ApiController]
-    public class TemplateController : ApiBaseController
+    public class ArticelController : ApiBaseController
     {
-        private readonly ITemplateService _service;
+        private readonly IArticelService _service;
 
         /// <summary>
-        /// TemplateController
+        /// ArticelController
         /// </summary>
-        /// <param name="service">ITemplateService</param>
-        public TemplateController(ITemplateService service)
+        /// <param name="service">IArticelService</param>
+        public ArticelController(IArticelService service)
         {
             _service = service;
         }
 
-		/// <summary>
+        /// <summary>
         /// GetList
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
         [HttpGet("getlist")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetList([FromQuery]TemplateInputDto input)
+        public IActionResult GetList([FromQuery]ArticelInputDto input)
         {
-            var result = _service.GetListTemplate(input);
+            var result = _service.GetListArticel(input);
             return Response(result);
         }
 
         /// <summary>
-        /// AddTemplate
+        /// AddArticel
         /// </summary>
-        /// <param name="input">TemplateInputDto</param>
+        /// <param name="input">ArticelInputDto</param>
         /// <returns></returns> 
         [HttpPost("add")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult AddTemplate([FromBody]TemplateInputDto input)
+        public IActionResult AddArticel([FromBody]ArticelInputDto input)
         {
-            _service.AddTemplate(input);
+            _service.AddArticel(input);
             return Response(input);
         }
     }

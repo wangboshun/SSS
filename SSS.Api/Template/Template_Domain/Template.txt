@@ -5,7 +5,7 @@ namespace SSS.Domain.Template
 {
     public class Template : Entity
     {
-        public Template(Guid id)
+        public Template(string id)
         {
             this.Id = id; 
         } 

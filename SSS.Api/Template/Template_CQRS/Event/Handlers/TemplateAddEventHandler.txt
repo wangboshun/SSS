@@ -1,11 +1,10 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using SSS.Infrastructure.Util.Json;
-using SSS.Api.Seedwork;
+using Microsoft.Extensions.Logging; 
+using SSS.Infrastructure.Util.Json; 
 using SSS.Domain.CQRS.Template.Event.Events;
 using System.Threading;
 using System.Threading.Tasks;
+using SSS.Infrastructure.Util.Log;
 
 namespace SSS.Domain.CQRS.Template.Event.Handlers
 {

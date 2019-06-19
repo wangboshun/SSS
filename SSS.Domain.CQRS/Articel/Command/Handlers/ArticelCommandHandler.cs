@@ -1,60 +1,60 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SSS.Domain.CQRS.Template.Command.Commands;
-using SSS.Domain.CQRS.Template.Event.Events;
+using SSS.Domain.CQRS.Articel.Command.Commands;
+using SSS.Domain.CQRS.Articel.Event.Events;
 using SSS.Domain.Seedwork.Attribute; 
 using SSS.Domain.Seedwork.Command;
 using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Notice;
 using SSS.Domain.Seedwork.UnitOfWork;
-using SSS.Infrastructure.Repository.Template;
+using SSS.Infrastructure.Repository.Articel;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SSS.Domain.CQRS.Template.Command.Handlers
+namespace SSS.Domain.CQRS.Articel.Command.Handlers
 {
     [DIService(ServiceLifetime.Scoped,
-       typeof(IRequestHandler<TemplateAddCommand, bool>))]
+       typeof(IRequestHandler<ArticelAddCommand, bool>))]
     /// <summary>
-    /// TemplateCommandHandler
+    /// ArticelCommandHandler
     /// </summary>
-    public class TemplateCommandHandler : CommandHandler,
-         IRequestHandler<TemplateAddCommand, bool>
+    public class ArticelCommandHandler : CommandHandler,
+         IRequestHandler<ArticelAddCommand, bool>
     {
 
-        private readonly ITemplateRepository _repository;
+        private readonly IArticelRepository _repository;
         private readonly IEventBus Bus;
         private readonly ILogger _logger;
 
-        public TemplateCommandHandler(ITemplateRepository repository,
+        public ArticelCommandHandler(IArticelRepository repository,
                                       IUnitOfWork uow,
                                       IEventBus bus,
                                       INotificationHandler<ErrorNotice> Notice,
-                                      ILogger<TemplateCommandHandler> logger)
+                                      ILogger<ArticelCommandHandler> logger)
 									  : base(uow, logger,bus, Notice)
         {
             _logger = logger;
             _repository = repository;
             Bus = bus;
         }
-        public Task<bool> Handle(TemplateAddCommand request, CancellationToken cancellationToken)
+        public Task<bool> Handle(ArticelAddCommand request, CancellationToken cancellationToken)
         {
             if (!request.IsValid())
             {
                 NotifyValidationErrors(request);
                 return Task.FromResult(false);
             }
-            var model = new SSS.Domain.Template.Template(request.id);
+            var model = new SSS.Domain.Articel.Articel(request.id);
             model.CreateTime = DateTime.Now;
             model.IsDelete = 0;
 
             _repository.Add(model);
             if (Commit())
             {
-                _logger.LogInformation("TemplateAddCommand Success");
-                Bus.RaiseEvent(new TemplateAddEvent(model));
+                _logger.LogInformation("ArticelAddCommand Success");
+                Bus.RaiseEvent(new ArticelAddEvent(model));
             }
             return Task.FromResult(true);
         }

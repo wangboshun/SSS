@@ -6,8 +6,10 @@ using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.IO;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace SSS.Api.Controllers
 {
@@ -15,10 +17,10 @@ namespace SSS.Api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class CodeController : ApiBaseController
-    { 
+    {
         private IHostingEnvironment _env;
 
-        private static string current_path;  
+        private static string current_path;
 
         public CodeController(IHostingEnvironment env)
         {
@@ -28,7 +30,7 @@ namespace SSS.Api.Controllers
 
         [HttpGet("index")]
         public ContentResult Index()
-        { 
+        {
             string html = "";
             string filepath = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? current_path + "//codegenerator.html" : current_path + "\\codegenerator.html";
 
@@ -49,14 +51,42 @@ namespace SSS.Api.Controllers
         public IActionResult CreateCode()
         {
             var class_name = HttpContext.Request.Form["class_name"];
+            //Generator_Domain(class_name);
+            //Generator_Infrastructure(class_name);
+            //Generator_CQRS(class_name);
+            //Generator_Application(class_name);
+            //Generator_Api(class_name);
+
             var fields = HttpContext.Request.Form["fields"];
             var list = JsonConvert.DeserializeObject<List<Field>>(fields);
-            Generator_Domain(class_name);
-            Generator_Infrastructure(class_name);
-            Generator_CQRS(class_name);
-            Generator_Application(class_name);
-            Generator_Api(class_name); 
+            list = list.Where(x => !string.IsNullOrWhiteSpace(x.field_name)).ToList();
+            AppDomainContext(class_name, list);
+
             return Response(null);
+        }
+
+        /// <summary>
+        /// 填充类字段信息
+        /// </summary>
+        /// <param name="fields"></param>
+        private void AppDomainContext(string name, List<Field> fields)
+        {
+            Directory.SetCurrentDirectory(Directory.GetParent(current_path).FullName);
+            var parent_path = Directory.GetCurrentDirectory();
+
+            var Class_Path = parent_path + $"\\SSS.Domain\\{name}\\{name}.cs";
+
+            StringBuilder str = new StringBuilder("\r\n");
+            foreach (var item in fields)
+            {
+                string content = "        public " + item.field_type + " " + System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(item.field_name) + " { set; get; } \r\n";
+                str.Append("\r\n" + content);
+            }
+
+            string Class_Content = IO.ReadAllText(Class_Path);
+            int position = Class_Content.LastIndexOf("}") - 8;
+            Class_Content = Class_Content.Insert(position, str.ToString());
+            IO.Save(Class_Path, Class_Content);
         }
 
         /// <summary>
@@ -177,7 +207,7 @@ namespace SSS.Api.Controllers
         /// <param name="name"></param>
         private void Generator_Application(string name)
         {
-            var TemplateProfile_Read_Path = current_path + "\\Template\\Template_Application\\Profile\\TemplateProfile.txt";
+            var TemplateProfile_Read_Path = current_path + "\\Template\\Template_Application\\Mapper\\TemplateMapper.txt";
             var ITemplateService_Read_Path = current_path + "\\Template\\Template_Application\\Service\\ITemplateService.txt";
             var TemplateService_Read_Path = current_path + "\\Template\\Template_Application\\Service\\TemplateService.txt";
 
