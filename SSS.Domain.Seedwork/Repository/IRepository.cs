@@ -9,6 +9,8 @@ namespace SSS.Domain.Seedwork.Repository
         void Add(TEntity obj);
         TEntity Get(string id);
         TEntity Get(Expression<Func<TEntity, bool>> predicate);
+        IQueryable<TEntity> GetBySql(string sql);
+        IQueryable<TEntity> GetBySql(string sql, params object[] parameter);
         IQueryable<TEntity> GetAll();
         IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate);
         IQueryable<TEntity> GetPage(int index, int size, ref int count);

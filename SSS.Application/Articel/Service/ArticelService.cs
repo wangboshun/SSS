@@ -33,20 +33,23 @@ namespace SSS.Application.Articel
             _bus.SendCommand(cmd);
         }
 
-		public Pages<List<ArticelOutputDto>> GetListArticel(ArticelInputDto input) 
-		{
-           List<ArticelOutputDto> list;
+        public Pages<List<ArticelOutputDto>> GetListArticel(ArticelInputDto input)
+        {
+            var lists = _repository.GetBySql("select * from Articel where Title=@title and CreateTime=@time ", new { title = "1", time = new DateTime(2019, 6, 19, 17, 27, 30) }).ToList();
+
+            List<ArticelOutputDto> list;
             int count = 0;
 
             if (input.pagesize == 0 && input.pagesize == 0)
             {
-                var temp = _repository.GetAll();
                 list = _repository.GetAll().ProjectTo<ArticelOutputDto>(_mapper.ConfigurationProvider).ToList();
+
                 count = list.Count;
             }
             else
                 list = _repository.GetPage(input.pageindex, input.pagesize, ref count).ProjectTo<ArticelOutputDto>(_mapper.ConfigurationProvider).ToList();
 
-            return new Pages<List<ArticelOutputDto>>(list, count);}
-      } 
+            return new Pages<List<ArticelOutputDto>>(list, count);
+        }
+    }
 }

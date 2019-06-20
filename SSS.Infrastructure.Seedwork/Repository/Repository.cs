@@ -1,16 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 using SSS.Domain.Seedwork.Attribute;
+using SSS.Domain.Seedwork.Model;
 using SSS.Domain.Seedwork.Repository;
 using SSS.Infrastructure.Seedwork.DbContext;
 using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 
 namespace SSS.Infrastructure.Seedwork.Repository
 {
     [DIService(ServiceLifetime.Scoped, typeof(IRepository<>))]
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+    public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
     {
         protected readonly DbcontextBase Db;
         protected readonly DbSet<TEntity> DbSet;
@@ -36,26 +40,67 @@ namespace SSS.Infrastructure.Seedwork.Repository
             return DbSet.FirstOrDefault(predicate);
         }
 
+        public virtual IQueryable<TEntity> GetBySql(string sql)
+        {
+            return DbSet.FromSql(sql);
+        }
+
+        public virtual IQueryable<TEntity> GetBySql(string sql, params object[] parameter)
+        {
+            return DbSet.FromSql<TEntity>(sql, GeneratorParameter(parameter));
+        }
+
+        /// <summary>
+        /// 生成参数
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        private SqlParameter[] GeneratorParameter(params object[] parameter)
+        {
+            List<SqlParameter> sqlparameter = new List<SqlParameter>();
+            foreach (var item in parameter)
+            {
+                JObject json = JObject.FromObject(item);
+                foreach (var data in json)
+                {
+                    string type = data.Value.Type.ToString();
+                    switch (type)
+                    {
+                        case "String":
+                            sqlparameter.Add(new SqlParameter(data.Key, data.Value.ToString()));
+                            break;
+                        case "Integer":
+                            sqlparameter.Add(new SqlParameter(data.Key, Convert.ToInt32(data.Value)));
+                            break;
+                        case "Date":
+                            sqlparameter.Add(new SqlParameter(data.Key, Convert.ToDateTime(data.Value)));
+                            break;
+                    }
+                }
+            }
+            return sqlparameter.ToArray();
+        }
+
         public virtual IQueryable<TEntity> GetAll()
         {
-            return DbSet;
+            return DbSet.OrderByDescending(x => x.CreateTime);
         }
 
         public virtual IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate)
         {
-            return DbSet.Where(predicate);
+            return DbSet.Where(predicate).OrderByDescending(x => x.CreateTime);
         }
 
         public IQueryable<TEntity> GetPage(int index, int size, ref int count)
         {
             count = DbSet.Count();
-            return DbSet.Skip(size * (index > 0 ? index - 1 : 0)).Take(size);
+            return DbSet.OrderByDescending(x => x.CreateTime).Skip(size * (index > 0 ? index - 1 : 0)).Take(size);
         }
 
         public IQueryable<TEntity> GetPage(int index, int size, Expression<Func<TEntity, bool>> predicate, ref int count)
         {
             count = DbSet.Where(predicate).Count();
-            return DbSet.Where(predicate).Skip(size * (index > 0 ? index - 1 : 0)).Take(size);
+            return DbSet.OrderByDescending(x => x.CreateTime).Where(predicate).Skip(size * (index > 0 ? index - 1 : 0)).Take(size);
         }
 
         public virtual void Update(TEntity obj)
@@ -83,6 +128,5 @@ namespace SSS.Infrastructure.Seedwork.Repository
             Db.Dispose();
             GC.SuppressFinalize(this);
         }
-
     }
 }

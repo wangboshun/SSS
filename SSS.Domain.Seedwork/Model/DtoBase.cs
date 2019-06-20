@@ -9,6 +9,8 @@
         public int pagesize { set; get; }
 
         public string order_by { set; get; }
+
+        public bool isdesc { set; get; }
     }
 
     public abstract class OutputDtoBase
