@@ -1,5 +1,4 @@
 ﻿using Hangfire;
-using Hangfire.MySql.Core;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -114,7 +113,7 @@ namespace SSS.Api
             services.AddHangfire(config =>
             {
                 //config.UseStorage(new MySqlStorage(Configuration.GetConnectionString("MYSQLConnection")));
-                config.UseSqlServerStorage(Configuration.GetConnectionString("MSSQLConnection")); 
+                config.UseSqlServerStorage(Configuration.GetConnectionString("MSSQLConnection"));
             });
 
             services.AddHangfireServer();

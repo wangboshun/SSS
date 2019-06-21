@@ -1,4 +1,4 @@
-using SSS.Domain.Seedwork.Model; 
+using SSS.Domain.Seedwork.Model;
 
 namespace SSS.Domain.Articel.Dto
 {

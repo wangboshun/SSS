@@ -1,14 +1,14 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.Extensions.DependencyInjection;
+using SSS.Domain.Articel.Dto;
 using SSS.Domain.CQRS.Articel.Command.Commands;
 using SSS.Domain.Seedwork.Attribute;
-using SSS.Domain.Articel.Dto;
-using SSS.Infrastructure.Repository.Articel;
-using System;
 using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Model;
+using SSS.Infrastructure.Repository.Articel;
+using System;
 using System.Collections.Generic;
-using AutoMapper.QueryableExtensions;
 using System.Linq;
 
 namespace SSS.Application.Articel
@@ -35,8 +35,6 @@ namespace SSS.Application.Articel
 
         public Pages<List<ArticelOutputDto>> GetListArticel(ArticelInputDto input)
         {
-            var lists = _repository.GetBySql("select * from Articel where Title=@title and CreateTime=@time ", new { title = "1", time = new DateTime(2019, 6, 19, 17, 27, 30) }).ToList();
-
             List<ArticelOutputDto> list;
             int count = 0;
 

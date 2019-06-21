@@ -8,6 +8,6 @@ namespace SSS.Application.Articel
     {
         void AddArticel(ArticelInputDto input);
 
-		Pages<List<ArticelOutputDto>> GetListArticel(ArticelInputDto input);
+        Pages<List<ArticelOutputDto>> GetListArticel(ArticelInputDto input);
     }
 }

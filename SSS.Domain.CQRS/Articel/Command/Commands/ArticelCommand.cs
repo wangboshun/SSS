@@ -1,10 +1,8 @@
-using System;
-
 namespace SSS.Domain.CQRS.Articel.Command.Commands
 {
     public abstract class ArticelCommand : SSS.Domain.Seedwork.Command.Command
     {
-         public string id { set; get; }
+        public string id { set; get; }
 
         public string title { set; get; }
 
@@ -16,6 +14,6 @@ namespace SSS.Domain.CQRS.Articel.Command.Commands
 
         public int sort { set; get; }
 
-        public int issmain { set; get; } 
+        public int issmain { set; get; }
     }
 }

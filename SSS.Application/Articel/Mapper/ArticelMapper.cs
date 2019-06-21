@@ -1,5 +1,5 @@
-using SSS.Domain.CQRS.Articel.Command.Commands;
 using SSS.Domain.Articel.Dto;
+using SSS.Domain.CQRS.Articel.Command.Commands;
 
 namespace SSS.Application.Articel.Profile
 {

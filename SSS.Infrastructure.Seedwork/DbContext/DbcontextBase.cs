@@ -29,7 +29,7 @@ namespace SSS.Infrastructure.Seedwork.DbContext
         public DbSet<Articel> articel { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        { 
+        {
             var config = new ConfigurationBuilder()
                 .SetBasePath(_env.ContentRootPath)
                 .AddJsonFile("appsettings.json")

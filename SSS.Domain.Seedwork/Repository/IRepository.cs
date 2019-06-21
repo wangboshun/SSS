@@ -1,10 +1,19 @@
-﻿using System;
+﻿using SSS.Domain.Seedwork.Model;
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 
 namespace SSS.Domain.Seedwork.Repository
 {
-    public interface IRepository<TEntity> : IDisposable where TEntity : class
+    public interface IRepository<TEntity, TInput, TOutput> : IRepository<TEntity>
+        where TEntity : Entity
+        where TInput : InputDtoBase
+        where TOutput : OutputDtoBase
+    {
+    }
+
+    public interface IRepository<TEntity> : IDisposable
+       where TEntity : Entity
     {
         void Add(TEntity obj);
         TEntity Get(string id);

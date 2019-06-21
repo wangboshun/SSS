@@ -46,7 +46,7 @@ namespace SSS.Domain.CQRS.Articel.Command.Handlers
                 NotifyValidationErrors(request);
                 return Task.FromResult(false);
             }
-            var model = new SSS.Domain.Articel.Articel(request.id, request.title, request.content,request.contenttype, request.mainimage, request.sort, request.issmain);
+            var model = new SSS.Domain.Articel.Articel(request.id, request.title, request.content, request.contenttype, request.mainimage, request.sort, request.issmain);
             model.CreateTime = DateTime.Now;
             model.IsDelete = 0;
 

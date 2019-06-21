@@ -8,12 +8,12 @@ namespace SSS.Domain.Articel.Dto
 
         public string content { set; get; }
 
-        public int contenttype { set; get; }
+        public int? contenttype { set; get; }
 
         public string mainimage { set; get; }
 
-        public int sort { set; get; }
+        public int? sort { set; get; }
 
-        public int issmain { set; get; }
+        public int? issmain { set; get; }
     }
 }

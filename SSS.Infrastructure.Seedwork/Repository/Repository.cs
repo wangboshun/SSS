@@ -14,7 +14,8 @@ using System.Linq.Expressions;
 namespace SSS.Infrastructure.Seedwork.Repository
 {
     [DIService(ServiceLifetime.Scoped, typeof(IRepository<>))]
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
+    public abstract class Repository<TEntity> : IRepository<TEntity>
+        where TEntity : Entity
     {
         protected readonly DbcontextBase Db;
         protected readonly DbSet<TEntity> DbSet;
@@ -55,7 +56,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns></returns>
-        private SqlParameter[] GeneratorParameter(params object[] parameter)
+        protected SqlParameter[] GeneratorParameter(params object[] parameter)
         {
             List<SqlParameter> sqlparameter = new List<SqlParameter>();
             foreach (var item in parameter)
@@ -128,5 +129,18 @@ namespace SSS.Infrastructure.Seedwork.Repository
             Db.Dispose();
             GC.SuppressFinalize(this);
         }
+    }
+
+    [DIService(ServiceLifetime.Scoped, typeof(IRepository<,,>))]
+    public abstract class Repository<TEntity, TInput, TOutput> : Repository<TEntity>, IRepository<TEntity, TInput, TOutput>
+       where TEntity : Entity
+       where TInput : InputDtoBase
+       where TOutput : OutputDtoBase
+    {
+        public Repository(DbcontextBase context) : base(context)
+        {
+
+        }
+
     }
 }
