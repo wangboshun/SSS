@@ -2,7 +2,7 @@
 using SSS.Domain.Seedwork.Model;
 using System.Collections.Generic;
 
-namespace SSS.Application.Template
+namespace SSS.Application.Template.Service
 {
     public interface ITemplateService
     {

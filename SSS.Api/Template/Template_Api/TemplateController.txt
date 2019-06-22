@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SSS.Api.Seedwork;
-using SSS.Application.Template;
+using SSS.Application.Template.Service;
 using SSS.Domain.Template.Dto;
 
 namespace SSS.Api.Controllers

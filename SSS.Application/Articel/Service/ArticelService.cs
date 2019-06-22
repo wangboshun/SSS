@@ -11,7 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SSS.Application.Articel
+namespace SSS.Application.Articel.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IArticelService))]
     public class ArticelService : IArticelService

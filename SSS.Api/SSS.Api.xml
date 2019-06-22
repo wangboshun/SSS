@@ -95,7 +95,7 @@
             ArticelController
             </summary>
         </member>
-        <member name="M:SSS.Api.Controllers.ArticelController.#ctor(SSS.Application.Articel.IArticelService)">
+        <member name="M:SSS.Api.Controllers.ArticelController.#ctor(SSS.Application.Articel.Service.IArticelService)">
             <summary>
             ArticelController
             </summary>

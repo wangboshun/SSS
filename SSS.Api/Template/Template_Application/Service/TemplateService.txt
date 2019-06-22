@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using AutoMapper.QueryableExtensions;
 using System.Linq;
 
-namespace SSS.Application.Template
+namespace SSS.Application.Template.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(ITemplateService))]
     public class TemplateService : ITemplateService
