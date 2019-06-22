@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using SSS.Domain.Seedwork.Attribute;
 using SSS.Domain.Seedwork.Events;
 using SSS.Domain.Seedwork.EventStore;
+using SSS.Infrastructure.Util.Attribute;
 using System.Threading.Tasks;
 
 namespace SSS.Domain.Seedwork.EventBus

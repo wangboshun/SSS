@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SSS.Domain.Seedwork.Attribute;
 using SSS.Domain.Seedwork.Events;
 using SSS.Domain.Seedwork.EventStore;
 using SSS.Infrastructure.Repository.EventStore;
+using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.Json;
 
 namespace SSS.Application.Seedwork.EventStore

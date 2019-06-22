@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SSS.Domain.Seedwork.Attribute;
 using SSS.Domain.Seedwork.Model;
+using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Infrastructure.Seedwork.DbContext
 {

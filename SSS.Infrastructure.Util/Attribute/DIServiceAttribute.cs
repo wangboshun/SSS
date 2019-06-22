@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SSS.Domain.Seedwork.Attribute
+namespace SSS.Infrastructure.Util.Attribute
 {
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = false)]
     public class DIServiceAttribute : System.Attribute
@@ -22,12 +22,10 @@ namespace SSS.Domain.Seedwork.Attribute
         {
             return TargetTypes;
         }
+
         public ServiceLifetime Lifetime
         {
-            get
-            {
-                return this.lifetime;
-            }
+            get => lifetime;
         }
     }
 }

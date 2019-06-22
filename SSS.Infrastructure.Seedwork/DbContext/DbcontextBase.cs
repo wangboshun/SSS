@@ -3,10 +3,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SSS.Domain.Articel;
-using SSS.Domain.Seedwork.Attribute;
 using SSS.Domain.Student;
 using SSS.Domain.Trade;
 using SSS.Domain.UserInfo;
+using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Infrastructure.Seedwork.DbContext
 {

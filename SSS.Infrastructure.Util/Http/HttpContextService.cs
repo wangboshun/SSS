@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System;
 
-namespace SSS.Infrastructure.Util
+namespace SSS.Infrastructure.Util.Http
 {
     public static class HttpContextService
     {

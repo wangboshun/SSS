@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using SSS.Api.Middware;
 using SSS.Infrastructure.Seedwork.Cache.Redis;
-using SSS.Infrastructure.Util;
+using SSS.Infrastructure.Util.Http;
 using System;
 
 namespace SSS.Api.Bootstrap

@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SSS.Domain.CQRS.Template.Command.Commands;
 using SSS.Domain.CQRS.Template.Event.Events;
-using SSS.Domain.Seedwork.Attribute; 
+using SSS.Infrastructure.Util.Attribute; 
 using SSS.Domain.Seedwork.Command;
 using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Notice;

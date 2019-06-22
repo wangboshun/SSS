@@ -2,7 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SSS.Domain.CQRS.Student.Event.Events;
-using SSS.Domain.Seedwork.Attribute;
+using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Http;
 using SSS.Infrastructure.Util.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace SSS.Domain.CQRS.Student.Event.Handlers
 
         public StudentUpdateEventHandler()
         {
-            _logger = (ILogger)SSS.Infrastructure.Util.HttpContextService.Current.RequestServices.GetService(typeof(ILogger<StudentUpdateEventHandler>));
+            _logger = (ILogger)HttpContextService.Current.RequestServices.GetService(typeof(ILogger<StudentUpdateEventHandler>));
         }
 
         public Task Handle(StudentUpdateEvent @event, CancellationToken cancellationToken)

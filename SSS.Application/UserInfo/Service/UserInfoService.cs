@@ -2,11 +2,11 @@ using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.CQRS.UserInfo.Command.Commands;
-using SSS.Domain.Seedwork.Attribute;
 using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Model;
 using SSS.Domain.UserInfo.Dto;
 using SSS.Infrastructure.Repository.UserInfo;
+using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
 

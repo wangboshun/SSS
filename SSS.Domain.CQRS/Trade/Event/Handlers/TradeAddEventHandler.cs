@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SSS.Domain.CQRS.Trade.Event.Events;
-using SSS.Domain.Seedwork.Attribute;
+using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.Json;
 using SSS.Infrastructure.Util.Log;
 using System.Threading;

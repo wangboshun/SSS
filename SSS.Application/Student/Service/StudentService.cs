@@ -2,7 +2,6 @@
 using AutoMapper.QueryableExtensions;
 using Microsoft.Extensions.DependencyInjection;
 using SSS.Domain.CQRS.Student.Command.Commands;
-using SSS.Domain.Seedwork.Attribute;
 using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Model;
 using SSS.Domain.Student.Dto;

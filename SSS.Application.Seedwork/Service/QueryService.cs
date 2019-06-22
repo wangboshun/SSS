@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.Extensions.DependencyInjection;
-using SSS.Domain.Seedwork.Attribute;
 using SSS.Domain.Seedwork.Model;
 using SSS.Domain.Seedwork.Repository;
+using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
 using System.Linq;

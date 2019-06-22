@@ -1,14 +1,14 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SSS.Domain.CQRS.UserInfo.Event.Events;
-using SSS.Infrastructure.Util;
+using SSS.Infrastructure.Util.Http;
 using SSS.Infrastructure.Util.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SSS.Domain.CQRS.UserInfo.Event.Handlers
 {
-    [SSS.Domain.Seedwork.Attribute.DIService(Microsoft.Extensions.DependencyInjection.ServiceLifetime.Scoped, typeof(INotificationHandler<UserInfoAddEvent>))]
+    [SSS.Infrastructure.Util.Attribute.DIService(Microsoft.Extensions.DependencyInjection.ServiceLifetime.Scoped, typeof(INotificationHandler<UserInfoAddEvent>))]
     public class UserInfoAddEventHandler : INotificationHandler<UserInfoAddEvent>
     {
         private static ILogger _logger;
