@@ -55,8 +55,10 @@ namespace SSS.Application.Trade.Service
             else //做空
                 input.side = "sell";
 
+            var list = _traderepository.GetAll(x => (x.First_Trade_Status == 1 || x.First_Trade_Status == 2) && x.Coin.Equals(input.coin) && string.IsNullOrWhiteSpace(x.Last_Trade_No));
+
             //【2.查看是否持有单子】
-            var order_list = _traderepository.GetAll(x => (x.First_Trade_Status == 1 || x.First_Trade_Status == 2) && x.Coin.Equals(input.coin)).ProjectTo<TradeOutputDto>(_mapper.ConfigurationProvider).ToList();
+            var order_list = list.ProjectTo<TradeOutputDto>(_mapper.ConfigurationProvider).ToList();
 
             //平单
             if (order_list.Count > 0)
@@ -100,6 +102,11 @@ namespace SSS.Application.Trade.Service
                 _logger.LogInformation($"止盈止损判断 没有相同方向单子，继续下单");
                 return false;
             }
+
+            input.first_price = current_order.first_price;
+            input.first_time = current_order.first_time;
+            input.first_trade_no = current_order.first_trade_no;
+            input.first_trade_status = current_order.first_trade_status;
 
             _logger.LogInformation($"止盈止损判断 已有订单：{current_order.ToJson()}");
             if (current_order.side.Equals("buy"))
@@ -165,6 +172,11 @@ namespace SSS.Application.Trade.Service
                 _logger.LogInformation($"检查订单是否满足平单要求，没有单子");
                 return false;
             }
+
+            input.first_price = current_order.first_price;
+            input.first_time = current_order.first_time;
+            input.first_trade_no = current_order.first_trade_no;
+            input.first_trade_status = current_order.first_trade_status;
 
             //【1 平空】
             //如果是平空
@@ -276,7 +288,10 @@ namespace SSS.Application.Trade.Service
                 return;
             }
             input.last_trade_status = Convert.ToInt32(orderinfo.state);
-            input.last_price = Convert.ToDouble(orderinfo.notional);
+            if (!string.IsNullOrWhiteSpace(orderinfo.notional))
+                input.last_price = Convert.ToDouble(orderinfo.notional)/ input.size;
+            else
+                input.last_price = Convert.ToDouble(orderinfo.price_avg);
             input.last_time = Convert.ToDateTime(orderinfo.timestamp);
 
             //【3 更新一条订单】
