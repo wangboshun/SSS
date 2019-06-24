@@ -35,8 +35,8 @@ namespace SSS.Infrastructure.Seedwork.DbContext
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            optionsBuilder.UseSqlServer(config.GetConnectionString("MSSQLConnection"));
-            //optionsBuilder.UseMySQL(config.GetConnectionString("MYSQLConnection"));
+            //optionsBuilder.UseSqlServer(config.GetConnectionString("MSSQLConnection"));
+            optionsBuilder.UseMySQL(config.GetConnectionString("MYSQLConnection"));
         }
     }
 }

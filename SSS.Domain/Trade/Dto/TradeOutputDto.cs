@@ -22,7 +22,7 @@ namespace SSS.Domain.Trade.Dto
 
         public string last_trade_no { set; get; }
 
-        public DateTime last_time { set; get; }
+        public DateTime? last_time { set; get; }
         public DateTime first_time { set; get; }
     }
 }
