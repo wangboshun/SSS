@@ -17,7 +17,7 @@ namespace SSS.Infrastructure.Util.Attribute
                 TargetTypes.Add(argTarget);
             }
         }
-        
+
         public List<Type> GetTargetTypes()
         {
             return TargetTypes;

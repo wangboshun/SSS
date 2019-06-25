@@ -13,6 +13,7 @@ using SSS.Domain.Trade.Request;
 using SSS.Domain.Trade.Response;
 using SSS.Infrastructure.Repository.Trade;
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Config;
 using SSS.Infrastructure.Util.Json;
 using System;
 using System.Collections.Generic;
@@ -83,7 +84,7 @@ namespace SSS.Application.Trade.Service
             input.id = Guid.NewGuid().ToString();
             //input.last_time = DateTime.Now;
             //input.last_price = curruent_price;
-            input.first_trade_no = order_list.FirstOrDefault()?.first_trade_no;
+            input.first_trade_no = order_list.OrderByDescending(x => x.first_time).FirstOrDefault()?.first_trade_no;
             var null_cmd = _mapper.Map<TradeNullCommand>(input);
             _bus.SendCommand(null_cmd);
             _logger.LogInformation($"无符合的交易规则  input:{input.ToJson()}");
@@ -96,7 +97,7 @@ namespace SSS.Application.Trade.Service
         /// <param name="curruent_price">当前价格</param>
         private bool ProfitOrLossPoint(List<TradeOutputDto> order_list, TradeInputDto input, double curruent_price)
         {
-            var current_order = order_list.FirstOrDefault(x => x.side.Equals(input.side));
+            var current_order = order_list.OrderByDescending(x => x.first_time).FirstOrDefault(x => !x.side.Equals(input.side));
             if (current_order == null)
             {
                 _logger.LogInformation($"止盈止损判断 没有相同方向单子，继续下单");
@@ -166,7 +167,7 @@ namespace SSS.Application.Trade.Service
         /// <param name="curruent_price">当前价格</param>
         private bool StopTrade(List<TradeOutputDto> order_list, TradeInputDto input, double curruent_price)
         {
-            var current_order = order_list.FirstOrDefault(x => !x.side.Equals(input.side));
+            var current_order = order_list.OrderByDescending(x => x.first_time).FirstOrDefault(x => !x.side.Equals(input.side));
             if (current_order == null)
             {
                 _logger.LogInformation($"检查订单是否满足平单要求，没有单子");
@@ -345,7 +346,7 @@ namespace SSS.Application.Trade.Service
 
             var postdata = JsonConvert.SerializeObject(order);
 
-            using (var client = new HttpClient(new HttpInterceptor("4420c6ef-b38b-46e9-8bd8-f4d98ed14c41", "F11EC0BD8CCCC27DD1C89237D9BE4B54", "123123123", postdata)))
+            using (var client = new HttpClient(new HttpInterceptor(Config.GetSectionValue("OKex:ApiKey"), Config.GetSectionValue("OKex:Secret"), Config.GetSectionValue("OKex:PassPhrase"), postdata)))
             {
                 var res = client.PostAsync("https://www.okex.me/api/margin/v3/orders", new StringContent(postdata, Encoding.UTF8, "application/json")).Result;
 
@@ -371,7 +372,7 @@ namespace SSS.Application.Trade.Service
         public OrderInfoResponse GetOrderInfo(string coin, string order_id)
         {
             var url = $"https://www.okex.me/api/margin/v3/orders/{order_id}";
-            using (var client = new HttpClient(new HttpInterceptor("4420c6ef-b38b-46e9-8bd8-f4d98ed14c41", "F11EC0BD8CCCC27DD1C89237D9BE4B54", "123123123", null)))
+            using (var client = new HttpClient(new HttpInterceptor(Config.GetSectionValue("OKex:ApiKey"), Config.GetSectionValue("OKex:Secret"), Config.GetSectionValue("OKex:PassPhrase"), null)))
             {
                 var queryParams = new Dictionary<string, string>();
                 queryParams.Add("instrument_id", coin);

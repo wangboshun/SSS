@@ -90,9 +90,9 @@ namespace SSS.Domain.CQRS.Trade.Command.Handlers
             trade.Last_Time = request.last_time;
 
             if (trade.Side.Equals("buy"))
-                trade.income = (((trade.First_Price/trade.Last_Price)-1) * 100).ToString() + "%";
+                trade.income = (((trade.First_Price / trade.Last_Price) - 1) * 100).ToString() + "%";
             else
-                trade.income = (((trade.Last_Price/ trade.First_Price)-1) * 100).ToString() + "%";
+                trade.income = (((trade.Last_Price / trade.First_Price) - 1) * 100).ToString() + "%";
 
             _traderepository.Update(trade);
 

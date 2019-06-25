@@ -37,6 +37,8 @@
     <ProjectReference Include="..\SSS.Api.Seedwork\SSS.Api.Seedwork.csproj" />
     <ProjectReference Include="..\SSS.Application.Seedwork\SSS.Application.Seedwork.csproj" />
     <ProjectReference Include="..\SSS.Application\SSS.Application.csproj" />
-  </ItemGroup> 
+  </ItemGroup>
+ 
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions> 
 
 </Project>
