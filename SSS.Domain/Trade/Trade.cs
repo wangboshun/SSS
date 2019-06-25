@@ -41,5 +41,6 @@ namespace SSS.Domain.Trade
 
         public DateTime First_Time { set; get; }
         public DateTime? Last_Time { set; get; }
+        public string income { set; get; }
     }
 }

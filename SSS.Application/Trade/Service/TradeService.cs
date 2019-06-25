@@ -188,6 +188,11 @@ namespace SSS.Application.Trade.Service
                     _logger.LogInformation($"检查订单是否满足平单要求，平空失败，价格太高 {current_order.ToJson()}");
                     return false;
                 }
+                else if ((current_order.first_price / curruent_price) - 1 < 0.01)
+                {
+                    _logger.LogInformation($"检查订单是否满足平单要求，平空失败，盈利不足1% {current_order.ToJson()}");
+                    return false;
+                }
                 else
                 {
                     //平单
@@ -209,6 +214,11 @@ namespace SSS.Application.Trade.Service
                 if (curruent_price < current_order.first_price)
                 {
                     _logger.LogInformation($"检查订单是否满足平单要求，平多失败，价格太低 {current_order.ToJson()}");
+                    return false;
+                }
+                else if ((curruent_price / current_order.first_price) - 1 < 0.01)
+                {
+                    _logger.LogInformation($"检查订单是否满足平单要求，平多失败，盈利不足1% {current_order.ToJson()}");
                     return false;
                 }
                 else
@@ -289,7 +299,7 @@ namespace SSS.Application.Trade.Service
             }
             input.last_trade_status = Convert.ToInt32(orderinfo.state);
             if (!string.IsNullOrWhiteSpace(orderinfo.notional))
-                input.last_price = Convert.ToDouble(orderinfo.notional)/ input.size;
+                input.last_price = Convert.ToDouble(orderinfo.notional) / input.size;
             else
                 input.last_price = Convert.ToDouble(orderinfo.price_avg);
             input.last_time = Convert.ToDateTime(orderinfo.timestamp);
@@ -335,7 +345,7 @@ namespace SSS.Application.Trade.Service
 
             var postdata = JsonConvert.SerializeObject(order);
 
-            using (var client = new HttpClient(new HttpInterceptor("2b90783f-0e71-4a84-a767-d932b062b1fe", "260E06424BACF0AE22E6E0B8B657499E", "123456", postdata)))
+            using (var client = new HttpClient(new HttpInterceptor("4420c6ef-b38b-46e9-8bd8-f4d98ed14c41", "F11EC0BD8CCCC27DD1C89237D9BE4B54", "123123123", postdata)))
             {
                 var res = client.PostAsync("https://www.okex.me/api/margin/v3/orders", new StringContent(postdata, Encoding.UTF8, "application/json")).Result;
 
@@ -361,7 +371,7 @@ namespace SSS.Application.Trade.Service
         public OrderInfoResponse GetOrderInfo(string coin, string order_id)
         {
             var url = $"https://www.okex.me/api/margin/v3/orders/{order_id}";
-            using (var client = new HttpClient(new HttpInterceptor("2b90783f-0e71-4a84-a767-d932b062b1fe", "260E06424BACF0AE22E6E0B8B657499E", "123456", null)))
+            using (var client = new HttpClient(new HttpInterceptor("4420c6ef-b38b-46e9-8bd8-f4d98ed14c41", "F11EC0BD8CCCC27DD1C89237D9BE4B54", "123123123", null)))
             {
                 var queryParams = new Dictionary<string, string>();
                 queryParams.Add("instrument_id", coin);

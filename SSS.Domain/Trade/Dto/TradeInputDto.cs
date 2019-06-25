@@ -26,5 +26,7 @@ namespace SSS.Domain.Trade.Dto
         public string last_trade_no { set; get; }
 
         public int ktime { set; get; }
+
+        public string income { set; get; }
     }
 }
