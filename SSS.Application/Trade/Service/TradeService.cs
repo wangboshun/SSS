@@ -46,6 +46,7 @@ namespace SSS.Application.Trade.Service
         public void OperateTrade(TradeInputDto input)
         {
             var kdata = GetKDataLine(input.coin, input.ktime, DateTime.Now);
+            _logger.LogInformation($"K线数据：{kdata.ToJson()}");
             var ma_5 = GetMaPrice(input.coin, input.ktime, 5, kdata);
             var ma_10 = GetMaPrice(input.coin, input.ktime, 10, kdata);
             double curruent_price = kdata[0].close; //当前收盘价
@@ -81,13 +82,13 @@ namespace SSS.Application.Trade.Service
                     return;
             }
 
-            input.id = Guid.NewGuid().ToString();
+            //input.id = Guid.NewGuid().ToString();
             //input.last_time = DateTime.Now;
             //input.last_price = curruent_price;
-            input.first_trade_no = order_list.OrderByDescending(x => x.first_time).FirstOrDefault()?.first_trade_no;
-            var null_cmd = _mapper.Map<TradeNullCommand>(input);
-            _bus.SendCommand(null_cmd);
-            _logger.LogInformation($"无符合的交易规则  input:{input.ToJson()}");
+            //input.first_trade_no = order_list.OrderByDescending(x => x.first_time).FirstOrDefault()?.first_trade_no;
+            //var null_cmd = _mapper.Map<TradeNullCommand>(input);
+            //_bus.SendCommand(null_cmd);
+            //_logger.LogInformation($"无符合的交易规则  input:{input.ToJson()}");
         }
 
         /// <summary>
@@ -353,7 +354,7 @@ namespace SSS.Application.Trade.Service
                 var contentStr = res.Content.ReadAsStringAsync().Result;
                 var result = JObject.Parse(contentStr);
                 _logger.LogInformation($"MarketOrder Result {contentStr}");
-                if (contentStr.Contains("order_id"))
+                if (contentStr.Contains("order_id") && !contentStr.Contains("-1"))
                 {
                     return result["order_id"].ToString();
                     //{ "client_oid":"","error_code":"","error_message":"","order_id":"2857929499812864","result":true}
@@ -399,7 +400,7 @@ namespace SSS.Application.Trade.Service
 
         private List<KData> GetKDataLine(string coin, int ktime, DateTime time)
         {
-            string url = $"https://www.okex.me/api/spot/v3/instruments/{coin}/candles?granularity={ktime * 60}&start={time}";
+            string url = $"https://www.okex.me/api/spot/v3/instruments/{coin}/candles?granularity={ktime * 60}&start={time.AddMinutes(-ktime * 10).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")}&end={time.AddMinutes(-ktime).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")}";
             WebClient client = new WebClient();
             var result = client.DownloadString(url);
             if (string.IsNullOrWhiteSpace(result))
