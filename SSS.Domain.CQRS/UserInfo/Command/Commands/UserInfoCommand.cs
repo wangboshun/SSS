@@ -4,6 +4,8 @@ namespace SSS.Domain.CQRS.UserInfo.Command.Commands
     {
         public string id { set; get; }
 
+        public string code { set; get; }
+
         public string phone { set; get; }
 
         public string uid { set; get; }

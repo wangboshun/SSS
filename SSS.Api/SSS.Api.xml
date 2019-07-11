@@ -244,7 +244,7 @@
             </summary>
             <param name="services">IServiceCollection</param>
         </member>
-        <member name="M:SSS.Api.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
+        <member name="M:SSS.Api.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IHostingEnvironment,Microsoft.Extensions.Options.IOptions{Senparc.CO2NET.SenparcSetting},Microsoft.Extensions.Options.IOptions{Senparc.Weixin.Entities.SenparcWeixinSetting})">
             <summary>
             Configure
             </summary>

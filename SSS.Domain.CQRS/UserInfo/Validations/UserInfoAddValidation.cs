@@ -7,6 +7,7 @@ namespace SSS.Domain.CQRS.UserInfo.Validations
         public UserInfoAddValidation()
         {
             ValidateId();
+            ValidateCode();
             ValidatePhone();
             ValidatePassWord();
         }

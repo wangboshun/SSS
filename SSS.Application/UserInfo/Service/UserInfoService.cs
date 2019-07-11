@@ -29,6 +29,13 @@ namespace SSS.Application.UserInfo.Service
 
         public void AddUserInfo(UserInfoInputDto input)
         {
+            string appid = SSS.Infrastructure.Util.Config.Config.GetSectionValue("SenparcWeixinSetting:WxOpenAppId");
+            string appsecret = SSS.Infrastructure.Util.Config.Config.GetSectionValue("SenparcWeixinSetting:WxOpenAppSecret");
+
+            var result = Senparc.Weixin.WxOpen.AdvancedAPIs.Sns.SnsApi.JsCode2Json(appid, appsecret, input.code);
+
+            var info = Senparc.Weixin.WxOpen.Helpers.EncryptHelper.DecodeEncryptedData(result.session_key, input.encryptedData, input.iv);
+
             input.id = Guid.NewGuid().ToString();
             var cmd = _mapper.Map<UserInfoAddCommand>(input);
             _bus.SendCommand(cmd);

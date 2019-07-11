@@ -6,6 +6,11 @@ namespace SSS.Domain.CQRS.UserInfo.Validations
     public abstract class UserInfoValidation<T> : AbstractValidator<T> where T : UserInfoCommand
     {
 
+        protected void ValidateCode()
+        {
+            RuleFor(c => c.code).NotEmpty().WithMessage("请输入小程序Code");
+        }
+
         protected void ValidateId()
         {
             RuleFor(c => c.id).NotEmpty().WithMessage("请输入Id");

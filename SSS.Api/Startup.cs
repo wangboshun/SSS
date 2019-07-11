@@ -8,6 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Senparc.CO2NET;
+using Senparc.CO2NET.RegisterServices;
+using Senparc.Weixin;
+using Senparc.Weixin.Entities;
+using Senparc.Weixin.RegisterServices;
+using Senparc.Weixin.WxOpen;
 using SSS.Api.Bootstrap;
 using SSS.Api.Middware;
 using SSS.Api.Seedwork;
@@ -118,14 +125,20 @@ namespace SSS.Api
             });
 
             services.AddHangfireServer();
+
+            services.AddSenparcGlobalServices(Configuration)//Senparc.CO2NET 全局注册
+                .AddSenparcWeixinServices(Configuration);//Senparc.Weixin 注册
+
         }
         /// <summary>
         /// Configure
         /// </summary>
         /// <param name="app">IApplicationBuilder</param>
         /// <param name="env">IHostingEnvironment</param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<SenparcSetting> senparcSetting, IOptions<SenparcWeixinSetting> senparcWeixinSetting)
         {
+            IRegisterService register = RegisterService.Start(env, senparcSetting.Value).UseSenparcGlobal();
+
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
             else
@@ -181,6 +194,9 @@ namespace SSS.Api
 
             app.UseStaticFiles();
             app.UseMvc();
+
+            register.UseSenparcWeixin(senparcWeixinSetting.Value, senparcSetting.Value).RegisterWxOpenAccount(senparcWeixinSetting.Value, "SSS");
+
         }
     }
 }
