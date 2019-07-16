@@ -17,5 +17,5 @@ namespace SSS.Domain.UserInfo.Dto
         public string encryptedData { set; get; }
 
         public string iv { set; get; }
-    }
+    } 
 }

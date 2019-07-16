@@ -49,6 +49,6 @@ namespace SSS.Application.UserInfo.Service
         public UserInfoOutputDto GetByPhone(UserInfoInputDto input)
         {
             return Get(x => x.Phone.Equals(input.phone));
-        }
+        } 
     }
 }

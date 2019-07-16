@@ -50,11 +50,11 @@ namespace SSS.Api.Controllers
         public IActionResult CreateCode()
         {
             var class_name = HttpContext.Request.Form["class_name"];
-            //Generator_Domain(class_name);
-            //Generator_Infrastructure(class_name);
-            //Generator_CQRS(class_name);
-            //Generator_Application(class_name);
-            //Generator_Api(class_name);
+            Generator_Domain(class_name);
+            Generator_Infrastructure(class_name);
+            Generator_CQRS(class_name);
+            Generator_Application(class_name);
+            Generator_Api(class_name);
 
             var fields = HttpContext.Request.Form["fields"];
             var list = JsonConvert.DeserializeObject<List<Field>>(fields);

@@ -400,7 +400,7 @@ namespace SSS.Application.Trade.Service
 
         private List<KData> GetKDataLine(string coin, int ktime, DateTime time)
         {
-            string url = $"https://www.okex.me/api/spot/v3/instruments/{coin}/candles?granularity={ktime * 60}&start={time.AddMinutes(-ktime * 10).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")}&end={time.AddMinutes(-ktime).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")}";
+            string url = $"https://www.okex.me/api/spot/v3/instruments/{coin}/candles?granularity={ktime * 60}&start={time.AddMinutes(-ktime * 11).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")}&end={time.AddMinutes(-ktime).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")}";
             WebClient client = new WebClient();
             var result = client.DownloadString(url);
             if (string.IsNullOrWhiteSpace(result))

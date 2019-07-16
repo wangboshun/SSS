@@ -31,7 +31,7 @@ namespace SSS.Api.Controllers
         {
             _service.AddUserInfo(input);
             return Response(input);
-        }
+        } 
 
         /// <summary>
         /// ListUserInfo

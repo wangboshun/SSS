@@ -8,7 +8,7 @@ using SSS.Infrastructure.Util.Log;
 
 namespace SSS.Domain.CQRS.Template.Event.Handlers
 {
-    [SSS.Domain.Seedwork.Attribute.DIService(Microsoft.Extensions.DependencyInjection.ServiceLifetime.Scoped, typeof(INotificationHandler<TemplateAddEvent>))]
+    [SSS.Infrastructure.Util.Attribute.DIService(Microsoft.Extensions.DependencyInjection.ServiceLifetime.Scoped, typeof(INotificationHandler<TemplateAddEvent>))]
     public class TemplateAddEventHandler : INotificationHandler<TemplateAddEvent>
     { 
 	   private static ILogger _logger = ApplicationLog.CreateLogger<TemplateAddEventHandler>();

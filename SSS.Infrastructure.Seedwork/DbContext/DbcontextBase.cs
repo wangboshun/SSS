@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using SSS.Domain.Articel;
 using SSS.Domain.Student;
 using SSS.Domain.Trade;
+using SSS.Domain.UserApi;
 using SSS.Domain.UserInfo;
 using SSS.Infrastructure.Util.Attribute;
 
@@ -27,6 +28,8 @@ namespace SSS.Infrastructure.Seedwork.DbContext
         public DbSet<UserInfo> userinfo { get; set; }
 
         public DbSet<Articel> articel { get; set; }
+
+        public DbSet<UserApi> userapi { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

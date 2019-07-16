@@ -11,6 +11,6 @@ namespace SSS.Application.UserInfo.Service
 
         UserInfoOutputDto GetByPhone(UserInfoInputDto input);
 
-        Pages<List<UserInfoOutputDto>> GetListUser(UserInfoInputDto input);
+        Pages<List<UserInfoOutputDto>> GetListUser(UserInfoInputDto input); 
     }
 }

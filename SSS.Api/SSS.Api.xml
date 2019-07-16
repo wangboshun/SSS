@@ -196,6 +196,56 @@
             <param name="trade">TradeInputDto</param>
             <returns></returns> 
         </member>
+        <member name="T:SSS.Api.Controllers.UserApiController">
+            <summary>
+            UserApiController
+            </summary>
+        </member>
+        <member name="M:SSS.Api.Controllers.UserApiController.#ctor(SSS.Application.UserApi.Service.IUserApiService)">
+            <summary>
+            UserApiController
+            </summary>
+            <param name="service">IUserApiService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.UserApiController.GetList(SSS.Domain.UserApi.Dto.UserApiInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.UserApiController.AddUserApi(SSS.Domain.UserApi.Dto.UserApiInputDto)">
+            <summary>
+            AddUserApi
+            </summary>
+            <param name="input">UserApiInputDto</param>
+            <returns></returns> 
+        </member>
+        <member name="T:SSS.Api.Controllers.UserConfigController">
+            <summary>
+            UserConfigController
+            </summary>
+        </member>
+        <member name="M:SSS.Api.Controllers.UserConfigController.#ctor(SSS.Application.UserConfig.Service.IUserConfigService)">
+            <summary>
+            UserConfigController
+            </summary>
+            <param name="service">IUserConfigService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.UserConfigController.GetList(SSS.Domain.UserConfig.Dto.UserConfigInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.UserConfigController.AddUserConfig(SSS.Domain.UserConfig.Dto.UserConfigInputDto)">
+            <summary>
+            AddUserConfig
+            </summary>
+            <param name="input">UserConfigInputDto</param>
+            <returns></returns> 
+        </member>
         <member name="T:SSS.Api.Controllers.UserInfoController">
             <summary>
             UserInfoController
