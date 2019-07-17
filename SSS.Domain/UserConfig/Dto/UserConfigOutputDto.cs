@@ -4,5 +4,12 @@ namespace SSS.Domain.UserConfig.Dto
 {
     public class UserConfigOutputDto : OutputDtoBase
     { 
+        public string Coin { set; get; }
+
+        public int Ktime { set; get; }
+
+        public double Size { set; get; }
+
+        public string Side { set; get; } 
     }
 }

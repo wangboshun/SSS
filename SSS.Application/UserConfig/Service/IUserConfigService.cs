@@ -9,5 +9,7 @@ namespace SSS.Application.UserConfig.Service
         void AddUserConfig(UserConfigInputDto input);
 
 		Pages<List<UserConfigOutputDto>> GetListUserConfig(UserConfigInputDto input);
+
+        UserConfigOutputDto GetConfig(UserConfigInputDto input);
     }
 }

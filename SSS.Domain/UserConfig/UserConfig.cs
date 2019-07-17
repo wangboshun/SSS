@@ -12,11 +12,13 @@ namespace SSS.Domain.UserConfig
 
         public string Coin { set; get; }
 
+        public string Side { set; get; }
+
         public int Ktime { set; get; }
 
         public double Size { set; get; }
 
-        public string Userid { set; get; }
+        public string UserId { set; get; }
 
         public int Profit { set; get; }
 

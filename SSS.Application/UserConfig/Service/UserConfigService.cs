@@ -10,17 +10,18 @@ using SSS.Domain.Seedwork.Model;
 using System.Collections.Generic;
 using AutoMapper.QueryableExtensions;
 using System.Linq;
+using SSS.Application.Seedwork.Service;
 
 namespace SSS.Application.UserConfig.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IUserConfigService))]
-    public class UserConfigService : IUserConfigService
+    public class UserConfigService : QueryService<SSS.Domain.UserConfig.UserConfig, UserConfigInputDto, UserConfigOutputDto>, IUserConfigService
     {
         private readonly IMapper _mapper;
         private readonly IEventBus _bus;
 
         private readonly IUserConfigRepository _repository;
-        public UserConfigService(IMapper mapper, IEventBus bus, IUserConfigRepository repository)
+        public UserConfigService(IMapper mapper, IEventBus bus, IUserConfigRepository repository) : base(mapper, repository)
         {
             _mapper = mapper;
             _bus = bus;
@@ -33,9 +34,14 @@ namespace SSS.Application.UserConfig.Service
             _bus.SendCommand(cmd);
         }
 
-		public Pages<List<UserConfigOutputDto>> GetListUserConfig(UserConfigInputDto input) 
-		{
-           List<UserConfigOutputDto> list;
+        public UserConfigOutputDto GetConfig(UserConfigInputDto input)
+        {
+            return Get(x => x.Id.Equals(input.id));
+        }
+
+        public Pages<List<UserConfigOutputDto>> GetListUserConfig(UserConfigInputDto input)
+        {
+            List<UserConfigOutputDto> list;
             int count = 0;
 
             if (input.pagesize == 0 && input.pagesize == 0)
@@ -47,6 +53,7 @@ namespace SSS.Application.UserConfig.Service
             else
                 list = _repository.GetPage(input.pageindex, input.pagesize, ref count).ProjectTo<UserConfigOutputDto>(_mapper.ConfigurationProvider).ToList();
 
-            return new Pages<List<UserConfigOutputDto>>(list, count);}
-      } 
+            return new Pages<List<UserConfigOutputDto>>(list, count);
+        }
+    }
 }

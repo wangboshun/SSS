@@ -40,6 +40,14 @@ namespace SSS.Api.Controllers
             return Response(result);
         }
 
+        [HttpGet("getconfig")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult GetConfig([FromQuery]UserConfigInputDto input)
+        {
+            var result = _service.GetConfig(input);
+            return Response(result);
+        }
+
         /// <summary>
         /// AddUserConfig
         /// </summary>
