@@ -29,5 +29,7 @@ namespace SSS.Domain.CQRS.Trade.Command.Commands
         public int last_trade_status { set; get; }
 
         public int ktime { set; get; }
+
+        public string userid { set; get; }
     }
 }

@@ -11,7 +11,10 @@ using SSS.Domain.Trade;
 using SSS.Domain.Trade.Dto;
 using SSS.Domain.Trade.Request;
 using SSS.Domain.Trade.Response;
+using SSS.Domain.UserApi.Dto;
 using SSS.Infrastructure.Repository.Trade;
+using SSS.Infrastructure.Repository.UserApi;
+using SSS.Infrastructure.Repository.UserConfig;
 using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.Config;
 using SSS.Infrastructure.Util.Json;
@@ -32,11 +35,19 @@ namespace SSS.Application.Trade.Service
         private readonly ILogger _logger;
 
         private readonly ITradeRepository _traderepository;
-        public TradeService(ILogger<TradeService> logger, IMapper mapper, IEventBus bus, ITradeRepository traderepository)
+        private readonly IUserConfigRepository _userconfigrepository;
+        private readonly IUserApiRepository _userkeyrepository;
+
+        private static UserApiOutputDto UserKey;
+
+        public TradeService(ILogger<TradeService> logger, IMapper mapper, IEventBus bus,
+            ITradeRepository traderepository, IUserConfigRepository userconfigrepository, IUserApiRepository userkeyrepository)
         {
             _mapper = mapper;
             _bus = bus;
             _traderepository = traderepository;
+            _userconfigrepository = userconfigrepository;
+            _userkeyrepository = userkeyrepository;
             _logger = logger;
         }
 
@@ -45,50 +56,70 @@ namespace SSS.Application.Trade.Service
         /// </summary> 
         public void OperateTrade(TradeInputDto input)
         {
-            var kdata = GetKDataLine(input.coin, input.ktime, DateTime.Now);
-            _logger.LogInformation($"K线数据：{kdata.ToJson()}");
-            var ma_5 = GetMaPrice(input.coin, input.ktime, 5, kdata);
-            var ma_10 = GetMaPrice(input.coin, input.ktime, 10, kdata);
-            double curruent_price = kdata[0].close; //当前收盘价
+            //获取k线配置
+            var configlist = _userconfigrepository.GetAll(x => x.Status == 1).ToList();
 
-            //【1.判断趋势】
-            if (ma_5 > ma_10) //做多 
-                input.side = "buy";
-            else //做空
-                input.side = "sell";
-
-            var list = _traderepository.GetAll(x => (x.First_Trade_Status == 1 || x.First_Trade_Status == 2) && x.Coin.Equals(input.coin) && string.IsNullOrWhiteSpace(x.Last_Trade_No));
-
-            //【2.查看是否持有单子】
-            var order_list = list.ProjectTo<TradeOutputDto>(_mapper.ConfigurationProvider).ToList();
-
-            //平单
-            if (order_list.Count > 0)
+            for (int i = 0; i < configlist.Count(); i++)
             {
-                //【3.如果有相同单子】判断并止盈止损位
-                if (ProfitOrLossPoint(order_list, input, curruent_price))
+                input.coin = configlist[i].Coin;
+                input.ktime = configlist[i].Ktime;
+                input.userid = configlist[i].UserId;
+
+                //获取api配置
+                var userkey = _userkeyrepository.Get(x => !x.UserId.Equals(input.userid) && x.Status == 1);
+                if (userkey == null)
                     return;
 
-                //【4.查看持有单子,是否满足平单要求】
-                //查看是否【持有且需要】平多平空订单，检查是否能够盈利且平单 
-                if (StopTrade(order_list, input, curruent_price))
-                    return;
-            }
-            //【5.开单】新建订单
-            else
-            {
-                input.first_price = curruent_price;
-                if (CreateTrade(input))
-                    return;
-            }
+                UserKey = _mapper.Map<UserApiOutputDto>(userkey);
 
-            //input.id = Guid.NewGuid().ToString();
-            //input.last_time = DateTime.Now;
-            //input.last_price = curruent_price;
-            //input.first_trade_no = order_list.OrderByDescending(x => x.first_time).FirstOrDefault()?.first_trade_no;
-            //var null_cmd = _mapper.Map<TradeNullCommand>(input);
-            //_bus.SendCommand(null_cmd);
-            //_logger.LogInformation($"无符合的交易规则  input:{input.ToJson()}");
+                _logger.LogInformation($"用户Api配置：{userkey.ToJson()}");
+                _logger.LogInformation($"用户K线配置：{configlist[i].ToJson()}");
+
+                var kdata = GetKDataLine(input.coin, input.ktime, DateTime.Now);
+                _logger.LogInformation($"K线数据：{kdata.ToJson()}");
+                var ma_5 = GetMaPrice(input.coin, input.ktime, 5, kdata);
+                var ma_10 = GetMaPrice(input.coin, input.ktime, 10, kdata);
+                double curruent_price = kdata[0].close; //当前收盘价
+
+                //【1.判断趋势】
+                if (ma_5 > ma_10) //做多 
+                    input.side = "buy";
+                else //做空
+                    input.side = "sell";
+
+                var list = _traderepository.GetAll(x => x.UserId.Equals(input.userid) && (x.First_Trade_Status == 1 || x.First_Trade_Status == 2) && x.Coin.Equals(input.coin) && string.IsNullOrWhiteSpace(x.Last_Trade_No));
+
+                //【2.查看是否持有单子】
+                var order_list = list.ProjectTo<TradeOutputDto>(_mapper.ConfigurationProvider).ToList();
+
+                //平单
+                if (order_list.Count > 0)
+                {
+                    //【3.如果有相同单子】判断并止盈止损位
+                    if (ProfitOrLossPoint(order_list, input, curruent_price))
+                        return;
+
+                    //【4.查看持有单子,是否满足平单要求】
+                    //查看是否【持有且需要】平多平空订单，检查是否能够盈利且平单 
+                    if (StopTrade(order_list, input, curruent_price))
+                        return;
+                }
+                //【5.开单】新建订单
+                else
+                {
+                    input.first_price = curruent_price;
+                    if (CreateTrade(input))
+                        return;
+                }
+
+                //input.id = Guid.NewGuid().ToString();
+                //input.last_time = DateTime.Now;
+                //input.last_price = curruent_price;
+                //input.first_trade_no = order_list.OrderByDescending(x => x.first_time).FirstOrDefault()?.first_trade_no;
+                //var null_cmd = _mapper.Map<TradeNullCommand>(input);
+                //_bus.SendCommand(null_cmd);
+                //_logger.LogInformation($"无符合的交易规则  input:{input.ToJson()}");
+            }
         }
 
         /// <summary>
@@ -98,7 +129,7 @@ namespace SSS.Application.Trade.Service
         /// <param name="curruent_price">当前价格</param>
         private bool ProfitOrLossPoint(List<TradeOutputDto> order_list, TradeInputDto input, double curruent_price)
         {
-            var current_order = order_list.OrderByDescending(x => x.first_time).FirstOrDefault(x => !x.side.Equals(input.side));
+            var current_order = order_list.OrderByDescending(x => x.first_time).FirstOrDefault(x => !x.side.Equals(input.side) && x.userid.Equals(input.userid));
             if (current_order == null)
             {
                 _logger.LogInformation($"止盈止损判断 没有相同方向单子，继续下单");
@@ -168,7 +199,7 @@ namespace SSS.Application.Trade.Service
         /// <param name="curruent_price">当前价格</param>
         private bool StopTrade(List<TradeOutputDto> order_list, TradeInputDto input, double curruent_price)
         {
-            var current_order = order_list.OrderByDescending(x => x.first_time).FirstOrDefault(x => !x.side.Equals(input.side));
+            var current_order = order_list.OrderByDescending(x => x.first_time).FirstOrDefault(x => !x.side.Equals(input.side) && x.userid.Equals(input.userid));
             if (current_order == null)
             {
                 _logger.LogInformation($"检查订单是否满足平单要求，没有单子");
@@ -347,7 +378,7 @@ namespace SSS.Application.Trade.Service
 
             var postdata = JsonConvert.SerializeObject(order);
 
-            using (var client = new HttpClient(new HttpInterceptor(Config.GetSectionValue("OKex:ApiKey"), Config.GetSectionValue("OKex:Secret"), Config.GetSectionValue("OKex:PassPhrase"), postdata)))
+            using (var client = new HttpClient(new HttpInterceptor(UserKey.ApiKey, UserKey.Secret, UserKey.PassPhrase, postdata)))
             {
                 var res = client.PostAsync("https://www.okex.me/api/margin/v3/orders", new StringContent(postdata, Encoding.UTF8, "application/json")).Result;
 
@@ -373,7 +404,7 @@ namespace SSS.Application.Trade.Service
         public OrderInfoResponse GetOrderInfo(string coin, string order_id)
         {
             var url = $"https://www.okex.me/api/margin/v3/orders/{order_id}";
-            using (var client = new HttpClient(new HttpInterceptor(Config.GetSectionValue("OKex:ApiKey"), Config.GetSectionValue("OKex:Secret"), Config.GetSectionValue("OKex:PassPhrase"), null)))
+            using (var client = new HttpClient(new HttpInterceptor(UserKey.ApiKey, UserKey.Secret, UserKey.PassPhrase, null)))
             {
                 var queryParams = new Dictionary<string, string>();
                 queryParams.Add("instrument_id", coin);

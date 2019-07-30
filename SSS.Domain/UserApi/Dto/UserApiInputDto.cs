@@ -11,5 +11,11 @@ namespace SSS.Domain.UserApi.Dto
         public string PassPhrase { set; get; }
 
         public string UserId { set; get; }
+
+        public string encryptedData { set; get; }
+
+        public string iv { set; get; }
+
+        public string code { set; get; }
     }
 }

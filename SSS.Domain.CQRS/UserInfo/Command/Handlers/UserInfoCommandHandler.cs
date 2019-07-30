@@ -47,27 +47,16 @@ namespace SSS.Domain.CQRS.UserInfo.Command.Handlers
                 return Task.FromResult(false);
             }
 
-            if (_repository.GetUserInfoByPhone(request.phone) != null)
+            var userinfo = _repository.GetUserInfoByOpenid(request.openid);
+            if (userinfo != null)
             {
-                Bus.RaiseEvent(new ErrorNotice(request.MsgType, "ÊÖ»úºÅÒÑ´æÔÚ£¡"));
-                return Task.FromResult(false);
+                Bus.RaiseEvent(new UserInfoAddEvent(userinfo));
+                return Task.FromResult(true);
             }
 
-            var model = new SSS.Domain.UserInfo.UserInfo(request.id, request.uid, request.phone, request.password, request.firstid);
+            var model = new SSS.Domain.UserInfo.UserInfo(request.id, request.openid, request.phone, request.name);
             model.CreateTime = DateTime.Now;
-            model.IsDelete = 0;
-            model.Earning = 0;
-            model.Commission = 0;
-
-            if (!string.IsNullOrWhiteSpace(request.firstid) && _repository.GetUserInfoByUid(request.firstid) == null)
-            {
-                Bus.RaiseEvent(new ErrorNotice(request.MsgType, "ÑûÇëÂë´íÎó£¡"));
-                return Task.FromResult(false);
-            }
-            else if (!string.IsNullOrWhiteSpace(request.firstid))
-                model.FirstId = request.firstid;
-
-            model.Uid = RandomId.Instance().GetId();
+            model.IsDelete = 0;  
 
             _repository.Add(model);
             if (!Commit())

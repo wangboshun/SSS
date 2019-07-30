@@ -8,11 +8,9 @@ namespace SSS.Domain.CQRS.UserInfo.Command.Commands
         public UserInfoAddCommand(UserInfoInputDto input)
         {
             this.id = input.id;
-            this.code = input.code;
-            this.phone = input.phone;
-            this.password = input.password;
-            this.uid = input.uid;
-            this.firstid = input.firstid;
+            this.name = input.name;
+            this.phone = input.phone; 
+            this.openid = input.openid; 
         }
 
         public override bool IsValid()

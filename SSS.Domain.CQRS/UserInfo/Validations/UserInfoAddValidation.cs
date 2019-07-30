@@ -8,8 +8,7 @@ namespace SSS.Domain.CQRS.UserInfo.Validations
         {
             ValidateId();
             ValidateCode();
-            ValidatePhone();
-            ValidatePassWord();
+            ValidateOpenid(); 
         }
     }
 }

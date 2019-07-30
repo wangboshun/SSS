@@ -16,6 +16,7 @@ namespace SSS.Domain.CQRS.Trade.Command.Commands
             this.size = input.size;
             this.first_time = input.first_time;
             this.first_price = input.first_price;
+            this.userid = input.userid;
         }
 
         public override bool IsValid()

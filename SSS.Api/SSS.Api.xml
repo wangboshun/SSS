@@ -265,9 +265,9 @@
             <param name="input">UserInfoInputDto</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.UserInfoController.GetByPhone(SSS.Domain.UserInfo.Dto.UserInfoInputDto)">
+        <member name="M:SSS.Api.Controllers.UserInfoController.GetUserInfo(SSS.Domain.UserInfo.Dto.UserInfoInputDto)">
             <summary>
-            getbyphone
+            getuserinfo
             </summary>
             <param name="input">UserInfoInputDto</param>
             <returns></returns> 

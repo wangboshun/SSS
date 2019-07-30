@@ -55,7 +55,7 @@ namespace SSS.Domain.CQRS.Trade.Command.Handlers
                 request.id, request.coin,
                 request.size, request.first_price, 0,
                 request.side, request.first_trade_status, 0,
-                request.first_trade_no, "", request.first_time, null, request.ktime);
+                request.first_trade_no, "", request.first_time, null, request.ktime,request.userid);
             trade.CreateTime = DateTime.Now;
             trade.IsDelete = 0;
             _traderepository.Add(trade);
@@ -90,9 +90,9 @@ namespace SSS.Domain.CQRS.Trade.Command.Handlers
             trade.Last_Time = request.last_time;
 
             if (trade.Side.Equals("buy"))
-                trade.income = (((trade.First_Price / trade.Last_Price) - 1) * 100).ToString() + "%";
+                trade.Income = (((trade.First_Price / trade.Last_Price) - 1) * 100).ToString() + "%";
             else
-                trade.income = (((trade.Last_Price / trade.First_Price) - 1) * 100).ToString() + "%";
+                trade.Income = (((trade.Last_Price / trade.First_Price) - 1) * 100).ToString() + "%";
 
             _traderepository.Update(trade);
 

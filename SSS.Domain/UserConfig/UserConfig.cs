@@ -23,5 +23,7 @@ namespace SSS.Domain.UserConfig
         public int Profit { set; get; }
 
         public int Loss { set; get; }
+
+        public int Status { set; get; }
     }
 }

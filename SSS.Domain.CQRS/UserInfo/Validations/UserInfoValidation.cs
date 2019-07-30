@@ -21,9 +21,14 @@ namespace SSS.Domain.CQRS.UserInfo.Validations
             RuleFor(c => c.phone).NotEmpty().WithMessage("手机号不能为空");
         }
 
+        protected void ValidateOpenid()
+        {
+            RuleFor(c => c.openid).NotEmpty().WithMessage("Openid不能为空");
+        }
+
         protected void ValidatePassWord()
         {
-            RuleFor(c => c.password).NotEmpty().WithMessage("密码不能为空");
+            RuleFor(c => c.name).NotEmpty().WithMessage("密码不能为空");
         }
     }
 }

@@ -9,7 +9,7 @@ namespace SSS.Application.UserInfo.Service
     {
         void AddUserInfo(UserInfoInputDto input);
 
-        UserInfoOutputDto GetByPhone(UserInfoInputDto input);
+        UserInfoOutputDto GetUserInfo(UserInfoInputDto input);
 
         Pages<List<UserInfoOutputDto>> GetListUser(UserInfoInputDto input); 
     }

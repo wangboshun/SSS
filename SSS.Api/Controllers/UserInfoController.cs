@@ -31,7 +31,7 @@ namespace SSS.Api.Controllers
         {
             _service.AddUserInfo(input);
             return Response(input);
-        } 
+        }
 
         /// <summary>
         /// ListUserInfo
@@ -47,15 +47,15 @@ namespace SSS.Api.Controllers
         }
 
         /// <summary>
-        /// getbyphone
+        /// getuserinfo
         /// </summary>
         /// <param name="input">UserInfoInputDto</param>
         /// <returns></returns> 
-        [HttpGet("getbyphone")]
+        [HttpGet("getuserinfo")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetByPhone([FromQuery]UserInfoInputDto input)
+        public IActionResult GetUserInfo([FromQuery]UserInfoInputDto input)
         {
-            object result = _service.GetByPhone(input);
+            object result = _service.GetUserInfo(input);
             return Response(result);
         }
     }

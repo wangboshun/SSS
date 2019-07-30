@@ -26,13 +26,13 @@ namespace SSS.Infrastructure.Seedwork.DbContext
 
         public DbSet<Trade> Trade { get; set; }
 
-        public DbSet<UserInfo> userinfo { get; set; }
+        public DbSet<UserInfo> UserInfo { get; set; }
 
         public DbSet<Articel> articel { get; set; }
 
-        public DbSet<UserApi> userapi { get; set; }
+        public DbSet<UserApi> UserApi { get; set; }
 
-        public DbSet<UserConfig> userconfig { get; set; }
+        public DbSet<UserConfig> UserConfig { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

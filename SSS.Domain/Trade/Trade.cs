@@ -7,7 +7,7 @@ namespace SSS.Domain.Trade
     {
         public Trade(string id, string coin, double size, double First_Price, double? Last_Price, string side,
             int First_Trade_Status, int? Last_Trade_Status, string First_Trade_No, string Last_Trade_No,
-            DateTime First_Time, DateTime? Last_Time, int KTime)
+            DateTime First_Time, DateTime? Last_Time, int KTime, string UserId)
         {
             this.Id = id;
             this.First_Trade_Status = First_Trade_Status;
@@ -22,6 +22,7 @@ namespace SSS.Domain.Trade
             this.First_Time = First_Time;
             this.Last_Time = Last_Time;
             this.KTime = KTime;
+            this.UserId = UserId;
         }
         public string Coin { set; get; }
 
@@ -41,6 +42,7 @@ namespace SSS.Domain.Trade
 
         public DateTime First_Time { set; get; }
         public DateTime? Last_Time { set; get; }
-        public string income { set; get; }
+        public string Income { set; get; }
+        public string UserId { set; get; }
     }
 }

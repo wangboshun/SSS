@@ -24,5 +24,7 @@ namespace SSS.Domain.Trade.Dto
 
         public DateTime? last_time { set; get; }
         public DateTime first_time { set; get; }
+
+        public string userid { set; get; }
     }
 }

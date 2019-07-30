@@ -28,5 +28,7 @@ namespace SSS.Domain.Trade.Dto
         public int ktime { set; get; }
 
         public string income { set; get; }
+
+        public string userid { set; get; }
     }
 }

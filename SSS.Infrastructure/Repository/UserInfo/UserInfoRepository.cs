@@ -12,16 +12,10 @@ namespace SSS.Infrastructure.Repository.UserInfo
     {
         public UserInfoRepository(DbcontextBase context) : base(context)
         {
-        }
-
-        public Domain.UserInfo.UserInfo GetUserInfoByPhone(string phone)
+        } 
+        public Domain.UserInfo.UserInfo GetUserInfoByOpenid(string openid)
         {
-            return Get(x => x.Phone.Equals(phone));
-        }
-
-        public Domain.UserInfo.UserInfo GetUserInfoByUid(string uid)
-        {
-            return DbSet.AsNoTracking().FirstOrDefault(x => x.Uid.Equals(uid));
+            return DbSet.AsNoTracking().FirstOrDefault(x => x.Openid.Equals(openid));
         }
     }
 }

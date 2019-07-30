@@ -7,6 +7,7 @@ using SSS.Domain.Seedwork.Model;
 using SSS.Domain.UserInfo.Dto;
 using SSS.Infrastructure.Repository.UserInfo;
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Json;
 using System;
 using System.Collections.Generic;
 
@@ -37,6 +38,9 @@ namespace SSS.Application.UserInfo.Service
             var info = Senparc.Weixin.WxOpen.Helpers.EncryptHelper.DecodeEncryptedData(result.session_key, input.encryptedData, input.iv);
 
             input.id = Guid.NewGuid().ToString();
+            input.openid = info.GetJsonValue("openId");
+            input.name = info.GetJsonValue("nickName");
+
             var cmd = _mapper.Map<UserInfoAddCommand>(input);
             _bus.SendCommand(cmd);
         }
@@ -46,9 +50,9 @@ namespace SSS.Application.UserInfo.Service
             return GetList(input);
         }
 
-        public UserInfoOutputDto GetByPhone(UserInfoInputDto input)
+        public UserInfoOutputDto GetUserInfo(UserInfoInputDto input)
         {
-            return Get(x => x.Phone.Equals(input.phone));
+            return Get(input.id);
         } 
     }
 }
