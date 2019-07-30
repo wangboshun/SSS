@@ -11,6 +11,8 @@ namespace SSS.Application.UserInfo.Service
 
         UserInfoOutputDto GetUserInfo(UserInfoInputDto input);
 
-        Pages<List<UserInfoOutputDto>> GetListUser(UserInfoInputDto input); 
+        Pages<List<UserInfoOutputDto>> GetListUser(UserInfoInputDto input);
+
+        UserInfoOutputDto GetUserInfoById(string userid);
     }
 }

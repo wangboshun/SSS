@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SSS.Api.Seedwork;
+using SSS.Api.Seedwork.Controller;
 using SSS.Application.UserConfig.Service;
 using SSS.Domain.UserConfig.Dto;
 

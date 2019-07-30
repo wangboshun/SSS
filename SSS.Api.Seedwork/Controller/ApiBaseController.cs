@@ -1,19 +1,31 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SSS.Application.UserInfo.Service;
 using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Notice;
+using SSS.Domain.UserInfo.Dto;
 using SSS.Infrastructure.Util.Http;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SSS.Api.Seedwork
+namespace SSS.Api.Seedwork.Controller
 {
     public abstract class ApiBaseController : ControllerBase
     {
         private static ILogger _logger;
         private static ErrorNoticeHandler _Notice;
         private static IEventBus _mediator;
+        private static UserInfoOutputDto UserInfo;
+        private readonly IUserInfoService _userinfoservice;
+
+        public ApiBaseController()
+        {
+            _userinfoservice = (IUserInfoService)HttpContextService.Current.RequestServices.GetService(typeof(IUserInfoService));
+            string uid = HttpContextService.Current.Request.Headers["Auth"];
+            if (!string.IsNullOrWhiteSpace(uid))
+                UserInfo = _userinfoservice.GetUserInfoById(HttpContextService.Current.Items["auth"]?.ToString());
+        }
 
         protected IEnumerable<ErrorNotice> Notice
         {

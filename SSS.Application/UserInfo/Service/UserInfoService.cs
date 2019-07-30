@@ -53,6 +53,11 @@ namespace SSS.Application.UserInfo.Service
         public UserInfoOutputDto GetUserInfo(UserInfoInputDto input)
         {
             return Get(input.id);
-        } 
+        }
+
+        public UserInfoOutputDto GetUserInfoById(string userid)
+        {
+            return Get(userid);
+        }
     }
 }

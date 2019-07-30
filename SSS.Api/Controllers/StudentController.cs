@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SSS.Api.Seedwork;
+using SSS.Api.Seedwork.Controller;
 using SSS.Application.Student;
 using SSS.Domain.Student.Dto;
 using SSS.Infrastructure.Util.Attribute;

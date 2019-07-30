@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
+using SSS.Api.Seedwork.Controller;
 
 namespace SSS.Api.Controllers
 {

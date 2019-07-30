@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SSS.Api.Seedwork;
+using Microsoft.AspNetCore.Mvc; 
+using SSS.Api.Seedwork.Controller;
 using SSS.Application.Articel.Service;
 using SSS.Domain.Articel.Dto;
 
