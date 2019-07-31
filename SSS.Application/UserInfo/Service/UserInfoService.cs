@@ -1,5 +1,7 @@
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Polly;
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.CQRS.UserInfo.Command.Commands;
 using SSS.Domain.Seedwork.EventBus;
@@ -10,6 +12,7 @@ using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.Json;
 using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace SSS.Application.UserInfo.Service
 {
@@ -18,13 +21,15 @@ namespace SSS.Application.UserInfo.Service
     {
         private readonly IMapper _mapper;
         private readonly IEventBus _bus;
+        private readonly ILogger _logger;
 
         private readonly IUserInfoRepository _repository;
 
-        public UserInfoService(IMapper mapper, IUserInfoRepository repository, IEventBus bus) : base(mapper, repository)
+        public UserInfoService(ILogger<UserInfoService> logger, IMapper mapper, IUserInfoRepository repository, IEventBus bus) : base(mapper, repository)
         {
             _mapper = mapper;
             _bus = bus;
+            _logger = logger;
             _repository = repository;
         }
 
@@ -32,14 +37,16 @@ namespace SSS.Application.UserInfo.Service
         {
             string appid = SSS.Infrastructure.Util.Config.Config.GetSectionValue("SenparcWeixinSetting:WxOpenAppId");
             string appsecret = SSS.Infrastructure.Util.Config.Config.GetSectionValue("SenparcWeixinSetting:WxOpenAppSecret");
-
-            var result = Senparc.Weixin.WxOpen.AdvancedAPIs.Sns.SnsApi.JsCode2Json(appid, appsecret, input.code);
-
-            var info = Senparc.Weixin.WxOpen.Helpers.EncryptHelper.DecodeEncryptedData(result.session_key, input.encryptedData, input.iv);
+            string url = string.Format("https://api.weixin.qq.com/sns/jscode2session?appid={0}&secret={1}&js_code={2}&grant_type=authorization_code", appid, appsecret, input.code);
+            string info = new WebClient().DownloadString(url);
 
             input.id = Guid.NewGuid().ToString();
-            input.openid = info.GetJsonValue("openId");
-            input.name = info.GetJsonValue("nickName");
+            input.openid = info.GetJsonValue("openid");
+
+            //var result = Senparc.Weixin.WxOpen.AdvancedAPIs.Sns.SnsApi.JsCode2Json(appid, appsecret, input.code);
+            //info = Senparc.Weixin.WxOpen.Helpers.EncryptHelper.DecodeEncryptedData(result.session_key, input.encryptedData, input.iv);
+            //input.openid = info.GetJsonValue("openId");
+            //input.name = info.GetJsonValue("nickName");
 
             var cmd = _mapper.Map<UserInfoAddCommand>(input);
             _bus.SendCommand(cmd);
@@ -52,12 +59,12 @@ namespace SSS.Application.UserInfo.Service
 
         public UserInfoOutputDto GetUserInfo(UserInfoInputDto input)
         {
-            return Get(input.id);
+            return Get(x => x.Id.Equals(input.id) && x.IsDelete != 1);
         }
 
-        public UserInfoOutputDto GetUserInfoById(string userid)
+        public UserInfoOutputDto GetUserInfoByOpenId(string openid)
         {
-            return Get(userid);
+            return Get(x => x.Openid.Equals(openid) && x.IsDelete != 1);
         }
     }
 }

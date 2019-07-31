@@ -258,13 +258,6 @@
             <param name="input">UserInfoInputDto</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.UserInfoController.ListUser(SSS.Domain.UserInfo.Dto.UserInfoInputDto)">
-            <summary>
-            ListUserInfo
-            </summary>
-            <param name="input">UserInfoInputDto</param>
-            <returns></returns> 
-        </member>
         <member name="M:SSS.Api.Controllers.UserInfoController.GetUserInfo(SSS.Domain.UserInfo.Dto.UserInfoInputDto)">
             <summary>
             getuserinfo

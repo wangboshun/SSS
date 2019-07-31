@@ -159,7 +159,10 @@ namespace SSS.Api
             app.UseAuthentication();
 
             //IdentityServer中间件
-            app.UseMiddleware<IdentityServerMiddleware>();
+            //app.UseMiddleware<IdentityServerMiddleware>();
+
+            //登录检测
+            app.UseMiddleware<LoginMiddleware>();
 
             //拦截Urls
             app.UseMiddleware<UrlsMiddleware>();

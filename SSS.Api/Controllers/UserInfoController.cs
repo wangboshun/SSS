@@ -33,20 +33,7 @@ namespace SSS.Api.Controllers
             _service.AddUserInfo(input);
             return Response(input);
         }
-
-        /// <summary>
-        /// ListUserInfo
-        /// </summary>
-        /// <param name="input">UserInfoInputDto</param>
-        /// <returns></returns> 
-        [HttpGet("list")]
-        [AllowAnonymous]  //匿名访问
-        public IActionResult ListUser([FromQuery]UserInfoInputDto input)
-        {
-            object result = _service.GetListUser(input);
-            return Response(result);
-        }
-
+         
         /// <summary>
         /// getuserinfo
         /// </summary>

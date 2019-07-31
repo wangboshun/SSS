@@ -45,6 +45,7 @@ namespace SSS.Api.Controllers
         [AllowAnonymous]  //匿名访问
         public IActionResult GetByUserId([FromQuery]UserApiInputDto input)
         {
+            input.UserId = UserInfo.id;
             var result = _service.GetByUserId(input);
             return Response(result);
         }
@@ -58,6 +59,7 @@ namespace SSS.Api.Controllers
         [AllowAnonymous]  //匿名访问
         public IActionResult AddUserApi([FromBody]UserApiInputDto input)
         {
+            input.UserId = UserInfo.id;
             _service.AddUserApi(input);
             return Response(input);
         }

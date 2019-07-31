@@ -37,6 +37,7 @@ namespace SSS.Api.Controllers
         [AllowAnonymous]  //匿名访问
         public IActionResult GetList([FromQuery]UserConfigInputDto input)
         {
+            input.UserId = UserInfo.id;
             var result = _service.GetListUserConfig(input);
             return Response(result);
         }

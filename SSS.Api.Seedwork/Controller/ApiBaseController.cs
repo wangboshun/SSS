@@ -16,15 +16,16 @@ namespace SSS.Api.Seedwork.Controller
         private static ILogger _logger;
         private static ErrorNoticeHandler _Notice;
         private static IEventBus _mediator;
-        private static UserInfoOutputDto UserInfo;
+        protected static UserInfoOutputDto UserInfo;
         private readonly IUserInfoService _userinfoservice;
 
         public ApiBaseController()
         {
             _userinfoservice = (IUserInfoService)HttpContextService.Current.RequestServices.GetService(typeof(IUserInfoService));
-            string uid = HttpContextService.Current.Request.Headers["Auth"];
-            if (!string.IsNullOrWhiteSpace(uid))
-                UserInfo = _userinfoservice.GetUserInfoById(HttpContextService.Current.Items["auth"]?.ToString());
+            string openid = HttpContextService.Current.Request.Headers["Auth"];
+            if (!string.IsNullOrWhiteSpace(openid))
+                if (UserInfo == null)
+                    UserInfo = _userinfoservice.GetUserInfoByOpenId(openid);
         }
 
         protected IEnumerable<ErrorNotice> Notice
@@ -49,7 +50,7 @@ namespace SSS.Api.Seedwork.Controller
             if (IsValidOperation())
             {
                 if (data == null)
-                    return Accepted(new { status = false, data = "", message = "数据为空", code = 204 });
+                    return Accepted(new { status = false, data = "", message = "数据为空", code = 200 });
                 return Ok(new { status, data, message, code });
             }
             else
