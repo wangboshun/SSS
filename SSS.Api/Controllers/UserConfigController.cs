@@ -28,7 +28,7 @@ namespace SSS.Api.Controllers
             _service = service;
         }
 
-		/// <summary>
+        /// <summary>
         /// GetList
         /// </summary>
         /// <param name="input">input</param>
@@ -37,7 +37,7 @@ namespace SSS.Api.Controllers
         [AllowAnonymous]  //匿名访问
         public IActionResult GetList([FromQuery]UserConfigInputDto input)
         {
-            input.UserId = UserInfo.id;
+            input.UserId = UserInfo?.id;
             var result = _service.GetListUserConfig(input);
             return Response(result);
         }
@@ -59,7 +59,7 @@ namespace SSS.Api.Controllers
         [AllowAnonymous]  //匿名访问
         public IActionResult AddUserConfig([FromBody]UserConfigInputDto input)
         {
-            input.UserId = UserInfo.id;
+            input.UserId = UserInfo?.id;
             _service.AddUserConfig(input);
             return Response(input);
         }

@@ -1,4 +1,5 @@
-﻿using Hangfire;
+﻿using System;
+using Hangfire;
 using Hangfire.MySql.Core;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -20,6 +21,7 @@ using SSS.Api.Middware;
 using SSS.Api.Seedwork;
 using SSS.Api.Seedwork.Filter;
 using System.Reflection;
+using SSS.Infrastructure.Seedwork.Cache.Session;
 
 namespace SSS.Api
 {
@@ -53,6 +55,15 @@ namespace SSS.Api
                 //全局Action Exception Result过滤器
                 options.Filters.Add<MvcFilter>();
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            //services.AddSession(options =>
+            //{
+            //    options.IdleTimeout = TimeSpan.FromMinutes(1);
+            //});
+
+            services.AddSession();
+
+            services.AddTransient<SessionCache>();
 
             services.AddSingleton(typeof(IControllerActivator), typeof(SSS.Api.Seedwork.Controller.BaseControllerActivator));
 
@@ -127,7 +138,7 @@ namespace SSS.Api
             services.AddHangfireServer();
 
             services.AddSenparcGlobalServices(Configuration)//Senparc.CO2NET 全局注册
-                .AddSenparcWeixinServices(Configuration);//Senparc.Weixin 注册
+                .AddSenparcWeixinServices(Configuration);//Senparc.Weixin 注册 
 
         }
         /// <summary>
@@ -143,6 +154,8 @@ namespace SSS.Api
                 app.UseDeveloperExceptionPage();
             else
                 app.UseHsts();
+
+            app.UseSession();
 
             //异常拦截
             app.UseApiException();

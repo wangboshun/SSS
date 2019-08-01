@@ -8,6 +8,8 @@ using SSS.Domain.UserInfo.Dto;
 using SSS.Infrastructure.Util.Http;
 using System.Collections.Generic;
 using System.Linq;
+using SSS.Infrastructure.Seedwork.Cache.Session;
+using SSS.Infrastructure.Util.Json;
 
 namespace SSS.Api.Seedwork.Controller
 {
@@ -17,15 +19,14 @@ namespace SSS.Api.Seedwork.Controller
         private static ErrorNoticeHandler _Notice;
         private static IEventBus _mediator;
         protected static UserInfoOutputDto UserInfo;
-        private readonly IUserInfoService _userinfoservice;
+        private readonly SessionCache _sessioncache;
 
         public ApiBaseController()
         {
-            _userinfoservice = (IUserInfoService)HttpContextService.Current.RequestServices.GetService(typeof(IUserInfoService));
-            string openid = HttpContextService.Current.Request.Headers["Auth"];
-            if (!string.IsNullOrWhiteSpace(openid))
-                if (UserInfo == null)
-                    UserInfo = _userinfoservice.GetUserInfoByOpenId(openid);
+            _sessioncache = (SessionCache)HttpContextService.Current.RequestServices.GetService(typeof(SessionCache));
+            var userinfo = _sessioncache.StringGet("AuthUserInfo_" + HttpContextService.Current.Request.Headers["Auth"]);
+            if (userinfo != null)
+                UserInfo = userinfo.ToEntity<UserInfoOutputDto>();
         }
 
         protected IEnumerable<ErrorNotice> Notice
