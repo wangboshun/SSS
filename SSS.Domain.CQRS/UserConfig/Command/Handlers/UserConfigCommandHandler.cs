@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SSS.Domain.CQRS.UserConfig.Command.Commands;
 using SSS.Domain.CQRS.UserConfig.Event.Events;
-using SSS.Infrastructure.Util.Attribute; 
+using SSS.Infrastructure.Util.Attribute;
 using SSS.Domain.Seedwork.Command;
 using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Notice;
@@ -33,7 +33,7 @@ namespace SSS.Domain.CQRS.UserConfig.Command.Handlers
                                       IEventBus bus,
                                       INotificationHandler<ErrorNotice> Notice,
                                       ILogger<UserConfigCommandHandler> logger)
-									  : base(uow, logger,bus, Notice)
+                                      : base(uow, logger, bus, Notice)
         {
             _logger = logger;
             _repository = repository;
@@ -46,7 +46,8 @@ namespace SSS.Domain.CQRS.UserConfig.Command.Handlers
                 NotifyValidationErrors(request);
                 return Task.FromResult(false);
             }
-            var model = new SSS.Domain.UserConfig.UserConfig(request.id);
+            var model = new Domain.UserConfig.UserConfig(request.id, request.userid, request.coin, request.ktime,
+                request.size,request.profit, request.loss);
             model.CreateTime = DateTime.Now;
             model.IsDelete = 0;
 

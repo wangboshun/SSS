@@ -5,14 +5,20 @@ namespace SSS.Domain.UserConfig
 {
     public class UserConfig : Entity
     {
-        public UserConfig(string id)
+        public UserConfig(string id, string UserId, string coin, int ktime, double size, int profit, int loss)
         {
-            this.Id = id; 
-        } 
+            Id = id;
+            Coin = coin;
+            Size = size;
+            Ktime = ktime;
+            Size = size;
+            Profit = profit;
+            this.UserId = UserId;
+            Loss = loss;
+        }
+
 
         public string Coin { set; get; }
-
-        public string Side { set; get; }
 
         public int Ktime { set; get; }
 

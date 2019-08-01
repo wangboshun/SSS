@@ -54,7 +54,7 @@ namespace SSS.Api.Seedwork.Controller
                 return Ok(new { status, data, message, code });
             }
             else
-                return BadRequest(new { status = false, data = "", message = Notice.Select(n => n.Value), code = 400 });
+                return BadRequest(new { status = false, data = "", message = Notice.Select(n => n.Value), code = 403 });
         }
     }
 }

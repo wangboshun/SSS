@@ -46,7 +46,7 @@ namespace SSS.Application.UserConfig.Service
 
             if (input.pagesize == 0 && input.pagesize == 0)
             {
-                var data = _repository.GetAll(x => x.UserId.Equals(input.id));
+                var data = _repository.GetAll(x => x.UserId.Equals(input.UserId));
                 list = data.ProjectTo<UserConfigOutputDto>(_mapper.ConfigurationProvider).ToList();
                 count = list.Count;
             }

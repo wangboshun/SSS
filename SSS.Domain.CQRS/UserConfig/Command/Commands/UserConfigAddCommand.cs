@@ -7,7 +7,14 @@ namespace SSS.Domain.CQRS.UserConfig.Command.Commands
     {
         public UserConfigAddCommand(UserConfigInputDto input)
         {
-            this.id = input.id; 
+            this.id = input.id;
+            this.coin = input.coin;
+            this.size = input.size;
+            this.userid = input.UserId;
+            this.profit = input.profit;
+            this.loss = input.loss;
+            this.ktime = input.ktime;
+            this.userid = input.UserId;
         }
 
         public override bool IsValid()

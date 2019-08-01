@@ -59,6 +59,7 @@ namespace SSS.Api.Controllers
         [AllowAnonymous]  //匿名访问
         public IActionResult AddUserConfig([FromBody]UserConfigInputDto input)
         {
+            input.UserId = UserInfo.id;
             _service.AddUserConfig(input);
             return Response(input);
         }

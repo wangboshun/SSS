@@ -8,8 +8,6 @@ namespace SSS.Domain.UserConfig.Dto
 
         public int Ktime { set; get; }
 
-        public double Size { set; get; }
-
-        public string Side { set; get; } 
+        public double Size { set; get; } 
     }
 }
