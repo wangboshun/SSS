@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
-using SSS.Infrastructure.Util.Json;
-using System.Threading.Tasks;
 using Senparc.CO2NET.Extensions;
 using SSS.Application.UserInfo.Service;
-using SSS.Domain.UserInfo.Dto;
-using SSS.Infrastructure.Seedwork.Cache.Session;
 using SSS.Infrastructure.Util.Http;
+using SSS.Infrastructure.Util.Json;
+using System.Threading.Tasks;
 
 namespace SSS.Api.Middware
 {
@@ -14,18 +13,17 @@ namespace SSS.Api.Middware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger _logger;
-        private static SessionCache _sessioncache;
+        private readonly IMemoryCache _memorycache;
 
-        public LoginMiddleware(RequestDelegate next, ILoggerFactory loggerFactory)
+        public LoginMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, IMemoryCache memorycache)
         {
             _next = next;
+            _memorycache = memorycache;
             _logger = loggerFactory.CreateLogger<ApiExceptionMiddleware>();
         }
 
         public async Task Invoke(HttpContext context)
         {
-            _sessioncache = (SessionCache)HttpContextService.Current.RequestServices.GetService(typeof(SessionCache));
-
             if (!context.Request.Path.Value.Contains("/api/v1/UserInfo/add") &&
                 !context.Request.Path.Value.Contains("/code") &&
                 !context.Request.Path.Value.Contains("/doc") &&
@@ -39,9 +37,9 @@ namespace SSS.Api.Middware
 
                 if (!string.IsNullOrWhiteSpace(openid))
                 {
-                    var val = _sessioncache.StringGet(cachekey);
+                    var val = _memorycache.Get<string>(cachekey);
 
-                    if (_sessioncache.StringGet(cachekey) != null)
+                    if (!string.IsNullOrWhiteSpace(val))
                         await _next.Invoke(context);
                     else
                     {
@@ -51,7 +49,7 @@ namespace SSS.Api.Middware
                             await LoginAsync(context, 401, "无效账户,非法请求！");
                         else
                         {
-                            _sessioncache.StringSet(cachekey, userinfo.ToJson());
+                            _memorycache.Set(cachekey, userinfo.ToJson());
                             await _next.Invoke(context);
                         }
                     }

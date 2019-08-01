@@ -61,7 +61,10 @@ namespace SSS.Api
             //    options.IdleTimeout = TimeSpan.FromMinutes(1);
             //});
 
-            services.AddSession();
+
+            services.AddMemoryCache();
+
+            services.AddSession(); 
 
             services.AddTransient<SessionCache>();
 

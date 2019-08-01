@@ -1,15 +1,14 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
-using SSS.Application.UserInfo.Service;
 using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Notice;
 using SSS.Domain.UserInfo.Dto;
 using SSS.Infrastructure.Util.Http;
+using SSS.Infrastructure.Util.Json;
 using System.Collections.Generic;
 using System.Linq;
-using SSS.Infrastructure.Seedwork.Cache.Session;
-using SSS.Infrastructure.Util.Json;
 
 namespace SSS.Api.Seedwork.Controller
 {
@@ -19,12 +18,12 @@ namespace SSS.Api.Seedwork.Controller
         private static ErrorNoticeHandler _Notice;
         private static IEventBus _mediator;
         protected static UserInfoOutputDto UserInfo;
-        private readonly SessionCache _sessioncache;
+        private readonly IMemoryCache _memorycache;
 
         public ApiBaseController()
         {
-            _sessioncache = (SessionCache)HttpContextService.Current.RequestServices.GetService(typeof(SessionCache));
-            var userinfo = _sessioncache.StringGet("AuthUserInfo_" + HttpContextService.Current.Request.Headers["Auth"]);
+            _memorycache = (IMemoryCache)HttpContextService.Current.RequestServices.GetService(typeof(IMemoryCache));
+            var userinfo = _memorycache.Get<string>("AuthUserInfo_" + HttpContextService.Current.Request.Headers["Auth"]);
             if (userinfo != null)
                 UserInfo = userinfo.ToEntity<UserInfoOutputDto>();
         }
