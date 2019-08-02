@@ -9,7 +9,6 @@ using SSS.Domain.Seedwork.Notice;
 using SSS.Domain.Seedwork.UnitOfWork;
 using SSS.Infrastructure.Repository.UserInfo;
 using SSS.Infrastructure.Util.Attribute;
-using SSS.Infrastructure.Util.ID;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -56,7 +55,7 @@ namespace SSS.Domain.CQRS.UserInfo.Command.Handlers
 
             var model = new SSS.Domain.UserInfo.UserInfo(request.id, request.openid, request.phone, request.name);
             model.CreateTime = DateTime.Now;
-            model.IsDelete = 0;  
+            model.IsDelete = 0;
 
             _repository.Add(model);
             if (!Commit())

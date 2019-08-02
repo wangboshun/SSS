@@ -9,8 +9,8 @@ namespace SSS.Domain.CQRS.UserInfo.Command.Commands
         {
             this.id = input.id;
             this.name = input.name;
-            this.phone = input.phone; 
-            this.openid = input.openid; 
+            this.phone = input.phone;
+            this.openid = input.openid;
         }
 
         public override bool IsValid()

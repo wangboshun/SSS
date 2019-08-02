@@ -1,7 +1,6 @@
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Polly;
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.CQRS.UserInfo.Command.Commands;
 using SSS.Domain.Seedwork.EventBus;

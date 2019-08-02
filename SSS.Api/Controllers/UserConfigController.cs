@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SSS.Api.Seedwork;
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.UserConfig.Service;
 using SSS.Domain.UserConfig.Dto;
@@ -61,6 +60,20 @@ namespace SSS.Api.Controllers
         {
             input.UserId = UserInfo?.id;
             _service.AddUserConfig(input);
+            return Response(input);
+        }
+
+        /// <summary>
+        /// UpdateUserConfig
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("update")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult UpdateUserConfig([FromBody]UserConfigInputDto input)
+        {
+            input.UserId = UserInfo?.id;
+            _service.UpdateUserConfig(input);
             return Response(input);
         }
     }

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SSS.Api.Seedwork;
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.UserApi.Service;
 using SSS.Domain.UserApi.Dto;
@@ -28,7 +27,7 @@ namespace SSS.Api.Controllers
             _service = service;
         }
 
-		/// <summary>
+        /// <summary>
         /// GetList
         /// </summary>
         /// <param name="input">input</param>
@@ -61,6 +60,20 @@ namespace SSS.Api.Controllers
         {
             input.UserId = UserInfo.id;
             _service.AddUserApi(input);
+            return Response(input);
+        } 
+
+        /// <summary>
+        /// UpdateUserApi
+        /// </summary>
+        /// <param name="input">UserApiInputDto</param>
+        /// <returns></returns> 
+        [HttpPost("update")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult UpdateUserApi([FromBody]UserApiInputDto input)
+        {
+            input.UserId = UserInfo.id;
+            _service.UpdateUserApi(input);
             return Response(input);
         }
     }

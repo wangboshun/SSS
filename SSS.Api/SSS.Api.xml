@@ -90,6 +90,12 @@
             <param name="services"></param>
             <param name="options"></param>
         </member>
+        <member name="M:SSS.Api.Bootstrap.ServiceCollectionExtension.AddMemoryCacheEx(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            MemoryCache扩展
+            </summary>
+            <param name="services"></param>
+        </member>
         <member name="T:SSS.Api.Controllers.ArticelController">
             <summary>
             ArticelController
@@ -221,6 +227,13 @@
             <param name="input">UserApiInputDto</param>
             <returns></returns> 
         </member>
+        <member name="M:SSS.Api.Controllers.UserApiController.UpdateUserApi(SSS.Domain.UserApi.Dto.UserApiInputDto)">
+            <summary>
+            UpdateUserApi
+            </summary>
+            <param name="input">UserApiInputDto</param>
+            <returns></returns> 
+        </member>
         <member name="T:SSS.Api.Controllers.UserConfigController">
             <summary>
             UserConfigController
@@ -245,6 +258,13 @@
             </summary>
             <param name="input">UserConfigInputDto</param>
             <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.UserConfigController.UpdateUserConfig(SSS.Domain.UserConfig.Dto.UserConfigInputDto)">
+            <summary>
+            UpdateUserConfig
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
         </member>
         <member name="T:SSS.Api.Controllers.UserInfoController">
             <summary>

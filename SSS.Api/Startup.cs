@@ -1,5 +1,4 @@
-﻿using System;
-using Hangfire;
+﻿using Hangfire;
 using Hangfire.MySql.Core;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -21,7 +20,6 @@ using SSS.Api.Middware;
 using SSS.Api.Seedwork;
 using SSS.Api.Seedwork.Filter;
 using System.Reflection;
-using SSS.Infrastructure.Seedwork.Cache.Session;
 
 namespace SSS.Api
 {
@@ -56,17 +54,7 @@ namespace SSS.Api
                 options.Filters.Add<MvcFilter>();
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            //services.AddSession(options =>
-            //{
-            //    options.IdleTimeout = TimeSpan.FromMinutes(1);
-            //});
-
-
-            services.AddMemoryCache();
-
-            services.AddSession(); 
-
-            services.AddTransient<SessionCache>();
+            services.AddMemoryCacheEx();
 
             services.AddSingleton(typeof(IControllerActivator), typeof(SSS.Api.Seedwork.Controller.BaseControllerActivator));
 
@@ -93,9 +81,6 @@ namespace SSS.Api
 
             //集中注入
             services.AddService();
-
-            //Session
-            //services.AddSession();
 
             //Redis
             //services.AddRedisCache(Configuration.GetSection("Redis"));    //方式一
@@ -158,7 +143,8 @@ namespace SSS.Api
             else
                 app.UseHsts();
 
-            app.UseSession();
+            //登录检测
+            app.UseMiddleware<LoginMiddleware>();
 
             //异常拦截
             app.UseApiException();
@@ -175,16 +161,10 @@ namespace SSS.Api
             app.UseAuthentication();
 
             //IdentityServer中间件
-            //app.UseMiddleware<IdentityServerMiddleware>();
-
-            //登录检测
-            app.UseMiddleware<LoginMiddleware>();
+            //app.UseMiddleware<IdentityServerMiddleware>();              
 
             //拦截Urls
             app.UseMiddleware<UrlsMiddleware>();
-
-            //Session缓存
-            //app.UseSession();
 
             //http上下文
             app.UseHttpContext();

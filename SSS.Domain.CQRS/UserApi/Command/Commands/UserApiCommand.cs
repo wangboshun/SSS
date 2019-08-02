@@ -1,10 +1,8 @@
-using System;
-
 namespace SSS.Domain.CQRS.UserApi.Command.Commands
 {
     public abstract class UserApiCommand : SSS.Domain.Seedwork.Command.Command
     {
-         public string id { set; get; } 
+        public string id { set; get; }
 
         public string ApiKey { set; get; }
 

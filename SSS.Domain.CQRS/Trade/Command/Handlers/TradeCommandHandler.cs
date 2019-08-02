@@ -55,7 +55,7 @@ namespace SSS.Domain.CQRS.Trade.Command.Handlers
                 request.id, request.coin,
                 request.size, request.first_price, 0,
                 request.side, request.first_trade_status, 0,
-                request.first_trade_no, "", request.first_time, null, request.ktime,request.userid);
+                request.first_trade_no, "", request.first_time, null, request.ktime, request.userid);
             trade.CreateTime = DateTime.Now;
             trade.IsDelete = 0;
             _traderepository.Add(trade);

@@ -1,5 +1,5 @@
-using SSS.Domain.UserApi.Dto;
 using SSS.Domain.Seedwork.Model;
+using SSS.Domain.UserApi.Dto;
 using System.Collections.Generic;
 
 namespace SSS.Application.UserApi.Service
@@ -8,7 +8,9 @@ namespace SSS.Application.UserApi.Service
     {
         void AddUserApi(UserApiInputDto input);
 
-		Pages<List<UserApiOutputDto>> GetListUserApi(UserApiInputDto input);
+        void UpdateUserApi(UserApiInputDto input);
+
+        Pages<List<UserApiOutputDto>> GetListUserApi(UserApiInputDto input);
 
         UserApiOutputDto GetByUserId(UserApiInputDto input);
     }

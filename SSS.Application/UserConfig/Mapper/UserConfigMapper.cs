@@ -11,6 +11,9 @@ namespace SSS.Application.UserConfig.Profile
 
             CreateMap<UserConfigInputDto, UserConfigAddCommand>()
                 .ConstructUsing(input => new UserConfigAddCommand(input));
+
+            CreateMap<UserConfigInputDto, UserConfigUpdateCommand>()
+                .ConstructUsing(input => new UserConfigUpdateCommand(input));
         }
     }
 }

@@ -11,6 +11,9 @@ namespace SSS.Application.UserApi.Profile
 
             CreateMap<UserApiInputDto, UserApiAddCommand>()
                 .ConstructUsing(input => new UserApiAddCommand(input));
+
+            CreateMap<UserApiInputDto, UserApiUpdateCommand>()
+               .ConstructUsing(input => new UserApiUpdateCommand(input));
         }
     }
 }

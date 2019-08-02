@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SSS.Api.Seedwork.ServiceCollection;
 using SSS.Infrastructure.Seedwork.Cache.Memcached;
+using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Seedwork.Cache.Redis;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
@@ -161,6 +162,20 @@ namespace SSS.Api.Bootstrap
             services.AddTransient<RedisCache>();
         }
 
-        #endregion 
+        #endregion
+
+        #region AddMemoryCacheEx
+
+        /// <summary>
+        /// MemoryCache扩展
+        /// </summary>
+        /// <param name="services"></param>
+        public static void AddMemoryCacheEx(this IServiceCollection services)
+        {
+            services.AddMemoryCache();
+            services.AddTransient<MemoryCacheEx>();
+        }
+
+        #endregion
     }
 }

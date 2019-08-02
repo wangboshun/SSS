@@ -20,7 +20,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.Session
 
         public string StringGet(string key)
         {
-            _session.TryGetValue(key, out var data); 
+            _session.TryGetValue(key, out var data);
             return data == null ? null : Encoding.UTF8.GetString(data);
         }
 

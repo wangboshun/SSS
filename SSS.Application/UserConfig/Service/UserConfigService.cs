@@ -1,16 +1,16 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.Extensions.DependencyInjection;
+using SSS.Application.Seedwork.Service;
 using SSS.Domain.CQRS.UserConfig.Command.Commands;
-using SSS.Infrastructure.Util.Attribute;
-using SSS.Domain.UserConfig.Dto;
-using SSS.Infrastructure.Repository.UserConfig;
-using System;
 using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Model;
+using SSS.Domain.UserConfig.Dto;
+using SSS.Infrastructure.Repository.UserConfig;
+using SSS.Infrastructure.Util.Attribute;
+using System;
 using System.Collections.Generic;
-using AutoMapper.QueryableExtensions;
 using System.Linq;
-using SSS.Application.Seedwork.Service;
 
 namespace SSS.Application.UserConfig.Service
 {
@@ -31,6 +31,12 @@ namespace SSS.Application.UserConfig.Service
         {
             input.id = Guid.NewGuid().ToString();
             var cmd = _mapper.Map<UserConfigAddCommand>(input);
+            _bus.SendCommand(cmd);
+        }
+
+        public void UpdateUserConfig(UserConfigInputDto input)
+        {
+            var cmd = _mapper.Map<UserConfigUpdateCommand>(input);
             _bus.SendCommand(cmd);
         }
 

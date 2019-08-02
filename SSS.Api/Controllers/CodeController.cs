@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using SSS.Api.Seedwork;
+using SSS.Api.Seedwork.Controller;
 using SSS.Infrastructure.Util.IO;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +9,6 @@ using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
-using SSS.Api.Seedwork.Controller;
 
 namespace SSS.Api.Controllers
 {

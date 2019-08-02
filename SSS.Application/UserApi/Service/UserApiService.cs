@@ -1,16 +1,16 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.Extensions.DependencyInjection;
+using SSS.Application.Seedwork.Service;
 using SSS.Domain.CQRS.UserApi.Command.Commands;
-using SSS.Infrastructure.Util.Attribute;
-using SSS.Domain.UserApi.Dto;
-using SSS.Infrastructure.Repository.UserApi;
-using System;
 using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Model;
+using SSS.Domain.UserApi.Dto;
+using SSS.Infrastructure.Repository.UserApi;
+using SSS.Infrastructure.Util.Attribute;
+using System;
 using System.Collections.Generic;
-using AutoMapper.QueryableExtensions;
 using System.Linq;
-using SSS.Application.Seedwork.Service;
 
 namespace SSS.Application.UserApi.Service
 {
@@ -31,6 +31,12 @@ namespace SSS.Application.UserApi.Service
         {
             input.id = Guid.NewGuid().ToString();
             var cmd = _mapper.Map<UserApiAddCommand>(input);
+            _bus.SendCommand(cmd);
+        }
+
+        public void UpdateUserApi(UserApiInputDto input)
+        { 
+            var cmd = _mapper.Map<UserApiUpdateCommand>(input);
             _bus.SendCommand(cmd);
         }
 

@@ -9,14 +9,14 @@ namespace SSS.Domain.UserInfo
             this.Id = id;
             this.Name = name;
             this.Openid = openid;
-            this.Phone = phone; 
+            this.Phone = phone;
         }
 
         /// <summary>
         /// Ãû×Ö
         /// </summary>
         public string Name { set; get; }
-         
+
         /// <summary>
         /// ÊÖ»úºÅ
         /// </summary>
@@ -26,7 +26,7 @@ namespace SSS.Domain.UserInfo
         /// Openid
         /// </summary>
         public string Openid { set; get; }
-         
+
 
     }
 }

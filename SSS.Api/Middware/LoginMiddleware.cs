@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Senparc.CO2NET.Extensions;
 using SSS.Application.UserInfo.Service;
+using SSS.Domain.UserInfo.Dto;
+using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Util.Http;
 using SSS.Infrastructure.Util.Json;
 using System.Threading.Tasks;
@@ -13,9 +14,9 @@ namespace SSS.Api.Middware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger _logger;
-        private readonly IMemoryCache _memorycache;
+        private readonly MemoryCacheEx _memorycache;
 
-        public LoginMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, IMemoryCache memorycache)
+        public LoginMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, MemoryCacheEx memorycache)
         {
             _next = next;
             _memorycache = memorycache;
@@ -37,9 +38,9 @@ namespace SSS.Api.Middware
 
                 if (!string.IsNullOrWhiteSpace(openid))
                 {
-                    var val = _memorycache.Get<string>(cachekey);
+                    var val = _memorycache.Get<UserInfoOutputDto>(cachekey);
 
-                    if (!string.IsNullOrWhiteSpace(val))
+                    if (val != null)
                         await _next.Invoke(context);
                     else
                     {
@@ -49,7 +50,7 @@ namespace SSS.Api.Middware
                             await LoginAsync(context, 401, "无效账户,非法请求！");
                         else
                         {
-                            _memorycache.Set(cachekey, userinfo.ToJson());
+                            _memorycache.Set(cachekey, userinfo, 0.2);
                             await _next.Invoke(context);
                         }
                     }

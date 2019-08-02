@@ -8,7 +8,7 @@ namespace SSS.Domain.CQRS.UserInfo.Command.Commands
 
         public string phone { set; get; }
 
-        public string openid { set; get; } 
+        public string openid { set; get; }
 
         public string code { set; get; }
     }

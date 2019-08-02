@@ -16,7 +16,6 @@ using SSS.Infrastructure.Repository.Trade;
 using SSS.Infrastructure.Repository.UserApi;
 using SSS.Infrastructure.Repository.UserConfig;
 using SSS.Infrastructure.Util.Attribute;
-using SSS.Infrastructure.Util.Config;
 using SSS.Infrastructure.Util.Json;
 using System;
 using System.Collections.Generic;

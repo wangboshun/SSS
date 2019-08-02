@@ -1,6 +1,5 @@
 using FluentValidation;
 using SSS.Domain.CQRS.UserConfig.Command.Commands;
-using System;
 
 namespace SSS.Domain.CQRS.UserConfig.Validations
 {
@@ -9,7 +8,7 @@ namespace SSS.Domain.CQRS.UserConfig.Validations
 
         protected void ValidateId()
         {
-             RuleFor(c => c.id).NotEmpty().WithMessage("请输入Id");
+            RuleFor(c => c.id).NotEmpty().WithMessage("请输入Id");
         }
     }
 }

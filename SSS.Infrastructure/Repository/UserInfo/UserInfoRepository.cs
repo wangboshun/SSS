@@ -12,7 +12,7 @@ namespace SSS.Infrastructure.Repository.UserInfo
     {
         public UserInfoRepository(DbcontextBase context) : base(context)
         {
-        } 
+        }
         public Domain.UserInfo.UserInfo GetUserInfoByOpenid(string openid)
         {
             return DbSet.AsNoTracking().FirstOrDefault(x => x.Openid.Equals(openid));

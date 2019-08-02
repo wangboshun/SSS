@@ -8,7 +8,7 @@ namespace SSS.Domain.CQRS.UserInfo.Validations
         {
             ValidateId();
             ValidateCode();
-            ValidateOpenid(); 
+            ValidateOpenid();
         }
     }
 }

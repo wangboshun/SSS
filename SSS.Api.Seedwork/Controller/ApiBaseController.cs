@@ -6,7 +6,6 @@ using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Notice;
 using SSS.Domain.UserInfo.Dto;
 using SSS.Infrastructure.Util.Http;
-using SSS.Infrastructure.Util.Json;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,9 +22,9 @@ namespace SSS.Api.Seedwork.Controller
         public ApiBaseController()
         {
             _memorycache = (IMemoryCache)HttpContextService.Current.RequestServices.GetService(typeof(IMemoryCache));
-            var userinfo = _memorycache.Get<string>("AuthUserInfo_" + HttpContextService.Current.Request.Headers["Auth"]);
-            if (userinfo != null)
-                UserInfo = userinfo.ToEntity<UserInfoOutputDto>();
+            var userinfo = _memorycache.Get<UserInfoOutputDto>("AuthUserInfo_" + HttpContextService.Current.Request.Headers["Auth"]);
+            if (userinfo != null && UserInfo == null)
+                UserInfo = userinfo;
         }
 
         protected IEnumerable<ErrorNotice> Notice

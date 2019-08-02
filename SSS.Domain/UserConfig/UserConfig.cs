@@ -1,5 +1,4 @@
 using SSS.Domain.Seedwork.Model;
-using System;
 
 namespace SSS.Domain.UserConfig
 {
