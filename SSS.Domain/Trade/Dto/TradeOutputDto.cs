@@ -18,6 +18,8 @@ namespace SSS.Domain.Trade.Dto
 
         public int last_trade_status { set; get; }
 
+        public int ktime { set; get; }
+
         public string first_trade_no { set; get; }
 
         public string last_trade_no { set; get; }

@@ -30,6 +30,7 @@ namespace SSS.Application.UserApi.Service
         public void AddUserApi(UserApiInputDto input)
         {
             input.id = Guid.NewGuid().ToString();
+            input.Status = 0;
             var cmd = _mapper.Map<UserApiAddCommand>(input);
             _bus.SendCommand(cmd);
         }

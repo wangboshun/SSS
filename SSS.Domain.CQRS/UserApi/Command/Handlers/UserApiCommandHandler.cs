@@ -26,7 +26,7 @@ namespace SSS.Domain.CQRS.UserApi.Command.Handlers
          IRequestHandler<UserApiUpdateCommand, bool>
     {
 
-        private readonly IUserApiRepository _repository;
+        private readonly IUserApiRepository _repository; 
         private readonly IEventBus Bus;
         private readonly ILogger _logger;
 
@@ -48,10 +48,9 @@ namespace SSS.Domain.CQRS.UserApi.Command.Handlers
                 NotifyValidationErrors(request);
                 return Task.FromResult(false);
             }
-            var model = new SSS.Domain.UserApi.UserApi(request.id, request.ApiKey, request.Secret, request.PassPhrase, request.UserId);
+            var model = new SSS.Domain.UserApi.UserApi(request.id, request.ApiKey, request.Secret, request.PassPhrase, request.UserId,request.Status);
             model.CreateTime = DateTime.Now;
             model.IsDelete = 0;
-            model.Status = 1;
 
             _repository.Add(model);
             if (Commit())
@@ -69,7 +68,8 @@ namespace SSS.Domain.CQRS.UserApi.Command.Handlers
                 NotifyValidationErrors(request);
                 return Task.FromResult(false);
             }
-            var model = new SSS.Domain.UserApi.UserApi(request.id, request.ApiKey, request.Secret, request.PassPhrase, request.UserId);
+             
+            var model = new SSS.Domain.UserApi.UserApi(request.id, request.ApiKey, request.Secret, request.PassPhrase, request.UserId, request.Status);
 
             _repository.Update(model);
             if (Commit())

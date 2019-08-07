@@ -4,13 +4,14 @@ namespace SSS.Domain.UserApi
 {
     public class UserApi : Entity
     {
-        public UserApi(string id, string ApiKey, string Secret, string PassPhrase, string UserId)
+        public UserApi(string id, string ApiKey, string Secret, string PassPhrase, string UserId, int Status)
         {
             this.Id = id;
             this.ApiKey = ApiKey;
             this.Secret = Secret;
             this.PassPhrase = PassPhrase;
             this.UserId = UserId;
+            this.Status = Status;
         }
 
         public string ApiKey { set; get; }

@@ -12,6 +12,8 @@ namespace SSS.Domain.UserApi.Dto
 
         public string UserId { set; get; }
 
+        public int Status { set; get; }
+
         public string encryptedData { set; get; }
 
         public string iv { set; get; }

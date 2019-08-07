@@ -11,5 +11,7 @@ namespace SSS.Domain.UserApi.Dto
         public string PassPhrase { set; get; }
 
         public string UserId { set; get; }
+
+        public int Status { set; get; }
     }
 }

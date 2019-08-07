@@ -12,6 +12,7 @@ namespace SSS.Domain.CQRS.UserApi.Command.Commands
             this.Secret = input.Secret;
             this.PassPhrase = input.PassPhrase;
             this.UserId = input.UserId;
+            this.Status = input.Status;
         }
 
         public override bool IsValid()

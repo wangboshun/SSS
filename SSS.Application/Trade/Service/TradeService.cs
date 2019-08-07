@@ -348,7 +348,7 @@ namespace SSS.Application.Trade.Service
             List<TradeOutputDto> list = null;
             int count = 0;
 
-            list = _traderepository.GetPage(input.pageindex, input.pagesize, ref count).ProjectTo<TradeOutputDto>(_mapper.ConfigurationProvider).ToList();
+            list = _traderepository.GetPage(input.pageindex, input.pagesize, x => x.UserId.Equals(input.userid), ref count).ProjectTo<TradeOutputDto>(_mapper.ConfigurationProvider).ToList();
             _logger.LogInformation($"GetListTrade Result {list.ToJson()}");
 
             return new Pages<List<TradeOutputDto>>(list, count);
