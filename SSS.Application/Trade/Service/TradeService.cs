@@ -62,10 +62,11 @@ namespace SSS.Application.Trade.Service
             {
                 input.coin = configlist[i].Coin;
                 input.ktime = configlist[i].Ktime;
+                input.size= configlist[i].Size;
                 input.userid = configlist[i].UserId;
 
                 //获取api配置
-                var userkey = _userkeyrepository.Get(x => !x.UserId.Equals(input.userid) && x.Status == 1);
+                var userkey = _userkeyrepository.Get(x =>x.UserId.Equals(input.userid) && x.Status == 1);
                 if (userkey == null)
                     return;
 
@@ -86,7 +87,7 @@ namespace SSS.Application.Trade.Service
                 else //做空
                     input.side = "sell";
 
-                var list = _traderepository.GetAll(x => x.UserId.Equals(input.userid) && (x.First_Trade_Status == 1 || x.First_Trade_Status == 2) && x.Coin.Equals(input.coin) && string.IsNullOrWhiteSpace(x.Last_Trade_No));
+                var list = _traderepository.GetAll(x => x.UserId.Equals(input.userid) && (x.First_Trade_Status == 1 || x.First_Trade_Status == 2) && x.Coin.Equals(input.coin) && x.KTime==input.ktime && string.IsNullOrWhiteSpace(x.Last_Trade_No));
 
                 //【2.查看是否持有单子】
                 var order_list = list.ProjectTo<TradeOutputDto>(_mapper.ConfigurationProvider).ToList();

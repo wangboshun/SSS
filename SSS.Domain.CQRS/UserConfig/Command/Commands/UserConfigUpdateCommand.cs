@@ -15,6 +15,8 @@ namespace SSS.Domain.CQRS.UserConfig.Command.Commands
             this.loss = input.loss;
             this.ktime = input.ktime;
             this.userid = input.UserId;
+            this.status = input.status;
+            this.isdelete = input.isdelete;
         }
 
         public override bool IsValid()

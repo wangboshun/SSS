@@ -14,5 +14,7 @@ namespace SSS.Domain.UserConfig.Dto
 
         public int Loss { set; get; }
 
+        public int Status { set; get; }
+
     }
 }

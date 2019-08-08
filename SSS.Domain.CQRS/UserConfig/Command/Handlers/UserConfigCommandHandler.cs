@@ -49,9 +49,8 @@ namespace SSS.Domain.CQRS.UserConfig.Command.Handlers
                 return Task.FromResult(false);
             }
             var config = new Domain.UserConfig.UserConfig(request.id, request.userid, request.coin, request.ktime,
-                request.size, request.profit, request.loss);
-            config.CreateTime = DateTime.Now;
-            config.IsDelete = 0;
+                request.size, request.profit, request.loss, request.status, request.isdelete);
+            config.CreateTime = DateTime.Now; 
 
             _repository.Add(config);
             if (Commit())
@@ -70,7 +69,8 @@ namespace SSS.Domain.CQRS.UserConfig.Command.Handlers
                 return Task.FromResult(false);
             }
             var config = new Domain.UserConfig.UserConfig(request.id, request.userid, request.coin, request.ktime,
-                request.size, request.profit, request.loss);
+                request.size, request.profit, request.loss, request.status, request.isdelete);
+
             _repository.Update(config);
             if (Commit())
             {

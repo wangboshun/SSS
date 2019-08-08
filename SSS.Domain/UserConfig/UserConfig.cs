@@ -1,10 +1,11 @@
 using SSS.Domain.Seedwork.Model;
+using System;
 
 namespace SSS.Domain.UserConfig
 {
     public class UserConfig : Entity
     {
-        public UserConfig(string id, string UserId, string coin, int ktime, double size, int profit, int loss)
+        public UserConfig(string id, string UserId, string coin, int ktime, double size, int profit, int loss, int status, int IsDelete)
         {
             Id = id;
             Coin = coin;
@@ -14,8 +15,9 @@ namespace SSS.Domain.UserConfig
             Profit = profit;
             this.UserId = UserId;
             Loss = loss;
+            Status = status;
+            this.IsDelete = IsDelete;
         }
-
 
         public string Coin { set; get; }
 
@@ -29,6 +31,6 @@ namespace SSS.Domain.UserConfig
 
         public int Loss { set; get; }
 
-        public int Status { set; get; }
+        public int Status { set; get; } 
     }
 }

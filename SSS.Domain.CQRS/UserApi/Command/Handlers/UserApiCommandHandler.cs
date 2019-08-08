@@ -69,13 +69,13 @@ namespace SSS.Domain.CQRS.UserApi.Command.Handlers
                 return Task.FromResult(false);
             }
              
-            var model = new SSS.Domain.UserApi.UserApi(request.id, request.ApiKey, request.Secret, request.PassPhrase, request.UserId, request.Status);
-
-            _repository.Update(model);
+            var api = new SSS.Domain.UserApi.UserApi(request.id, request.ApiKey, request.Secret, request.PassPhrase, request.UserId, request.Status);
+ 
+            _repository.Update(api);
             if (Commit())
             {
                 _logger.LogInformation("UserApiUpdateCommand Success");
-                Bus.RaiseEvent(new UserApiUpdateEvent(model));
+                Bus.RaiseEvent(new UserApiUpdateEvent(api));
             }
             return Task.FromResult(false);
         }

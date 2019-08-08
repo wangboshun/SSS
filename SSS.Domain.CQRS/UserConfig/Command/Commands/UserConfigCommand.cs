@@ -9,5 +9,7 @@ namespace SSS.Domain.CQRS.UserConfig.Command.Commands
         public int loss { set; get; }
         public string userid { set; get; }
         public double size { set; get; }
+        public int status { set; get; }
+        public int isdelete { set; get; }
     }
 }

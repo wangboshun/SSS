@@ -30,6 +30,7 @@ namespace SSS.Application.UserConfig.Service
         public void AddUserConfig(UserConfigInputDto input)
         {
             input.id = Guid.NewGuid().ToString();
+            input.status = 0;
             var cmd = _mapper.Map<UserConfigAddCommand>(input);
             _bus.SendCommand(cmd);
         }
@@ -52,7 +53,7 @@ namespace SSS.Application.UserConfig.Service
 
             if (input.pagesize == 0 && input.pagesize == 0)
             {
-                var data = _repository.GetAll(x => x.UserId.Equals(input.UserId));
+                var data = _repository.GetAll(x => x.UserId.Equals(input.UserId) && x.IsDelete == 0);
                 list = data.ProjectTo<UserConfigOutputDto>(_mapper.ConfigurationProvider).ToList();
                 count = list.Count;
             }

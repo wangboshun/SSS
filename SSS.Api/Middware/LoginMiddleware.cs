@@ -30,6 +30,7 @@ namespace SSS.Api.Middware
                 !context.Request.Path.Value.Contains("/doc") &&
                 !context.Request.Path.Value.Contains("/profiler/") &&
                 !context.Request.Path.Value.Contains("hangfire") &&
+                !context.Request.Path.Value.Contains("Trade/operatrade") &&
                 !context.Request.Path.Value.Contains("swagger"))
             {
                 string openid = context.Request.Headers["Auth"];

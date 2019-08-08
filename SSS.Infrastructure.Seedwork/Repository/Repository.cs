@@ -106,7 +106,11 @@ namespace SSS.Infrastructure.Seedwork.Repository
 
         public virtual void Update(TEntity obj)
         {
-            var status = DbSet.Update(obj);
+            DbSet.Attach(obj);
+            var entry = Db.Entry(obj);
+            entry.State = EntityState.Modified;
+            entry.Property(x => x.CreateTime).IsModified = false;
+            entry.Property(x => x.Id).IsModified = false;
         }
 
         public virtual void Remove(string id)
