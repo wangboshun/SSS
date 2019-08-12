@@ -36,8 +36,8 @@ namespace SSS.Application.Trade.Service
         private readonly ITradeRepository _traderepository;
         private readonly IUserConfigRepository _userconfigrepository;
         private readonly IUserApiRepository _userkeyrepository;
-
-        private static UserApiOutputDto UserKey;
+        private static object lockObj = new object();
+        private static UserApiOutputDto UserKey; 
 
         public TradeService(ILogger<TradeService> logger, IMapper mapper, IEventBus bus,
             ITradeRepository traderepository, IUserConfigRepository userconfigrepository, IUserApiRepository userkeyrepository)
@@ -54,71 +54,74 @@ namespace SSS.Application.Trade.Service
         /// 下单接口
         /// </summary> 
         public void OperateTrade(TradeInputDto input)
-        {
+        { 
             //获取k线配置
             var configlist = _userconfigrepository.GetAll(x => x.Status == 1).ToList();
 
             for (int i = 0; i < configlist.Count(); i++)
             {
-                input.coin = configlist[i].Coin;
-                input.ktime = configlist[i].Ktime;
-                input.size= configlist[i].Size;
-                input.userid = configlist[i].UserId;
-
-                //获取api配置
-                var userkey = _userkeyrepository.Get(x =>x.UserId.Equals(input.userid) && x.Status == 1);
-                if (userkey == null)
-                    return;
-
-                UserKey = _mapper.Map<UserApiOutputDto>(userkey);
-
-                _logger.LogInformation($"用户Api配置：{userkey.ToJson()}");
-                _logger.LogInformation($"用户K线配置：{configlist[i].ToJson()}");
-
-                var kdata = GetKDataLine(input.coin, input.ktime, DateTime.Now);
-                _logger.LogInformation($"K线数据：{kdata.ToJson()}");
-                var ma_5 = GetMaPrice(input.coin, input.ktime, 5, kdata);
-                var ma_10 = GetMaPrice(input.coin, input.ktime, 10, kdata);
-                double curruent_price = kdata[0].close; //当前收盘价
-
-                //【1.判断趋势】
-                if (ma_5 > ma_10) //做多 
-                    input.side = "buy";
-                else //做空
-                    input.side = "sell";
-
-                var list = _traderepository.GetAll(x => x.UserId.Equals(input.userid) && (x.First_Trade_Status == 1 || x.First_Trade_Status == 2) && x.Coin.Equals(input.coin) && x.KTime==input.ktime && string.IsNullOrWhiteSpace(x.Last_Trade_No));
-
-                //【2.查看是否持有单子】
-                var order_list = list.ProjectTo<TradeOutputDto>(_mapper.ConfigurationProvider).ToList();
-
-                //平单
-                if (order_list.Count > 0)
+                lock (lockObj)
                 {
-                    //【3.如果有相同单子】判断并止盈止损位
-                    if (ProfitOrLossPoint(order_list, input, curruent_price))
+                    input.coin = configlist[i].Coin;
+                    input.ktime = configlist[i].Ktime;
+                    input.size = configlist[i].Size;
+                    input.userid = configlist[i].UserId;
+
+                    //获取api配置
+                    var userkey = _userkeyrepository.Get(x => x.UserId.Equals(input.userid) && x.Status == 1);
+                    if (userkey == null)
                         return;
 
-                    //【4.查看持有单子,是否满足平单要求】
-                    //查看是否【持有且需要】平多平空订单，检查是否能够盈利且平单 
-                    if (StopTrade(order_list, input, curruent_price))
-                        return;
-                }
-                //【5.开单】新建订单
-                else
-                {
-                    input.first_price = curruent_price;
-                    if (CreateTrade(input))
-                        return;
-                }
+                    UserKey = _mapper.Map<UserApiOutputDto>(userkey);
 
-                //input.id = Guid.NewGuid().ToString();
-                //input.last_time = DateTime.Now;
-                //input.last_price = curruent_price;
-                //input.first_trade_no = order_list.OrderByDescending(x => x.first_time).FirstOrDefault()?.first_trade_no;
-                //var null_cmd = _mapper.Map<TradeNullCommand>(input);
-                //_bus.SendCommand(null_cmd);
-                //_logger.LogInformation($"无符合的交易规则  input:{input.ToJson()}");
+                    _logger.LogInformation($"用户Api配置：{userkey.ToJson()}");
+                    _logger.LogInformation($"用户K线配置：{configlist[i].ToJson()}");
+
+                    var kdata = GetKDataLine(input.coin, input.ktime, DateTime.Now);
+                    _logger.LogInformation($"K线数据：{kdata.ToJson()}");
+                    var ma_5 = GetMaPrice(input.coin, input.ktime, 5, kdata);
+                    var ma_10 = GetMaPrice(input.coin, input.ktime, 10, kdata);
+                    double curruent_price = kdata[0].close; //当前收盘价
+
+                    //【1.判断趋势】
+                    if (ma_5 > ma_10) //做多 
+                        input.side = "buy";
+                    else //做空
+                        input.side = "sell";
+
+                    var list = _traderepository.GetAll(x => x.UserId.Equals(input.userid) && (x.First_Trade_Status == 1 || x.First_Trade_Status == 2) && x.Coin.Equals(input.coin) && x.KTime == input.ktime && string.IsNullOrWhiteSpace(x.Last_Trade_No));
+
+                    //【2.查看是否持有单子】
+                    var order_list = list.ProjectTo<TradeOutputDto>(_mapper.ConfigurationProvider).ToList();
+
+                    //平单
+                    if (order_list.Count > 0)
+                    {
+                        //【3.如果有相同单子】判断并止盈止损位
+                        if (ProfitOrLossPoint(order_list, input, curruent_price))
+                            return;
+
+                        //【4.查看持有单子,是否满足平单要求】
+                        //查看是否【持有且需要】平多平空订单，检查是否能够盈利且平单 
+                        if (StopTrade(order_list, input, curruent_price))
+                            return;
+                    }
+                    //【5.开单】新建订单
+                    else
+                    {
+                        input.first_price = curruent_price;
+                        if (CreateTrade(input))
+                            return;
+                    }
+
+                    //input.id = Guid.NewGuid().ToString();
+                    //input.last_time = DateTime.Now;
+                    //input.last_price = curruent_price;
+                    //input.first_trade_no = order_list.OrderByDescending(x => x.first_time).FirstOrDefault()?.first_trade_no;
+                    //var null_cmd = _mapper.Map<TradeNullCommand>(input);
+                    //_bus.SendCommand(null_cmd);
+                    //_logger.LogInformation($"无符合的交易规则  input:{input.ToJson()}");
+                }
             }
         }
 
@@ -216,56 +219,56 @@ namespace SSS.Application.Trade.Service
             if (input.side == "buy" && current_order.side.Equals("sell"))
             {
                 //如果是平空，市场价不能高于订单价
-                if (curruent_price > current_order.first_price)
-                {
-                    _logger.LogInformation($"检查订单是否满足平单要求，平空失败，价格太高 {current_order.ToJson()}");
-                    return false;
-                }
-                else if ((current_order.first_price / curruent_price) - 1 < 0.01)
-                {
-                    _logger.LogInformation($"检查订单是否满足平单要求，平空失败，盈利不足1% {current_order.ToJson()}");
-                    return false;
-                }
-                else
-                {
-                    //平单
-                    if (current_order.side.Equals("buy"))
-                        input.side = "sell";
-                    else if (current_order.side.Equals("sell"))
-                        input.side = "buy";
-                    input.last_time = DateTime.Now;
-                    input.last_price = curruent_price;
-                    UpdateTrade(input);
-                    return true;
-                }
+                //if (curruent_price > current_order.first_price)
+                //{
+                //    _logger.LogInformation($"检查订单是否满足平单要求，平空失败，价格太高 {current_order.ToJson()}");
+                //    return false;
+                //}
+                //else if ((current_order.first_price / curruent_price) - 1 < 0.01)
+                //{
+                //    _logger.LogInformation($"检查订单是否满足平单要求，平空失败，盈利不足1% {current_order.ToJson()}");
+                //    return false;
+                //}
+                //else
+                //{
+                //平单
+                if (current_order.side.Equals("buy"))
+                    input.side = "sell";
+                else if (current_order.side.Equals("sell"))
+                    input.side = "buy";
+                input.last_time = DateTime.Now;
+                input.last_price = curruent_price;
+                UpdateTrade(input);
+                return true;
+                //}
             }
             //【2 平多】
             //如果是平多
             else if (input.side == "sell" && current_order.side.Equals("buy"))
             {
-                //如果是平多，市场价不能高于订单价
-                if (curruent_price < current_order.first_price)
-                {
-                    _logger.LogInformation($"检查订单是否满足平单要求，平多失败，价格太低 {current_order.ToJson()}");
-                    return false;
-                }
-                else if ((curruent_price / current_order.first_price) - 1 < 0.01)
-                {
-                    _logger.LogInformation($"检查订单是否满足平单要求，平多失败，盈利不足1% {current_order.ToJson()}");
-                    return false;
-                }
-                else
-                {
-                    //平单
-                    if (current_order.side.Equals("buy"))
-                        input.side = "sell";
-                    else if (current_order.side.Equals("sell"))
-                        input.side = "buy";
-                    input.last_time = DateTime.Now;
-                    input.last_price = curruent_price;
-                    UpdateTrade(input);
-                    return true;
-                }
+                ////如果是平多，市场价不能高于订单价
+                //if (curruent_price < current_order.first_price)
+                //{
+                //    _logger.LogInformation($"检查订单是否满足平单要求，平多失败，价格太低 {current_order.ToJson()}");
+                //    return false;
+                //}
+                //else if ((curruent_price / current_order.first_price) - 1 < 0.01)
+                //{
+                //    _logger.LogInformation($"检查订单是否满足平单要求，平多失败，盈利不足1% {current_order.ToJson()}");
+                //    return false;
+                //}
+                //else
+                //{
+                //平单
+                if (current_order.side.Equals("buy"))
+                    input.side = "sell";
+                else if (current_order.side.Equals("sell"))
+                    input.side = "buy";
+                input.last_time = DateTime.Now;
+                input.last_price = curruent_price;
+                UpdateTrade(input);
+                return true;
+                //}
             }
             _logger.LogInformation($"检查订单是否满足平单要求，异常单子,非buy、sell {current_order.ToJson()}");
             return false;

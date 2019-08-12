@@ -36,16 +36,19 @@ namespace SSS.Application.UserInfo.Service
         {
             string appid = SSS.Infrastructure.Util.Config.Config.GetSectionValue("SenparcWeixinSetting:WxOpenAppId");
             string appsecret = SSS.Infrastructure.Util.Config.Config.GetSectionValue("SenparcWeixinSetting:WxOpenAppSecret");
-            string url = string.Format("https://api.weixin.qq.com/sns/jscode2session?appid={0}&secret={1}&js_code={2}&grant_type=authorization_code", appid, appsecret, input.code);
-            string info = new WebClient().DownloadString(url);
-
+            string info = "";
             input.id = Guid.NewGuid().ToString();
-            input.openid = info.GetJsonValue("openid");
 
-            //var result = Senparc.Weixin.WxOpen.AdvancedAPIs.Sns.SnsApi.JsCode2Json(appid, appsecret, input.code);
-            //info = Senparc.Weixin.WxOpen.Helpers.EncryptHelper.DecodeEncryptedData(result.session_key, input.encryptedData, input.iv);
-            //input.openid = info.GetJsonValue("openId");
-            //input.name = info.GetJsonValue("nickName");
+            //string url = string.Format("https://api.weixin.qq.com/sns/jscode2session?appid={0}&secret={1}&js_code={2}&grant_type=authorization_code", appid, appsecret, input.code);
+            //info = new WebClient().DownloadString(url);
+
+            //input.openid = info.GetJsonValue("openid");
+            //input.name = input.openid;
+
+            var result = Senparc.Weixin.WxOpen.AdvancedAPIs.Sns.SnsApi.JsCode2Json(appid, appsecret, input.code);
+            info = Senparc.Weixin.WxOpen.Helpers.EncryptHelper.DecodeEncryptedData(result.session_key, input.encryptedData, input.iv);
+            input.openid = info.GetJsonValue("openId");
+            input.name = info.GetJsonValue("nickName");
 
             var cmd = _mapper.Map<UserInfoAddCommand>(input);
             _bus.SendCommand(cmd);

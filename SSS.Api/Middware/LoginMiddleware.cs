@@ -25,18 +25,23 @@ namespace SSS.Api.Middware
 
         public async Task Invoke(HttpContext context)
         {
+            string openid = context.Request.Headers["Auth"];
+            string cachekey = "AuthUserInfo_" + openid;
+
+            //如果是登录
+            if (context.Request.Path.Value.Contains("/api/v1/UserInfo/add"))
+                _memorycache.Remove(cachekey);
+
             if (!context.Request.Path.Value.Contains("/api/v1/UserInfo/add") &&
                 !context.Request.Path.Value.Contains("/code") &&
+                !context.Request.Path.Value.Contains("/File/") &&
+                !context.Request.Path.Value.Contains("/file") &&
                 !context.Request.Path.Value.Contains("/doc") &&
                 !context.Request.Path.Value.Contains("/profiler/") &&
                 !context.Request.Path.Value.Contains("hangfire") &&
                 !context.Request.Path.Value.Contains("Trade/operatrade") &&
                 !context.Request.Path.Value.Contains("swagger"))
             {
-                string openid = context.Request.Headers["Auth"];
-
-                string cachekey = "AuthUserInfo_" + openid;
-
                 if (!string.IsNullOrWhiteSpace(openid))
                 {
                     var val = _memorycache.Get<UserInfoOutputDto>(cachekey);

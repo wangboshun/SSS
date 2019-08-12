@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using Senparc.CO2NET;
 using Senparc.CO2NET.RegisterServices;
@@ -19,6 +20,7 @@ using SSS.Api.Bootstrap;
 using SSS.Api.Middware;
 using SSS.Api.Seedwork;
 using SSS.Api.Seedwork.Filter;
+using System.IO;
 using System.Reflection;
 
 namespace SSS.Api
@@ -191,7 +193,24 @@ namespace SSS.Api
 
             app.UseHttpsRedirection();
 
-            app.UseStaticFiles();
+            string contentRoot = Directory.GetCurrentDirectory();
+            IFileProvider fileProvider = new PhysicalFileProvider(
+              Path.Combine(contentRoot, "File"));
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = fileProvider,
+                RequestPath = "/file"
+            });
+
+            app.UseDirectoryBrowser();
+
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = fileProvider,
+                RequestPath = "/file"
+            });
+
             app.UseMvc();
 
             register.UseSenparcWeixin(senparcWeixinSetting.Value, senparcSetting.Value).RegisterWxOpenAccount(senparcWeixinSetting.Value, "SSS");
