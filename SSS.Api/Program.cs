@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using NLog.Web;
 using System;
+using System.IO;
 using System.Net;
+using SSS.Infrastructure.Util.Config;
 
 namespace SSS.Api
 {
@@ -16,8 +18,8 @@ namespace SSS.Api
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                //.UseUrls("http://*:1234")
-                .UseKestrel(ConfigHttps())
+                .UseUrls("http://*:1234")
+                //.UseKestrel(ConfigHttps())
                 .UseStartup<Startup>()
                 .UseNLog();
 
@@ -27,7 +29,8 @@ namespace SSS.Api
             {
                 x.Listen(IPAddress.Loopback, 443, listenOptions =>
                 {
-                    listenOptions.UseHttps("D:\\File\\cert\\sss.lifecwh.com.pfx", "TyUknVkenKED");
+                    var path = Directory.GetCurrentDirectory() + "\\File\\cert\\" + Config.GetSectionValue("Cert:Path");
+                    listenOptions.UseHttps(path, Config.GetSectionValue("Cert:PassWord"));
                 });
             };
         }

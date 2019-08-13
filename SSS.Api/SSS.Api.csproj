@@ -11,10 +11,25 @@
  
   <ItemGroup>
     <None Remove="codegenerator.html" />
-    <None Remove="File\量化使用教程.pdf" />
+    <None Remove="File\cert\sss.lifecwh.com.crt" />
+    <None Remove="File\cert\sss.lifecwh.com.key" />
+    <None Remove="File\cert\sss.lifecwh.com.pfx" />
+    <None Remove="File\cert\密码.txt" />
+    <None Remove="File\image\thank.jpg" />
+    <None Remove="File\image\thank1.jpg" />
     <None Remove="SSS.Api.xml" />
     <Content Include="SSS.Api.xml" />
     <EmbeddedResource Include="codegenerator.html" />
+    <EmbeddedResource Include="File\cert\sss.lifecwh.com.crt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="File\cert\sss.lifecwh.com.key">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="File\cert\sss.lifecwh.com.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="File\cert\密码.txt" />
     <EmbeddedResource Include="File\量化使用教程.pdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -42,6 +57,19 @@
     <ProjectReference Include="..\SSS.Api.Seedwork\SSS.Api.Seedwork.csproj" />
     <ProjectReference Include="..\SSS.Application.Seedwork\SSS.Application.Seedwork.csproj" />
     <ProjectReference Include="..\SSS.Application\SSS.Application.csproj" />
+  </ItemGroup>
+ 
+  <ItemGroup>
+    <EmbeddedResource Include="File\image\thank.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="File\image\thank1.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+ 
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
  
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions> 
