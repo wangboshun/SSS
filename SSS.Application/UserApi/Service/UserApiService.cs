@@ -11,6 +11,13 @@ using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using SSS.Application.Trade.Service;
+using SSS.Domain.UserApi.Response;
+using SSS.Domain.Seedwork.Notice;
 
 namespace SSS.Application.UserApi.Service
 {
@@ -19,26 +26,40 @@ namespace SSS.Application.UserApi.Service
     {
         private readonly IMapper _mapper;
         private readonly IEventBus _bus;
+        private readonly ILogger _logger;
 
         private readonly IUserApiRepository _repository;
-        public UserApiService(IMapper mapper, IEventBus bus, IUserApiRepository repository) : base(mapper, repository)
+        public UserApiService(ILogger<UserApiService> logger, IMapper mapper, IEventBus bus, IUserApiRepository repository) : base(mapper, repository)
         {
             _mapper = mapper;
             _bus = bus;
             _repository = repository;
+            _logger = logger;
         }
         public void AddUserApi(UserApiInputDto input)
         {
-            input.id = Guid.NewGuid().ToString();
-            input.Status = 1;
-            var cmd = _mapper.Map<UserApiAddCommand>(input);
-            _bus.SendCommand(cmd);
+            var list = GetMarginAccounts(input.ApiKey, input.Secret, input.PassPhrase);
+            if (list != null && list.Count > 0)
+            {
+                input.id = Guid.NewGuid().ToString();
+                input.Status = 1;
+                var cmd = _mapper.Map<UserApiAddCommand>(input);
+                _bus.SendCommand(cmd);
+            }
+            else
+                _bus.RaiseEvent(new ErrorNotice("UserApi", "≈‰÷√Api ß∞‹,«Î÷ÿ–¬ ‰»Î!"));
         }
 
         public void UpdateUserApi(UserApiInputDto input)
         {
-            var cmd = _mapper.Map<UserApiUpdateCommand>(input);
-            _bus.SendCommand(cmd);
+            var list = GetMarginAccounts(input.ApiKey, input.Secret, input.PassPhrase);
+            if (list != null && list.Count > 0)
+            {
+                var cmd = _mapper.Map<UserApiUpdateCommand>(input);
+                _bus.SendCommand(cmd);
+            }
+            else
+                _bus.RaiseEvent(new ErrorNotice("UserApi", "≈‰÷√Api ß∞‹,«Î÷ÿ–¬ ‰»Î!"));
         }
 
         public Pages<List<UserApiOutputDto>> GetListUserApi(UserApiInputDto input)
@@ -63,5 +84,19 @@ namespace SSS.Application.UserApi.Service
             return Get(x => x.UserId.Equals(input.UserId));
         }
 
+        private List<MarginAccounts> GetMarginAccounts(string ApiKey, string Secret, string PassPhrase)
+        {
+            var url = "https://www.okex.me/api/margin/v3/accounts";
+            using (var client = new HttpClient(new HttpInterceptor(ApiKey, Secret, PassPhrase, null)))
+            {
+                var res = client.GetAsync($"{url}").Result;
+
+                if (res.StatusCode != HttpStatusCode.OK)
+                    return null;
+                var result = res.Content.ReadAsStringAsync().Result;
+                _logger.LogInformation($"GetMarginAccounts {result}");
+                return JsonConvert.DeserializeObject<List<MarginAccounts>>(result);
+            }
+        }
     }
 }
