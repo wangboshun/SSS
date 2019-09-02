@@ -12,6 +12,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using AutoMapper.Configuration;
 
 namespace SSS.Api.Bootstrap
 {
@@ -51,13 +52,8 @@ namespace SSS.Api.Bootstrap
             if (services == null) throw new ArgumentNullException(nameof(services));
 
             Type[] types = Assembly.Load("SSS.Application").GetTypes().Where(t => t.BaseType != null && t.BaseType.Name.Equals("Profile")).ToArray();
-
-            Mapper.Initialize(cfg =>
-            {
-                cfg.AddProfiles(types);
-            });
-
-            services.AddAutoMapper();
+             
+            services.AddAutoMapper(types);
         }
 
         /// <summary>

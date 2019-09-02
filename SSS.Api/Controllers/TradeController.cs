@@ -33,7 +33,7 @@ namespace SSS.Api.Controllers
         [AllowAnonymous]  //匿名访问
         public IActionResult GetList([FromQuery]TradeInputDto input)
         {
-            input.userid = UserInfo.id;
+            input.userid = UserInfo?.id;
             input.pageindex = 0;
             input.pagesize = 10;
             var result = _trade.GetListTrade(input);
