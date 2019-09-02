@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>  
   <ItemGroup>
- <PackageReference Include="AutoMapper" Version="8.1.1" />
+ <PackageReference Include="AutoMapper" Version="9.0.0" />
     <ProjectReference Include="..\SSS.Domain.Seedwork\SSS.Domain.Seedwork.csproj" />
     <ProjectReference Include="..\SSS.Infrastructure\SSS.Infrastructure.csproj" />
   </ItemGroup>

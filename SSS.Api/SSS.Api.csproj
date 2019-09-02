@@ -34,15 +34,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="miniprofiler.html" />
-    <PackageReference Include="AutoMapper" Version="8.1.1" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="EnyimMemcached" Version="2.16.0" />
-    <PackageReference Include="Hangfire" Version="1.7.5" />
+    <PackageReference Include="Hangfire" Version="1.7.6" />
     <PackageReference Include="Hangfire.MySql.Core" Version="2.2.5" />
-    <PackageReference Include="IdentityServer4" Version="2.5.1" />
+    <PackageReference Include="IdentityServer4" Version="2.5.3" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="3.1.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="3.1.6" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Core" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
