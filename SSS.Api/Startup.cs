@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -20,7 +19,10 @@ using SSS.Api.Bootstrap;
 using SSS.Api.Middware;
 using SSS.Api.Seedwork.Filter;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using SSS.Api.Seedwork.Controller;
 
 namespace SSS.Api
 {
@@ -53,26 +55,20 @@ namespace SSS.Api
             {
                 //全局Action Exception Result过滤器
                 options.Filters.Add<MvcFilter>();
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddMemoryCacheEx();
 
-            services.AddSingleton(typeof(IControllerActivator), typeof(SSS.Api.Seedwork.Controller.BaseControllerActivator));
+            //url https://blog.csdn.net/u013710468/article/details/83588725
+            var defaultActivator = services.FirstOrDefault(c => c.ServiceType == typeof(IControllerActivator));
+            if (defaultActivator != null)
+            {
+                services.Remove(defaultActivator);
+                services.AddSingleton<IControllerActivator, BaseControllerActivator>();
+            }
 
+            //HttpContext注入
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-            //设置授权 Api
-            services.AddAuthorization();
-
-            //设置认证 Api
-            services.AddAuthentication("Bearer")
-                .AddJwtBearer("Bearer", options =>
-                {
-                    options.Authority = "http://localhost:456";
-                    options.RequireHttpsMetadata = false;
-                    options.SaveToken = true;
-                    options.Audience = "api_test1";
-                });
 
             //AutoMapper映射
             services.AddAutoMapperSupport();
@@ -82,19 +78,6 @@ namespace SSS.Api
 
             //集中注入
             services.AddService();
-
-            //Redis
-            //services.AddRedisCache(Configuration.GetSection("Redis"));    //方式一
-            //services.AddRedisCache();                                     //方式二
-            //services.AddRedisCache(options =>                          //方式三
-            //{
-            //    options.host = "192.168.1.148";
-            //    options.port = 6379;
-            //});
-
-            //MemCache
-            //services.AddMemCached(Configuration.GetSection("MemCache"));
-            //services.AddMemCached();
 
             //MemoryCache
             services.AddMemoryCache();
@@ -129,6 +112,7 @@ namespace SSS.Api
             services.AddSenparcGlobalServices(Configuration)//Senparc.CO2NET 全局注册
                 .AddSenparcWeixinServices(Configuration);//Senparc.Weixin 注册 
 
+            services.AddControllers();
         }
         /// <summary>
         /// Configure
@@ -147,13 +131,8 @@ namespace SSS.Api
             //异常拦截
             app.UseApiException();
 
-            GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute() { Attempts = 1 });
-            app.UseHangfireServer();
-            app.UseHangfireDashboard("/hangfire", new DashboardOptions()
-            {
-                Authorization = new[] { new CustomAuthorizeFilter() }
-
-            });
+            //Hangfire
+            Hangfire(app);
 
             ////认证中间件
             app.UseAuthentication();
@@ -164,16 +143,55 @@ namespace SSS.Api
             //http上下文
             app.UseHttpContext();
 
+            //MiniProfiler
             app.UseMiniProfiler();
 
-            ////RedisCahce
-            //app.UseRedisCache(options =>
-            //{
-            //    options.host = Configuration.GetSection("Redis:host").Value;
-            //    options.port = Convert.ToInt32(Configuration.GetSection("Redis:port").Value);
-            //});
-
             //Swagger
+            Swagger(app);
+
+            //跨域
+            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
+
+            //Https
+            app.UseHttpsRedirection();
+
+            //自定义文件浏览
+            UseDefaultStaticFile(app);
+
+            //路由
+            app.UseRouting();
+
+            //执行路由
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+
+            //公众号注入
+            register.UseSenparcWeixin(senparcWeixinSetting.Value, senparcSetting.Value).RegisterWxOpenAccount(senparcWeixinSetting.Value, "SSS");
+        }
+
+        /// <summary>
+        /// Hangfire
+        /// </summary>
+        /// <param name="app"></param>
+        private void Hangfire(IApplicationBuilder app)
+        {
+            GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute() { Attempts = 1 });
+            app.UseHangfireServer();
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions()
+            {
+                Authorization = new[] { new CustomAuthorizeFilter() }
+
+            });
+        }
+
+        /// <summary>
+        /// Swagger
+        /// </summary>
+        /// <param name="app"></param>
+        private void Swagger(IApplicationBuilder app)
+        {
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
@@ -182,13 +200,17 @@ namespace SSS.Api
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "SSS API V1");
                 options.IndexStream = () => GetType().GetTypeInfo().Assembly.GetManifestResourceStream("SSS.Api.miniprofiler.html");
             });
-            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
+        }
 
-            app.UseHttpsRedirection();
-
+        /// <summary>
+        /// 文件浏览
+        /// </summary>
+        /// <param name="app"></param>
+        private void UseDefaultStaticFile(IApplicationBuilder app)
+        {
             string contentRoot = Directory.GetCurrentDirectory();
             IFileProvider fileProvider = new PhysicalFileProvider(
-              Path.Combine(contentRoot, "File"));
+                Path.Combine(contentRoot, "File"));
 
             app.UseStaticFiles(new StaticFileOptions
             {
@@ -203,11 +225,6 @@ namespace SSS.Api
                 FileProvider = fileProvider,
                 RequestPath = "/file"
             });
-
-            app.UseMvc();
-
-            register.UseSenparcWeixin(senparcWeixinSetting.Value, senparcSetting.Value).RegisterWxOpenAccount(senparcWeixinSetting.Value, "SSS");
-
         }
     }
 }

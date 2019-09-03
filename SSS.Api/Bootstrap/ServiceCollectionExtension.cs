@@ -12,6 +12,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Microsoft.OpenApi.Models;
 
 namespace SSS.Api.Bootstrap
 {
@@ -63,13 +64,13 @@ namespace SSS.Api.Bootstrap
         {
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new Info
+                options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
                 {
                     Version = "v1",
                     Title = "SSS Project V1",
                     Description = "SSS API Swagger docs",
-                    Contact = new Contact { Name = "wbs", Email = "512742341@qq.com", Url = "https://github.com/wangboshun" },
-                    License = new License { Name = "MIT", Url = "https://github.com/wangboshun/SSS" }
+                    Contact = new OpenApiContact { Name = "wbs", Email = "512742341@qq.com", Url = new Uri("https://github.com/wangboshun") },
+                    License = new OpenApiLicense { Name = "MIT", Url = new Uri("https://github.com/wangboshun/SSS") }
                 });
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

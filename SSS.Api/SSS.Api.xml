@@ -4,6 +4,11 @@
         <name>SSS.Api</name>
     </assembly>
     <members>
+        <member name="T:SSS.Api.Bootstrap.ApplicationBuilderExtension">
+            <summary>
+            ApplicationBuilderExtension
+            </summary>
+        </member>
         <member name="M:SSS.Api.Bootstrap.ApplicationBuilderExtension.UseHttpContext(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
             <summary>
             注入HttpContext
@@ -217,6 +222,24 @@
             </summary>
             <param name="app">IApplicationBuilder</param>
             <param name="env">IHostingEnvironment</param>
+        </member>
+        <member name="M:SSS.Api.Startup.Hangfire(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            Hangfire
+            </summary>
+            <param name="app"></param>
+        </member>
+        <member name="M:SSS.Api.Startup.Swagger(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            Swagger
+            </summary>
+            <param name="app"></param>
+        </member>
+        <member name="M:SSS.Api.Startup.UseDefaultStaticFile(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            文件浏览
+            </summary>
+            <param name="app"></param>
         </member>
     </members>
 </doc>

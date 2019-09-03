@@ -9,6 +9,9 @@ using System;
 
 namespace SSS.Api.Bootstrap
 {
+    /// <summary>
+    /// ApplicationBuilderExtension
+    /// </summary>
     public static class ApplicationBuilderExtension
     {
         /// <summary>

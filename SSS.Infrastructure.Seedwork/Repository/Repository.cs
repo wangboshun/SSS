@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
+using Microsoft.Data.SqlClient;
 
 namespace SSS.Infrastructure.Seedwork.Repository
 {
@@ -43,12 +44,12 @@ namespace SSS.Infrastructure.Seedwork.Repository
 
         public virtual IQueryable<TEntity> GetBySql(string sql)
         {
-            return DbSet.FromSql(sql);
+            return DbSet.FromSqlRaw(sql);
         }
 
         public virtual IQueryable<TEntity> GetBySql(string sql, params object[] parameter)
         {
-            return DbSet.FromSql<TEntity>(sql, GeneratorParameter(parameter));
+            return DbSet.FromSqlRaw<TEntity>(sql, GeneratorParameter(parameter));
         }
 
         /// <summary>
