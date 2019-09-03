@@ -3,6 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Exception\**" />
+    <EmbeddedResource Remove="Exception\**" />
+    <None Remove="Exception\**" />
+  </ItemGroup>
  
   <ItemGroup>
     <None Remove="SSS.Api.Seedwork.xml" />
@@ -14,10 +20,6 @@
     <ProjectReference Include="..\SSS.Application\SSS.Application.csproj" />
     <ProjectReference Include="..\SSS.Domain.Seedwork\SSS.Domain.Seedwork.csproj" />
     <ProjectReference Include="..\SSS.Infrastructure.Util\SSS.Infrastructure.Util.csproj" />
-  </ItemGroup>
- 
-  <ItemGroup>
-    <Folder Include="Exception\" />
   </ItemGroup> 
 
 </Project>

@@ -96,31 +96,6 @@
             </summary>
             <param name="services"></param>
         </member>
-        <member name="T:SSS.Api.Controllers.ArticelController">
-            <summary>
-            ArticelController
-            </summary>
-        </member>
-        <member name="M:SSS.Api.Controllers.ArticelController.#ctor(SSS.Application.Articel.Service.IArticelService)">
-            <summary>
-            ArticelController
-            </summary>
-            <param name="service">IArticelService</param>
-        </member>
-        <member name="M:SSS.Api.Controllers.ArticelController.GetList(SSS.Domain.Articel.Dto.ArticelInputDto)">
-            <summary>
-            GetList
-            </summary>
-            <param name="input">input</param>
-            <returns></returns> 
-        </member>
-        <member name="M:SSS.Api.Controllers.ArticelController.AddArticel(SSS.Domain.Articel.Dto.ArticelInputDto)">
-            <summary>
-            AddArticel
-            </summary>
-            <param name="input">ArticelInputDto</param>
-            <returns></returns> 
-        </member>
         <member name="M:SSS.Api.Controllers.CodeController.AppDomainContext(System.String,System.Collections.Generic.List{SSS.Api.Controllers.Field})">
             <summary>
             填充类字段信息
@@ -190,100 +165,29 @@
             <param name="student">StudentInputDto</param>
             <returns></returns> 
         </member>
-        <member name="T:SSS.Api.Controllers.TradeController">
+        <member name="T:SSS.Api.Middware.ApiExceptionMiddleware">
             <summary>
-            TradeController
+            ApiExceptionMiddleware
             </summary>
         </member>
-        <member name="M:SSS.Api.Controllers.TradeController.GetList(SSS.Domain.Trade.Dto.TradeInputDto)">
+        <member name="M:SSS.Api.Middware.ApiExceptionMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Logging.ILoggerFactory)">
             <summary>
-            GetList
+            ApiExceptionMiddleware
             </summary>
-            <param name="trade">TradeInputDto</param>
-            <returns></returns> 
+            <param name="next"></param>
+            <param name="loggerFactory"></param>
         </member>
-        <member name="T:SSS.Api.Controllers.UserApiController">
+        <member name="T:SSS.Api.Middware.UrlsMiddleware">
             <summary>
-            UserApiController
-            </summary>
-        </member>
-        <member name="M:SSS.Api.Controllers.UserApiController.#ctor(SSS.Application.UserApi.Service.IUserApiService)">
-            <summary>
-            UserApiController
-            </summary>
-            <param name="service">IUserApiService</param>
-        </member>
-        <member name="M:SSS.Api.Controllers.UserApiController.GetList(SSS.Domain.UserApi.Dto.UserApiInputDto)">
-            <summary>
-            GetList
-            </summary>
-            <param name="input">input</param>
-            <returns></returns> 
-        </member>
-        <member name="M:SSS.Api.Controllers.UserApiController.AddUserApi(SSS.Domain.UserApi.Dto.UserApiInputDto)">
-            <summary>
-            AddUserApi
-            </summary>
-            <param name="input">UserApiInputDto</param>
-            <returns></returns> 
-        </member>
-        <member name="M:SSS.Api.Controllers.UserApiController.UpdateUserApi(SSS.Domain.UserApi.Dto.UserApiInputDto)">
-            <summary>
-            UpdateUserApi
-            </summary>
-            <param name="input">UserApiInputDto</param>
-            <returns></returns> 
-        </member>
-        <member name="T:SSS.Api.Controllers.UserConfigController">
-            <summary>
-            UserConfigController
+            UrlsMiddleware
             </summary>
         </member>
-        <member name="M:SSS.Api.Controllers.UserConfigController.#ctor(SSS.Application.UserConfig.Service.IUserConfigService)">
+        <member name="M:SSS.Api.Middware.UrlsMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Logging.ILoggerFactory)">
             <summary>
-            UserConfigController
+            UrlsMiddleware
             </summary>
-            <param name="service">IUserConfigService</param>
-        </member>
-        <member name="M:SSS.Api.Controllers.UserConfigController.GetList(SSS.Domain.UserConfig.Dto.UserConfigInputDto)">
-            <summary>
-            GetList
-            </summary>
-            <param name="input">input</param>
-            <returns></returns> 
-        </member>
-        <member name="M:SSS.Api.Controllers.UserConfigController.AddUserConfig(SSS.Domain.UserConfig.Dto.UserConfigInputDto)">
-            <summary>
-            AddUserConfig
-            </summary>
-            <param name="input">UserConfigInputDto</param>
-            <returns></returns> 
-        </member>
-        <member name="M:SSS.Api.Controllers.UserConfigController.UpdateUserConfig(SSS.Domain.UserConfig.Dto.UserConfigInputDto)">
-            <summary>
-            UpdateUserConfig
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="T:SSS.Api.Controllers.UserInfoController">
-            <summary>
-            UserInfoController
-            </summary>
-        </member>
-        <member name="M:SSS.Api.Controllers.UserInfoController.AddUserInfo(SSS.Domain.UserInfo.Dto.UserInfoInputDto)">
-            <summary>
-            AddUserInfo
-            </summary>
-            <param name="input">UserInfoInputDto</param>
-            <returns></returns> 
-        </member>
-        <member name="M:SSS.Api.Controllers.UserInfoController.GetUserInfo(SSS.Domain.UserInfo.Dto.UserInfoInputDto)">
-            <summary>
-            getuserinfo
-            </summary>
-            <param name="input">UserInfoInputDto</param>
-            <returns></returns> 
+            <param name="next"></param>
+            <param name="loggerFactory"></param>
         </member>
         <member name="T:SSS.Api.Startup">
             <summary>

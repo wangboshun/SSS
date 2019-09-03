@@ -15,12 +15,12 @@ using System.Threading.Tasks;
 
 namespace SSS.Domain.CQRS.Student.Command.Handlers
 {
-    [DIService(ServiceLifetime.Scoped,
-       typeof(IRequestHandler<StudentUpdateCommand, bool>),
-       typeof(IRequestHandler<StudentAddCommand, bool>))]
     /// <summary>
     /// StudentCommandHandler
     /// </summary>
+    [DIService(ServiceLifetime.Scoped,
+       typeof(IRequestHandler<StudentUpdateCommand, bool>),
+       typeof(IRequestHandler<StudentAddCommand, bool>))] 
     public class StudentCommandHandler : CommandHandler,
          IRequestHandler<StudentUpdateCommand, bool>,
          IRequestHandler<StudentAddCommand, bool>

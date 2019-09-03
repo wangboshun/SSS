@@ -1,7 +1,7 @@
 ﻿using SSS.Domain.CQRS.Student.Command.Commands;
 using SSS.Domain.Student.Dto;
 
-namespace SSS.Application.Seedwork.Profile
+namespace SSS.Application.Student.Profile
 {
     public class StudentProfile : AutoMapper.Profile
     {

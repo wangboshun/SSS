@@ -2,12 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SSS.Domain.Articel;
 using SSS.Domain.Student;
-using SSS.Domain.Trade;
-using SSS.Domain.UserApi;
-using SSS.Domain.UserConfig;
-using SSS.Domain.UserInfo;
 using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Infrastructure.Seedwork.DbContext
@@ -23,16 +18,6 @@ namespace SSS.Infrastructure.Seedwork.DbContext
         }
 
         public DbSet<Student> Student { get; set; }
-
-        public DbSet<Trade> Trade { get; set; }
-
-        public DbSet<UserInfo> UserInfo { get; set; }
-
-        public DbSet<Articel> articel { get; set; }
-
-        public DbSet<UserApi> UserApi { get; set; }
-
-        public DbSet<UserConfig> UserConfig { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

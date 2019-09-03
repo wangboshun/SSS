@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.Student;
+using SSS.Application.Student.Service;
 using SSS.Domain.Student.Dto;
 using SSS.Infrastructure.Util.Attribute;
 

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 
-namespace SSS.Api.Seedwork
+namespace SSS.Api.Seedwork.Filter
 {
     public class MvcFilter : IActionFilter, IResultFilter, IAuthorizationFilter, IExceptionFilter
     {

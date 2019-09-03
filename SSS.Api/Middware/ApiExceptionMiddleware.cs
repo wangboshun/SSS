@@ -6,11 +6,19 @@ using System.Threading.Tasks;
 
 namespace SSS.Api.Middware
 {
+    /// <summary>
+    /// ApiExceptionMiddleware
+    /// </summary>
     public class ApiExceptionMiddleware
     {
         private readonly RequestDelegate next;
         private readonly ILogger _logger;
 
+        /// <summary>
+        /// ApiExceptionMiddleware
+        /// </summary>
+        /// <param name="next"></param>
+        /// <param name="loggerFactory"></param>
         public ApiExceptionMiddleware(RequestDelegate next, ILoggerFactory loggerFactory)
         {
             this.next = next;

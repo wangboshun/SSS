@@ -4,11 +4,19 @@ using System.Threading.Tasks;
 
 namespace SSS.Api.Middware
 {
+    /// <summary>
+    /// UrlsMiddleware
+    /// </summary>
     public class UrlsMiddleware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger _logger;
 
+        /// <summary>
+        /// UrlsMiddleware
+        /// </summary>
+        /// <param name="next"></param>
+        /// <param name="loggerFactory"></param>
         public UrlsMiddleware(RequestDelegate next, ILoggerFactory loggerFactory)
         {
             _next = next;

@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.Extensions.DependencyInjection;
 using SSS.Domain.CQRS.Student.Command.Commands;
@@ -7,11 +10,8 @@ using SSS.Domain.Seedwork.Model;
 using SSS.Domain.Student.Dto;
 using SSS.Infrastructure.Repository.Student;
 using SSS.Infrastructure.Util.Attribute;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace SSS.Application.Student
+namespace SSS.Application.Student.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IStudentService))]
     public class StudentService : IStudentService

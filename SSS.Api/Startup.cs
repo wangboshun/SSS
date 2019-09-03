@@ -145,9 +145,6 @@ namespace SSS.Api
             else
                 app.UseHsts();
 
-            //登录检测
-            app.UseMiddleware<LoginMiddleware>();
-
             //异常拦截
             app.UseApiException();
 
@@ -161,10 +158,7 @@ namespace SSS.Api
 
             ////认证中间件
             app.UseAuthentication();
-
-            //IdentityServer中间件
-            //app.UseMiddleware<IdentityServerMiddleware>();              
-
+             
             //拦截Urls
             app.UseMiddleware<UrlsMiddleware>();
 
