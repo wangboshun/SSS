@@ -1,5 +1,4 @@
 using SSS.Domain.Seedwork.Model;
-using System;
 
 namespace SSS.Domain.UserConfig
 {
@@ -31,6 +30,6 @@ namespace SSS.Domain.UserConfig
 
         public int Loss { set; get; }
 
-        public int Status { set; get; } 
+        public int Status { set; get; }
     }
 }

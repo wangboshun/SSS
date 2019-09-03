@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using NLog.Web;
+using SSS.Infrastructure.Util.Config;
 using System;
 using System.IO;
 using System.Net;
-using SSS.Infrastructure.Util.Config;
 
 namespace SSS.Api
 {

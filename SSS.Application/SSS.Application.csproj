@@ -6,7 +6,7 @@
  
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
-    <PackageReference Include="Polly" Version="7.1.0" />
+    <PackageReference Include="Polly" Version="7.1.1" />
     <PackageReference Include="Senparc.Weixin.WxOpen" Version="3.5.3" />
     <ProjectReference Include="..\SSS.Application.Seedwork\SSS.Application.Seedwork.csproj" /> 
     <ProjectReference Include="..\SSS.Domain.CQRS\SSS.Domain.CQRS.csproj" />

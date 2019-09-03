@@ -1,11 +1,16 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SSS.Application.Seedwork.Service;
+using SSS.Application.Trade.Service;
 using SSS.Domain.CQRS.UserApi.Command.Commands;
 using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Model;
+using SSS.Domain.Seedwork.Notice;
 using SSS.Domain.UserApi.Dto;
+using SSS.Domain.UserApi.Response;
 using SSS.Infrastructure.Repository.UserApi;
 using SSS.Infrastructure.Util.Attribute;
 using System;
@@ -13,11 +18,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using SSS.Application.Trade.Service;
-using SSS.Domain.UserApi.Response;
-using SSS.Domain.Seedwork.Notice;
 
 namespace SSS.Application.UserApi.Service
 {

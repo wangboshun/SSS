@@ -61,7 +61,7 @@ namespace SSS.Api.Controllers
             input.UserId = UserInfo.id;
             _service.AddUserApi(input);
             return Response(input);
-        } 
+        }
 
         /// <summary>
         /// UpdateUserApi

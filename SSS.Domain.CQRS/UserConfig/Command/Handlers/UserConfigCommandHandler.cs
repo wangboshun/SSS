@@ -50,7 +50,7 @@ namespace SSS.Domain.CQRS.UserConfig.Command.Handlers
             }
             var config = new Domain.UserConfig.UserConfig(request.id, request.userid, request.coin, request.ktime,
                 request.size, request.profit, request.loss, request.status, request.isdelete);
-            config.CreateTime = DateTime.Now; 
+            config.CreateTime = DateTime.Now;
 
             _repository.Add(config);
             if (Commit())

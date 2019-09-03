@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SSS.Domain.UserApi.Response
+﻿namespace SSS.Domain.UserApi.Response
 {
     public class MarginAccounts
     {

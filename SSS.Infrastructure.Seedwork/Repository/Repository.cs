@@ -99,7 +99,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         }
 
         public IQueryable<TEntity> GetPage(int index, int size, Expression<Func<TEntity, bool>> predicate, ref int count)
-        { 
+        {
             count = DbSet.Where(predicate).Count();
             return DbSet.OrderByDescending(x => x.CreateTime).Where(predicate).Skip(size * (index > 0 ? index - 1 : 0)).Take(size);
         }

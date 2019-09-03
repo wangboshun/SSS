@@ -11,7 +11,6 @@ using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.Json;
 using System;
 using System.Collections.Generic;
-using System.Net;
 
 namespace SSS.Application.UserInfo.Service
 {
