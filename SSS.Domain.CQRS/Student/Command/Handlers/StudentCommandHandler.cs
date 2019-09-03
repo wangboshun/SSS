@@ -20,7 +20,7 @@ namespace SSS.Domain.CQRS.Student.Command.Handlers
     /// </summary>
     [DIService(ServiceLifetime.Scoped,
        typeof(IRequestHandler<StudentUpdateCommand, bool>),
-       typeof(IRequestHandler<StudentAddCommand, bool>))] 
+       typeof(IRequestHandler<StudentAddCommand, bool>))]
     public class StudentCommandHandler : CommandHandler,
          IRequestHandler<StudentUpdateCommand, bool>,
          IRequestHandler<StudentAddCommand, bool>

@@ -18,7 +18,6 @@ using Senparc.Weixin.RegisterServices;
 using Senparc.Weixin.WxOpen;
 using SSS.Api.Bootstrap;
 using SSS.Api.Middware;
-using SSS.Api.Seedwork;
 using SSS.Api.Seedwork.Filter;
 using System.IO;
 using System.Reflection;
@@ -158,7 +157,7 @@ namespace SSS.Api
 
             ////认证中间件
             app.UseAuthentication();
-             
+
             //拦截Urls
             app.UseMiddleware<UrlsMiddleware>();
 

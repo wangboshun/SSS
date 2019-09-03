@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using SSS.Domain.Seedwork.Model;
+﻿using SSS.Domain.Seedwork.Model;
 using SSS.Domain.Student.Dto;
+using System.Collections.Generic;
 
 namespace SSS.Application.Student.Service
 {

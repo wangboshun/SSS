@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.Extensions.DependencyInjection;
 using SSS.Domain.CQRS.Student.Command.Commands;
@@ -10,20 +7,25 @@ using SSS.Domain.Seedwork.Model;
 using SSS.Domain.Student.Dto;
 using SSS.Infrastructure.Repository.Student;
 using SSS.Infrastructure.Util.Attribute;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SSS.Application.Student.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IStudentService))]
     public class StudentService : IStudentService
     {
-        [Autowired]
-        private readonly IMapper _mapper;
-
-        [Autowired]
+        private readonly IMapper _mapper; 
         private readonly IEventBus _bus;
-
-        [Autowired]
         private readonly IStudentRepository _studentrepository;
+
+        public StudentService(IMapper mapper, IEventBus bus, IStudentRepository studentrepository)
+        {
+            _mapper = mapper;
+            _bus = bus;
+            _studentrepository = studentrepository;
+        }
 
         public void AddStudent(StudentInputDto input)
         {
@@ -42,8 +44,7 @@ namespace SSS.Application.Student.Service
             int count = 0;
 
             if (input.pagesize == 0 && input.pagesize == 0)
-            {
-                var temp = _studentrepository.GetAll();
+            { 
                 list = _studentrepository.GetAll().ProjectTo<StudentOutputDto>(_mapper.ConfigurationProvider).ToList();
                 count = list.Count;
             }

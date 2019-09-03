@@ -135,7 +135,7 @@
         <member name="T:SSS.Api.Controllers.StudentController">
             <summary>
             StudentController
-            </summary>
+            </summary> 
         </member>
         <member name="M:SSS.Api.Controllers.StudentController.GetByName(SSS.Domain.Student.Dto.StudentInputDto)">
             <summary>
