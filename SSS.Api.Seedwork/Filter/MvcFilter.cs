@@ -39,9 +39,7 @@ namespace SSS.Api.Seedwork.Filter
         //4
         public void OnException(ExceptionContext context)
         {
-            _logger.LogError(new EventId(context.Exception.HResult),
-             context.Exception,
-             context.Exception.Message);
+            _logger.LogError(new EventId(context.Exception.HResult), context.Exception, context.HttpContext.Request.Path);
         }
 
         //5

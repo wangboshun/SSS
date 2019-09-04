@@ -1,5 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using SSS.Domain.Seedwork.Model;
@@ -8,6 +7,7 @@ using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -43,12 +43,12 @@ namespace SSS.Infrastructure.Seedwork.Repository
 
         public virtual IQueryable<TEntity> GetBySql(string sql)
         {
-            return DbSet.FromSqlRaw(sql);
+            return DbSet.FromSql(sql);
         }
 
         public virtual IQueryable<TEntity> GetBySql(string sql, params object[] parameter)
         {
-            return DbSet.FromSqlRaw<TEntity>(sql, GeneratorParameter(parameter));
+            return DbSet.FromSql<TEntity>(sql, GeneratorParameter(parameter));
         }
 
         /// <summary>

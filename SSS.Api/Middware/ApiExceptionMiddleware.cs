@@ -33,7 +33,7 @@ namespace SSS.Api.Middware
             }
             catch (Exception ex)
             {
-                _logger.LogError(new EventId(ex.HResult), ex, ex.Message);
+                _logger.LogError(new EventId(ex.HResult), ex, context.Request.Path);
                 await HandleExceptionAsync(context, 500, ex.Message);
             }
         }
