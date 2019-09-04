@@ -22,7 +22,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using SSS.Api.Seedwork.Controller;
+using SSS.Api.Seedwork.Controller;     
 
 namespace SSS.Api
 {
@@ -59,13 +59,15 @@ namespace SSS.Api
 
             services.AddMemoryCacheEx();
 
-            //url https://blog.csdn.net/u013710468/article/details/83588725
-            var defaultActivator = services.FirstOrDefault(c => c.ServiceType == typeof(IControllerActivator));
-            if (defaultActivator != null)
-            {
-                services.Remove(defaultActivator);
-                services.AddSingleton<IControllerActivator, BaseControllerActivator>();
-            }
+            //services.AddSingleton<ITypeActivatorCache, DefaultTypeActivatorCache>();
+
+            ////url https://blog.csdn.net/u013710468/article/details/83588725
+            //var defaultActivator = services.FirstOrDefault(c => c.ServiceType == typeof(IControllerActivator));
+            //if (defaultActivator != null)
+            //{
+            //    services.Remove(defaultActivator);
+            //    services.AddSingleton<IControllerActivator, BaseControllerActivator>();
+            //}
 
             //HttpContext注入
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

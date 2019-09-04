@@ -2,7 +2,6 @@
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.Student.Service;
 using SSS.Domain.Student.Dto;
-using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Api.Controllers
 {
@@ -15,8 +14,12 @@ namespace SSS.Api.Controllers
     [ApiController]
     public class StudentController : ApiBaseController
     {
-        [Autowired]
         private readonly IStudentService _student;
+
+        public StudentController(IStudentService student)
+        {
+            _student = student;
+        }
 
         /// <summary>
         /// GetByName
