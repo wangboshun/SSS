@@ -170,30 +170,6 @@
             <param name="student">StudentInputDto</param>
             <returns></returns> 
         </member>
-        <member name="T:SSS.Api.Middware.ApiExceptionMiddleware">
-            <summary>
-            ApiExceptionMiddleware
-            </summary>
-        </member>
-        <member name="M:SSS.Api.Middware.ApiExceptionMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Logging.ILoggerFactory)">
-            <summary>
-            ApiExceptionMiddleware
-            </summary>
-            <param name="next"></param>
-            <param name="loggerFactory"></param>
-        </member>
-        <member name="T:SSS.Api.Middware.UrlsMiddleware">
-            <summary>
-            UrlsMiddleware
-            </summary>
-        </member>
-        <member name="M:SSS.Api.Middware.UrlsMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Logging.ILoggerFactory)">
-            <summary>
-            UrlsMiddleware
-            </summary>
-            <param name="next"></param>
-            <param name="loggerFactory"></param>
-        </member>
         <member name="T:SSS.Api.Startup">
             <summary>
             Startup

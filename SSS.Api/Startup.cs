@@ -16,13 +16,13 @@ using Senparc.Weixin.Entities;
 using Senparc.Weixin.RegisterServices;
 using Senparc.Weixin.WxOpen;
 using SSS.Api.Bootstrap;
-using SSS.Api.Middware;
 using SSS.Api.Seedwork.Filter;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using SSS.Api.Seedwork.Controller;     
+using SSS.Api.Seedwork.Controller;
+using SSS.Api.Seedwork.Middleware;
 
 namespace SSS.Api
 {

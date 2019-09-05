@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
-namespace SSS.Api.Middware
+namespace SSS.Api.Seedwork.Middleware
 {
     /// <summary>
     /// UrlsMiddleware

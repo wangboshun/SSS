@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using SSS.Api.Middware;
 using SSS.Infrastructure.Seedwork.Cache.Redis;
 using SSS.Infrastructure.Util.Http;
 using System;
+using SSS.Api.Seedwork.Middleware;
 
 namespace SSS.Api.Bootstrap
 {
