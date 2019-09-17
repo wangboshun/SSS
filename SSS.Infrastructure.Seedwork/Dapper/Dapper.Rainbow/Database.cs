@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Data;
 using System.Collections.Concurrent;
-using System.Reflection;
-using System.Text;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
+using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
+using System.Text;
 
 namespace Dapper
 {

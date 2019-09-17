@@ -16,7 +16,7 @@ namespace SSS.Application.Student.Service
     [DIService(ServiceLifetime.Scoped, typeof(IStudentService))]
     public class StudentService : IStudentService
     {
-        private readonly IMapper _mapper; 
+        private readonly IMapper _mapper;
         private readonly IEventBus _bus;
         private readonly IStudentRepository _studentrepository;
 
@@ -44,7 +44,7 @@ namespace SSS.Application.Student.Service
             int count = 0;
 
             if (input.pagesize == 0 && input.pagesize == 0)
-            { 
+            {
                 list = _studentrepository.GetAll().ProjectTo<StudentOutputDto>(_mapper.ConfigurationProvider).ToList();
                 count = list.Count;
             }

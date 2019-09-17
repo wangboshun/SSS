@@ -17,12 +17,9 @@ using Senparc.Weixin.RegisterServices;
 using Senparc.Weixin.WxOpen;
 using SSS.Api.Bootstrap;
 using SSS.Api.Seedwork.Filter;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using SSS.Api.Seedwork.Controller;
 using SSS.Api.Seedwork.Middleware;
+using System.IO;
+using System.Reflection;
 
 namespace SSS.Api
 {

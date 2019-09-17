@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Dapper;
 
 namespace Dapper.Contrib.Extensions
 {
@@ -313,7 +313,7 @@ namespace Dapper.Contrib.Extensions
             sb.AppendFormat("DELETE FROM {0} WHERE ", name);
 
             var adapter = GetFormatter(connection);
-            
+
             for (var i = 0; i < keyProperties.Count; i++)
             {
                 var property = keyProperties[i];

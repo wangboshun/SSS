@@ -1,18 +1,16 @@
-﻿using System;
+﻿using Dapper;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Collections.Concurrent;
 using System.Reflection.Emit;
-
-using Dapper;
+using System.Text;
 
 #if NETSTANDARD1_3
 using DataException = System.InvalidOperationException;
 #else
-using System.Threading;
 #endif
 
 namespace Dapper.Contrib.Extensions

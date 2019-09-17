@@ -3,16 +3,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using SSS.Api.Seedwork.ServiceCollection;
 using SSS.Infrastructure.Seedwork.Cache.Memcached;
 using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Seedwork.Cache.Redis;
-using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Microsoft.OpenApi.Models;
 
 namespace SSS.Api.Bootstrap
 {
