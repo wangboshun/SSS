@@ -37,6 +37,11 @@
             <param name="app"></param>
             <returns></returns>
         </member>
+        <member name="T:SSS.Api.Bootstrap.ServiceCollectionExtension">
+            <summary>
+            ServiceCollectionExtension
+            </summary>
+        </member>
         <member name="M:SSS.Api.Bootstrap.ServiceCollectionExtension.AddService(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
             Service Base
@@ -100,6 +105,31 @@
             MemoryCache扩展
             </summary>
             <param name="services"></param>
+        </member>
+        <member name="T:SSS.Api.Controllers.ArticelController">
+            <summary>
+            ArticelController
+            </summary>
+        </member>
+        <member name="M:SSS.Api.Controllers.ArticelController.#ctor(SSS.Application.Articel.Service.IArticelService)">
+            <summary>
+            ArticelController
+            </summary>
+            <param name="service">IArticelService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.ArticelController.GetList(SSS.Domain.Articel.Dto.ArticelInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.ArticelController.AddArticel(SSS.Domain.Articel.Dto.ArticelInputDto)">
+            <summary>
+            AddArticel
+            </summary>
+            <param name="input">ArticelInputDto</param>
+            <returns></returns> 
         </member>
         <member name="M:SSS.Api.Controllers.CodeController.AppDomainContext(System.String,System.Collections.Generic.List{SSS.Api.Controllers.Field})">
             <summary>

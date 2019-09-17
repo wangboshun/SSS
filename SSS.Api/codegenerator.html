@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title>代码生成器</title>
-    <link href="https://cdn.bootcdn.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container">
@@ -68,8 +68,8 @@
 
 
 </body>
-<script src="https://cdn.bootcdn.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
-<script src="https://cdn.bootcdn.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
 
@@ -100,9 +100,10 @@
             let field_type = $(this).find("select").val();
             array.push({ "field_name": field_name, "field_type": field_type });
         });
+         
 
         $.ajax({
-            url: 'http://localhost:12345/api/v1/Code/createcode',
+            url: window.location.origin+'/api/v1/Code/createcode',
             type: 'post',
             data: { class_name: class_name, fields: JSON.stringify(array) },
             contentType: 'application/x-www-form-urlencoded',

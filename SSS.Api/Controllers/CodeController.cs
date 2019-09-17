@@ -49,7 +49,10 @@ namespace SSS.Api.Controllers
         [HttpPost("createcode")]
         public IActionResult CreateCode()
         {
-            var class_name = HttpContext.Request.Form["class_name"];
+            string class_name = HttpContext.Request.Form["class_name"];
+            if (string.IsNullOrWhiteSpace(class_name))
+                return Response(null);
+
             Generator_Domain(class_name);
             Generator_Infrastructure(class_name);
             Generator_CQRS(class_name);

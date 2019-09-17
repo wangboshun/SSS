@@ -16,6 +16,9 @@ using System.Reflection;
 namespace SSS.Api.Bootstrap
 {
 
+    /// <summary>
+    /// ServiceCollectionExtension
+    /// </summary>
     public static class ServiceCollectionExtension
     {
         /// <summary>

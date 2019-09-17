@@ -1,7 +1,7 @@
 ﻿using SSS.Domain.CQRS.Template.Command.Commands;
 using SSS.Domain.Template.Dto;
 
-namespace SSS.Application.Template.Profile
+namespace SSS.Application.Template.Mapper
 {
     public class TemplateProfile : AutoMapper.Profile
     {
