@@ -20,6 +20,7 @@ using SSS.Api.Seedwork.Filter;
 using SSS.Api.Seedwork.Middleware;
 using System.IO;
 using System.Reflection;
+using Microsoft.Extensions.Hosting;
 
 namespace SSS.Api
 {
@@ -118,7 +119,7 @@ namespace SSS.Api
         /// </summary>
         /// <param name="app">IApplicationBuilder</param>
         /// <param name="env">IHostingEnvironment</param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<SenparcSetting> senparcSetting, IOptions<SenparcWeixinSetting> senparcWeixinSetting)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<SenparcSetting> senparcSetting, IOptions<SenparcWeixinSetting> senparcWeixinSetting)
         {
             IRegisterService register = RegisterService.Start(env, senparcSetting.Value).UseSenparcGlobal();
 

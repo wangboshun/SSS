@@ -1,4 +1,5 @@
-﻿using SSS.Domain.Seedwork.Model;
+﻿using System;
+using SSS.Domain.Seedwork.Model;
 
 namespace SSS.Domain.Student.Dto
 {
@@ -7,5 +8,7 @@ namespace SSS.Domain.Student.Dto
         public string name { set; get; }
 
         public int age { set; get; }
+
+        public DateTime createtime { set; get; }
     }
 }

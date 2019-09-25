@@ -27,7 +27,8 @@ namespace SSS.Infrastructure.Seedwork.DbContext
                 .Build();
 
             //optionsBuilder.UseSqlServer(config.GetConnectionString("MSSQLConnection"));
-            optionsBuilder.UseMySQL(config.GetConnectionString("MYSQLConnection"));
+            //optionsBuilder.UseMySQL(config.GetConnectionString("MYSQLConnection"));
+            optionsBuilder.UseSqlite(config.GetConnectionString("SQLITEConnection"));
         }
     }
 }

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
-
+ 
   <ItemGroup>
     <ProjectReference Include="..\SSS.Domain\SSS.Domain.csproj" />
     <ProjectReference Include="..\SSS.Infrastructure.Seedwork\SSS.Infrastructure.Seedwork.csproj" />
