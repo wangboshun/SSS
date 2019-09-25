@@ -8,8 +8,7 @@ namespace SSS.Api.Controllers
 {
     /// <summary>
     /// TemplateController
-    /// </summary>
-    [Authorize]
+    /// </summary> 
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]

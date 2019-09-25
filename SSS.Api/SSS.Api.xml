@@ -106,10 +106,35 @@
             </summary>
             <param name="services"></param>
         </member>
+        <member name="T:SSS.Api.Controllers.ActivityController">
+            <summary>
+            ActivityController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.ActivityController.#ctor(SSS.Application.Activity.Service.IActivityService)">
+            <summary>
+            ActivityController
+            </summary>
+            <param name="service">IActivityService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.ActivityController.GetList(SSS.Domain.Activity.Dto.ActivityInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.ActivityController.AddActivity(SSS.Domain.Activity.Dto.ActivityInputDto)">
+            <summary>
+            AddActivity
+            </summary>
+            <param name="input">ActivityInputDto</param>
+            <returns></returns> 
+        </member>
         <member name="T:SSS.Api.Controllers.ArticelController">
             <summary>
             ArticelController
-            </summary>
+            </summary> 
         </member>
         <member name="M:SSS.Api.Controllers.ArticelController.#ctor(SSS.Application.Articel.Service.IArticelService)">
             <summary>
@@ -198,6 +223,31 @@
             AddStudent
             </summary>
             <param name="student">StudentInputDto</param>
+            <returns></returns> 
+        </member>
+        <member name="T:SSS.Api.Controllers.UserActivityController">
+            <summary>
+            UserActivityController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.UserActivityController.#ctor(SSS.Application.UserActivity.Service.IUserActivityService)">
+            <summary>
+            UserActivityController
+            </summary>
+            <param name="service">IUserActivityService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.UserActivityController.GetList(SSS.Domain.UserActivity.Dto.UserActivityInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.UserActivityController.AddUserActivity(SSS.Domain.UserActivity.Dto.UserActivityInputDto)">
+            <summary>
+            AddUserActivity
+            </summary>
+            <param name="input">UserActivityInputDto</param>
             <returns></returns> 
         </member>
         <member name="T:SSS.Api.Startup">

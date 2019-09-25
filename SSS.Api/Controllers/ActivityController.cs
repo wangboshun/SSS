@@ -1,27 +1,27 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc; 
+using Microsoft.AspNetCore.Mvc;
 using SSS.Api.Seedwork.Controller;
-using SSS.Application.Articel.Service;
-using SSS.Domain.Articel.Dto;
+using SSS.Application.Activity.Service;
+using SSS.Domain.Activity.Dto;
 
 namespace SSS.Api.Controllers
 {
     /// <summary>
-    /// ArticelController
+    /// ActivityController
     /// </summary> 
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
     [ApiController]
-    public class ArticelController : ApiBaseController
+    public class ActivityController : ApiBaseController
     {
-        private readonly IArticelService _service;
+        private readonly IActivityService _service;
 
         /// <summary>
-        /// ArticelController
+        /// ActivityController
         /// </summary>
-        /// <param name="service">IArticelService</param>
-        public ArticelController(IArticelService service)
+        /// <param name="service">IActivityService</param>
+        public ActivityController(IActivityService service)
         {
             _service = service;
         }
@@ -33,22 +33,22 @@ namespace SSS.Api.Controllers
         /// <returns></returns> 
         [HttpGet("getlist")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetList([FromQuery]ArticelInputDto input)
+        public IActionResult GetList([FromQuery]ActivityInputDto input)
         {
-            var result = _service.GetListArticel(input);
+            var result = _service.GetListActivity(input);
             return Response(result);
         }
 
         /// <summary>
-        /// AddArticel
+        /// AddActivity
         /// </summary>
-        /// <param name="input">ArticelInputDto</param>
+        /// <param name="input">ActivityInputDto</param>
         /// <returns></returns> 
         [HttpPost("add")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult AddArticel([FromBody]ArticelInputDto input)
+        public IActionResult AddActivity([FromBody]ActivityInputDto input)
         {
-            _service.AddArticel(input);
+            _service.AddActivity(input);
             return Response(input);
         }
     }

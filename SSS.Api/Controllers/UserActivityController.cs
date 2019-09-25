@@ -1,27 +1,27 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc; 
+using Microsoft.AspNetCore.Mvc;
 using SSS.Api.Seedwork.Controller;
-using SSS.Application.Articel.Service;
-using SSS.Domain.Articel.Dto;
+using SSS.Application.UserActivity.Service;
+using SSS.Domain.UserActivity.Dto;
 
 namespace SSS.Api.Controllers
 {
     /// <summary>
-    /// ArticelController
+    /// UserActivityController
     /// </summary> 
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
     [ApiController]
-    public class ArticelController : ApiBaseController
+    public class UserActivityController : ApiBaseController
     {
-        private readonly IArticelService _service;
+        private readonly IUserActivityService _service;
 
         /// <summary>
-        /// ArticelController
+        /// UserActivityController
         /// </summary>
-        /// <param name="service">IArticelService</param>
-        public ArticelController(IArticelService service)
+        /// <param name="service">IUserActivityService</param>
+        public UserActivityController(IUserActivityService service)
         {
             _service = service;
         }
@@ -33,22 +33,22 @@ namespace SSS.Api.Controllers
         /// <returns></returns> 
         [HttpGet("getlist")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetList([FromQuery]ArticelInputDto input)
+        public IActionResult GetList([FromQuery]UserActivityInputDto input)
         {
-            var result = _service.GetListArticel(input);
+            var result = _service.GetListUserActivity(input);
             return Response(result);
         }
 
         /// <summary>
-        /// AddArticel
+        /// AddUserActivity
         /// </summary>
-        /// <param name="input">ArticelInputDto</param>
+        /// <param name="input">UserActivityInputDto</param>
         /// <returns></returns> 
         [HttpPost("add")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult AddArticel([FromBody]ArticelInputDto input)
+        public IActionResult AddUserActivity([FromBody]UserActivityInputDto input)
         {
-            _service.AddArticel(input);
+            _service.AddUserActivity(input);
             return Response(input);
         }
     }
