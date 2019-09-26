@@ -20,9 +20,9 @@ namespace SSS.Domain.CQRS.UserActivity.Command.Handlers
     /// UserActivityCommandHandler
     /// </summary>
     [DIService(ServiceLifetime.Scoped,
-       typeof(IRequestHandler<UserActivityAddCommand, List<Domain.UserActivity.UserActivity>>))]
+       typeof(IRequestHandler<UserActivityAddCommand, bool>))]
     public class UserActivityCommandHandler : CommandHandler,
-         IRequestHandler<UserActivityAddCommand, List<Domain.UserActivity.UserActivity>>
+         IRequestHandler<UserActivityAddCommand, bool>
     {
 
         private readonly IUserActivityRepository _repository;
@@ -40,14 +40,14 @@ namespace SSS.Domain.CQRS.UserActivity.Command.Handlers
             _repository = repository;
             Bus = bus;
         }
-        public Task<List<Domain.UserActivity.UserActivity>> Handle(UserActivityAddCommand request, CancellationToken cancellationToken)
+        public Task<bool> Handle(UserActivityAddCommand request, CancellationToken cancellationToken)
         {
             List<Domain.UserActivity.UserActivity> list = new List<Domain.UserActivity.UserActivity>();
 
             if (!request.IsValid())
             {
                 NotifyValidationErrors(request);
-                return Task.FromResult(list);
+                return Task.FromResult(false);
             }
 
             if (request.grouptotal > 0)
@@ -66,9 +66,9 @@ namespace SSS.Domain.CQRS.UserActivity.Command.Handlers
             {
                 _logger.LogInformation("UserActivityAddCommand Success");
                 Bus.RaiseEvent(new UserActivityAddEvent(list));
-                return Task.FromResult(list);
+                return Task.FromResult(true);
             }
-            return Task.FromResult(list);
+            return Task.FromResult(false);
         }
     }
 }
