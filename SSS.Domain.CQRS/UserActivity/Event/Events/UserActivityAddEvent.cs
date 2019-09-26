@@ -1,14 +1,15 @@
 using System;
+using System.Collections.Generic;
 
 namespace SSS.Domain.CQRS.UserActivity.Event.Events
 {
     public class UserActivityAddEvent : Seedwork.Events.Event
     {
-         public string id { set; get; } 
+        public List<Domain.UserActivity.UserActivity> list { set; get; }
 
-        public UserActivityAddEvent(Domain.UserActivity.UserActivity model)
+        public UserActivityAddEvent(List<Domain.UserActivity.UserActivity> list)
         {
-            this.id = model.Id; 
+            this.list = list;
         }
     }
 }

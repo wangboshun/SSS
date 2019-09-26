@@ -33,9 +33,9 @@ namespace SSS.Application.Activity.Service
             _bus.SendCommand(cmd);
         }
 
-		public Pages<List<ActivityOutputDto>> GetListActivity(ActivityInputDto input) 
-		{
-           List<ActivityOutputDto> list;
+        public Pages<List<ActivityOutputDto>> GetListActivity(ActivityInputDto input)
+        {
+            List<ActivityOutputDto> list;
             int count = 0;
 
             if (input.pagesize == 0 && input.pagesize == 0)
@@ -47,6 +47,12 @@ namespace SSS.Application.Activity.Service
             else
                 list = _repository.GetPage(input.pageindex, input.pagesize, ref count).ProjectTo<ActivityOutputDto>(_mapper.ConfigurationProvider).ToList();
 
-            return new Pages<List<ActivityOutputDto>>(list, count);}
-      } 
+            return new Pages<List<ActivityOutputDto>>(list, count);
+        }
+
+        public ActivityOutputDto GetById(ActivityInputDto input)
+        {
+            return _mapper.Map<ActivityOutputDto>(_repository.Get(x => x.Id.Equals(input.id) && x.IsDelete == 0));
+        }
+    }
 }

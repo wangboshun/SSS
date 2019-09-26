@@ -5,16 +5,18 @@ namespace SSS.Domain.UserActivity
 {
     public class UserActivity : Entity
     {
-        public UserActivity(string id)
+        public UserActivity(string id,string ActivityId, string WechatName)
         {
-            this.Id = id; 
+            this.Id = id;
+            this.ActivityId = ActivityId;
+            this.WechatName = WechatName;
         } 
 
-        public string Activityid { set; get; }
+        public string ActivityId { set; get; }
 
-        public string Wechatname { set; get; }
+        public string WechatName { set; get; }
 
-        public int Groupnumber { set; get; }
+        public int GroupNumber { set; get; }
 
         public int Status { set; get; }
     }

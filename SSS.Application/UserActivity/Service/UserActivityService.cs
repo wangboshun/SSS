@@ -30,7 +30,7 @@ namespace SSS.Application.UserActivity.Service
         {
             input.id = Guid.NewGuid().ToString();
             var cmd = _mapper.Map<UserActivityAddCommand>(input);
-            _bus.SendCommand(cmd);
+            var result=_bus.SendCommand(cmd);
         }
 
 		public Pages<List<UserActivityOutputDto>> GetListUserActivity(UserActivityInputDto input) 

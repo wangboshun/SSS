@@ -3,13 +3,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SSS.Domain.CQRS.UserActivity.Command.Commands;
 using SSS.Domain.CQRS.UserActivity.Event.Events;
-using SSS.Infrastructure.Util.Attribute; 
+using SSS.Infrastructure.Util.Attribute;
 using SSS.Domain.Seedwork.Command;
 using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Notice;
 using SSS.Domain.Seedwork.UnitOfWork;
 using SSS.Infrastructure.Repository.UserActivity;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,9 +20,9 @@ namespace SSS.Domain.CQRS.UserActivity.Command.Handlers
     /// UserActivityCommandHandler
     /// </summary>
     [DIService(ServiceLifetime.Scoped,
-       typeof(IRequestHandler<UserActivityAddCommand, bool>))]
+       typeof(IRequestHandler<UserActivityAddCommand, List<Domain.UserActivity.UserActivity>>))]
     public class UserActivityCommandHandler : CommandHandler,
-         IRequestHandler<UserActivityAddCommand, bool>
+         IRequestHandler<UserActivityAddCommand, List<Domain.UserActivity.UserActivity>>
     {
 
         private readonly IUserActivityRepository _repository;
@@ -33,30 +34,41 @@ namespace SSS.Domain.CQRS.UserActivity.Command.Handlers
                                       IEventBus bus,
                                       INotificationHandler<ErrorNotice> Notice,
                                       ILogger<UserActivityCommandHandler> logger)
-									  : base(uow, logger,bus, Notice)
+                                      : base(uow, logger, bus, Notice)
         {
             _logger = logger;
             _repository = repository;
             Bus = bus;
         }
-        public Task<bool> Handle(UserActivityAddCommand request, CancellationToken cancellationToken)
+        public Task<List<Domain.UserActivity.UserActivity>> Handle(UserActivityAddCommand request, CancellationToken cancellationToken)
         {
+            List<Domain.UserActivity.UserActivity> list = new List<Domain.UserActivity.UserActivity>();
+
             if (!request.IsValid())
             {
                 NotifyValidationErrors(request);
-                return Task.FromResult(false);
+                return Task.FromResult(list);
             }
-            var model = new SSS.Domain.UserActivity.UserActivity(request.id);
-            model.CreateTime = DateTime.Now;
-            model.IsDelete = 0;
 
-            _repository.Add(model);
-            if (Commit())
+            if (request.grouptotal > 0)
+            {
+                for (int i = 0; i < request.grouptotal; i++)
+                {
+                    var model = new SSS.Domain.UserActivity.UserActivity(Guid.NewGuid().ToString(), request.activityid, request.wechatname);
+
+                    model.CreateTime = DateTime.Now;
+                    model.IsDelete = 0;
+                    list.Add(model);
+                }
+            }
+
+            if (_repository.AddActivity(list))
             {
                 _logger.LogInformation("UserActivityAddCommand Success");
-                Bus.RaiseEvent(new UserActivityAddEvent(model));
+                Bus.RaiseEvent(new UserActivityAddEvent(list));
+                return Task.FromResult(list);
             }
-            return Task.FromResult(true);
+            return Task.FromResult(list);
         }
     }
 }

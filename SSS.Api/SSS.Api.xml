@@ -124,6 +124,13 @@
             <param name="input">input</param>
             <returns></returns> 
         </member>
+        <member name="M:SSS.Api.Controllers.ActivityController.GetById(SSS.Domain.Activity.Dto.ActivityInputDto)">
+            <summary>
+            Get
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
         <member name="M:SSS.Api.Controllers.ActivityController.AddActivity(SSS.Domain.Activity.Dto.ActivityInputDto)">
             <summary>
             AddActivity

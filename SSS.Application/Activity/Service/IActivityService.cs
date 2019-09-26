@@ -9,5 +9,7 @@ namespace SSS.Application.Activity.Service
         void AddActivity(ActivityInputDto input);
 
 		Pages<List<ActivityOutputDto>> GetListActivity(ActivityInputDto input);
+
+        ActivityOutputDto GetById(ActivityInputDto input);
     }
 }

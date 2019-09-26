@@ -40,6 +40,19 @@ namespace SSS.Api.Controllers
         }
 
         /// <summary>
+        /// Get
+        /// </summary>
+        /// <param name="input">input</param>
+        /// <returns></returns> 
+        [HttpGet("getbyid")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult GetById([FromQuery]ActivityInputDto input)
+        {
+            var result = _service.GetById(input);
+            return Response(result);
+        }
+
+        /// <summary>
         /// AddActivity
         /// </summary>
         /// <param name="input">ActivityInputDto</param>

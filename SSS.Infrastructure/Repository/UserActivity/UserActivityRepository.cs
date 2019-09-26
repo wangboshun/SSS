@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Seedwork.DbContext;
@@ -10,6 +11,13 @@ namespace SSS.Infrastructure.Repository.UserActivity
     {
         public UserActivityRepository(DbcontextBase context) : base(context)
         {
+        }
+
+        public bool AddActivity(List<Domain.UserActivity.UserActivity> list)
+        {
+            DbSet.AddRange(list);
+
+            return SaveChanges() > 0;
         }
     }
 }

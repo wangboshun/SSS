@@ -16,6 +16,7 @@ namespace SSS.Domain.Seedwork.Repository
        where TEntity : Entity
     {
         void Add(TEntity obj);
+
         TEntity Get(string id);
         TEntity Get(Expression<Func<TEntity, bool>> predicate);
         IQueryable<TEntity> GetBySql(string sql);
