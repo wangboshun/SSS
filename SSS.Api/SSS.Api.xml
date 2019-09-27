@@ -250,11 +250,43 @@
             <param name="input">input</param>
             <returns></returns> 
         </member>
+        <member name="M:SSS.Api.Controllers.UserActivityController.GetGroupNumberByName(SSS.Domain.UserActivity.Dto.UserActivityInputDto)">
+            <summary>
+            GetGroupNumberByName
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
         <member name="M:SSS.Api.Controllers.UserActivityController.AddUserActivity(SSS.Domain.UserActivity.Dto.UserActivityInputDto)">
             <summary>
             AddUserActivity
             </summary>
             <param name="input">UserActivityInputDto</param>
+            <returns></returns> 
+        </member>
+        <member name="T:SSS.Api.Controllers.UserInfoController">
+            <summary>
+            UserInfoController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.UserInfoController.#ctor(SSS.Application.UserInfo.Service.IUserInfoService)">
+            <summary>
+            UserInfoController
+            </summary>
+            <param name="service">IUserInfoService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.UserInfoController.GetList(SSS.Domain.UserInfo.Dto.UserInfoInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.UserInfoController.AddUserInfo(SSS.Domain.UserInfo.Dto.UserInfoInputDto)">
+            <summary>
+            AddUserInfo
+            </summary>
+            <param name="input">UserInfoInputDto</param>
             <returns></returns> 
         </member>
         <member name="T:SSS.Api.Startup">

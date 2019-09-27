@@ -40,6 +40,19 @@ namespace SSS.Api.Controllers
         }
 
         /// <summary>
+        /// GetGroupNumberByName
+        /// </summary>
+        /// <param name="input">input</param>
+        /// <returns></returns> 
+        [HttpGet("getgroupnumberbyname")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult GetGroupNumberByName([FromQuery]UserActivityInputDto input)
+        {
+            var result = _service.GetGroupNumberByName(input);
+            return Response(result);
+        }
+
+        /// <summary>
         /// AddUserActivity
         /// </summary>
         /// <param name="input">UserActivityInputDto</param>

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SSS.Application.Template.Service
 {
-    public interface ITemplateService
+    public interface ITemplateService : IQueryService<SSS.Domain.Template.Template, TemplateInputDto, TemplateOutputDto>
     {
         void AddTemplate(TemplateInputDto input);
 

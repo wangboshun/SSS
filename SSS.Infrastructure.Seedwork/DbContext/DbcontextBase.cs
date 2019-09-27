@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using SSS.Domain.Activity;
 using SSS.Domain.Student;
 using SSS.Domain.UserActivity;
+using SSS.Domain.UserInfo;
 using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Infrastructure.Seedwork.DbContext
@@ -24,6 +25,8 @@ namespace SSS.Infrastructure.Seedwork.DbContext
         public DbSet<Activity> Activity { get; set; }
 
         public DbSet<UserActivity> UserActivity { get; set; }
+
+        public DbSet<UserInfo> UserInfo { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

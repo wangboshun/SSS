@@ -9,5 +9,8 @@ namespace SSS.Application.UserActivity.Service
         void AddUserActivity(UserActivityInputDto input);
 
 		Pages<List<UserActivityOutputDto>> GetListUserActivity(UserActivityInputDto input);
+
+        List<int> GetGroupNumberByName(UserActivityInputDto input);
+
     }
 }

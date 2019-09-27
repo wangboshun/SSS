@@ -1,31 +1,37 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using SSS.Application.Seedwork.Service;
 using SSS.Domain.CQRS.Template.Command.Commands;
-using SSS.Infrastructure.Util.Attribute;
-using SSS.Domain.Template.Dto;
-using SSS.Infrastructure.Repository.Template;
-using System;
 using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Model;
+using SSS.Domain.Template.Dto;
+using SSS.Infrastructure.Repository.Template;
+using SSS.Infrastructure.Util.Attribute;
+using System;
 using System.Collections.Generic;
-using AutoMapper.QueryableExtensions;
 using System.Linq;
 
 namespace SSS.Application.Template.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(ITemplateService))]
-    public class TemplateService : ITemplateService
+    public class TemplateService : QueryService<SSS.Domain.Template.Template, TemplateInputDto, TemplateOutputDto>,
+        ITemplateService
     {
         private readonly IMapper _mapper;
         private readonly IEventBus _bus;
-
+        private readonly ILogger _logger;
         private readonly ITemplateRepository _repository;
-        public TemplateService(IMapper mapper, IEventBus bus, ITemplateRepository repository)
+
+        public TemplateService(IMapper mapper, ITemplateRepository repository, IEventBus bus, ILogger<TemplateService> logger) : base(mapper, repository)
         {
             _mapper = mapper;
             _bus = bus;
             _repository = repository;
+            _logger = logger;
         }
+
         public void AddTemplate(TemplateInputDto input)
         {
             input.id = Guid.NewGuid().ToString();
@@ -33,20 +39,9 @@ namespace SSS.Application.Template.Service
             _bus.SendCommand(cmd);
         }
 
-		public Pages<List<TemplateOutputDto>> GetListTemplate(TemplateInputDto input) 
-		{
-           List<TemplateOutputDto> list;
-            int count = 0;
-
-            if (input.pagesize == 0 && input.pagesize == 0)
-            {
-                var temp = _repository.GetAll();
-                list = _repository.GetAll().ProjectTo<TemplateOutputDto>(_mapper.ConfigurationProvider).ToList();
-                count = list.Count;
-            }
-            else
-                list = _repository.GetPage(input.pageindex, input.pagesize, ref count).ProjectTo<TemplateOutputDto>(_mapper.ConfigurationProvider).ToList();
-
-            return new Pages<List<TemplateOutputDto>>(list, count);}
-      } 
+        public Pages<List<TemplateOutputDto>> GetListTemplate(TemplateInputDto input)
+        {
+            return GetList(input);
+        }
+    }
 }

@@ -30,12 +30,23 @@ namespace SSS.Application.UserActivity.Service
         {
             input.id = Guid.NewGuid().ToString();
             var cmd = _mapper.Map<UserActivityAddCommand>(input);
-            var result=_bus.SendCommand(cmd);
+            var result = _bus.SendCommand(cmd);
         }
 
-		public Pages<List<UserActivityOutputDto>> GetListUserActivity(UserActivityInputDto input) 
-		{
-           List<UserActivityOutputDto> list;
+        public List<int> GetGroupNumberByName(UserActivityInputDto input)
+        {
+            List<int> GroupNumber = new List<int>();
+            var list = _repository.GetAll(x => x.WechatName.Equals(input.wechatname) && x.ActivityId.Equals(input.activityid)).OrderBy(x => x.GroupNumber);
+            foreach (var item in list)
+            {
+                GroupNumber.Add(item.GroupNumber);
+            }
+
+            return GroupNumber;
+        }
+        public Pages<List<UserActivityOutputDto>> GetListUserActivity(UserActivityInputDto input)
+        {
+            List<UserActivityOutputDto> list;
             int count = 0;
 
             if (input.pagesize == 0 && input.pagesize == 0)
@@ -47,6 +58,7 @@ namespace SSS.Application.UserActivity.Service
             else
                 list = _repository.GetPage(input.pageindex, input.pagesize, ref count).ProjectTo<UserActivityOutputDto>(_mapper.ConfigurationProvider).ToList();
 
-            return new Pages<List<UserActivityOutputDto>>(list, count);}
-      } 
+            return new Pages<List<UserActivityOutputDto>>(list, count);
+        }
+    }
 }
