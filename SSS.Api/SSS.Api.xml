@@ -250,7 +250,7 @@
             <param name="input">input</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.UserActivityController.GetGroupNumberByName(SSS.Domain.UserActivity.Dto.UserActivityInputDto)">
+        <member name="M:SSS.Api.Controllers.UserActivityController.GetGroupNumber(SSS.Domain.UserActivity.Dto.UserActivityInputDto)">
             <summary>
             GetGroupNumberByName
             </summary>

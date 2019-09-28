@@ -12,6 +12,7 @@ namespace SSS.Domain.CQRS.UserActivity.Command.Commands
             this.id = input.id;
             this.activityid = input.activityid;
             this.grouptotal = input.grouptotal;
+            this.userid = input.userid;
             this.wechatname = input.wechatname;
         }
 

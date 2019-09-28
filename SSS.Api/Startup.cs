@@ -128,6 +128,10 @@ namespace SSS.Api
             else
                 app.UseHsts();
 
+            //跨域
+            app.UseHttpsRedirection().UseCors(builder =>
+                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
             //异常拦截
             app.UseApiException();
 
@@ -137,8 +141,11 @@ namespace SSS.Api
             ////认证中间件
             app.UseAuthentication();
 
-            //拦截Urls
+            //Url重定向
             app.UseMiddleware<UrlsMiddleware>();
+
+            //拦截登录
+            app.UseMiddleware<LoginMiddleware>();
 
             //http上下文
             app.UseHttpContext();

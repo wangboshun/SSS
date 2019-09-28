@@ -44,11 +44,12 @@ namespace SSS.Api.Controllers
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
-        [HttpGet("getgroupnumberbyname")]
+        [HttpGet("getgroupnumber")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetGroupNumberByName([FromQuery]UserActivityInputDto input)
+        public IActionResult GetGroupNumber([FromQuery]UserActivityInputDto input)
         {
-            var result = _service.GetGroupNumberByName(input);
+            input.userid = UserInfo?.id;
+            var result = _service.GetGroupNumber(input);
             return Response(result);
         }
 
@@ -61,6 +62,7 @@ namespace SSS.Api.Controllers
         [AllowAnonymous]  //匿名访问
         public IActionResult AddUserActivity([FromBody]UserActivityInputDto input)
         {
+            input.userid = UserInfo?.id;
             _service.AddUserActivity(input);
             return Response(input);
         }

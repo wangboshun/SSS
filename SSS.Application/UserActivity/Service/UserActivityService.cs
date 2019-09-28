@@ -33,10 +33,10 @@ namespace SSS.Application.UserActivity.Service
             var result = _bus.SendCommand(cmd);
         }
 
-        public List<int> GetGroupNumberByName(UserActivityInputDto input)
+        public List<int> GetGroupNumber(UserActivityInputDto input)
         {
             List<int> GroupNumber = new List<int>();
-            var list = _repository.GetAll(x => x.WechatName.Equals(input.wechatname) && x.ActivityId.Equals(input.activityid)).OrderBy(x => x.GroupNumber);
+            var list = _repository.GetAll(x => x.UserId.Equals(input.userid) && x.ActivityId.Equals(input.activityid)).OrderBy(x => x.GroupNumber);
             foreach (var item in list)
             {
                 GroupNumber.Add(item.GroupNumber);

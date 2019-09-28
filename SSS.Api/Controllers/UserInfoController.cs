@@ -39,9 +39,9 @@ namespace SSS.Api.Controllers
             return Response(result);
         }
 
-        [HttpGet("get")]
+        [HttpPost("login")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult Get([FromQuery]UserInfoInputDto input)
+        public IActionResult Login([FromBody]UserInfoInputDto input)
         {
             var result = _service.GetByUserName(input);
             return Response(result);

@@ -8,7 +8,9 @@ namespace SSS.Domain.CQRS.UserActivity.Command.Commands
 
          public string activityid { set; get; }
 
-         public string wechatname { set; get; }
+         public string userid { set; get; }
+
+        public string wechatname { set; get; }
 
          public int grouptotal { set; get; }
     }

@@ -45,7 +45,8 @@ namespace SSS.Domain.CQRS.UserInfo.Command.Handlers
             {
                 NotifyValidationErrors(request);
                 return Task.FromResult(false);
-            }
+            } 
+
             var model = new SSS.Domain.UserInfo.UserInfo(request.id, request.username, request.password);
             model.CreateTime = DateTime.Now;
             model.IsDelete = 0;

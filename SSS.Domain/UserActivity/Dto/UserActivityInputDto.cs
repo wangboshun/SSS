@@ -6,6 +6,8 @@ namespace SSS.Domain.UserActivity.Dto
     { 
         public string activityid { set; get; }
 
+        public string userid { set; get; }
+
         public string wechatname { set; get; }
 
         public int grouptotal { set; get; } 

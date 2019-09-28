@@ -10,7 +10,7 @@ namespace SSS.Application.UserActivity.Service
 
 		Pages<List<UserActivityOutputDto>> GetListUserActivity(UserActivityInputDto input);
 
-        List<int> GetGroupNumberByName(UserActivityInputDto input);
+        List<int> GetGroupNumber(UserActivityInputDto input);
 
     }
 }

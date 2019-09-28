@@ -33,6 +33,13 @@ namespace SSS.Application.UserInfo.Service
 
         public void AddUserInfo(UserInfoInputDto input)
         {
+            var result = _repository.Get(x => x.UserName.Equals(input.username));
+            if (result != null)
+            {
+                _bus.RaiseEvent(new ErrorNotice(input.GetType().Name, "用户已存在！"));
+                return;
+            }
+
             input.id = Guid.NewGuid().ToString();
             var cmd = _mapper.Map<UserInfoAddCommand>(input);
             _bus.SendCommand(cmd);
@@ -40,14 +47,14 @@ namespace SSS.Application.UserInfo.Service
 
         public UserInfoOutputDto GetByUserName(UserInfoInputDto input)
         {
-            var model = _repository.Get(x => x.UserName.Equals(input.username) && x.PassWord.Equals(input.password));
-            if (model == null)
+            var result = _repository.Get(x => x.UserName.Equals(input.username) && x.PassWord.Equals(input.password));
+            if (result == null)
             {
                 _bus.RaiseEvent(new ErrorNotice(input.GetType().Name, "账户密码错误！"));
                 return null;
             }
 
-            return _mapper.Map<UserInfoOutputDto>(model);
+            return _mapper.Map<UserInfoOutputDto>(result);
         }
 
         public Pages<List<UserInfoOutputDto>> GetListUserInfo(UserInfoInputDto input)
