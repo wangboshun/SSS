@@ -48,28 +48,18 @@ namespace SSS.Api.Seedwork.Middleware
                     if (val != null)
                         await _next.Invoke(context);
                     else
-                    {
-                        IUserInfoService userinfoservice = (IUserInfoService)HttpContextService.Current.RequestServices.GetService(typeof(IUserInfoService));
-                        var userinfo = userinfoservice.Get(openid);
-                        if (userinfo == null)
-                            await LoginAsync(context, 401, "无效账户,非法请求！");
-                        else
-                        {
-                            _memorycache.Set(cachekey, userinfo, 0.2);
-                            await _next.Invoke(context);
-                        }
-                    }
+                        await LoginAsync(context, 401, "登录超时，重新登录！");
                 }
                 else
-                    await LoginAsync(context, 401, "请授权登录！");
+                    await LoginAsync(context, 401);
             }
             else
                 await _next.Invoke(context);
         }
 
-        private static Task LoginAsync(HttpContext context, int code, string msg)
+        private static Task LoginAsync(HttpContext context, int code, string msg = "请求失败，权限不足！")
         {
-            var data = new { status = false, data = "登录错误，权限不足", message = msg, code = code };
+            var data = new { status = false, data = msg, message = msg, code = code };
             var result = data.ToJson();
             context.Response.Headers["Access-Control-Allow-Origin"] = "*";
             context.Response.ContentType = "application/json;charset=utf-8";

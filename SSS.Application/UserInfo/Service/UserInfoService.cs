@@ -11,6 +11,7 @@ using SSS.Infrastructure.Repository.UserInfo;
 using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
+using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 
 namespace SSS.Application.UserInfo.Service
 {
@@ -22,12 +23,14 @@ namespace SSS.Application.UserInfo.Service
         private readonly IEventBus _bus;
         private readonly ILogger _logger;
         private readonly IUserInfoRepository _repository;
+        private readonly MemoryCacheEx _memorycache;
 
-        public UserInfoService(IMapper mapper, IUserInfoRepository repository, IEventBus bus, ILogger<UserInfoService> logger) : base(mapper, repository)
+        public UserInfoService(IMapper mapper, MemoryCacheEx memorycache, IUserInfoRepository repository, IEventBus bus, ILogger<UserInfoService> logger) : base(mapper, repository)
         {
             _mapper = mapper;
             _bus = bus;
             _repository = repository;
+            _memorycache = memorycache;
             _logger = logger;
         }
 
@@ -54,7 +57,9 @@ namespace SSS.Application.UserInfo.Service
                 return null;
             }
 
-            return _mapper.Map<UserInfoOutputDto>(result);
+            var userinfo = _mapper.Map<UserInfoOutputDto>(result);
+            _memorycache.Set("AuthUserInfo_" + userinfo.id, userinfo, 60 * 24);
+            return userinfo;
         }
 
         public Pages<List<UserInfoOutputDto>> GetListUserInfo(UserInfoInputDto input)
