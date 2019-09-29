@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace SSS.Domain.CQRS.UserActivity.Event.Events

@@ -26,7 +26,7 @@ namespace SSS.Api.Controllers
             _service = service;
         }
 
-		/// <summary>
+        /// <summary>
         /// GetList
         /// </summary>
         /// <param name="input">input</param>

@@ -1,5 +1,4 @@
 using SSS.Domain.Seedwork.Model;
-using System;
 
 namespace SSS.Domain.Articel
 {
@@ -7,8 +6,9 @@ namespace SSS.Domain.Articel
     {
         public Articel(string id)
         {
-            this.Id = id; 
-        } 
+            this.Id = id;
+        }
+
 
         public string Title { set; get; }
 

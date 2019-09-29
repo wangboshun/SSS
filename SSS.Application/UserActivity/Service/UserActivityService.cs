@@ -1,14 +1,14 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.Extensions.DependencyInjection;
 using SSS.Domain.CQRS.UserActivity.Command.Commands;
-using SSS.Infrastructure.Util.Attribute;
-using SSS.Domain.UserActivity.Dto;
-using SSS.Infrastructure.Repository.UserActivity;
-using System;
 using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Model;
+using SSS.Domain.UserActivity.Dto;
+using SSS.Infrastructure.Repository.UserActivity;
+using SSS.Infrastructure.Util.Attribute;
+using System;
 using System.Collections.Generic;
-using AutoMapper.QueryableExtensions;
 using System.Linq;
 
 namespace SSS.Application.UserActivity.Service

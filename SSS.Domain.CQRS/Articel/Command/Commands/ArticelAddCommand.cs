@@ -1,5 +1,5 @@
-using SSS.Domain.CQRS.Articel.Validations;
 using SSS.Domain.Articel.Dto;
+using SSS.Domain.CQRS.Articel.Validations;
 
 namespace SSS.Domain.CQRS.Articel.Command.Commands
 {
@@ -7,7 +7,7 @@ namespace SSS.Domain.CQRS.Articel.Command.Commands
     {
         public ArticelAddCommand(ArticelInputDto input)
         {
-            this.id = input.id; 
+            this.id = input.id;
         }
 
         public override bool IsValid()

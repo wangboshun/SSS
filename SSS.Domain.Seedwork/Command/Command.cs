@@ -15,5 +15,5 @@ namespace SSS.Domain.Seedwork.Command
         }
 
         public abstract bool IsValid();
-    } 
+    }
 }

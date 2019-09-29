@@ -3,18 +3,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SSS.Domain.CQRS.UserActivity.Command.Commands;
 using SSS.Domain.CQRS.UserActivity.Event.Events;
-using SSS.Infrastructure.Util.Attribute;
 using SSS.Domain.Seedwork.Command;
 using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Notice;
 using SSS.Domain.Seedwork.UnitOfWork;
+using SSS.Infrastructure.Repository.Activity;
 using SSS.Infrastructure.Repository.UserActivity;
+using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SSS.Infrastructure.Repository.Activity;
 
 namespace SSS.Domain.CQRS.UserActivity.Command.Handlers
 {

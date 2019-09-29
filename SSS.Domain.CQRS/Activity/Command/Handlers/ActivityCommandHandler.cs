@@ -3,12 +3,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SSS.Domain.CQRS.Activity.Command.Commands;
 using SSS.Domain.CQRS.Activity.Event.Events;
-using SSS.Infrastructure.Util.Attribute; 
 using SSS.Domain.Seedwork.Command;
 using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Notice;
 using SSS.Domain.Seedwork.UnitOfWork;
 using SSS.Infrastructure.Repository.Activity;
+using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,7 +33,7 @@ namespace SSS.Domain.CQRS.Activity.Command.Handlers
                                       IEventBus bus,
                                       INotificationHandler<ErrorNotice> Notice,
                                       ILogger<ActivityCommandHandler> logger)
-									  : base(uow, logger,bus, Notice)
+                                      : base(uow, logger, bus, Notice)
         {
             _logger = logger;
             _repository = repository;

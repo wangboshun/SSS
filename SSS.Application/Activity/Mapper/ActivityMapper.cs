@@ -1,5 +1,5 @@
-using SSS.Domain.CQRS.Activity.Command.Commands;
 using SSS.Domain.Activity.Dto;
+using SSS.Domain.CQRS.Activity.Command.Commands;
 
 namespace SSS.Application.Activity.Mapper
 {

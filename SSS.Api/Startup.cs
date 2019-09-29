@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Senparc.CO2NET;
 using Senparc.CO2NET.RegisterServices;
@@ -20,7 +21,6 @@ using SSS.Api.Seedwork.Filter;
 using SSS.Api.Seedwork.Middleware;
 using System.IO;
 using System.Reflection;
-using Microsoft.Extensions.Hosting;
 
 namespace SSS.Api
 {

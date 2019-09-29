@@ -3,12 +3,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SSS.Domain.CQRS.UserInfo.Command.Commands;
 using SSS.Domain.CQRS.UserInfo.Event.Events;
-using SSS.Infrastructure.Util.Attribute;
 using SSS.Domain.Seedwork.Command;
 using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Notice;
 using SSS.Domain.Seedwork.UnitOfWork;
 using SSS.Infrastructure.Repository.UserInfo;
+using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,7 +45,7 @@ namespace SSS.Domain.CQRS.UserInfo.Command.Handlers
             {
                 NotifyValidationErrors(request);
                 return Task.FromResult(false);
-            } 
+            }
 
             var model = new SSS.Domain.UserInfo.UserInfo(request.id, request.username, request.password);
             model.CreateTime = DateTime.Now;

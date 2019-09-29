@@ -1,5 +1,5 @@
-using SSS.Domain.CQRS.Activity.Validations;
 using SSS.Domain.Activity.Dto;
+using SSS.Domain.CQRS.Activity.Validations;
 
 namespace SSS.Domain.CQRS.Activity.Command.Commands
 {
@@ -7,7 +7,7 @@ namespace SSS.Domain.CQRS.Activity.Command.Commands
     {
         public ActivityAddCommand(ActivityInputDto input)
         {
-            this.id = input.id; 
+            this.id = input.id;
         }
 
         public override bool IsValid()

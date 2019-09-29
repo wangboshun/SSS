@@ -7,8 +7,9 @@ namespace SSS.Domain.Activity
     {
         public Activity(string id)
         {
-            this.Id = id; 
-        } 
+            this.Id = id;
+        }
+
 
         public string Title { set; get; }
 

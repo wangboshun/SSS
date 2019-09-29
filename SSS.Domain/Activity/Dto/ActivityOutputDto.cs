@@ -1,5 +1,5 @@
+using SSS.Domain.Seedwork.Model;
 using System;
-using SSS.Domain.Seedwork.Model; 
 
 namespace SSS.Domain.Activity.Dto
 {
@@ -17,6 +17,6 @@ namespace SSS.Domain.Activity.Dto
 
         public DateTime starttime { set; get; }
 
-        public DateTime endtime { set; get; }  
+        public DateTime endtime { set; get; }
     }
 }

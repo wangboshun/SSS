@@ -1,6 +1,5 @@
 using FluentValidation;
 using SSS.Domain.CQRS.Articel.Command.Commands;
-using System;
 
 namespace SSS.Domain.CQRS.Articel.Validations
 {
@@ -9,7 +8,7 @@ namespace SSS.Domain.CQRS.Articel.Validations
 
         protected void ValidateId()
         {
-             RuleFor(c => c.id).NotEmpty().WithMessage("请输入Id");
+            RuleFor(c => c.id).NotEmpty().WithMessage("请输入Id");
         }
     }
 }
