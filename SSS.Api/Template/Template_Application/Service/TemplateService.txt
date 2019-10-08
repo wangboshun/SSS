@@ -9,9 +9,8 @@ using SSS.Domain.Seedwork.Model;
 using SSS.Domain.Template.Dto;
 using SSS.Infrastructure.Repository.Template;
 using SSS.Infrastructure.Util.Attribute;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System; 
+using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 
 namespace SSS.Application.Template.Service
 {
@@ -23,12 +22,14 @@ namespace SSS.Application.Template.Service
         private readonly IEventBus _bus;
         private readonly ILogger _logger;
         private readonly ITemplateRepository _repository;
+		 private readonly MemoryCacheEx _memorycache;
 
-        public TemplateService(IMapper mapper, ITemplateRepository repository, IEventBus bus, ILogger<TemplateService> logger) : base(mapper, repository)
+        public TemplateService(IMapper mapper, MemoryCacheEx memorycache, ITemplateRepository repository, IEventBus bus, ILogger<TemplateService> logger) : base(mapper, repository)
         {
             _mapper = mapper;
             _bus = bus;
             _repository = repository;
+			_memorycache = memorycache;
             _logger = logger;
         }
 

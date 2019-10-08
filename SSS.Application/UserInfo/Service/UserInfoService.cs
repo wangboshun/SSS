@@ -8,10 +8,10 @@ using SSS.Domain.Seedwork.Model;
 using SSS.Domain.Seedwork.Notice;
 using SSS.Domain.UserInfo.Dto;
 using SSS.Infrastructure.Repository.UserInfo;
+using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
-using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 
 namespace SSS.Application.UserInfo.Service
 {

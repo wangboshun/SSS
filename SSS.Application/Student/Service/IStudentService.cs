@@ -1,10 +1,11 @@
-﻿using SSS.Domain.Seedwork.Model;
+﻿using SSS.Application.Seedwork.Service;
+using SSS.Domain.Seedwork.Model;
 using SSS.Domain.Student.Dto;
 using System.Collections.Generic;
 
 namespace SSS.Application.Student.Service
 {
-    public interface IStudentService
+    public interface IStudentService : IQueryService<SSS.Domain.Student.Student, StudentInputDto, StudentOutputDto>
     {
         void AddStudent(StudentInputDto input);
 

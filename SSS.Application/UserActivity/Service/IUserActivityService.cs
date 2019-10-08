@@ -1,10 +1,11 @@
+using SSS.Application.Seedwork.Service;
 using SSS.Domain.Seedwork.Model;
 using SSS.Domain.UserActivity.Dto;
 using System.Collections.Generic;
 
 namespace SSS.Application.UserActivity.Service
 {
-    public interface IUserActivityService
+    public interface IUserActivityService : IQueryService<SSS.Domain.UserActivity.UserActivity, UserActivityInputDto, UserActivityOutputDto>
     {
         void AddUserActivity(UserActivityInputDto input);
 

@@ -1,3 +1,4 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -27,8 +28,11 @@ namespace SSS.Domain.CQRS.UserInfo.Command.Handlers
         private readonly IUserInfoRepository _repository;
         private readonly IEventBus Bus;
         private readonly ILogger _logger;
+        private readonly IMapper _mapper;
 
-        public UserInfoCommandHandler(IUserInfoRepository repository,
+        public UserInfoCommandHandler(
+                                      IMapper mapper,
+                                      IUserInfoRepository repository,
                                       IUnitOfWork uow,
                                       IEventBus bus,
                                       INotificationHandler<ErrorNotice> Notice,
@@ -37,6 +41,7 @@ namespace SSS.Domain.CQRS.UserInfo.Command.Handlers
         {
             _logger = logger;
             _repository = repository;
+            _mapper = mapper;
             Bus = bus;
         }
         public Task<bool> Handle(UserInfoAddCommand request, CancellationToken cancellationToken)
@@ -47,7 +52,7 @@ namespace SSS.Domain.CQRS.UserInfo.Command.Handlers
                 return Task.FromResult(false);
             }
 
-            var model = new SSS.Domain.UserInfo.UserInfo(request.id, request.username, request.password);
+            var model = _mapper.Map<SSS.Domain.UserInfo.UserInfo>(request.inputDto);
             model.CreateTime = DateTime.Now;
             model.IsDelete = 0;
 

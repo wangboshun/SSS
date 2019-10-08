@@ -1,3 +1,4 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -32,9 +33,12 @@ namespace SSS.Domain.CQRS.UserActivity.Command.Handlers
         private readonly IActivityRepository _activityrepository;
         private readonly IEventBus Bus;
         private readonly ILogger _logger;
+        private readonly IMapper _mapper;
 
-        public UserActivityCommandHandler(IUserActivityRepository repository,
-            IActivityRepository activityrepository,
+        public UserActivityCommandHandler(
+                                      IMapper mapper,
+                                      IUserActivityRepository repository,
+                                      IActivityRepository activityrepository,
                                       IUnitOfWork uow,
                                       IEventBus bus,
                                       INotificationHandler<ErrorNotice> Notice,
@@ -45,6 +49,7 @@ namespace SSS.Domain.CQRS.UserActivity.Command.Handlers
             _repository = repository;
             _activityrepository = activityrepository;
             Bus = bus;
+            _mapper = mapper;
         }
         public Task<bool> Handle(UserActivityAddCommand request, CancellationToken cancellationToken)
         {
@@ -58,13 +63,13 @@ namespace SSS.Domain.CQRS.UserActivity.Command.Handlers
                     return Task.FromResult(false);
                 }
 
-                var activity = _activityrepository.Get(request.activityid);
+                var activity = _activityrepository.Get(request.inputDto.activityid);
 
-                var useractivitylist = _repository.GetAll(x => x.ActivityId.Equals(request.activityid)
-                                                               && x.UserId.Equals(request.userid)
+                var useractivitylist = _repository.GetAll(x => x.ActivityId.Equals(request.inputDto.activityid)
+                                                               && x.UserId.Equals(request.inputDto.userid)
                                                                && x.IsDelete == 0).OrderByDescending(x => x.GroupNumber).ToList();
 
-                var haveactivetylist = useractivitylist.Where(x => x.WechatName.Equals(request.wechatname)).ToList();
+                var haveactivetylist = useractivitylist.Where(x => x.WechatName.Equals(request.inputDto.wechatname)).ToList();
 
                 if (useractivitylist.Count() >= activity.Grouptotal)
                 {
@@ -72,23 +77,25 @@ namespace SSS.Domain.CQRS.UserActivity.Command.Handlers
                     return Task.FromResult(false);
                 }
 
-                if (haveactivetylist.Count() + request.grouptotal > activity.Maxjoin)
+                if (haveactivetylist.Count() + request.inputDto.grouptotal > activity.Maxjoin)
                 {
                     Bus.RaiseEvent(new ErrorNotice(request.MsgType, $"每个微信号最多只能领取{activity.Maxjoin}个号！"));
                     return Task.FromResult(false);
                 }
 
-                if (useractivitylist.Count() + request.grouptotal > activity.Grouptotal)
+                if (useractivitylist.Count() + request.inputDto.grouptotal > activity.Grouptotal)
                 {
                     Bus.RaiseEvent(new ErrorNotice(request.MsgType, $"群号还剩下{activity.Grouptotal - useractivitylist.Count()}个,请重新填写数量！"));
                     return Task.FromResult(false);
                 }
 
-                if (request.grouptotal > 0)
+                if (request.inputDto.grouptotal > 0)
                 {
-                    for (int i = 1; i < request.grouptotal + 1; i++)
+                    for (int i = 1; i < request.inputDto.grouptotal + 1; i++)
                     {
-                        var model = new SSS.Domain.UserActivity.UserActivity(Guid.NewGuid().ToString(), request.userid, request.activityid, request.wechatname);
+                        var model = _mapper.Map<SSS.Domain.UserActivity.UserActivity>(request.inputDto);
+                        model.CreateTime = DateTime.Now;
+                        model.Id = Guid.NewGuid().ToString();
                         model.GroupNumber = useractivitylist.Any() ? useractivitylist[0].GroupNumber + i : i;
                         model.CreateTime = DateTime.Now;
                         model.IsDelete = 0;

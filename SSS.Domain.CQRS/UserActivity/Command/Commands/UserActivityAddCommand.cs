@@ -7,11 +7,7 @@ namespace SSS.Domain.CQRS.UserActivity.Command.Commands
     {
         public UserActivityAddCommand(UserActivityInputDto input)
         {
-            this.id = input.id;
-            this.activityid = input.activityid;
-            this.grouptotal = input.grouptotal;
-            this.userid = input.userid;
-            this.wechatname = input.wechatname;
+            inputDto = input;
         }
 
         public override bool IsValid()

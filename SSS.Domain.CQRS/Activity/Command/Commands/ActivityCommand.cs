@@ -1,7 +1,9 @@
+using SSS.Domain.Activity.Dto;
+
 namespace SSS.Domain.CQRS.Activity.Command.Commands
 {
     public abstract class ActivityCommand : SSS.Domain.Seedwork.Command.Command
     {
-        public string id { set; get; }
+        public ActivityInputDto inputDto { set; get; }
     }
 }

@@ -8,17 +8,17 @@ namespace SSS.Domain.CQRS.UserInfo.Validations
 
         protected void ValidateId()
         {
-            RuleFor(c => c.id).NotEmpty().WithMessage("请输入Id");
+            RuleFor(c => c.inputDto.id).NotEmpty().WithMessage("请输入Id");
         }
 
         protected void ValidateUserName()
         {
-            RuleFor(c => c.username).NotEmpty().WithMessage("请输入用户名");
+            RuleFor(c => c.inputDto.username).NotEmpty().WithMessage("请输入用户名");
         }
 
         protected void ValidatePassWord()
         {
-            RuleFor(c => c.password).NotEmpty().WithMessage("请输入密码");
+            RuleFor(c => c.inputDto.password).NotEmpty().WithMessage("请输入密码");
         }
     }
 }

@@ -1,3 +1,4 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -26,9 +27,12 @@ namespace SSS.Domain.CQRS.Articel.Command.Handlers
 
         private readonly IArticelRepository _repository;
         private readonly IEventBus Bus;
+        private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public ArticelCommandHandler(IArticelRepository repository,
+        public ArticelCommandHandler(
+                                      IMapper mapper,
+                                      IArticelRepository repository,
                                       IUnitOfWork uow,
                                       IEventBus bus,
                                       INotificationHandler<ErrorNotice> Notice,
@@ -36,6 +40,7 @@ namespace SSS.Domain.CQRS.Articel.Command.Handlers
                                       : base(uow, logger, bus, Notice)
         {
             _logger = logger;
+            _mapper = mapper;
             _repository = repository;
             Bus = bus;
         }
@@ -46,7 +51,7 @@ namespace SSS.Domain.CQRS.Articel.Command.Handlers
                 NotifyValidationErrors(request);
                 return Task.FromResult(false);
             }
-            var model = new SSS.Domain.Articel.Articel(request.id);
+            var model = _mapper.Map<SSS.Domain.Articel.Articel>(request.inputDto);
             model.CreateTime = DateTime.Now;
             model.IsDelete = 0;
 

@@ -8,7 +8,7 @@ namespace SSS.Domain.CQRS.UserActivity.Validations
 
         protected void ValidateId()
         {
-            RuleFor(c => c.id).NotEmpty().WithMessage("请输入Id");
+            RuleFor(c => c.inputDto.id).NotEmpty().WithMessage("请输入Id");
         }
     }
 }

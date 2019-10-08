@@ -9,6 +9,8 @@ namespace SSS.Application.Activity.Mapper
         {
             CreateMap<SSS.Domain.Activity.Activity, ActivityOutputDto>();
 
+            CreateMap<ActivityInputDto, SSS.Domain.Activity.Activity>();
+
             CreateMap<ActivityInputDto, ActivityAddCommand>()
                 .ConstructUsing(input => new ActivityAddCommand(input));
         }

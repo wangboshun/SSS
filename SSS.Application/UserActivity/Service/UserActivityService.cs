@@ -1,11 +1,13 @@
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using SSS.Application.Seedwork.Service;
 using SSS.Domain.CQRS.UserActivity.Command.Commands;
 using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Model;
 using SSS.Domain.UserActivity.Dto;
 using SSS.Infrastructure.Repository.UserActivity;
+using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
@@ -14,18 +16,23 @@ using System.Linq;
 namespace SSS.Application.UserActivity.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IUserActivityService))]
-    public class UserActivityService : IUserActivityService
+    public class UserActivityService : QueryService<SSS.Domain.UserActivity.UserActivity, UserActivityInputDto, UserActivityOutputDto>, IUserActivityService
     {
         private readonly IMapper _mapper;
         private readonly IEventBus _bus;
-
+        private readonly ILogger _logger;
+        private readonly MemoryCacheEx _memorycache;
         private readonly IUserActivityRepository _repository;
-        public UserActivityService(IMapper mapper, IEventBus bus, IUserActivityRepository repository)
+
+        public UserActivityService(IMapper mapper, MemoryCacheEx memorycache, IUserActivityRepository repository, IEventBus bus, ILogger<UserActivityService> logger) : base(mapper, repository)
         {
             _mapper = mapper;
             _bus = bus;
             _repository = repository;
+            _memorycache = memorycache;
+            _logger = logger;
         }
+
         public void AddUserActivity(UserActivityInputDto input)
         {
             input.id = Guid.NewGuid().ToString();
@@ -46,19 +53,7 @@ namespace SSS.Application.UserActivity.Service
         }
         public Pages<List<UserActivityOutputDto>> GetListUserActivity(UserActivityInputDto input)
         {
-            List<UserActivityOutputDto> list;
-            int count = 0;
-
-            if (input.pagesize == 0 && input.pagesize == 0)
-            {
-                var temp = _repository.GetAll();
-                list = _repository.GetAll().ProjectTo<UserActivityOutputDto>(_mapper.ConfigurationProvider).ToList();
-                count = list.Count;
-            }
-            else
-                list = _repository.GetPage(input.pageindex, input.pagesize, ref count).ProjectTo<UserActivityOutputDto>(_mapper.ConfigurationProvider).ToList();
-
-            return new Pages<List<UserActivityOutputDto>>(list, count);
+            return GetList(input);
         }
     }
 }

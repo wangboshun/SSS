@@ -1,3 +1,4 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -26,9 +27,12 @@ namespace SSS.Domain.CQRS.Activity.Command.Handlers
 
         private readonly IActivityRepository _repository;
         private readonly IEventBus Bus;
+        private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public ActivityCommandHandler(IActivityRepository repository,
+        public ActivityCommandHandler(
+                                      IActivityRepository repository,
+                                      IMapper mapper,
                                       IUnitOfWork uow,
                                       IEventBus bus,
                                       INotificationHandler<ErrorNotice> Notice,
@@ -38,6 +42,7 @@ namespace SSS.Domain.CQRS.Activity.Command.Handlers
             _logger = logger;
             _repository = repository;
             Bus = bus;
+            _mapper = mapper;
         }
         public Task<bool> Handle(ActivityAddCommand request, CancellationToken cancellationToken)
         {
@@ -46,7 +51,7 @@ namespace SSS.Domain.CQRS.Activity.Command.Handlers
                 NotifyValidationErrors(request);
                 return Task.FromResult(false);
             }
-            var model = new SSS.Domain.Activity.Activity(request.id);
+            var model = _mapper.Map<SSS.Domain.Activity.Activity>(request.inputDto);
             model.CreateTime = DateTime.Now;
             model.IsDelete = 0;
 

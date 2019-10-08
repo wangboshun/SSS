@@ -7,7 +7,7 @@ namespace SSS.Domain.CQRS.Articel.Command.Commands
     {
         public ArticelAddCommand(ArticelInputDto input)
         {
-            this.id = input.id;
+            inputDto = input;
         }
 
         public override bool IsValid()

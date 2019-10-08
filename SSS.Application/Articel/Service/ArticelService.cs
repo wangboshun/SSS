@@ -1,31 +1,37 @@
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using SSS.Application.Seedwork.Service;
 using SSS.Domain.Articel.Dto;
 using SSS.Domain.CQRS.Articel.Command.Commands;
 using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Articel;
+using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SSS.Application.Articel.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IArticelService))]
-    public class ArticelService : IArticelService
+    public class ArticelService : QueryService<SSS.Domain.Articel.Articel, ArticelInputDto, ArticelOutputDto>, IArticelService
     {
         private readonly IMapper _mapper;
         private readonly IEventBus _bus;
-
         private readonly IArticelRepository _repository;
-        public ArticelService(IMapper mapper, IEventBus bus, IArticelRepository repository)
+        private readonly ILogger _logger;
+        private readonly MemoryCacheEx _memorycache;
+
+        public ArticelService(IMapper mapper, MemoryCacheEx memorycache, IArticelRepository repository, IEventBus bus, ILogger<ArticelService> logger) : base(mapper, repository)
         {
             _mapper = mapper;
             _bus = bus;
             _repository = repository;
+            _memorycache = memorycache;
+            _logger = logger;
         }
+
         public void AddArticel(ArticelInputDto input)
         {
             input.id = Guid.NewGuid().ToString();
@@ -35,19 +41,7 @@ namespace SSS.Application.Articel.Service
 
         public Pages<List<ArticelOutputDto>> GetListArticel(ArticelInputDto input)
         {
-            List<ArticelOutputDto> list;
-            int count = 0;
-
-            if (input.pagesize == 0 && input.pagesize == 0)
-            {
-                var temp = _repository.GetAll();
-                list = _repository.GetAll().ProjectTo<ArticelOutputDto>(_mapper.ConfigurationProvider).ToList();
-                count = list.Count;
-            }
-            else
-                list = _repository.GetPage(input.pageindex, input.pagesize, ref count).ProjectTo<ArticelOutputDto>(_mapper.ConfigurationProvider).ToList();
-
-            return new Pages<List<ArticelOutputDto>>(list, count);
+            return GetList(input);
         }
     }
 }

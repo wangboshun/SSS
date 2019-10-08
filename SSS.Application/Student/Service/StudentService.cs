@@ -1,30 +1,35 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using SSS.Application.Seedwork.Service;
 using SSS.Domain.CQRS.Student.Command.Commands;
 using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Model;
 using SSS.Domain.Student.Dto;
 using SSS.Infrastructure.Repository.Student;
+using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SSS.Application.Student.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IStudentService))]
-    public class StudentService : IStudentService
+    public class StudentService : QueryService<SSS.Domain.Student.Student, StudentInputDto, StudentOutputDto>, IStudentService
     {
         private readonly IMapper _mapper;
         private readonly IEventBus _bus;
-        private readonly IStudentRepository _studentrepository;
+        private readonly IStudentRepository _repository;
+        private readonly MemoryCacheEx _memorycache;
+        private readonly ILogger _logger;
 
-        public StudentService(IMapper mapper, IEventBus bus, IStudentRepository studentrepository)
+        public StudentService(IMapper mapper, MemoryCacheEx memorycache, IStudentRepository repository, IEventBus bus, ILogger<StudentService> logger) : base(mapper, repository)
         {
             _mapper = mapper;
             _bus = bus;
-            _studentrepository = studentrepository;
+            _repository = repository;
+            _memorycache = memorycache;
+            _logger = logger;
         }
 
         public void AddStudent(StudentInputDto input)
@@ -36,22 +41,11 @@ namespace SSS.Application.Student.Service
         public void DeleteStudent(StudentInputDto student) => throw new System.NotImplementedException();
         public StudentOutputDto GetByName(StudentInputDto student)
         {
-            return _mapper.Map<StudentOutputDto>(_studentrepository.GetByName(student.name));
+            return _mapper.Map<StudentOutputDto>(_repository.GetByName(student.name));
         }
         public Pages<List<StudentOutputDto>> GetListStudent(StudentInputDto input)
         {
-            List<StudentOutputDto> list;
-            int count = 0;
-
-            if (input.pagesize == 0 && input.pagesize == 0)
-            {
-                list = _studentrepository.GetAll().ProjectTo<StudentOutputDto>(_mapper.ConfigurationProvider).ToList();
-                count = list.Count;
-            }
-            else
-                list = _studentrepository.GetPage(input.pageindex, input.pagesize, ref count).ProjectTo<StudentOutputDto>(_mapper.ConfigurationProvider).ToList();
-
-            return new Pages<List<StudentOutputDto>>(list, count);
+            return GetList(input);
         }
         public void UpdateStudent(StudentInputDto input)
         {

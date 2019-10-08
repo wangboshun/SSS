@@ -7,7 +7,7 @@ namespace SSS.Domain.CQRS.Activity.Command.Commands
     {
         public ActivityAddCommand(ActivityInputDto input)
         {
-            this.id = input.id;
+            inputDto = input;
         }
 
         public override bool IsValid()

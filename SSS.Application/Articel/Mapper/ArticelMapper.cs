@@ -9,6 +9,8 @@ namespace SSS.Application.Articel.Mapper
         {
             CreateMap<SSS.Domain.Articel.Articel, ArticelOutputDto>();
 
+            CreateMap<ArticelInputDto, SSS.Domain.Articel.Articel>();
+
             CreateMap<ArticelInputDto, ArticelAddCommand>()
                 .ConstructUsing(input => new ArticelAddCommand(input));
         }

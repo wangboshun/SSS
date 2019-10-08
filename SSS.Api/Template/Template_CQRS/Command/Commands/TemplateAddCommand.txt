@@ -7,7 +7,7 @@ namespace SSS.Domain.CQRS.Template.Command.Commands
     {
         public TemplateAddCommand(TemplateInputDto input)
         {
-            this.id = input.id; 
+            inputDto = input; 
         }
 
         public override bool IsValid()

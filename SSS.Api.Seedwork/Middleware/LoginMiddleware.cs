@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using SSS.Application.UserInfo.Service;
 using SSS.Domain.UserInfo.Dto;
 using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
-using SSS.Infrastructure.Util.Http;
 using SSS.Infrastructure.Util.Json;
 using System.Threading.Tasks;
 

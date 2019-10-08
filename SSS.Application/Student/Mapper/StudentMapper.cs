@@ -3,11 +3,13 @@ using SSS.Domain.Student.Dto;
 
 namespace SSS.Application.Student.Profile
 {
-    public class StudentProfile : AutoMapper.Profile
+    public class StudentMapper : AutoMapper.Profile
     {
-        public StudentProfile()
+        public StudentMapper()
         {
             CreateMap<Domain.Student.Student, StudentOutputDto>();
+
+            CreateMap<StudentInputDto, SSS.Domain.Student.Student>();
 
             CreateMap<StudentInputDto, StudentUpdateCommand>()
                .ConstructUsing(input => new StudentUpdateCommand(input));
