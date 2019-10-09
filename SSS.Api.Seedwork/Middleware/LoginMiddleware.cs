@@ -22,8 +22,8 @@ namespace SSS.Api.Seedwork.Middleware
 
         public async Task Invoke(HttpContext context)
         {
-            string openid = context.Request.Headers["Auth"];
-            string cachekey = "AuthUserInfo_" + openid;
+            string userid = context.Request.Headers["Auth"];
+            string cachekey = "AuthUserInfo_" + userid;
 
             //如果是登录
             if (context.Request.Path.Value.Contains("/api/v1/UserInfo/add"))
@@ -39,7 +39,7 @@ namespace SSS.Api.Seedwork.Middleware
                 !context.Request.Path.Value.Contains("hangfire") &&
                 !context.Request.Path.Value.Contains("swagger"))
             {
-                if (!string.IsNullOrWhiteSpace(openid))
+                if (!string.IsNullOrWhiteSpace(userid))
                 {
                     var val = _memorycache.Get<UserInfoOutputDto>(cachekey);
 
