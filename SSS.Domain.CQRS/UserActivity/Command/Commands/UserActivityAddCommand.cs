@@ -11,6 +11,7 @@ namespace SSS.Domain.CQRS.UserActivity.Command.Commands
         }
 
         public override bool IsValid()
+        
         {
             ValidationResult = new UserActivityAddValidation().Validate(this);
             return ValidationResult.IsValid;

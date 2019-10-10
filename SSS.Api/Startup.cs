@@ -1,5 +1,4 @@
 ﻿using Hangfire;
-using Hangfire.MySql.Core;
 using Hangfire.SQLite;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -21,7 +20,9 @@ using SSS.Api.Bootstrap;
 using SSS.Api.Seedwork.Filter;
 using SSS.Api.Seedwork.Middleware;
 using System.IO;
+using FluentValidation;
 using System.Reflection;
+using FluentValidation.AspNetCore;
 
 namespace SSS.Api
 {
@@ -54,7 +55,7 @@ namespace SSS.Api
             {
                 //全局Action Exception Result过滤器
                 options.Filters.Add<MvcFilter>();
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            }).AddFluentValidation().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddMemoryCacheEx();
 
@@ -104,7 +105,7 @@ namespace SSS.Api
 
             services.AddHangfire(config =>
             {
-                  config.UseSQLiteStorage(Configuration.GetConnectionString("SQLITEConnection")); 
+                config.UseSQLiteStorage(Configuration.GetConnectionString("SQLITEConnection"));
                 //config.UseStorage(new MySqlStorage(Configuration.GetConnectionString("MYSQLConnection")));
                 //config.UseSqlServerStorage(Configuration.GetConnectionString("MSSQLConnection"));
             });
@@ -112,7 +113,7 @@ namespace SSS.Api
             services.AddHangfireServer();
 
             services.AddSenparcGlobalServices(Configuration)//Senparc.CO2NET 全局注册
-                .AddSenparcWeixinServices(Configuration);//Senparc.Weixin 注册 
+                .AddSenparcWeixinServices(Configuration);//Senparc.Weixin 注册   
 
             services.AddControllers();
         }
