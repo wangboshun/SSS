@@ -1,5 +1,4 @@
 using SSS.Domain.Activity.Dto;
-using SSS.Domain.CQRS.Activity.Command.Commands;
 
 namespace SSS.Application.Activity.Mapper
 {
@@ -10,9 +9,6 @@ namespace SSS.Application.Activity.Mapper
             CreateMap<SSS.Domain.Activity.Activity, ActivityOutputDto>();
 
             CreateMap<ActivityInputDto, SSS.Domain.Activity.Activity>();
-
-            CreateMap<ActivityInputDto, ActivityAddCommand>()
-                .ConstructUsing(input => new ActivityAddCommand(input));
         }
     }
 }

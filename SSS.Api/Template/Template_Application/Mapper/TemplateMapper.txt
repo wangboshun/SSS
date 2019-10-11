@@ -1,5 +1,4 @@
-﻿using SSS.Domain.CQRS.Template.Command.Commands;
-using SSS.Domain.Template.Dto;
+﻿using SSS.Domain.Template.Dto;
 
 namespace SSS.Application.Template.Mapper
 {
@@ -7,10 +6,7 @@ namespace SSS.Application.Template.Mapper
     {
         public TemplateProfile()
         {
-            CreateMap<SSS.Domain.Template.Template, TemplateOutputDto>();
-
-            CreateMap<TemplateInputDto, TemplateAddCommand>()
-                .ConstructUsing(input => new TemplateAddCommand(input));
+            CreateMap<SSS.Domain.Template.Template, TemplateOutputDto>(); 
         }
     }
 }

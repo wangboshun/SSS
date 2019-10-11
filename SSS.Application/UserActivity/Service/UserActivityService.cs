@@ -2,8 +2,6 @@ using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SSS.Application.Seedwork.Service;
-using SSS.Domain.CQRS.UserActivity.Command.Commands;
-using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Model;
 using SSS.Domain.UserActivity.Dto;
 using SSS.Infrastructure.Repository.UserActivity;
@@ -19,15 +17,13 @@ namespace SSS.Application.UserActivity.Service
     public class UserActivityService : QueryService<SSS.Domain.UserActivity.UserActivity, UserActivityInputDto, UserActivityOutputDto>, IUserActivityService
     {
         private readonly IMapper _mapper;
-        private readonly IEventBus _bus;
         private readonly ILogger _logger;
         private readonly MemoryCacheEx _memorycache;
         private readonly IUserActivityRepository _repository;
 
-        public UserActivityService(IMapper mapper, MemoryCacheEx memorycache, IUserActivityRepository repository, IEventBus bus, ILogger<UserActivityService> logger) : base(mapper, repository)
+        public UserActivityService(IMapper mapper, MemoryCacheEx memorycache, IUserActivityRepository repository, ILogger<UserActivityService> logger) : base(mapper, repository)
         {
             _mapper = mapper;
-            _bus = bus;
             _repository = repository;
             _memorycache = memorycache;
             _logger = logger;
@@ -36,8 +32,6 @@ namespace SSS.Application.UserActivity.Service
         public void AddUserActivity(UserActivityInputDto input)
         {
             input.id = Guid.NewGuid().ToString();
-            var cmd = _mapper.Map<UserActivityAddCommand>(input);
-            var result = _bus.SendCommand(cmd);
         }
 
         public List<int> GetGroupNumber(UserActivityInputDto input)

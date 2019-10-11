@@ -2,10 +2,7 @@ using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SSS.Application.Seedwork.Service;
-using SSS.Domain.CQRS.UserInfo.Command.Commands;
-using SSS.Domain.Seedwork.EventBus;
 using SSS.Domain.Seedwork.Model;
-using SSS.Domain.Seedwork.Notice;
 using SSS.Domain.UserInfo.Dto;
 using SSS.Infrastructure.Repository.UserInfo;
 using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
@@ -20,15 +17,13 @@ namespace SSS.Application.UserInfo.Service
         IUserInfoService
     {
         private readonly IMapper _mapper;
-        private readonly IEventBus _bus;
         private readonly ILogger _logger;
         private readonly IUserInfoRepository _repository;
         private readonly MemoryCacheEx _memorycache;
 
-        public UserInfoService(IMapper mapper, MemoryCacheEx memorycache, IUserInfoRepository repository, IEventBus bus, ILogger<UserInfoService> logger) : base(mapper, repository)
+        public UserInfoService(IMapper mapper, MemoryCacheEx memorycache, IUserInfoRepository repository, ILogger<UserInfoService> logger) : base(mapper, repository)
         {
             _mapper = mapper;
-            _bus = bus;
             _repository = repository;
             _memorycache = memorycache;
             _logger = logger;
@@ -39,13 +34,11 @@ namespace SSS.Application.UserInfo.Service
             var result = _repository.Get(x => x.UserName.Equals(input.username));
             if (result != null)
             {
-                _bus.RaiseEvent(new ErrorNotice(input.GetType().Name, "用户已存在！"));
+                //_bus.RaiseEvent(new ErrorNotice(input.GetType().Name, "用户已存在！"));
                 return;
             }
 
             input.id = Guid.NewGuid().ToString();
-            var cmd = _mapper.Map<UserInfoAddCommand>(input);
-            _bus.SendCommand(cmd);
         }
 
         public UserInfoOutputDto GetByUserName(UserInfoInputDto input)
@@ -53,7 +46,7 @@ namespace SSS.Application.UserInfo.Service
             var result = _repository.Get(x => x.UserName.Equals(input.username) && x.PassWord.Equals(input.password));
             if (result == null)
             {
-                _bus.RaiseEvent(new ErrorNotice(input.GetType().Name, "账户密码错误！"));
+                //_bus.RaiseEvent(new ErrorNotice(input.GetType().Name, "账户密码错误！"));
                 return null;
             }
 

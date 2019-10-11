@@ -8,8 +8,10 @@
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="Polly" Version="7.1.1" /> 
     <PackageReference Include="Senparc.Weixin.WxOpen" Version="3.7.102-preview7.7.9" />
-    <ProjectReference Include="..\SSS.Application.Seedwork\SSS.Application.Seedwork.csproj" /> 
-    <ProjectReference Include="..\SSS.Domain.CQRS\SSS.Domain.CQRS.csproj" />
+    <ProjectReference Include="..\SSS.Application.Seedwork\SSS.Application.Seedwork.csproj" />
+    <ProjectReference Include="..\SSS.Domain\SSS.Domain.csproj" />
+    <ProjectReference Include="..\SSS.Infrastructure.Seedwork\SSS.Infrastructure.Seedwork.csproj" />
+    <ProjectReference Include="..\SSS.Infrastructure\SSS.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

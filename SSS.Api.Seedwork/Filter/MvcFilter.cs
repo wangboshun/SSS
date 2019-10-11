@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
+using SSS.Domain.Seedwork.Notice;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SSS.Api.Seedwork.Filter
 {
@@ -27,7 +31,26 @@ namespace SSS.Api.Seedwork.Filter
         //2
         public void OnActionExecuting(ActionExecutingContext context)
         {
+            //绑定验证
+            if (!context.ModelState.IsValid)
+            {
+                List<ErrorNotice> errorResults = new List<ErrorNotice>();
+                foreach (var item in context.ModelState)
+                {
+                    var result = new ErrorNotice(item.Key, "");
 
+                    foreach (var error in item.Value.Errors)
+                    {
+                        if (!string.IsNullOrEmpty(result.Value))
+                        {
+                            result.Value += "  ,  ";
+                        }
+                        result.Value += error.ErrorMessage;
+                    }
+                    errorResults.Add(result);
+                }
+                context.Result = new BadRequestObjectResult(new { status = false, data = "", message = errorResults.Select(n => n.Value), code = 403 });
+            }
         }
 
         //3

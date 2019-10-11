@@ -3,7 +3,6 @@ using Hangfire.SQLite;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,9 +19,7 @@ using SSS.Api.Bootstrap;
 using SSS.Api.Seedwork.Filter;
 using SSS.Api.Seedwork.Middleware;
 using System.IO;
-using FluentValidation;
 using System.Reflection;
-using FluentValidation.AspNetCore;
 
 namespace SSS.Api
 {
@@ -55,7 +52,12 @@ namespace SSS.Api
             {
                 //全局Action Exception Result过滤器
                 options.Filters.Add<MvcFilter>();
-            }).AddFluentValidation().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            }).ConfigureApiBehaviorOptions(config =>
+            {
+                //关闭默认模型验证过滤器
+                config.SuppressModelStateInvalidFilter = true;
+
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddMemoryCacheEx();
 
@@ -68,9 +70,6 @@ namespace SSS.Api
             //    services.Remove(defaultActivator);
             //    services.AddSingleton<IControllerActivator, BaseControllerActivator>();
             //}
-
-            //HttpContext注入
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             //AutoMapper映射
             services.AddAutoMapperSupport();

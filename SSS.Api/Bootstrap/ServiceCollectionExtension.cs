@@ -32,6 +32,7 @@ namespace SSS.Api.Bootstrap
 
             // Domain Bus (Mediator)
             services.AutoRegisterServicesFromAssembly("SSS.Domain.Seedwork");
+            services.AutoRegisterServicesFromAssembly("SSS.Domain");
 
             // Application
             services.AutoRegisterServicesFromAssembly("SSS.Application.Seedwork");

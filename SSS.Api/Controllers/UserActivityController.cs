@@ -1,5 +1,3 @@
-using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SSS.Api.Seedwork.Controller;
@@ -63,10 +61,10 @@ namespace SSS.Api.Controllers
         [HttpPost("add")]
         [AllowAnonymous]  //匿名访问
         public IActionResult AddUserActivity([FromBody]UserActivityInputDto input)
-        { 
+        {
             input.userid = UserInfo?.id;
             _service.AddUserActivity(input);
             return Response(input);
         }
-    } 
+    }
 }

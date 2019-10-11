@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using SSS.Infrastructure.Util.Attribute;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace SSS.Domain.Seedwork.Notice
 {
-    [DIService(ServiceLifetime.Scoped, typeof(INotificationHandler<ErrorNotice>))]
-    public class ErrorNoticeHandler : INotificationHandler<ErrorNotice>
+    [DIService(ServiceLifetime.Scoped, typeof(ErrorNoticeHandler))]
+    public class ErrorNoticeHandler
     {
         private List<ErrorNotice> _notice;
 
@@ -18,7 +17,7 @@ namespace SSS.Domain.Seedwork.Notice
             _notice = new List<ErrorNotice>();
         }
 
-        public Task Handle(ErrorNotice message, CancellationToken cancellationToken)
+        public Task Execute(ErrorNotice message, CancellationToken cancellationToken)
         {
             _notice.Add(message);
 

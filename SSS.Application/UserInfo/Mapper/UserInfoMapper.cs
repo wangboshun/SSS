@@ -1,4 +1,3 @@
-using SSS.Domain.CQRS.UserInfo.Command.Commands;
 using SSS.Domain.UserInfo.Dto;
 
 namespace SSS.Application.UserInfo.Mapper
@@ -10,9 +9,6 @@ namespace SSS.Application.UserInfo.Mapper
             CreateMap<SSS.Domain.UserInfo.UserInfo, UserInfoOutputDto>();
 
             CreateMap<UserInfoInputDto, SSS.Domain.UserInfo.UserInfo>();
-
-            CreateMap<UserInfoInputDto, UserInfoAddCommand>()
-                .ConstructUsing(input => new UserInfoAddCommand(input));
         }
     }
 }
