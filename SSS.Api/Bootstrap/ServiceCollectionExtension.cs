@@ -77,7 +77,7 @@ namespace SSS.Api.Bootstrap
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
             });
-        }
+        } 
 
         //ApiVersion
         public static void AddApiVersion(this IServiceCollection services)
