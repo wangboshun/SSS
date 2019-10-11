@@ -3,15 +3,17 @@ SSS.FrameWork
 
 .Net Core FrameWork
 
-    1.DDD
+    1.DDD 
     
-    2.CQRS 
+    2.Repository 
     
-    3.Repository 
+    3.EfCore
     
-    4.EfCore
+    4.Dapper
     
     5.Mapper
     
-    6.EventStore
+    6.Hangfire
+    
+    7.Wechat
     
