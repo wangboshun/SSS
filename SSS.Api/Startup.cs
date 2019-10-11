@@ -1,6 +1,5 @@
 ﻿using Hangfire;
 using Hangfire.SQLite;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -73,9 +72,6 @@ namespace SSS.Api
 
             //AutoMapper映射
             services.AddAutoMapperSupport();
-
-            //MediatR
-            services.AddMediatR(typeof(Startup));
 
             //集中注入
             services.AddService();
