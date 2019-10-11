@@ -27,10 +27,10 @@ namespace SSS.Api.Bootstrap
         /// <param name="services"></param>
         public static void AddService(this IServiceCollection services)
         {
-            // ASP.NET HttpContext dependency
+            // HttpContext
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            // Domain Bus (Mediator)
+            // Domain  
             services.AutoRegisterServicesFromAssembly("SSS.Domain.Seedwork");
             services.AutoRegisterServicesFromAssembly("SSS.Domain");
 
@@ -38,12 +38,9 @@ namespace SSS.Api.Bootstrap
             services.AutoRegisterServicesFromAssembly("SSS.Application.Seedwork");
             services.AutoRegisterServicesFromAssembly("SSS.Application");
 
-            // Infra - Data 
+            // Infra 
             services.AutoRegisterServicesFromAssembly("SSS.Infrastructure.Seedwork");
-            services.AutoRegisterServicesFromAssembly("SSS.Infrastructure");
-
-            // Domain - Commands Events 
-            services.AutoRegisterServicesFromAssembly("SSS.Domain.CQRS");
+            services.AutoRegisterServicesFromAssembly("SSS.Infrastructure"); 
         }
 
         /// <summary>
