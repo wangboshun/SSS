@@ -1,4 +1,5 @@
-﻿using Hangfire;
+﻿using FluentValidation.AspNetCore;
+using Hangfire;
 using Hangfire.SQLite;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -51,7 +52,11 @@ namespace SSS.Api
             {
                 //全局Action Exception Result过滤器
                 options.Filters.Add<MvcFilter>();
-            }).ConfigureApiBehaviorOptions(config =>
+            }).AddFluentValidation(config =>
+            {
+                config.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+            })
+            .ConfigureApiBehaviorOptions(config =>
             {
                 //关闭默认模型验证过滤器
                 config.SuppressModelStateInvalidFilter = true;

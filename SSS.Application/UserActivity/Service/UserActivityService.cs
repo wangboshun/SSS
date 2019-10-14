@@ -1,7 +1,9 @@
 using AutoMapper;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SSS.Application.Seedwork.Service;
+using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Domain.UserActivity.Dto;
 using SSS.Infrastructure.Repository.UserActivity;
@@ -20,18 +22,34 @@ namespace SSS.Application.UserActivity.Service
         private readonly ILogger _logger;
         private readonly MemoryCacheEx _memorycache;
         private readonly IUserActivityRepository _repository;
+        private IValidator<UserActivityInputDto> _validator;
+        private readonly IErrorHandler _error;
 
-        public UserActivityService(IMapper mapper, MemoryCacheEx memorycache, IUserActivityRepository repository, ILogger<UserActivityService> logger) : base(mapper, repository)
+        public UserActivityService(IValidator<UserActivityInputDto> validator, IMapper mapper,
+            MemoryCacheEx memorycache, IUserActivityRepository repository,
+            ILogger<UserActivityService> logger, IErrorHandler error) : base(mapper, repository)
         {
             _mapper = mapper;
             _repository = repository;
             _memorycache = memorycache;
             _logger = logger;
+            _validator = validator;
+            _error = error;
         }
 
         public void AddUserActivity(UserActivityInputDto input)
         {
+            var result = _validator.Validate(input);
+            if (!result.IsValid)
+            {
+                _error.Execute(result);
+                return;
+            }
+
             input.id = Guid.NewGuid().ToString();
+            var model = _mapper.Map<SSS.Domain.UserActivity.UserActivity>(input);
+            _repository.Add(model);
+            _repository.SaveChanges();
         }
 
         public List<int> GetGroupNumber(UserActivityInputDto input)

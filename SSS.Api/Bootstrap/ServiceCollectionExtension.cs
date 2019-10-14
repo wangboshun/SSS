@@ -40,7 +40,7 @@ namespace SSS.Api.Bootstrap
 
             // Infra 
             services.AutoRegisterServicesFromAssembly("SSS.Infrastructure.Seedwork");
-            services.AutoRegisterServicesFromAssembly("SSS.Infrastructure"); 
+            services.AutoRegisterServicesFromAssembly("SSS.Infrastructure");
         }
 
         /// <summary>

@@ -1,10 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Domain.Seedwork.Repository;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Http;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -19,11 +22,15 @@ namespace SSS.Infrastructure.Seedwork.Repository
     {
         protected readonly DbcontextBase Db;
         protected readonly DbSet<TEntity> DbSet;
+        private readonly IErrorHandler _error;
+        private readonly ILogger _logger;
 
         public Repository(DbcontextBase context)
         {
             Db = context;
             DbSet = Db.Set<TEntity>();
+            _error = (IErrorHandler)HttpContextService.Current.RequestServices.GetService(typeof(IErrorHandler));
+            _logger = (ILogger)HttpContextService.Current.RequestServices.GetService(typeof(ILogger<Repository<TEntity>>));
         }
 
         public virtual void Add(TEntity obj)
@@ -125,7 +132,16 @@ namespace SSS.Infrastructure.Seedwork.Repository
 
         public int SaveChanges()
         {
-            return Db.SaveChanges();
+            try
+            {
+                return Db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _error.Execute(ex);
+                _logger.LogError(new EventId(ex.HResult), ex, "Repository Exception");
+                return 0;
+            }
         }
 
         public void Dispose()
