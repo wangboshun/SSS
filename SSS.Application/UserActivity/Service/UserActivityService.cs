@@ -25,23 +25,23 @@ namespace SSS.Application.UserActivity.Service
 
         public void AddUserActivity(UserActivityInputDto input)
         {
-            var result = _validator.Validate(input, ruleSet: "Insert");
+            var result = Validator.Validate(input, ruleSet: "Insert");
             if (!result.IsValid)
             {
-                _error.Execute(result);
+                Error.Execute(result);
                 return;
             }
 
             input.id = Guid.NewGuid().ToString();
-            var model = _mapper.Map<SSS.Domain.UserActivity.UserActivity>(input);
-            _repository.Add(model);
-            _repository.SaveChanges();
+            var model = Mapper.Map<SSS.Domain.UserActivity.UserActivity>(input);
+            Repository.Add(model);
+            Repository.SaveChanges();
         }
 
         public List<int> GetGroupNumber(UserActivityInputDto input)
         {
             List<int> GroupNumber = new List<int>();
-            var list = _repository.GetAll(x => x.UserId.Equals(input.userid) && x.ActivityId.Equals(input.activityid)).OrderBy(x => x.GroupNumber);
+            var list = Repository.GetAll(x => x.UserId.Equals(input.userid) && x.ActivityId.Equals(input.activityid)).OrderBy(x => x.GroupNumber);
             foreach (var item in list)
             {
                 GroupNumber.Add(item.GroupNumber);

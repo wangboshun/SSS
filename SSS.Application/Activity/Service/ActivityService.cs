@@ -24,17 +24,17 @@ namespace SSS.Application.Activity.Service
 
         public void AddActivity(ActivityInputDto input)
         {
-            var result = _validator.Validate(input, ruleSet: "Insert");
+            var result = Validator.Validate(input, ruleSet: "Insert");
             if (!result.IsValid)
             {
-                _error.Execute(result);
+                Error.Execute(result);
                 return;
             }
 
             input.id = Guid.NewGuid().ToString();
-            var model = _mapper.Map<SSS.Domain.Activity.Activity>(input);
-            _repository.Add(model);
-            _repository.SaveChanges();
+            var model = Mapper.Map<SSS.Domain.Activity.Activity>(input);
+            Repository.Add(model);
+            Repository.SaveChanges();
         }
 
         public Pages<List<ActivityOutputDto>> GetListActivity(ActivityInputDto input)
@@ -44,7 +44,7 @@ namespace SSS.Application.Activity.Service
 
         public ActivityOutputDto GetById(ActivityInputDto input)
         {
-            return _mapper.Map<ActivityOutputDto>(Get(x => x.Id.Equals(input.id) && x.IsDelete == 0));
+            return Mapper.Map<ActivityOutputDto>(Get(x => x.Id.Equals(input.id) && x.IsDelete == 0));
         }
     }
 }

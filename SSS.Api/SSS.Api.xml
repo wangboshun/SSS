@@ -193,31 +193,6 @@
             </summary>
             <param name="name"></param>
         </member>
-        <member name="T:SSS.Api.Controllers.TestController">
-            <summary>
-            TestController
-            </summary> 
-        </member>
-        <member name="M:SSS.Api.Controllers.TestController.#ctor(SSS.Application.Test.Service.ITestService)">
-            <summary>
-            TestController
-            </summary>
-            <param name="service">ITestService</param>
-        </member>
-        <member name="M:SSS.Api.Controllers.TestController.GetList(SSS.Domain.Test.Dto.TestInputDto)">
-            <summary>
-            GetList
-            </summary>
-            <param name="input">input</param>
-            <returns></returns> 
-        </member>
-        <member name="M:SSS.Api.Controllers.TestController.AddTest(SSS.Domain.Test.Dto.TestInputDto)">
-            <summary>
-            AddTest
-            </summary>
-            <param name="input">TestInputDto</param>
-            <returns></returns> 
-        </member>
         <member name="T:SSS.Api.Controllers.UserActivityController">
             <summary>
             UserActivityController

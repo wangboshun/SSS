@@ -30,23 +30,23 @@ namespace SSS.Application.UserInfo.Service
 
         public void AddUserInfo(UserInfoInputDto input)
         {
-            var result = _validator.Validate(input, ruleSet: "Insert");
+            var result = Validator.Validate(input, ruleSet: "Insert");
             if (!result.IsValid)
             {
-                _error.Execute(result);
+                Error.Execute(result);
                 return;
             }
 
             var user = Get(x => x.UserName.Equals(input.username));
             if (user != null)
             {
-                _error.Execute("用户已存在！");
+                Error.Execute("用户已存在！");
                 return;
             }
 
             input.id = Guid.NewGuid().ToString();
-            var model = _mapper.Map<SSS.Domain.UserInfo.UserInfo>(input);
-            _repository.Add(model, true);
+            var model = Mapper.Map<SSS.Domain.UserInfo.UserInfo>(input);
+            Repository.Add(model, true);
         }
 
         public UserInfoOutputDto GetByUserName(UserInfoInputDto input)
@@ -54,11 +54,11 @@ namespace SSS.Application.UserInfo.Service
             var result = Get(x => x.UserName.Equals(input.username) && x.PassWord.Equals(input.password));
             if (result == null)
             {
-                _error.Execute("账户密码错误！");
+                Error.Execute("账户密码错误！");
                 return null;
             }
 
-            var userinfo = _mapper.Map<UserInfoOutputDto>(result);
+            var userinfo = Mapper.Map<UserInfoOutputDto>(result);
             _memorycache.Set("AuthUserInfo_" + userinfo.id, userinfo, 60 * 24);
             return userinfo;
         }

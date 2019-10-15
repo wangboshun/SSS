@@ -25,17 +25,17 @@ namespace SSS.Application.Articel.Service
 
         public void AddArticel(ArticelInputDto input)
         {
-            var result = _validator.Validate(input, ruleSet: "Insert");
+            var result = Validator.Validate(input, ruleSet: "Insert");
             if (!result.IsValid)
             {
-                _error.Execute(result);
+                Error.Execute(result);
                 return;
             }
 
             input.id = Guid.NewGuid().ToString();
-            var model = _mapper.Map<SSS.Domain.Articel.Articel>(input);
-            _repository.Add(model);
-            _repository.SaveChanges();
+            var model = Mapper.Map<SSS.Domain.Articel.Articel>(input);
+            Repository.Add(model);
+            Repository.SaveChanges();
         }
 
         public Pages<List<ArticelOutputDto>> GetListArticel(ArticelInputDto input)
