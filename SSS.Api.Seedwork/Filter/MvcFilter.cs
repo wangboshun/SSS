@@ -18,10 +18,10 @@ namespace SSS.Api.Seedwork.Filter
         //1
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            foreach (var item in context.HttpContext.Request.Headers)
-            {
-                _logger.LogInformation("Headers :【" + item.Key + "】" + "  【" + item.Value + "】");
-            }
+            //foreach (var item in context.HttpContext.Request.Headers)
+            //{
+            //    _logger.LogInformation("Headers :【" + item.Key + "】" + "  【" + item.Value + "】");
+            //}
         }
 
         //2

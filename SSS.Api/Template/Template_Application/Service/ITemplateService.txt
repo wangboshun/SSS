@@ -1,6 +1,7 @@
 ﻿using SSS.Domain.Template.Dto;
 using SSS.Domain.Seedwork.Model;
 using System.Collections.Generic;
+using SSS.Application.Seedwork.Service;
 
 namespace SSS.Application.Template.Service
 {

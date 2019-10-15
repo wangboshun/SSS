@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SSS.Domain.Activity;
-using SSS.Domain.Student;
 using SSS.Domain.UserActivity;
 using SSS.Domain.UserInfo;
 using SSS.Infrastructure.Util.Attribute;
@@ -19,8 +18,6 @@ namespace SSS.Infrastructure.Seedwork.DbContext
         {
             _env = env;
         }
-
-        public DbSet<Student> Student { get; set; }
 
         public DbSet<Activity> Activity { get; set; }
 

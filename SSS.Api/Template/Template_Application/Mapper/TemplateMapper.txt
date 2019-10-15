@@ -6,7 +6,9 @@ namespace SSS.Application.Template.Mapper
     {
         public TemplateProfile()
         {
-            CreateMap<SSS.Domain.Template.Template, TemplateOutputDto>(); 
+            CreateMap<SSS.Domain.Template.Template, TemplateOutputDto>();
+
+            CreateMap<TemplateInputDto, SSS.Domain.Template.Template>();
         }
     }
 }

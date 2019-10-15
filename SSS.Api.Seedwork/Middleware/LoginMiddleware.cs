@@ -32,6 +32,7 @@ namespace SSS.Api.Seedwork.Middleware
             if (!context.Request.Path.Value.Contains("/api/v1/UserInfo/add") &&
                 !context.Request.Path.Value.Contains("/api/v1/UserInfo/login") &&
                 !context.Request.Path.Value.Contains("/code") &&
+                !context.Request.Path.Value.Contains("/createcode") &&
                 !context.Request.Path.Value.Contains("/File/") &&
                 !context.Request.Path.Value.Contains("/file") &&
                 !context.Request.Path.Value.Contains("/doc") &&

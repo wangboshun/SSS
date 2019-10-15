@@ -15,7 +15,7 @@ namespace SSS.Domain.Seedwork.Repository
     public interface IRepository<TEntity> : IDisposable
        where TEntity : Entity
     {
-        void Add(TEntity obj);
+        void Add(TEntity obj, bool save = false);
 
         TEntity Get(string id);
         TEntity Get(Expression<Func<TEntity, bool>> predicate);
@@ -25,9 +25,9 @@ namespace SSS.Domain.Seedwork.Repository
         IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate);
         IQueryable<TEntity> GetPage(int index, int size, ref int count);
         IQueryable<TEntity> GetPage(int index, int size, Expression<Func<TEntity, bool>> predicate, ref int count);
-        void Update(TEntity obj);
-        void Remove(string id);
-        void Remove(Expression<Func<TEntity, bool>> predicate);
+        void Update(TEntity obj, bool save = false);
+        void Remove(string id, bool save = false);
+        void Remove(Expression<Func<TEntity, bool>> predicate, bool save = false);
         int SaveChanges();
     }
 }

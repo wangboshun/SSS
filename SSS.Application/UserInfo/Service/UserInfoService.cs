@@ -1,7 +1,8 @@
 using AutoMapper;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using SSS.Application.Seedwork.Service;
+using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Domain.UserInfo.Dto;
 using SSS.Infrastructure.Repository.UserInfo;
@@ -16,37 +17,44 @@ namespace SSS.Application.UserInfo.Service
     public class UserInfoService : QueryService<SSS.Domain.UserInfo.UserInfo, UserInfoInputDto, UserInfoOutputDto>,
         IUserInfoService
     {
-        private readonly IMapper _mapper;
-        private readonly ILogger _logger;
-        private readonly IUserInfoRepository _repository;
         private readonly MemoryCacheEx _memorycache;
 
-        public UserInfoService(IMapper mapper, MemoryCacheEx memorycache, IUserInfoRepository repository, ILogger<UserInfoService> logger) : base(mapper, repository)
+        public UserInfoService(IMapper mapper,
+            IUserInfoRepository repository,
+            IErrorHandler error,
+            IValidator<UserInfoInputDto> validator,
+            MemoryCacheEx memorycache) : base(mapper, repository, error, validator)
         {
-            _mapper = mapper;
-            _repository = repository;
             _memorycache = memorycache;
-            _logger = logger;
         }
 
         public void AddUserInfo(UserInfoInputDto input)
         {
-            var result = _repository.Get(x => x.UserName.Equals(input.username));
-            if (result != null)
+            var result = _validator.Validate(input, ruleSet: "Insert");
+            if (!result.IsValid)
             {
-                //_bus.RaiseEvent(new ErrorNotice(input.GetType().Name, "用户已存在！"));
+                _error.Execute(result);
+                return;
+            }
+
+            var user = Get(x => x.UserName.Equals(input.username));
+            if (user != null)
+            {
+                _error.Execute("用户已存在！");
                 return;
             }
 
             input.id = Guid.NewGuid().ToString();
+            var model = _mapper.Map<SSS.Domain.UserInfo.UserInfo>(input);
+            _repository.Add(model, true);
         }
 
         public UserInfoOutputDto GetByUserName(UserInfoInputDto input)
         {
-            var result = _repository.Get(x => x.UserName.Equals(input.username) && x.PassWord.Equals(input.password));
+            var result = Get(x => x.UserName.Equals(input.username) && x.PassWord.Equals(input.password));
             if (result == null)
             {
-                //_bus.RaiseEvent(new ErrorNotice(input.GetType().Name, "账户密码错误！"));
+                _error.Execute("账户密码错误！");
                 return null;
             }
 

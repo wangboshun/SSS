@@ -1,38 +1,46 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using SSS.Application.Seedwork.Service; 
-using SSS.Domain.Seedwork.EventBus;
+using SSS.Application.Seedwork.Service;
+using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Domain.Template.Dto;
 using SSS.Infrastructure.Repository.Template;
-using SSS.Infrastructure.Util.Attribute;
-using System; 
 using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
+using SSS.Infrastructure.Util.Attribute;
+using System;
+using System.Collections.Generic;
 
 namespace SSS.Application.Template.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(ITemplateService))]
-    public class TemplateService : QueryService<SSS.Domain.Template.Template, TemplateInputDto, TemplateOutputDto>,
-        ITemplateService
+    public class TemplateService : QueryService<SSS.Domain.Template.Template, TemplateInputDto, TemplateOutputDto>, ITemplateService
     {
-        private readonly IMapper _mapper; 
-        private readonly ILogger _logger;
-        private readonly ITemplateRepository _repository;
-		 private readonly MemoryCacheEx _memorycache;
+        private readonly MemoryCacheEx _memorycache;
 
-        public TemplateService(IMapper mapper, MemoryCacheEx memorycache, ITemplateRepository repository, ILogger<TemplateService> logger) : base(mapper, repository)
+        public TemplateService(IMapper mapper,
+            ITemplateRepository repository,
+            IErrorHandler error,
+            MemoryCacheEx memorycache,
+            IValidator<TemplateInputDto> validator) :
+            base(mapper, repository, error, validator)
         {
-            _mapper = mapper; 
-            _repository = repository;
-			_memorycache = memorycache;
-            _logger = logger;
+            _memorycache = memorycache;
         }
 
         public void AddTemplate(TemplateInputDto input)
         {
-            input.id = Guid.NewGuid().ToString(); 
+            var result = _validator.Validate(input);
+            if (!result.IsValid)
+            {
+                _error.Execute(result);
+                return;
+            }
+
+            input.id = Guid.NewGuid().ToString();
+            var model = _mapper.Map<SSS.Domain.Template.Template>(input);
+            _repository.Add(model);
+            _repository.SaveChanges();
         }
 
         public Pages<List<TemplateOutputDto>> GetListTemplate(TemplateInputDto input)

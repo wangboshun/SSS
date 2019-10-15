@@ -33,9 +33,11 @@ namespace SSS.Infrastructure.Seedwork.Repository
             _logger = (ILogger)HttpContextService.Current.RequestServices.GetService(typeof(ILogger<Repository<TEntity>>));
         }
 
-        public virtual void Add(TEntity obj)
+        public virtual void Add(TEntity obj, bool save = false)
         {
             DbSet.Add(obj);
+            if (save)
+                Db.SaveChanges();
         }
 
         public virtual TEntity Get(string id)
@@ -111,23 +113,29 @@ namespace SSS.Infrastructure.Seedwork.Repository
             return DbSet.OrderByDescending(x => x.CreateTime).Where(predicate).Skip(size * (index > 0 ? index - 1 : 0)).Take(size);
         }
 
-        public virtual void Update(TEntity obj)
+        public virtual void Update(TEntity obj, bool save = false)
         {
             DbSet.Attach(obj);
             var entry = Db.Entry(obj);
             entry.State = EntityState.Modified;
             entry.Property(x => x.CreateTime).IsModified = false;
             entry.Property(x => x.Id).IsModified = false;
+            if (save)
+                Db.SaveChanges();
         }
 
-        public virtual void Remove(string id)
+        public virtual void Remove(string id, bool save = false)
         {
             DbSet.Remove(Get(id));
+            if (save)
+                Db.SaveChanges();
         }
 
-        public virtual void Remove(Expression<Func<TEntity, bool>> predicate)
+        public virtual void Remove(Expression<Func<TEntity, bool>> predicate, bool save = false)
         {
             DbSet.Remove(Get(predicate));
+            if (save)
+                Db.SaveChanges();
         }
 
         public int SaveChanges()

@@ -1,0 +1,34 @@
+﻿using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
+using SSS.Domain.Template.Dto;
+using SSS.Infrastructure.Util.Attribute;
+
+namespace SSS.Domain.Template.Validation
+{
+    [DIService(ServiceLifetime.Scoped, typeof(IValidator<TemplateInputDto>))]
+    public class TemplateAddValidation : AbstractValidator<TemplateInputDto>
+    {
+        public TemplateAddValidation()
+        {
+            RuleSet("Insert", () =>
+            {
+                
+            });
+
+            RuleSet("Delete", () =>
+            {
+                
+            });
+
+            RuleSet("Update", () =>
+            {
+                
+            });
+
+            RuleSet("Select", () =>
+            {
+                
+            });
+        }
+    }
+}

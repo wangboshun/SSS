@@ -11,7 +11,6 @@ namespace SSS.Domain.UserInfo
             this.UserName = UserName;
         }
 
-
         public string UserName { set; get; }
 
         public string PassWord { set; get; }

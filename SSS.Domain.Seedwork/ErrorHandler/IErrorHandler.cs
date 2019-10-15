@@ -9,10 +9,12 @@ namespace SSS.Domain.Seedwork.ErrorHandler
     {
         Task Execute(FluentValidation.Results.ValidationResult message);
 
+        Task Execute(string message);
+
         Task Execute(Exception ex);
 
         List<ValidationFailure> GetNotice();
 
-        bool HasNotice(); 
+        bool HasNotice();
     }
 }

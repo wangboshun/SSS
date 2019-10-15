@@ -1,11 +1,11 @@
 using AutoMapper;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Articel.Dto;
+using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Articel;
-using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
@@ -15,22 +15,27 @@ namespace SSS.Application.Articel.Service
     [DIService(ServiceLifetime.Scoped, typeof(IArticelService))]
     public class ArticelService : QueryService<SSS.Domain.Articel.Articel, ArticelInputDto, ArticelOutputDto>, IArticelService
     {
-        private readonly IMapper _mapper;
-        private readonly IArticelRepository _repository;
-        private readonly ILogger _logger;
-        private readonly MemoryCacheEx _memorycache;
-
-        public ArticelService(IMapper mapper, MemoryCacheEx memorycache, IArticelRepository repository, ILogger<ArticelService> logger) : base(mapper, repository)
+        public ArticelService(IMapper mapper,
+            IArticelRepository repository,
+            IErrorHandler error,
+            IValidator<ArticelInputDto> validator) :
+            base(mapper, repository, error, validator)
         {
-            _mapper = mapper;
-            _repository = repository;
-            _memorycache = memorycache;
-            _logger = logger;
         }
 
         public void AddArticel(ArticelInputDto input)
         {
+            var result = _validator.Validate(input, ruleSet: "Insert");
+            if (!result.IsValid)
+            {
+                _error.Execute(result);
+                return;
+            }
+
             input.id = Guid.NewGuid().ToString();
+            var model = _mapper.Map<SSS.Domain.Articel.Articel>(input);
+            _repository.Add(model);
+            _repository.SaveChanges();
         }
 
         public Pages<List<ArticelOutputDto>> GetListArticel(ArticelInputDto input)

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Domain.Seedwork.Repository;
 using SSS.Infrastructure.Util.Attribute;
@@ -17,14 +19,21 @@ namespace SSS.Application.Seedwork.Service
          where TInput : InputDtoBase
          where TOutput : OutputDtoBase
     {
-        private readonly IMapper _mapper;
+        public readonly IMapper _mapper;
 
-        private readonly IRepository<TEntity> _repository;
+        public readonly IErrorHandler _error;
 
-        public QueryService(IMapper mapper, IRepository<TEntity> repository)
+        public readonly IRepository<TEntity> _repository;
+
+        public readonly IValidator<TInput> _validator;
+
+        public QueryService(IMapper mapper, IRepository<TEntity> repository,
+            IErrorHandler error, IValidator<TInput> validator)
         {
             _mapper = mapper;
             _repository = repository;
+            _error = error;
+            _validator = validator;
         }
 
         public TOutput Get(string id)

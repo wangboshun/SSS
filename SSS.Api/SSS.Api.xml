@@ -181,55 +181,41 @@
             </summary>
             <param name="name"></param>
         </member>
-        <member name="M:SSS.Api.Controllers.CodeController.Generator_CQRS(System.String)">
+        <member name="M:SSS.Api.Controllers.CodeController.Generator_Application(System.String)">
             <summary>
             3
             </summary>
             <param name="name"></param>
         </member>
-        <member name="M:SSS.Api.Controllers.CodeController.Generator_Application(System.String)">
+        <member name="M:SSS.Api.Controllers.CodeController.Generator_Api(System.String)">
             <summary>
             4
             </summary>
             <param name="name"></param>
         </member>
-        <member name="M:SSS.Api.Controllers.CodeController.Generator_Api(System.String)">
+        <member name="T:SSS.Api.Controllers.TestController">
             <summary>
-            5
-            </summary>
-            <param name="name"></param>
-        </member>
-        <member name="T:SSS.Api.Controllers.StudentController">
-            <summary>
-            StudentController
+            TestController
             </summary> 
         </member>
-        <member name="M:SSS.Api.Controllers.StudentController.GetByName(SSS.Domain.Student.Dto.StudentInputDto)">
+        <member name="M:SSS.Api.Controllers.TestController.#ctor(SSS.Application.Test.Service.ITestService)">
             <summary>
-            GetByName
+            TestController
             </summary>
-            <param name="student">StudentInputDto</param>
-            <returns></returns> 
+            <param name="service">ITestService</param>
         </member>
-        <member name="M:SSS.Api.Controllers.StudentController.GetList(SSS.Domain.Student.Dto.StudentInputDto)">
+        <member name="M:SSS.Api.Controllers.TestController.GetList(SSS.Domain.Test.Dto.TestInputDto)">
             <summary>
             GetList
             </summary>
-            <param name="student">StudentInputDto</param>
+            <param name="input">input</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.StudentController.UpdateAge(SSS.Domain.Student.Dto.StudentInputDto)">
+        <member name="M:SSS.Api.Controllers.TestController.AddTest(SSS.Domain.Test.Dto.TestInputDto)">
             <summary>
-            UpdateAge
+            AddTest
             </summary>
-            <param name="student">StudentInputDto</param>
-            <returns></returns> 
-        </member>
-        <member name="M:SSS.Api.Controllers.StudentController.AddStudent(SSS.Domain.Student.Dto.StudentInputDto)">
-            <summary>
-            AddStudent
-            </summary>
-            <param name="student">StudentInputDto</param>
+            <param name="input">TestInputDto</param>
             <returns></returns> 
         </member>
         <member name="T:SSS.Api.Controllers.UserActivityController">

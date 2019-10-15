@@ -55,7 +55,6 @@ namespace SSS.Api.Controllers
 
             Generator_Domain(class_name);
             Generator_Infrastructure(class_name);
-            Generator_CQRS(class_name);
             Generator_Application(class_name);
             Generator_Api(class_name);
 
@@ -100,6 +99,7 @@ namespace SSS.Api.Controllers
             var TemplateInputDto_Read_Path = current_path + "\\Template\\Template_Domain\\Dto\\TemplateInputDto.txt";
             var TemplateOutputDto_Read_Path = current_path + "\\Template\\Template_Domain\\Dto\\TemplateOutputDto.txt";
             var Template_Read_Path = current_path + "\\Template\\Template_Domain\\Template.txt";
+            var TemplateValidation_Read_Path = current_path + "\\Template\\Template_Domain\\Validation\\TemplateValidation.txt";
 
             string TemplateInputDto_Content = IO.ReadAllText(TemplateInputDto_Read_Path);
             TemplateInputDto_Content = TemplateInputDto_Content.Replace("Template", name);
@@ -110,16 +110,21 @@ namespace SSS.Api.Controllers
             string Template_Content = IO.ReadAllText(Template_Read_Path);
             Template_Content = Template_Content.Replace("Template", name);
 
+            string TemplateValidation_Content = IO.ReadAllText(TemplateValidation_Read_Path);
+            TemplateValidation_Content = TemplateValidation_Content.Replace("Template", name);
+
             Directory.SetCurrentDirectory(Directory.GetParent(current_path).FullName);
             var parent_path = Directory.GetCurrentDirectory();
 
             var TemplateInputDto_Write_Path = parent_path + $"\\SSS.Domain\\{name}\\Dto\\{name}InputDto.cs";
             var TemplateOutputDto_Write_Path = parent_path + $"\\SSS.Domain\\{name}\\Dto\\{name}OutputDto.cs";
             var Template_Write_Path = parent_path + $"\\SSS.Domain\\{name}\\{name}.cs";
+            var TemplateValidation_Write_Path = parent_path + $"\\SSS.Domain\\{name}\\Validation\\{name}Validation.cs";
 
             IO.Save(TemplateInputDto_Write_Path, TemplateInputDto_Content);
             IO.Save(TemplateOutputDto_Write_Path, TemplateOutputDto_Content);
             IO.Save(Template_Write_Path, Template_Content);
+            IO.Save(TemplateValidation_Write_Path, TemplateValidation_Content);
         }
 
         /// <summary>
@@ -151,62 +156,6 @@ namespace SSS.Api.Controllers
         /// 3
         /// </summary>
         /// <param name="name"></param>
-        private void Generator_CQRS(string name)
-        {
-            var TemplateAddCommand_Read_Path = current_path + "\\Template\\Template_CQRS\\Command\\Commands\\TemplateAddCommand.txt";
-            var TemplateCommand_Read_Path = current_path + "\\Template\\Template_CQRS\\Command\\Commands\\TemplateCommand.txt";
-            var TemplateCommandHandler_Read_Path = current_path + "\\Template\\Template_CQRS\\Command\\Handlers\\TemplateCommandHandler.txt";
-            var TemplateAddEvent_Read_Path = current_path + "\\Template\\Template_CQRS\\Event\\Events\\TemplateAddEvent.txt";
-            var TemplateAddEventHandler_Read_Path = current_path + "\\Template\\Template_CQRS\\Event\\Handlers\\TemplateAddEventHandler.txt";
-            var TemplateAddValidation_Read_Path = current_path + "\\Template\\Template_CQRS\\Validations\\TemplateAddValidation.txt";
-            var TemplateValidation_Read_Path = current_path + "\\Template\\Template_CQRS\\Validations\\TemplateValidation.txt";
-
-
-            string TemplateAddCommand_Content = IO.ReadAllText(TemplateAddCommand_Read_Path);
-            TemplateAddCommand_Content = TemplateAddCommand_Content.Replace("Template", name);
-
-            string TemplateCommand_Content = IO.ReadAllText(TemplateCommand_Read_Path);
-            TemplateCommand_Content = TemplateCommand_Content.Replace("Template", name);
-
-            string TemplateCommandHandler_Content = IO.ReadAllText(TemplateCommandHandler_Read_Path);
-            TemplateCommandHandler_Content = TemplateCommandHandler_Content.Replace("Template", name);
-
-            string TemplateAddEvent_Content = IO.ReadAllText(TemplateAddEvent_Read_Path);
-            TemplateAddEvent_Content = TemplateAddEvent_Content.Replace("Template", name);
-
-            string TemplateAddEventHandler_Content = IO.ReadAllText(TemplateAddEventHandler_Read_Path);
-            TemplateAddEventHandler_Content = TemplateAddEventHandler_Content.Replace("Template", name);
-
-            string TemplateAddValidation_Content = IO.ReadAllText(TemplateAddValidation_Read_Path);
-            TemplateAddValidation_Content = TemplateAddValidation_Content.Replace("Template", name);
-
-            string TemplateValidation_Content = IO.ReadAllText(TemplateValidation_Read_Path);
-            TemplateValidation_Content = TemplateValidation_Content.Replace("Template", name);
-
-            Directory.SetCurrentDirectory(Directory.GetParent(current_path).FullName);
-            var parent_path = Directory.GetCurrentDirectory();
-
-            var TemplateAddCommand_Write_Path = parent_path + $"\\SSS.Domain.CQRS\\{name}\\Command\\Commands\\{name}AddCommand.cs";
-            var TemplateCommand_Write_Path = parent_path + $"\\SSS.Domain.CQRS\\{name}\\Command\\Commands\\{name}Command.cs";
-            var TemplateCommandHandler_Write_Path = parent_path + $"\\SSS.Domain.CQRS\\{name}\\Command\\Handlers\\{name}CommandHandler.cs";
-            var TemplateAddEvent_Write_Path = parent_path + $"\\SSS.Domain.CQRS\\{name}\\Event\\Events\\{name}AddEvent.cs";
-            var TemplateAddEventHandler_Write_Path = parent_path + $"\\SSS.Domain.CQRS\\{name}\\Event\\Handlers\\{name}AddEventHandler.cs";
-            var TemplateAddValidation_Write_Path = parent_path + $"\\SSS.Domain.CQRS\\{name}\\Validations\\{name}AddValidation.cs";
-            var TemplateValidation_Write_Path = parent_path + $"\\SSS.Domain.CQRS\\{name}\\Validations\\{name}Validation.cs";
-
-            IO.Save(TemplateAddCommand_Write_Path, TemplateAddCommand_Content);
-            IO.Save(TemplateCommand_Write_Path, TemplateCommand_Content);
-            IO.Save(TemplateCommandHandler_Write_Path, TemplateCommandHandler_Content);
-            IO.Save(TemplateAddEvent_Write_Path, TemplateAddEvent_Content);
-            IO.Save(TemplateAddEventHandler_Write_Path, TemplateAddEventHandler_Content);
-            IO.Save(TemplateAddValidation_Write_Path, TemplateAddValidation_Content);
-            IO.Save(TemplateValidation_Write_Path, TemplateValidation_Content);
-        }
-
-        /// <summary>
-        /// 4
-        /// </summary>
-        /// <param name="name"></param>
         private void Generator_Application(string name)
         {
             var TemplateProfile_Read_Path = current_path + "\\Template\\Template_Application\\Mapper\\TemplateMapper.txt";
@@ -235,7 +184,7 @@ namespace SSS.Api.Controllers
         }
 
         /// <summary>
-        /// 5
+        /// 4
         /// </summary>
         /// <param name="name"></param>
         private void Generator_Api(string name)

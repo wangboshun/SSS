@@ -29,6 +29,12 @@ namespace SSS.Domain.Seedwork.ErrorHandler
             return Task.CompletedTask;
         }
 
+        public Task Execute(string message)
+        {
+            _notice.Add(new ValidationFailure(message, message));
+            return Task.CompletedTask;
+        }
+
         public Task Execute(Exception ex)
         {
             _notice.Add(new ValidationFailure(ex.GetType().ToString(), ex.InnerException.Message));
