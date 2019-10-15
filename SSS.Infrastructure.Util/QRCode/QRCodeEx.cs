@@ -1,31 +1,28 @@
-﻿using QRCoder;
-using System.Drawing;
+﻿using System.Drawing;
+using QRCoder;
 
 namespace SSS.Infrastructure.Util.QRCode
 {
     /// <summary>
-    /// QRCodeEx
+    ///     QRCodeEx
     /// </summary>
     public class QRCodeEx
     {
-        private static QRCodeEx _singleton = null;
-        private static object _lock = new object();
+        private static QRCodeEx _singleton;
+        private static readonly object _lock = new object();
 
         public static QRCodeEx Instance()
         {
             lock (_lock)
             {
-                if (_singleton == null)
-                {
-                    _singleton = new QRCodeEx();
-                }
+                if (_singleton == null) _singleton = new QRCodeEx();
             }
 
             return _singleton;
         }
 
         /// <summary>
-        /// GetQRCode
+        ///     GetQRCode
         /// </summary>
         /// <param name="content"></param>
         /// <param name="size"></param>

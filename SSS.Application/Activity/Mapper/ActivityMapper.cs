@@ -1,14 +1,15 @@
+using AutoMapper;
 using SSS.Domain.Activity.Dto;
 
 namespace SSS.Application.Activity.Mapper
 {
-    public class ActivityProfile : AutoMapper.Profile
+    public class ActivityProfile : Profile
     {
         public ActivityProfile()
         {
-            CreateMap<SSS.Domain.Activity.Activity, ActivityOutputDto>();
+            CreateMap<Domain.Activity.Activity, ActivityOutputDto>();
 
-            CreateMap<ActivityInputDto, SSS.Domain.Activity.Activity>();
+            CreateMap<ActivityInputDto, Domain.Activity.Activity>();
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using System;
+﻿using System;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace SSS.Infrastructure.Seedwork.Cache.MemoryCache
 {
@@ -13,7 +13,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.MemoryCache
         }
 
         /// <summary>
-        /// 字符串存储
+        ///     字符串存储
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
@@ -23,7 +23,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.MemoryCache
         }
 
         /// <summary>
-        /// 泛型存储
+        ///     泛型存储
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
@@ -34,55 +34,57 @@ namespace SSS.Infrastructure.Seedwork.Cache.MemoryCache
         }
 
         /// <summary>
-        /// 设置缓存时间，分钟为单位 (滑动过期)
+        ///     设置缓存时间，分钟为单位 (滑动过期)
         /// </summary>
         /// <param name="key">key</param>
         /// <param name="value">value</param>
         /// <param name="minute">minute</param>
         public void StringSet(string key, string value, double minute)
         {
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions { SlidingExpiration = TimeSpan.FromMinutes(minute) };
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {SlidingExpiration = TimeSpan.FromMinutes(minute)};
             _cache.Set(key, value, options);
         }
 
         /// <summary>
-        /// 泛型存储 设置缓存时间，分钟为单位 (滑动过期)
+        ///     泛型存储 设置缓存时间，分钟为单位 (滑动过期)
         /// </summary>
         /// <param name="key">key</param>
         /// <param name="value">value</param>
         /// <param name="minute">minute</param>
         public void Set<T>(string key, T value, double minute)
         {
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions { SlidingExpiration = TimeSpan.FromMinutes(minute) };
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
+                {SlidingExpiration = TimeSpan.FromMinutes(minute)};
             _cache.Set(key, value, options);
         }
 
         /// <summary>
-        /// 设置缓存时间,配置过期时间(绝对过期)
+        ///     设置缓存时间,配置过期时间(绝对过期)
         /// </summary>
         /// <param name="key">key</param>
         /// <param name="value">value</param>
         /// <param name="minute">minute</param>
         public void StringSet(string key, string value, DateTime minute)
         {
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions { AbsoluteExpiration = minute };
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions {AbsoluteExpiration = minute};
             _cache.Set(key, value, options);
         }
 
         /// <summary>
-        /// 泛型存储 设置缓存时间,配置过期时间(绝对过期)
+        ///     泛型存储 设置缓存时间,配置过期时间(绝对过期)
         /// </summary>
         /// <param name="key">key</param>
         /// <param name="value">value</param>
         /// <param name="minute">minute</param>
         public void Set<T>(string key, T value, DateTime minute)
         {
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions { AbsoluteExpiration = minute };
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions {AbsoluteExpiration = minute};
             _cache.Set(key, value, options);
         }
 
         /// <summary>
-        /// 字符串取出
+        ///     字符串取出
         /// </summary>
         /// <param name="key">key</param>
         /// <returns>字符串</returns>
@@ -92,7 +94,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.MemoryCache
         }
 
         /// <summary>
-        ///  泛型取出
+        ///     泛型取出
         /// </summary>
         /// <typeparam name="T">泛型</typeparam>
         /// <param name="key">key</param>
@@ -103,7 +105,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.MemoryCache
         }
 
         /// <summary>
-        /// 删除key
+        ///     删除key
         /// </summary>
         /// <param name="key"></param>
         public void Remove(string key)

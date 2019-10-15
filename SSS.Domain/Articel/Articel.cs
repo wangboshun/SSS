@@ -6,7 +6,7 @@ namespace SSS.Domain.Articel
     {
         public Articel(string id)
         {
-            this.Id = id;
+            Id = id;
         }
 
 

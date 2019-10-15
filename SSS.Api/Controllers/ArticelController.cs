@@ -7,8 +7,8 @@ using SSS.Domain.Articel.Dto;
 namespace SSS.Api.Controllers
 {
     /// <summary>
-    /// ArticelController
-    /// </summary> 
+    ///     ArticelController
+    /// </summary>
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
@@ -18,7 +18,7 @@ namespace SSS.Api.Controllers
         private readonly IArticelService _service;
 
         /// <summary>
-        /// ArticelController
+        ///     ArticelController
         /// </summary>
         /// <param name="service">IArticelService</param>
         public ArticelController(IArticelService service)
@@ -27,26 +27,26 @@ namespace SSS.Api.Controllers
         }
 
         /// <summary>
-        /// GetList
+        ///     GetList
         /// </summary>
         /// <param name="input">input</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("getlist")]
-        [AllowAnonymous]  //匿名访问
-        public IActionResult GetList([FromQuery]ArticelInputDto input)
+        [AllowAnonymous] //匿名访问
+        public IActionResult GetList([FromQuery] ArticelInputDto input)
         {
             var result = _service.GetListArticel(input);
             return Response(result);
         }
 
         /// <summary>
-        /// AddArticel
+        ///     AddArticel
         /// </summary>
         /// <param name="input">ArticelInputDto</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpPost("add")]
-        [AllowAnonymous]  //匿名访问
-        public IActionResult AddArticel([FromBody]ArticelInputDto input)
+        [AllowAnonymous] //匿名访问
+        public IActionResult AddArticel([FromBody] ArticelInputDto input)
         {
             _service.AddArticel(input);
             return Response(input);

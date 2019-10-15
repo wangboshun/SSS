@@ -4,7 +4,7 @@ using Hangfire.Dashboard;
 namespace SSS.Api.Seedwork.Filter
 {
     /// <summary>
-    /// 处理Hangfire 401问题
+    ///     处理Hangfire 401问题
     /// </summary>
     public class CustomAuthorizeFilter : IDashboardAuthorizationFilter
     {

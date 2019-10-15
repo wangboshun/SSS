@@ -1,25 +1,25 @@
-﻿using FluentValidation.Results;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using FluentValidation.Results;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SSS.Domain.Seedwork.ErrorHandler
 {
     [DIService(ServiceLifetime.Scoped, typeof(IErrorHandler))]
     public class ErrorHandler : IErrorHandler
     {
-        private List<ValidationFailure> _notice;
         private readonly ILogger _logger;
+        private readonly List<ValidationFailure> _notice;
 
         public ErrorHandler()
         {
             _notice = new List<ValidationFailure>();
-            _logger = (ILogger)HttpContextService.Current.RequestServices.GetService(typeof(ILogger<ErrorHandler>));
+            _logger = (ILogger) HttpContextService.Current.RequestServices.GetService(typeof(ILogger<ErrorHandler>));
         }
 
         public Task Execute(ValidationResult message)

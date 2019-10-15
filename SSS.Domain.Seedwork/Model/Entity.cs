@@ -5,17 +5,17 @@ namespace SSS.Domain.Seedwork.Model
     public abstract class Entity
     {
         /// <summary>
-        /// 主键Id
+        ///     主键Id
         /// </summary>
         public string Id { get; set; }
 
         /// <summary>
-        /// 创建时间
+        ///     创建时间
         /// </summary>
         public DateTime CreateTime { set; get; }
 
         /// <summary>
-        /// 是否删除 0代表正常 1代表已删除
+        ///     是否删除 0代表正常 1代表已删除
         /// </summary>
         public int IsDelete { set; get; }
 
@@ -47,7 +47,7 @@ namespace SSS.Domain.Seedwork.Model
 
         public override int GetHashCode()
         {
-            return (GetType().GetHashCode() * 907) + Id.GetHashCode();
+            return GetType().GetHashCode() * 907 + Id.GetHashCode();
         }
 
         public override string ToString()

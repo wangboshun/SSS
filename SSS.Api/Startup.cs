@@ -1,4 +1,6 @@
-﻿using FluentValidation.AspNetCore;
+﻿using System.IO;
+using System.Reflection;
+using FluentValidation.AspNetCore;
 using Hangfire;
 using Hangfire.SQLite;
 using Microsoft.AspNetCore.Builder;
@@ -18,18 +20,17 @@ using Senparc.Weixin.WxOpen;
 using SSS.Api.Bootstrap;
 using SSS.Api.Seedwork.Filter;
 using SSS.Api.Seedwork.Middleware;
-using System.IO;
-using System.Reflection;
+using StackExchange.Profiling.SqlFormatters;
 
 namespace SSS.Api
 {
     /// <summary>
-    /// Startup
+    ///     Startup
     /// </summary>
     public class Startup
     {
         /// <summary>
-        /// Startup
+        ///     Startup
         /// </summary>
         /// <param name="configuration">IConfiguration</param>
         public Startup(IConfiguration configuration)
@@ -38,30 +39,29 @@ namespace SSS.Api
         }
 
         /// <summary>
-        /// Configuration
+        ///     Configuration
         /// </summary>
         public IConfiguration Configuration { get; }
 
         /// <summary>
-        /// ConfigureServices
+        ///     ConfigureServices
         /// </summary>
         /// <param name="services">IServiceCollection</param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc(options =>
-            {
-                //全局Action Exception Result过滤器
-                options.Filters.Add<MvcFilter>();
-            }).AddFluentValidation(config =>
-            {
-                config.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
-            })
-            .ConfigureApiBehaviorOptions(config =>
-            {
-                //关闭默认模型验证过滤器
-                config.SuppressModelStateInvalidFilter = true;
-
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                {
+                    //全局Action Exception Result过滤器
+                    options.Filters.Add<MvcFilter>();
+                }).AddFluentValidation(config =>
+                {
+                    config.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+                })
+                .ConfigureApiBehaviorOptions(config =>
+                {
+                    //关闭默认模型验证过滤器
+                    config.SuppressModelStateInvalidFilter = true;
+                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddMemoryCacheEx();
 
@@ -96,7 +96,7 @@ namespace SSS.Api
                 options.RouteBasePath = "/profiler";
 
                 // (Optional) Control which SQL formatter to use, InlineFormatter is the default
-                options.SqlFormatter = new StackExchange.Profiling.SqlFormatters.InlineFormatter();
+                options.SqlFormatter = new InlineFormatter();
 
                 // (Optional) You can disable "Connection Open()", "Connection Close()" (and async variant) tracking.
                 // (defaults to true, and connection opening/closing is tracked)
@@ -112,17 +112,19 @@ namespace SSS.Api
 
             services.AddHangfireServer();
 
-            services.AddSenparcGlobalServices(Configuration)//Senparc.CO2NET 全局注册
-                .AddSenparcWeixinServices(Configuration);//Senparc.Weixin 注册   
+            services.AddSenparcGlobalServices(Configuration) //Senparc.CO2NET 全局注册
+                .AddSenparcWeixinServices(Configuration); //Senparc.Weixin 注册   
 
             services.AddControllers();
         }
+
         /// <summary>
-        /// Configure
+        ///     Configure
         /// </summary>
         /// <param name="app">IApplicationBuilder</param>
         /// <param name="env">IHostingEnvironment</param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<SenparcSetting> senparcSetting, IOptions<SenparcWeixinSetting> senparcWeixinSetting)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<SenparcSetting> senparcSetting,
+            IOptions<SenparcWeixinSetting> senparcWeixinSetting)
         {
             IRegisterService register = RegisterService.Start(env, senparcSetting.Value).UseSenparcGlobal();
 
@@ -172,32 +174,29 @@ namespace SSS.Api
             app.UseRouting();
 
             //执行路由
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
             //公众号注入
-            register.UseSenparcWeixin(senparcWeixinSetting.Value, senparcSetting.Value).RegisterWxOpenAccount(senparcWeixinSetting.Value, "SSS");
+            register.UseSenparcWeixin(senparcWeixinSetting.Value, senparcSetting.Value)
+                .RegisterWxOpenAccount(senparcWeixinSetting.Value, "SSS");
         }
 
         /// <summary>
-        /// Hangfire
+        ///     Hangfire
         /// </summary>
         /// <param name="app"></param>
         private void Hangfire(IApplicationBuilder app)
         {
-            GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute() { Attempts = 1 });
+            GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute {Attempts = 1});
             app.UseHangfireServer();
-            app.UseHangfireDashboard("/hangfire", new DashboardOptions()
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
-                Authorization = new[] { new CustomAuthorizeFilter() }
-
+                Authorization = new[] {new CustomAuthorizeFilter()}
             });
         }
 
         /// <summary>
-        /// Swagger
+        ///     Swagger
         /// </summary>
         /// <param name="app"></param>
         private void Swagger(IApplicationBuilder app)
@@ -208,12 +207,13 @@ namespace SSS.Api
                 options.RoutePrefix = "docs";
                 options.DocumentTitle = "SSS Project";
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "SSS API V1");
-                options.IndexStream = () => GetType().GetTypeInfo().Assembly.GetManifestResourceStream("SSS.Api.miniprofiler.html");
+                options.IndexStream = () =>
+                    GetType().GetTypeInfo().Assembly.GetManifestResourceStream("SSS.Api.miniprofiler.html");
             });
         }
 
         /// <summary>
-        /// 文件浏览
+        ///     文件浏览
         /// </summary>
         /// <param name="app"></param>
         private void UseDefaultStaticFile(IApplicationBuilder app)

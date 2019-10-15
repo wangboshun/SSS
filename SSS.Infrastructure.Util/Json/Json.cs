@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Collections;
 
 namespace SSS.Infrastructure.Util.Json
 {
@@ -23,10 +23,10 @@ namespace SSS.Infrastructure.Util.Json
         }
 
         /// <summary>
-        /// 多层嵌套
-        /// string jsonData = "{\"name\":\"lily\",\"age\":23,\"addr\":{\"city\":\"guangzhou\",\"province\":\"guangdong\"}}";
-        /// JObject jsonObj = JObject.Parse(jsonData);
-        /// Response.Write(GetJsonValue(jsonObj.Children(), "province"));
+        ///     多层嵌套
+        ///     string jsonData = "{\"name\":\"lily\",\"age\":23,\"addr\":{\"city\":\"guangzhou\",\"province\":\"guangdong\"}}";
+        ///     JObject jsonObj = JObject.Parse(jsonData);
+        ///     Response.Write(GetJsonValue(jsonObj.Children(), "province"));
         /// </summary>
         /// <param name="jToken"></param>
         /// <param name="key"></param>
@@ -36,19 +36,12 @@ namespace SSS.Infrastructure.Util.Json
             IEnumerator enumerator = jToken.GetEnumerator();
             while (enumerator.MoveNext())
             {
-                JToken jc = (JToken)enumerator.Current;
-                if (jc is JObject || ((JProperty)jc).Value is JObject)
-                {
-                    return GetJsonValue(jc.Children(), key);
-                }
-                else
-                {
-                    if (((JProperty)jc).Name == key)
-                    {
-                        return ((JProperty)jc).Value;
-                    }
-                }
+                JToken jc = (JToken) enumerator.Current;
+                if (jc is JObject || ((JProperty) jc).Value is JObject) return GetJsonValue(jc.Children(), key);
+
+                if (((JProperty) jc).Name == key) return ((JProperty) jc).Value;
             }
+
             return null;
         }
     }

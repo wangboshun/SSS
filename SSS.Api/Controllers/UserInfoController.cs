@@ -7,8 +7,8 @@ using SSS.Domain.UserInfo.Dto;
 namespace SSS.Api.Controllers
 {
     /// <summary>
-    /// UserInfoController
-    /// </summary> 
+    ///     UserInfoController
+    /// </summary>
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
@@ -18,7 +18,7 @@ namespace SSS.Api.Controllers
         private readonly IUserInfoService _service;
 
         /// <summary>
-        /// UserInfoController
+        ///     UserInfoController
         /// </summary>
         /// <param name="service">IUserInfoService</param>
         public UserInfoController(IUserInfoService service)
@@ -27,34 +27,34 @@ namespace SSS.Api.Controllers
         }
 
         /// <summary>
-        /// GetList
+        ///     GetList
         /// </summary>
         /// <param name="input">input</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("getlist")]
-        [AllowAnonymous]  //匿名访问
-        public IActionResult GetList([FromQuery]UserInfoInputDto input)
+        [AllowAnonymous] //匿名访问
+        public IActionResult GetList([FromQuery] UserInfoInputDto input)
         {
             var result = _service.GetListUserInfo(input);
             return Response(result);
         }
 
         [HttpPost("login")]
-        [AllowAnonymous]  //匿名访问
-        public IActionResult Login([FromBody]UserInfoInputDto input)
+        [AllowAnonymous] //匿名访问
+        public IActionResult Login([FromBody] UserInfoInputDto input)
         {
             var result = _service.GetByUserName(input);
             return Response(result);
         }
 
         /// <summary>
-        /// AddUserInfo
+        ///     AddUserInfo
         /// </summary>
         /// <param name="input">UserInfoInputDto</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpPost("add")]
-        [AllowAnonymous]  //匿名访问
-        public IActionResult AddUserInfo([FromBody]UserInfoInputDto input)
+        [AllowAnonymous] //匿名访问
+        public IActionResult AddUserInfo([FromBody] UserInfoInputDto input)
         {
             _service.AddUserInfo(input);
             return Response(input);

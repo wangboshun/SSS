@@ -1,7 +1,7 @@
-﻿using SSS.Domain.Seedwork.Model;
-using System;
+﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using SSS.Domain.Seedwork.Model;
 
 namespace SSS.Domain.Seedwork.Repository
 {
@@ -13,7 +13,7 @@ namespace SSS.Domain.Seedwork.Repository
     }
 
     public interface IRepository<TEntity> : IDisposable
-       where TEntity : Entity
+        where TEntity : Entity
     {
         void Add(TEntity obj, bool save = false);
 

@@ -17,20 +17,11 @@ namespace SSS.Domain.UserActivity.Validation
                 RuleFor(x => x.wechatname).NotEmpty().WithMessage("微信名错误！");
             });
 
-            RuleSet("Delete", () =>
-            {
+            RuleSet("Delete", () => { });
 
-            });
+            RuleSet("Update", () => { });
 
-            RuleSet("Update", () =>
-            {
-
-            });
-
-            RuleSet("Select", () =>
-            {
-
-            });
+            RuleSet("Select", () => { });
         }
     }
 }

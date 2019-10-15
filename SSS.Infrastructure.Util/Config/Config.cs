@@ -1,12 +1,12 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using System.IO;
+using Microsoft.Extensions.Configuration;
 
 namespace SSS.Infrastructure.Util.Config
 {
     public static class Config
     {
-        private static IConfiguration _configuration;
+        private static readonly IConfiguration _configuration;
 
         static Config()
         {

@@ -6,7 +6,7 @@ using SSS.Infrastructure.Util.Attribute;
 namespace SSS.Infrastructure.Repository.UserInfo
 {
     [DIService(ServiceLifetime.Scoped, typeof(IUserInfoRepository))]
-    public class UserInfoRepository : Repository<SSS.Domain.UserInfo.UserInfo>, IUserInfoRepository
+    public class UserInfoRepository : Repository<Domain.UserInfo.UserInfo>, IUserInfoRepository
     {
         public UserInfoRepository(DbcontextBase context) : base(context)
         {

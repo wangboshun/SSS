@@ -1,21 +1,21 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using SSS.Infrastructure.Util.Json;
-using System;
-using System.Threading.Tasks;
 
 namespace SSS.Api.Seedwork.Middleware
 {
     /// <summary>
-    /// ApiExceptionMiddleware
+    ///     ApiExceptionMiddleware
     /// </summary>
     public class ApiExceptionMiddleware
     {
-        private readonly RequestDelegate next;
         private readonly ILogger _logger;
+        private readonly RequestDelegate next;
 
         /// <summary>
-        /// ApiExceptionMiddleware
+        ///     ApiExceptionMiddleware
         /// </summary>
         /// <param name="next"></param>
         /// <param name="loggerFactory"></param>
@@ -40,7 +40,7 @@ namespace SSS.Api.Seedwork.Middleware
 
         private static Task HandleExceptionAsync(HttpContext context, int code, string msg)
         {
-            var data = new { status = false, data = "内部异常", message = msg, code = code };
+            var data = new {status = false, data = "内部异常", message = msg, code};
             var result = data.ToJson();
             context.Response.ContentType = "application/json;charset=utf-8";
             return context.Response.WriteAsync(result);

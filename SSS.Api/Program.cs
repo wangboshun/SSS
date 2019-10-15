@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore;
+﻿using System;
+using System.IO;
+using System.Net;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using NLog.Web;
 using SSS.Infrastructure.Util.Config;
-using System;
-using System.IO;
-using System.Net;
 
 namespace SSS.Api
 {
@@ -16,12 +16,14 @@ namespace SSS.Api
             CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        {
+            return WebHost.CreateDefaultBuilder(args)
                 .UseUrls("http://*:1234")
                 //.UseKestrel(ConfigHttps())
                 .UseStartup<Startup>()
                 .UseNLog();
+        }
 
         private static Action<KestrelServerOptions> ConfigHttps()
         {

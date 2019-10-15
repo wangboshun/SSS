@@ -7,8 +7,8 @@ using SSS.Domain.UserActivity.Dto;
 namespace SSS.Api.Controllers
 {
     /// <summary>
-    /// UserActivityController
-    /// </summary> 
+    ///     UserActivityController
+    /// </summary>
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
@@ -18,7 +18,7 @@ namespace SSS.Api.Controllers
         private readonly IUserActivityService _service;
 
         /// <summary>
-        /// UserActivityController
+        ///     UserActivityController
         /// </summary>
         /// <param name="service">IUserActivityService</param>
         public UserActivityController(IUserActivityService service)
@@ -27,26 +27,26 @@ namespace SSS.Api.Controllers
         }
 
         /// <summary>
-        /// GetList
+        ///     GetList
         /// </summary>
         /// <param name="input">input</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("getlist")]
-        [AllowAnonymous]  //匿名访问
-        public IActionResult GetList([FromQuery]UserActivityInputDto input)
+        [AllowAnonymous] //匿名访问
+        public IActionResult GetList([FromQuery] UserActivityInputDto input)
         {
             var result = _service.GetListUserActivity(input);
             return Response(result);
         }
 
         /// <summary>
-        /// GetGroupNumberByName
+        ///     GetGroupNumberByName
         /// </summary>
         /// <param name="input">input</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("getgroupnumber")]
-        [AllowAnonymous]  //匿名访问
-        public IActionResult GetGroupNumber([FromQuery]UserActivityInputDto input)
+        [AllowAnonymous] //匿名访问
+        public IActionResult GetGroupNumber([FromQuery] UserActivityInputDto input)
         {
             input.userid = UserInfo?.id;
             var result = _service.GetGroupNumber(input);
@@ -54,13 +54,13 @@ namespace SSS.Api.Controllers
         }
 
         /// <summary>
-        /// AddUserActivity
+        ///     AddUserActivity
         /// </summary>
         /// <param name="input">UserActivityInputDto</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpPost("add")]
-        [AllowAnonymous]  //匿名访问
-        public IActionResult AddUserActivity([FromBody]UserActivityInputDto input)
+        [AllowAnonymous] //匿名访问
+        public IActionResult AddUserActivity([FromBody] UserActivityInputDto input)
         {
             input.userid = UserInfo?.id;
             _service.AddUserActivity(input);

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using AutoMapper;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,13 +10,11 @@ using SSS.Domain.UserInfo.Dto;
 using SSS.Infrastructure.Repository.UserInfo;
 using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Util.Attribute;
-using System;
-using System.Collections.Generic;
 
 namespace SSS.Application.UserInfo.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IUserInfoService))]
-    public class UserInfoService : QueryService<SSS.Domain.UserInfo.UserInfo, UserInfoInputDto, UserInfoOutputDto>,
+    public class UserInfoService : QueryService<Domain.UserInfo.UserInfo, UserInfoInputDto, UserInfoOutputDto>,
         IUserInfoService
     {
         private readonly MemoryCacheEx _memorycache;
@@ -45,7 +45,7 @@ namespace SSS.Application.UserInfo.Service
             }
 
             input.id = Guid.NewGuid().ToString();
-            var model = Mapper.Map<SSS.Domain.UserInfo.UserInfo>(input);
+            var model = Mapper.Map<Domain.UserInfo.UserInfo>(input);
             Repository.Add(model, true);
         }
 

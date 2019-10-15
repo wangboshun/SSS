@@ -1,19 +1,19 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 namespace SSS.Api.Seedwork.Middleware
 {
     /// <summary>
-    /// UrlsMiddleware
+    ///     UrlsMiddleware
     /// </summary>
     public class UrlsMiddleware
     {
-        private readonly RequestDelegate _next;
         private readonly ILogger _logger;
+        private readonly RequestDelegate _next;
 
         /// <summary>
-        /// UrlsMiddleware
+        ///     UrlsMiddleware
         /// </summary>
         /// <param name="next"></param>
         /// <param name="loggerFactory"></param>
@@ -25,10 +25,7 @@ namespace SSS.Api.Seedwork.Middleware
 
         public async Task Invoke(HttpContext context)
         {
-            if (context.Request.Path.Value.Equals("/code"))
-            {
-                context.Request.Path = "/api/v1/code/index";
-            }
+            if (context.Request.Path.Value.Equals("/code")) context.Request.Path = "/api/v1/code/index";
             await _next.Invoke(context);
         }
     }

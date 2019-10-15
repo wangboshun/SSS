@@ -6,7 +6,7 @@ namespace SSS.Domain.UserInfo
     {
         public UserInfo(string id, string UserName, string PassWord)
         {
-            this.Id = id;
+            Id = id;
             this.PassWord = PassWord;
             this.UserName = UserName;
         }

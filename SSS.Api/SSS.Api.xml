@@ -6,294 +6,294 @@
     <members>
         <member name="T:SSS.Api.Bootstrap.ApplicationBuilderExtension">
             <summary>
-            ApplicationBuilderExtension
+                ApplicationBuilderExtension
             </summary>
         </member>
         <member name="M:SSS.Api.Bootstrap.ApplicationBuilderExtension.UseHttpContext(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
             <summary>
-            注入HttpContext
+                注入HttpContext
             </summary>
             <param name="app"></param>
             <returns></returns>
         </member>
         <member name="M:SSS.Api.Bootstrap.ApplicationBuilderExtension.UseApiException(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
             <summary>
-            异常返回
+                异常返回
             </summary>
             <param name="builder"></param>
             <returns></returns>
         </member>
         <member name="M:SSS.Api.Bootstrap.ApplicationBuilderExtension.UseRedisCache(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.Action{SSS.Infrastructure.Seedwork.Cache.Redis.RedisOptions})">
             <summary>
-            注入RedisCache
+                注入RedisCache
             </summary>
             <param name="app"></param>
             <returns></returns>
         </member>
         <member name="M:SSS.Api.Bootstrap.ApplicationBuilderExtension.UseMemCached(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.Action{SSS.Infrastructure.Seedwork.Cache.Redis.MemCachedOptions})">
             <summary>
-            注入Memcached
+                注入Memcached
             </summary>
             <param name="app"></param>
             <returns></returns>
         </member>
         <member name="T:SSS.Api.Bootstrap.ServiceCollectionExtension">
             <summary>
-            ServiceCollectionExtension
+                ServiceCollectionExtension
             </summary>
         </member>
         <member name="M:SSS.Api.Bootstrap.ServiceCollectionExtension.AddService(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
-            Service Base
+                Service Base
             </summary>
             <param name="services"></param>
         </member>
         <member name="M:SSS.Api.Bootstrap.ServiceCollectionExtension.AddAutoMapperSupport(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
-            AutoMapper
+                AutoMapper
             </summary>
             <param name="services"></param>
         </member>
         <member name="M:SSS.Api.Bootstrap.ServiceCollectionExtension.AddSwagger(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
-            Swagger
+                Swagger
             </summary>
-            <param name="services"></param> 
+            <param name="services"></param>
+        </member>
+        <member name="M:SSS.Api.Bootstrap.ServiceCollectionExtension.AddMemoryCacheEx(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+                MemoryCache扩展
+            </summary>
+            <param name="services"></param>
         </member>
         <member name="M:SSS.Api.Bootstrap.ServiceCollectionExtension.AddRedisCache(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfigurationSection)">
             <summary>
-            配置Redis链接
+                配置Redis链接
             </summary>
             <param name="services"></param>
             <param name="section"></param>
         </member>
         <member name="M:SSS.Api.Bootstrap.ServiceCollectionExtension.AddRedisCache(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{SSS.Infrastructure.Seedwork.Cache.Redis.RedisOptions})">
             <summary>
-            配置Redis链接
+                配置Redis链接
             </summary>
             <param name="services"></param>
             <param name="options"></param>
         </member>
         <member name="M:SSS.Api.Bootstrap.ServiceCollectionExtension.AddRedisCache(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
-            默认Redis链接
+                默认Redis链接
             </summary>
             <param name="services"></param>
         </member>
         <member name="M:SSS.Api.Bootstrap.ServiceCollectionExtension.AddMemCached(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfigurationSection)">
             <summary>
-            配置Memcached链接
+                配置Memcached链接
             </summary>
             <param name="services"></param>
             <param name="section"></param>
         </member>
         <member name="M:SSS.Api.Bootstrap.ServiceCollectionExtension.AddMemcached(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
-            默认Memcached链接
+                默认Memcached链接
             </summary>
             <param name="services"></param>
         </member>
         <member name="M:SSS.Api.Bootstrap.ServiceCollectionExtension.AddMemcached(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{SSS.Infrastructure.Seedwork.Cache.Redis.MemCachedOptions})">
             <summary>
-            配置Memcached链接
+                配置Memcached链接
             </summary>
             <param name="services"></param>
             <param name="options"></param>
         </member>
-        <member name="M:SSS.Api.Bootstrap.ServiceCollectionExtension.AddMemoryCacheEx(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
-            <summary>
-            MemoryCache扩展
-            </summary>
-            <param name="services"></param>
-        </member>
         <member name="T:SSS.Api.Controllers.ActivityController">
             <summary>
-            ActivityController
-            </summary> 
+                ActivityController
+            </summary>
         </member>
         <member name="M:SSS.Api.Controllers.ActivityController.#ctor(SSS.Application.Activity.Service.IActivityService)">
             <summary>
-            ActivityController
+                ActivityController
             </summary>
             <param name="service">IActivityService</param>
         </member>
         <member name="M:SSS.Api.Controllers.ActivityController.GetList(SSS.Domain.Activity.Dto.ActivityInputDto)">
             <summary>
-            GetList
+                GetList
             </summary>
             <param name="input">input</param>
-            <returns></returns> 
+            <returns></returns>
         </member>
         <member name="M:SSS.Api.Controllers.ActivityController.GetById(SSS.Domain.Activity.Dto.ActivityInputDto)">
             <summary>
-            Get
+                Get
             </summary>
             <param name="input">input</param>
-            <returns></returns> 
+            <returns></returns>
         </member>
         <member name="M:SSS.Api.Controllers.ActivityController.AddActivity(SSS.Domain.Activity.Dto.ActivityInputDto)">
             <summary>
-            AddActivity
+                AddActivity
             </summary>
             <param name="input">ActivityInputDto</param>
-            <returns></returns> 
+            <returns></returns>
         </member>
         <member name="T:SSS.Api.Controllers.ArticelController">
             <summary>
-            ArticelController
-            </summary> 
+                ArticelController
+            </summary>
         </member>
         <member name="M:SSS.Api.Controllers.ArticelController.#ctor(SSS.Application.Articel.Service.IArticelService)">
             <summary>
-            ArticelController
+                ArticelController
             </summary>
             <param name="service">IArticelService</param>
         </member>
         <member name="M:SSS.Api.Controllers.ArticelController.GetList(SSS.Domain.Articel.Dto.ArticelInputDto)">
             <summary>
-            GetList
+                GetList
             </summary>
             <param name="input">input</param>
-            <returns></returns> 
+            <returns></returns>
         </member>
         <member name="M:SSS.Api.Controllers.ArticelController.AddArticel(SSS.Domain.Articel.Dto.ArticelInputDto)">
             <summary>
-            AddArticel
+                AddArticel
             </summary>
             <param name="input">ArticelInputDto</param>
-            <returns></returns> 
+            <returns></returns>
         </member>
         <member name="M:SSS.Api.Controllers.CodeController.AppDomainContext(System.String,System.Collections.Generic.List{SSS.Api.Controllers.Field})">
             <summary>
-            填充类字段信息
+                填充类字段信息
             </summary>
             <param name="fields"></param>
         </member>
         <member name="M:SSS.Api.Controllers.CodeController.Generator_Domain(System.String)">
             <summary>
-            1
+                1
             </summary>
             <param name="name"></param>
         </member>
         <member name="M:SSS.Api.Controllers.CodeController.Generator_Infrastructure(System.String)">
             <summary>
-            2
+                2
             </summary>
             <param name="name"></param>
         </member>
         <member name="M:SSS.Api.Controllers.CodeController.Generator_Application(System.String)">
             <summary>
-            3
+                3
             </summary>
             <param name="name"></param>
         </member>
         <member name="M:SSS.Api.Controllers.CodeController.Generator_Api(System.String)">
             <summary>
-            4
+                4
             </summary>
             <param name="name"></param>
         </member>
         <member name="T:SSS.Api.Controllers.UserActivityController">
             <summary>
-            UserActivityController
-            </summary> 
+                UserActivityController
+            </summary>
         </member>
         <member name="M:SSS.Api.Controllers.UserActivityController.#ctor(SSS.Application.UserActivity.Service.IUserActivityService)">
             <summary>
-            UserActivityController
+                UserActivityController
             </summary>
             <param name="service">IUserActivityService</param>
         </member>
         <member name="M:SSS.Api.Controllers.UserActivityController.GetList(SSS.Domain.UserActivity.Dto.UserActivityInputDto)">
             <summary>
-            GetList
+                GetList
             </summary>
             <param name="input">input</param>
-            <returns></returns> 
+            <returns></returns>
         </member>
         <member name="M:SSS.Api.Controllers.UserActivityController.GetGroupNumber(SSS.Domain.UserActivity.Dto.UserActivityInputDto)">
             <summary>
-            GetGroupNumberByName
+                GetGroupNumberByName
             </summary>
             <param name="input">input</param>
-            <returns></returns> 
+            <returns></returns>
         </member>
         <member name="M:SSS.Api.Controllers.UserActivityController.AddUserActivity(SSS.Domain.UserActivity.Dto.UserActivityInputDto)">
             <summary>
-            AddUserActivity
+                AddUserActivity
             </summary>
             <param name="input">UserActivityInputDto</param>
-            <returns></returns> 
+            <returns></returns>
         </member>
         <member name="T:SSS.Api.Controllers.UserInfoController">
             <summary>
-            UserInfoController
-            </summary> 
+                UserInfoController
+            </summary>
         </member>
         <member name="M:SSS.Api.Controllers.UserInfoController.#ctor(SSS.Application.UserInfo.Service.IUserInfoService)">
             <summary>
-            UserInfoController
+                UserInfoController
             </summary>
             <param name="service">IUserInfoService</param>
         </member>
         <member name="M:SSS.Api.Controllers.UserInfoController.GetList(SSS.Domain.UserInfo.Dto.UserInfoInputDto)">
             <summary>
-            GetList
+                GetList
             </summary>
             <param name="input">input</param>
-            <returns></returns> 
+            <returns></returns>
         </member>
         <member name="M:SSS.Api.Controllers.UserInfoController.AddUserInfo(SSS.Domain.UserInfo.Dto.UserInfoInputDto)">
             <summary>
-            AddUserInfo
+                AddUserInfo
             </summary>
             <param name="input">UserInfoInputDto</param>
-            <returns></returns> 
+            <returns></returns>
         </member>
         <member name="T:SSS.Api.Startup">
             <summary>
-            Startup
+                Startup
             </summary>
         </member>
         <member name="M:SSS.Api.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
-            Startup
+                Startup
             </summary>
             <param name="configuration">IConfiguration</param>
         </member>
         <member name="P:SSS.Api.Startup.Configuration">
             <summary>
-            Configuration
+                Configuration
             </summary>
         </member>
         <member name="M:SSS.Api.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
-            ConfigureServices
+                ConfigureServices
             </summary>
             <param name="services">IServiceCollection</param>
         </member>
         <member name="M:SSS.Api.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Options.IOptions{Senparc.CO2NET.SenparcSetting},Microsoft.Extensions.Options.IOptions{Senparc.Weixin.Entities.SenparcWeixinSetting})">
             <summary>
-            Configure
+                Configure
             </summary>
             <param name="app">IApplicationBuilder</param>
             <param name="env">IHostingEnvironment</param>
         </member>
         <member name="M:SSS.Api.Startup.Hangfire(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
             <summary>
-            Hangfire
+                Hangfire
             </summary>
             <param name="app"></param>
         </member>
         <member name="M:SSS.Api.Startup.Swagger(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
             <summary>
-            Swagger
+                Swagger
             </summary>
             <param name="app"></param>
         </member>
         <member name="M:SSS.Api.Startup.UseDefaultStaticFile(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
             <summary>
-            文件浏览
+                文件浏览
             </summary>
             <param name="app"></param>
         </member>

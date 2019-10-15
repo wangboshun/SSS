@@ -1,4 +1,8 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,22 +10,17 @@ using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Domain.Seedwork.Repository;
 using SSS.Infrastructure.Util.Attribute;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 
 namespace SSS.Application.Seedwork.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IQueryService<,,>))]
     public class QueryService<TEntity, TInput, TOutput> : IQueryService<TEntity, TInput, TOutput>
-         where TEntity : Entity
-         where TInput : InputDtoBase
-         where TOutput : OutputDtoBase
+        where TEntity : Entity
+        where TInput : InputDtoBase
+        where TOutput : OutputDtoBase
     {
-        public readonly IMapper Mapper;
-
         public readonly IErrorHandler Error;
+        public readonly IMapper Mapper;
 
         public readonly IRepository<TEntity> Repository;
 
@@ -40,10 +39,12 @@ namespace SSS.Application.Seedwork.Service
         {
             return Mapper.Map<TOutput>(Repository.Get(id));
         }
+
         public TOutput Get(Expression<Func<TEntity, bool>> predicate)
         {
             return Mapper.Map<TOutput>(Repository.Get(predicate));
         }
+
         public Pages<List<TOutput>> GetList(TInput input)
         {
             List<TOutput> list;
@@ -55,7 +56,11 @@ namespace SSS.Application.Seedwork.Service
                 count = list.Count;
             }
             else
-                list = Repository.GetPage(input.pageindex, input.pagesize, ref count).ProjectTo<TOutput>(Mapper.ConfigurationProvider).ToList();
+            {
+                list = Repository.GetPage(input.pageindex, input.pagesize, ref count)
+                    .ProjectTo<TOutput>(Mapper.ConfigurationProvider).ToList();
+            }
+
             return new Pages<List<TOutput>>(list, count);
         }
 

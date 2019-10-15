@@ -1,14 +1,14 @@
-﻿using SSS.Domain.Seedwork.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using SSS.Domain.Seedwork.Model;
 
 namespace SSS.Application.Seedwork.Service
 {
     public interface IQueryService<TEntity, TInput, TOutput>
-         where TEntity : Entity
-         where TInput : InputDtoBase
-         where TOutput : OutputDtoBase
+        where TEntity : Entity
+        where TInput : InputDtoBase
+        where TOutput : OutputDtoBase
     {
         TOutput Get(string id);
 

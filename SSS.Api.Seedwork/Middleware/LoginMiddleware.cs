@@ -1,17 +1,17 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using SSS.Domain.UserInfo.Dto;
 using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Util.Json;
-using System.Threading.Tasks;
 
 namespace SSS.Api.Seedwork.Middleware
 {
     public class LoginMiddleware
     {
-        private readonly RequestDelegate _next;
         private readonly ILogger _logger;
         private readonly MemoryCacheEx _memorycache;
+        private readonly RequestDelegate _next;
 
         public LoginMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, MemoryCacheEx memorycache)
         {
@@ -50,15 +50,19 @@ namespace SSS.Api.Seedwork.Middleware
                         await LoginAsync(context, 401, "登录超时，重新登录！");
                 }
                 else
+                {
                     await LoginAsync(context, 401);
+                }
             }
             else
+            {
                 await _next.Invoke(context);
+            }
         }
 
         private static Task LoginAsync(HttpContext context, int code, string msg = "请求失败，权限不足！")
         {
-            var data = new { status = false, data = msg, message = msg, code = code };
+            var data = new {status = false, data = msg, message = msg, code};
             var result = data.ToJson();
             context.Response.Headers["Access-Control-Allow-Origin"] = "*";
             context.Response.ContentType = "application/json;charset=utf-8";

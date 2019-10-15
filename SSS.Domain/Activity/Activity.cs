@@ -1,5 +1,5 @@
-using SSS.Domain.Seedwork.Model;
 using System;
+using SSS.Domain.Seedwork.Model;
 
 namespace SSS.Domain.Activity
 {
@@ -7,7 +7,7 @@ namespace SSS.Domain.Activity
     {
         public Activity(string id)
         {
-            this.Id = id;
+            Id = id;
         }
 
 

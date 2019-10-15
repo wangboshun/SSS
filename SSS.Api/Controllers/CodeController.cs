@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using SSS.Api.Seedwork.Controller;
-using SSS.Infrastructure.Util.IO;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using SSS.Api.Seedwork.Controller;
+using SSS.Infrastructure.Util.IO;
 
 namespace SSS.Api.Controllers
 {
@@ -17,9 +18,8 @@ namespace SSS.Api.Controllers
     [ApiController]
     public class CodeController : ApiBaseController
     {
-        private IHostingEnvironment _env;
-
         private static string current_path;
+        private readonly IHostingEnvironment _env;
 
         public CodeController(IHostingEnvironment env)
         {
@@ -31,7 +31,9 @@ namespace SSS.Api.Controllers
         public ContentResult Index()
         {
             string html = "";
-            string filepath = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? current_path + "//codegenerator.html" : current_path + "\\codegenerator.html";
+            string filepath = RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+                ? current_path + "//codegenerator.html"
+                : current_path + "\\codegenerator.html";
 
             using (StreamReader sr = new StreamReader(filepath))
             {
@@ -41,7 +43,7 @@ namespace SSS.Api.Controllers
             return new ContentResult
             {
                 ContentType = "text/html",
-                StatusCode = (int)HttpStatusCode.OK,
+                StatusCode = (int) HttpStatusCode.OK,
                 Content = html
             };
         }
@@ -67,7 +69,7 @@ namespace SSS.Api.Controllers
         }
 
         /// <summary>
-        /// 填充类字段信息
+        ///     填充类字段信息
         /// </summary>
         /// <param name="fields"></param>
         private void AppDomainContext(string name, List<Field> fields)
@@ -80,7 +82,9 @@ namespace SSS.Api.Controllers
             StringBuilder str = new StringBuilder();
             foreach (var item in fields)
             {
-                string content = "        public " + item.field_type + " " + System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(item.field_name) + " { set; get; }";
+                string content = "        public " + item.field_type + " " +
+                                 Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(item.field_name) +
+                                 " { set; get; }";
                 str.Append("\r\n\r\n" + content);
             }
 
@@ -91,7 +95,7 @@ namespace SSS.Api.Controllers
         }
 
         /// <summary>
-        /// 1
+        ///     1
         /// </summary>
         /// <param name="name"></param>
         private void Generator_Domain(string name)
@@ -99,7 +103,8 @@ namespace SSS.Api.Controllers
             var TemplateInputDto_Read_Path = current_path + "\\Template\\Template_Domain\\Dto\\TemplateInputDto.txt";
             var TemplateOutputDto_Read_Path = current_path + "\\Template\\Template_Domain\\Dto\\TemplateOutputDto.txt";
             var Template_Read_Path = current_path + "\\Template\\Template_Domain\\Template.txt";
-            var TemplateValidation_Read_Path = current_path + "\\Template\\Template_Domain\\Validation\\TemplateValidation.txt";
+            var TemplateValidation_Read_Path =
+                current_path + "\\Template\\Template_Domain\\Validation\\TemplateValidation.txt";
 
             string TemplateInputDto_Content = IO.ReadAllText(TemplateInputDto_Read_Path);
             TemplateInputDto_Content = TemplateInputDto_Content.Replace("Template", name);
@@ -128,13 +133,15 @@ namespace SSS.Api.Controllers
         }
 
         /// <summary>
-        /// 2
+        ///     2
         /// </summary>
         /// <param name="name"></param>
         private void Generator_Infrastructure(string name)
         {
-            var ITemplateRepository_Read_Path = current_path + "\\Template\\Template_Infrastructure\\ITemplateRepository.txt";
-            var TemplateRepository_Read_Path = current_path + "\\Template\\Template_Infrastructure\\TemplateRepository.txt";
+            var ITemplateRepository_Read_Path =
+                current_path + "\\Template\\Template_Infrastructure\\ITemplateRepository.txt";
+            var TemplateRepository_Read_Path =
+                current_path + "\\Template\\Template_Infrastructure\\TemplateRepository.txt";
 
             string ITemplateRepository_Content = IO.ReadAllText(ITemplateRepository_Read_Path);
             ITemplateRepository_Content = ITemplateRepository_Content.Replace("Template", name);
@@ -145,22 +152,27 @@ namespace SSS.Api.Controllers
             Directory.SetCurrentDirectory(Directory.GetParent(current_path).FullName);
             var parent_path = Directory.GetCurrentDirectory();
 
-            var ITemplateRepository_Write_Path = parent_path + $"\\SSS.Infrastructure\\Repository\\{name}\\I{name}Repository.cs";
-            var TemplateRepository_Write_Path = parent_path + $"\\SSS.Infrastructure\\Repository\\{name}\\{name}Repository.cs";
+            var ITemplateRepository_Write_Path =
+                parent_path + $"\\SSS.Infrastructure\\Repository\\{name}\\I{name}Repository.cs";
+            var TemplateRepository_Write_Path =
+                parent_path + $"\\SSS.Infrastructure\\Repository\\{name}\\{name}Repository.cs";
 
             IO.Save(ITemplateRepository_Write_Path, ITemplateRepository_Content);
             IO.Save(TemplateRepository_Write_Path, TemplateRepository_Content);
         }
 
         /// <summary>
-        /// 3
+        ///     3
         /// </summary>
         /// <param name="name"></param>
         private void Generator_Application(string name)
         {
-            var TemplateProfile_Read_Path = current_path + "\\Template\\Template_Application\\Mapper\\TemplateMapper.txt";
-            var ITemplateService_Read_Path = current_path + "\\Template\\Template_Application\\Service\\ITemplateService.txt";
-            var TemplateService_Read_Path = current_path + "\\Template\\Template_Application\\Service\\TemplateService.txt";
+            var TemplateProfile_Read_Path =
+                current_path + "\\Template\\Template_Application\\Mapper\\TemplateMapper.txt";
+            var ITemplateService_Read_Path =
+                current_path + "\\Template\\Template_Application\\Service\\ITemplateService.txt";
+            var TemplateService_Read_Path =
+                current_path + "\\Template\\Template_Application\\Service\\TemplateService.txt";
 
             string TemplateProfile_Content = IO.ReadAllText(TemplateProfile_Read_Path);
             TemplateProfile_Content = TemplateProfile_Content.Replace("Template", name);
@@ -184,7 +196,7 @@ namespace SSS.Api.Controllers
         }
 
         /// <summary>
-        /// 4
+        ///     4
         /// </summary>
         /// <param name="name"></param>
         private void Generator_Api(string name)

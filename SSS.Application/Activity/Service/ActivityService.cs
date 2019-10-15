@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using AutoMapper;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,13 +9,12 @@ using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Activity;
 using SSS.Infrastructure.Util.Attribute;
-using System;
-using System.Collections.Generic;
 
 namespace SSS.Application.Activity.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IActivityService))]
-    public class ActivityService : QueryService<SSS.Domain.Activity.Activity, ActivityInputDto, ActivityOutputDto>, IActivityService
+    public class ActivityService : QueryService<Domain.Activity.Activity, ActivityInputDto, ActivityOutputDto>,
+        IActivityService
     {
         public ActivityService(IMapper mapper,
             IActivityRepository repository,
@@ -32,7 +33,7 @@ namespace SSS.Application.Activity.Service
             }
 
             input.id = Guid.NewGuid().ToString();
-            var model = Mapper.Map<SSS.Domain.Activity.Activity>(input);
+            var model = Mapper.Map<Domain.Activity.Activity>(input);
             Repository.Add(model);
             Repository.SaveChanges();
         }

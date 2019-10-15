@@ -1,14 +1,15 @@
+using AutoMapper;
 using SSS.Domain.UserActivity.Dto;
 
 namespace SSS.Application.UserActivity.Mapper
 {
-    public class UserActivityProfile : AutoMapper.Profile
+    public class UserActivityProfile : Profile
     {
         public UserActivityProfile()
         {
-            CreateMap<SSS.Domain.UserActivity.UserActivity, UserActivityOutputDto>();
+            CreateMap<Domain.UserActivity.UserActivity, UserActivityOutputDto>();
 
-            CreateMap<UserActivityInputDto, SSS.Domain.UserActivity.UserActivity>();
+            CreateMap<UserActivityInputDto, Domain.UserActivity.UserActivity>();
         }
     }
 }

@@ -1,9 +1,10 @@
-﻿using Enyim.Caching;
+﻿using System;
+using Enyim.Caching;
 using Enyim.Caching.Configuration;
+using Enyim.Caching.Memcached;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SSS.Infrastructure.Seedwork.Cache.Redis;
-using System;
 
 namespace SSS.Infrastructure.Seedwork.Cache.Memcached
 {
@@ -36,7 +37,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.Memcached
         }
 
         /// <summary>
-        /// 根据Key删除缓存
+        ///     根据Key删除缓存
         /// </summary>
         /// <param name="key"></param>
         public void Remove(string key)
@@ -46,11 +47,11 @@ namespace SSS.Infrastructure.Seedwork.Cache.Memcached
 
         public void StringSet(string key, string value)
         {
-            _memcache.Store(Enyim.Caching.Memcached.StoreMode.Set, key, value);
+            _memcache.Store(StoreMode.Set, key, value);
         }
 
         /// <summary>
-        /// 设置缓存时间，分钟为单位
+        ///     设置缓存时间，分钟为单位
         /// </summary>
         /// <param name="key">key</param>
         /// <param name="value">value</param>
@@ -58,7 +59,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.Memcached
         public void StringSet(string key, string value, double minute)
         {
             TimeSpan time = TimeSpan.FromMinutes(minute);
-            _memcache.Store(Enyim.Caching.Memcached.StoreMode.Set, key, value, time);
+            _memcache.Store(StoreMode.Set, key, value, time);
         }
 
         public string StringGet(string key)

@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using System;
 
 namespace SSS.Infrastructure.Util.Http
 {
@@ -10,17 +10,15 @@ namespace SSS.Infrastructure.Util.Http
 
         public static IServiceProvider ServiceProvider;
 
-        public static HttpContext Current
-        {
-            get => _accessor.HttpContext;
-        }
-
         private static IHostingEnvironment _hostingEnvironment;
+
+        public static HttpContext Current => _accessor.HttpContext;
 
         public static void Configure(IHttpContextAccessor accessor)
         {
             _accessor = accessor;
         }
+
         public static void Configure(IHttpContextAccessor accessor, IHostingEnvironment hostingEnvironment)
         {
             _accessor = accessor;
@@ -31,6 +29,7 @@ namespace SSS.Infrastructure.Util.Http
         {
             return _hostingEnvironment.ContentRootPath;
         }
+
         public static string WebRootPath(this HttpContext context)
         {
             return _hostingEnvironment.WebRootPath;

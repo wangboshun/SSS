@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using AutoMapper;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,13 +9,12 @@ using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Articel;
 using SSS.Infrastructure.Util.Attribute;
-using System;
-using System.Collections.Generic;
 
 namespace SSS.Application.Articel.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IArticelService))]
-    public class ArticelService : QueryService<SSS.Domain.Articel.Articel, ArticelInputDto, ArticelOutputDto>, IArticelService
+    public class ArticelService : QueryService<Domain.Articel.Articel, ArticelInputDto, ArticelOutputDto>,
+        IArticelService
     {
         public ArticelService(IMapper mapper,
             IArticelRepository repository,
@@ -33,7 +34,7 @@ namespace SSS.Application.Articel.Service
             }
 
             input.id = Guid.NewGuid().ToString();
-            var model = Mapper.Map<SSS.Domain.Articel.Articel>(input);
+            var model = Mapper.Map<Domain.Articel.Articel>(input);
             Repository.Add(model);
             Repository.SaveChanges();
         }

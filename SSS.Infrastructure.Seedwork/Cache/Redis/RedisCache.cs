@@ -1,8 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using StackExchange.Redis;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using StackExchange.Redis;
 
 namespace SSS.Infrastructure.Seedwork.Cache.Redis
 {
@@ -10,9 +11,9 @@ namespace SSS.Infrastructure.Seedwork.Cache.Redis
     {
         private readonly ConnectionMultiplexer _connect;
 
-        private readonly ILogger _logger;
-
         private readonly IDatabase _db;
+
+        private readonly ILogger _logger;
 
         public RedisCache(IOptions<RedisOptions> options, ILogger<RedisCache> logger)
         {
@@ -21,10 +22,12 @@ namespace SSS.Infrastructure.Seedwork.Cache.Redis
             try
             {
                 if (!string.IsNullOrWhiteSpace(options.Value.host))
-                    _connect = ConnectionMultiplexer.Connect(new ConfigurationOptions { EndPoints = { { options.Value.host, options.Value.port } } });
+                    _connect = ConnectionMultiplexer.Connect(new ConfigurationOptions
+                        {EndPoints = {{options.Value.host, options.Value.port}}});
 
                 else
-                    _connect = ConnectionMultiplexer.Connect(new ConfigurationOptions { EndPoints = { { "localhost", 6379 } } });
+                    _connect = ConnectionMultiplexer.Connect(new ConfigurationOptions
+                        {EndPoints = {{"localhost", 6379}}});
 
                 if (_connect.IsConnected)
                     _db = _connect.GetDatabase();
@@ -36,7 +39,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.Redis
         }
 
         /// <summary>
-        /// 根据Key删除缓存
+        ///     根据Key删除缓存
         /// </summary>
         /// <param name="key"></param>
         public void Remove(string key)
@@ -45,7 +48,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.Redis
         }
 
         /// <summary>
-        /// 统计Key数量
+        ///     统计Key数量
         /// </summary>
         /// <returns></returns>
         public int Count()
@@ -61,7 +64,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.Redis
         }
 
         /// <summary>
-        /// 设置缓存时间，分钟为单位
+        ///     设置缓存时间，分钟为单位
         /// </summary>
         /// <param name="key">key</param>
         /// <param name="value">value</param>
@@ -84,7 +87,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.Redis
         public void ListSet<T>(string key, List<T> value)
         {
             foreach (var item in value)
-                _db.ListRightPush(key, Newtonsoft.Json.JsonConvert.SerializeObject(item));
+                _db.ListRightPush(key, JsonConvert.SerializeObject(item));
         }
 
         public List<T> ListGet<T>(string key)
@@ -95,7 +98,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.Redis
 
             List<T> result = new List<T>();
             foreach (var item in data)
-                result.Add(Newtonsoft.Json.JsonConvert.DeserializeObject<T>(item));
+                result.Add(JsonConvert.DeserializeObject<T>(item));
 
             return result;
         }
@@ -103,7 +106,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.Redis
         public T ListGetByIndex<T>(string key, int index)
         {
             var data = _db.ListGetByIndex(key, index);
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(data);
+            return JsonConvert.DeserializeObject<T>(data);
         }
 
         #endregion

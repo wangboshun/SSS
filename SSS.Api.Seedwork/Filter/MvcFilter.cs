@@ -6,13 +6,23 @@ namespace SSS.Api.Seedwork.Filter
 {
     public class MvcFilter : IActionFilter, IResultFilter, IAuthorizationFilter, IExceptionFilter
     {
-        private readonly ILogger _logger;
         private readonly IHostingEnvironment _env;
+        private readonly ILogger _logger;
 
         public MvcFilter(ILogger<MvcFilter> logger, IHostingEnvironment env)
         {
             _logger = logger;
             _env = env;
+        }
+
+        //2
+        public void OnActionExecuting(ActionExecutingContext context)
+        {
+        }
+
+        //3
+        public void OnActionExecuted(ActionExecutedContext context)
+        {
         }
 
         //1
@@ -24,33 +34,21 @@ namespace SSS.Api.Seedwork.Filter
             //}
         }
 
-        //2
-        public void OnActionExecuting(ActionExecutingContext context)
-        {
-        }
-
-        //3
-        public void OnActionExecuted(ActionExecutedContext context)
-        {
-
-        }
-
         //4
         public void OnException(ExceptionContext context)
         {
-            _logger.LogError(new EventId(context.Exception.HResult), context.Exception, context.HttpContext.Request.Path);
+            _logger.LogError(new EventId(context.Exception.HResult), context.Exception,
+                context.HttpContext.Request.Path);
         }
 
         //5
         public void OnResultExecuting(ResultExecutingContext context)
         {
-
         }
 
         //6
         public void OnResultExecuted(ResultExecutedContext context)
         {
-
         }
     }
 }
