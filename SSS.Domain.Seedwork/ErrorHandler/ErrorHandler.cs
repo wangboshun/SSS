@@ -19,7 +19,7 @@ namespace SSS.Domain.Seedwork.ErrorHandler
         public ErrorHandler()
         {
             _notice = new List<ValidationFailure>();
-            _logger = (ILogger) HttpContextService.Current.RequestServices.GetService(typeof(ILogger<ErrorHandler>));
+            _logger = (ILogger)HttpContextService.Current.RequestServices.GetService(typeof(ILogger<ErrorHandler>));
         }
 
         public Task Execute(ValidationResult message)
@@ -54,6 +54,7 @@ namespace SSS.Domain.Seedwork.ErrorHandler
 
         public void Dispose()
         {
+            _notice.Clear();
             GC.SuppressFinalize(this);
         }
     }

@@ -29,9 +29,8 @@ namespace SSS.Infrastructure.Seedwork.Repository
         {
             Db = context;
             DbSet = Db.Set<TEntity>();
-            _error = (IErrorHandler) HttpContextService.Current.RequestServices.GetService(typeof(IErrorHandler));
-            _logger = (ILogger) HttpContextService.Current.RequestServices.GetService(
-                typeof(ILogger<Repository<TEntity>>));
+            _error = (IErrorHandler)HttpContextService.Current.RequestServices.GetService(typeof(IErrorHandler));
+            _logger = (ILogger)HttpContextService.Current.RequestServices.GetService(typeof(ILogger<Repository<TEntity>>));
         }
 
         public virtual void Add(TEntity obj, bool save = false)

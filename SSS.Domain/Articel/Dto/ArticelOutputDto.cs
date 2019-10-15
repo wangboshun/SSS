@@ -4,14 +4,14 @@ namespace SSS.Domain.Articel.Dto
 {
     public class ArticelOutputDto : OutputDtoBase
     {
-        public string Title { set; get; }
+        public string title { set; get; }
 
-        public int Sort { set; get; }
+        public int sort { set; get; }
 
-        public string Content { set; get; }
+        public string content { set; get; }
 
-        public string Author { set; get; }
+        public string author { set; get; }
 
-        public string Logo { set; get; }
+        public string logo { set; get; }
     }
 }

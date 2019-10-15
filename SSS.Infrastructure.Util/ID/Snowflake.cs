@@ -73,7 +73,7 @@ namespace SSS.Infrastructure.Util.ID
         private static long GetTimestamp()
         {
             //让他2000年开始
-            return (long) (DateTime.UtcNow - new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds;
+            return (long) (System.DateTime.UtcNow - new System.DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds;
         }
 
         /// <summary>
