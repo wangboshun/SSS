@@ -11,6 +11,11 @@ namespace SSS.Infrastructure.Util.Json
             return JsonConvert.SerializeObject(obj);
         }
 
+        public static JObject ToJObject(this string str)
+        {
+            return JObject.Parse(str);
+        }
+
         public static T ToEntity<T>(this string json) where T : new()
         {
             return JsonConvert.DeserializeObject<T>(json);
@@ -36,10 +41,10 @@ namespace SSS.Infrastructure.Util.Json
             IEnumerator enumerator = jToken.GetEnumerator();
             while (enumerator.MoveNext())
             {
-                JToken jc = (JToken) enumerator.Current;
-                if (jc is JObject || ((JProperty) jc).Value is JObject) return GetJsonValue(jc.Children(), key);
+                JToken jc = (JToken)enumerator.Current;
+                if (jc is JObject || ((JProperty)jc).Value is JObject) return GetJsonValue(jc.Children(), key);
 
-                if (((JProperty) jc).Name == key) return ((JProperty) jc).Value;
+                if (((JProperty)jc).Name == key) return ((JProperty)jc).Value;
             }
 
             return null;

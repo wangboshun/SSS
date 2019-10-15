@@ -150,7 +150,7 @@ namespace SSS.Api
             app.UseMiddleware<UrlsMiddleware>();
 
             //拦截登录
-            app.UseMiddleware<LoginMiddleware>();
+            //app.UseMiddleware<LoginMiddleware>();
 
             //http上下文
             app.UseHttpContext();

@@ -20,4 +20,15 @@ namespace SSS.Domain.Articel
 
         public string Logo { set; get; }
     }
+
+    public class JinSe_News
+    {
+        public string id { set; get; }
+
+        public string content { set; get; }
+
+        public string title { set; get; }
+
+        public string createtime { set; get; }
+    }
 }

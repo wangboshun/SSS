@@ -7,16 +7,16 @@ namespace SSS.Infrastructure.Util.Attribute
     [AttributeUsage(AttributeTargets.All, Inherited = false)]
     public class DIServiceAttribute : System.Attribute
     {
-        public ServiceLifetime lifetime;
+        public readonly ServiceLifetime _lifetime;
         public List<Type> TargetTypes = new List<Type>();
 
-        public DIServiceAttribute(ServiceLifetime argLifetime, params Type[] argTargets)
+        public DIServiceAttribute(ServiceLifetime lifetime, params Type[] argTargets)
         {
-            lifetime = argLifetime;
+            _lifetime = lifetime;
             foreach (var argTarget in argTargets) TargetTypes.Add(argTarget);
         }
 
-        public ServiceLifetime Lifetime => lifetime;
+        public ServiceLifetime Lifetime => _lifetime;
 
         public List<Type> GetTargetTypes()
         {

@@ -156,6 +156,13 @@
             <param name="input">input</param>
             <returns></returns>
         </member>
+        <member name="M:SSS.Api.Controllers.ArticelController.GetNews(SSS.Domain.Articel.Dto.ArticelInputDto)">
+            <summary>
+                GetNews
+            </summary>
+            <param name="input">input</param>
+            <returns></returns>
+        </member>
         <member name="M:SSS.Api.Controllers.ArticelController.AddArticel(SSS.Domain.Articel.Dto.ArticelInputDto)">
             <summary>
                 AddArticel

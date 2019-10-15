@@ -40,6 +40,19 @@ namespace SSS.Api.Controllers
         }
 
         /// <summary>
+        ///     GetNews
+        /// </summary>
+        /// <param name="input">input</param>
+        /// <returns></returns>
+        [HttpGet("getnews")]
+        [AllowAnonymous] //匿名访问
+        public IActionResult GetNews([FromQuery] ArticelInputDto input)
+        {
+            var result = _service.GetNews(input);
+            return Response(result);
+        }
+
+        /// <summary>
         ///     AddArticel
         /// </summary>
         /// <param name="input">ArticelInputDto</param>
