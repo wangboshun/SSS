@@ -12,6 +12,7 @@
     <ProjectReference Include="..\SSS.Application.Seedwork\SSS.Application.Seedwork.csproj" />
     <ProjectReference Include="..\SSS.Domain\SSS.Domain.csproj" />
     <ProjectReference Include="..\SSS.Infrastructure.Seedwork\SSS.Infrastructure.Seedwork.csproj" />
+    <ProjectReference Include="..\SSS.Infrastructure.Util\SSS.Infrastructure.Util.csproj" />
     <ProjectReference Include="..\SSS.Infrastructure\SSS.Infrastructure.csproj" />
   </ItemGroup>
 

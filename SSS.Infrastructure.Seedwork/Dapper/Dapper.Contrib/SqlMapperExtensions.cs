@@ -304,7 +304,7 @@ namespace Dapper.Contrib.Extensions
                 }
                 else
                 {
-                    name = type.Name + "s";
+                    name = type.Name;// + "s";
                     if (type.IsInterface && name.StartsWith("I"))
                         name = name.Substring(1);
                 }
@@ -353,7 +353,8 @@ namespace Dapper.Contrib.Extensions
             var allProperties = TypePropertiesCache(type);
             var keyProperties = KeyPropertiesCache(type);
             var computedProperties = ComputedPropertiesCache(type);
-            var allPropertiesExceptKeyAndComputed = allProperties.Except(keyProperties.Union(computedProperties)).ToList();
+            //var allPropertiesExceptKeyAndComputed = allProperties.Except(keyProperties.Union(computedProperties)).ToList();
+            var allPropertiesExceptKeyAndComputed = allProperties.Except(computedProperties).ToList();
 
             var adapter = GetFormatter(connection);
 

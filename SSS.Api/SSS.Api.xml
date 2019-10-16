@@ -111,7 +111,7 @@
                 ActivityController
             </summary>
         </member>
-        <member name="M:SSS.Api.Controllers.ActivityController.#ctor(SSS.Application.Activity.Service.IActivityService,SSS.Infrastructure.Repository.Articel.IArticelRepository,Microsoft.Extensions.DependencyInjection.IServiceScopeFactory)">
+        <member name="M:SSS.Api.Controllers.ActivityController.#ctor(SSS.Application.Activity.Service.IActivityService,SSS.Infrastructure.Repository.Articel.IArticelRepository)">
             <summary>
                 ActivityController
             </summary>

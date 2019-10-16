@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SSS.Domain.Activity;
+using SSS.Domain.Articel;
 using SSS.Domain.UserActivity;
 using SSS.Domain.UserInfo;
 using SSS.Infrastructure.Util.Attribute;
@@ -20,6 +21,8 @@ namespace SSS.Infrastructure.Seedwork.DbContext
         }
 
         public DbSet<Activity> Activity { get; set; }
+
+        public DbSet<Articel> Articel { get; set; }
 
         public DbSet<UserActivity> UserActivity { get; set; }
 

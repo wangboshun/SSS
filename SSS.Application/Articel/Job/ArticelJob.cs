@@ -3,15 +3,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
-using SSS.Domain.Articel.Dto;
+using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.DateTime;
 using SSS.Infrastructure.Util.Json;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using SSS.Infrastructure.Repository.Articel;
 
 namespace SSS.Application.Articel.Job
 {
@@ -33,7 +34,7 @@ namespace SSS.Application.Articel.Job
             {
                 GetNews();//15分钟一次新闻
                 GetQuickNews();//15分钟一次新闻
-                await Task.Delay(1000/* * 60 * 15*/, stoppingToken);
+                await Task.Delay(5000/* * 60 * 15*/, stoppingToken);
             }
         }
 
@@ -43,29 +44,46 @@ namespace SSS.Application.Articel.Job
         /// <returns></returns>
         public void GetNews()
         {
-            WebClient web = new WebClient();
-            web.Headers.Add("User-Agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.25 Mobile Safari/537.36");
-            string json = web.DownloadString("https://api.jinse.com/v6/information/list?catelogue_key=news&limit=23&information_id=0&flag=down&version=9.9.9");
-            JToken data = Json.GetJsonValue(json, "list");
-
-            List<Domain.Articel.Articel> result = new List<Domain.Articel.Articel>();
-
-            //using (var scope = _scopeFactory.CreateScope())
-            //{
-            //    var _repository = scope.ServiceProvider.GetService<IArticelRepository>();
-            //    _repository.AddList(result, true);
-            //}
-
-
-            foreach (var item in data.AsJEnumerable())
+            try
             {
-                Domain.Articel.Articel model = new Domain.Articel.Articel();
-                model.Id = item["id"].ToString();
-                model.Title = item["title"].ToString();
-                GetNewsContnt(item["extra"], model);
-                result.Add(model);
+                WebClient web = new WebClient();
+                string json = web.DownloadString("https://api.jinse.com/v6/information/list?catelogue_key=news&limit=23&information_id=0&flag=down&version=9.9.9");
+                JToken data = Json.GetJsonValue(json, "list");
+
+                using (var scope = _scopeFactory.CreateScope())
+                {
+                    List<Domain.Articel.Articel> list = new List<Domain.Articel.Articel>();
+
+                    using (var _context = scope.ServiceProvider.GetRequiredService<DbcontextBase>())
+                    {
+                        if (!_context.Articel.Any())
+                        {
+                            foreach (var item in data.AsJEnumerable())
+                            {
+                                if (_context.Articel.Select(x => x.Title.Equals(item["title"].ToString())).Any())
+                                    continue;
+
+                                Domain.Articel.Articel model = new Domain.Articel.Articel
+                                {
+                                    Id = Guid.NewGuid().ToString(),
+                                    Title = item["title"].ToString(),
+                                    Category = 1
+                                };
+
+                                GetNewsContnt(item["extra"], model);
+                                list.Add(model);
+                            }
+                        };
+                        _context.Articel.AddRange(list);
+                        _context.SaveChangesAsync();
+                        _context.Articel.RemoveRange(list);
+                    }
+                }
             }
-          
+            catch (System.Exception ex)
+            {
+                _logger.LogError(new EventId(ex.HResult), ex, "GetNews Exception");
+            }
         }
 
         /// <summary>
@@ -79,7 +97,7 @@ namespace SSS.Application.Articel.Job
 
             HtmlAgilityPack.HtmlDocument document = htmlWeb.Load(token["topic_url"].ToString());
 
-            HtmlNode node = document.DocumentNode.SelectSingleNode("//div[@id='article-content']");
+            HtmlNode node = document.DocumentNode.SelectSingleNode("//div[@class='js-article-detail']");
 
             foreach (var item in node.ChildNodes)
             {
@@ -99,24 +117,45 @@ namespace SSS.Application.Articel.Job
         /// <returns></returns>
         public void GetQuickNews()
         {
-            WebClient web = new WebClient();
-            web.Headers.Add("User-Agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.25 Mobile Safari/537.36");
-            string json = web.DownloadString("https://api.jinse.com/v4/live/list?reading=false&sort=7&flag=down&id=0&limit=30");
-            JToken data = Json.GetJsonValue(json, "list");
-            IJEnumerable<JToken> list = data.First.Last.AsJEnumerable().Values();
-
-            List<ArticelOutputDto> result = new List<ArticelOutputDto>();
-
-            foreach (var item in list)
+            try
             {
-                ArticelOutputDto model = new ArticelOutputDto();
-                model.id = item["id"].ToString();
-                model.content = GetDetail(item["content"].ToString());
-                model.createtime = DateTimeConvert.ConvertIntDateTimeToString(item["created_at"].ToString());
-                model.title = GetTitle(item["content"].ToString());
-                result.Add(model);
-            }
+                WebClient web = new WebClient();
+                string json = web.DownloadString("https://api.jinse.com/v4/live/list?reading=false&sort=7&flag=down&id=0&limit=30");
+                JToken data = Json.GetJsonValue(json, "list");
+                IJEnumerable<JToken> token = data.First.Last.AsJEnumerable().Values();
 
+                using (var scope = _scopeFactory.CreateScope())
+                {
+                    using (var _context = scope.ServiceProvider.GetRequiredService<DbcontextBase>())
+                    {
+                        List<Domain.Articel.Articel> list = new List<Domain.Articel.Articel>();
+
+                        foreach (var item in token)
+                        {
+                            if (_context.Articel.Select(x => x.Title.Equals(item["title"].ToString())).Any())
+                                continue;
+
+                            Domain.Articel.Articel model = new Domain.Articel.Articel
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Content = GetDetail(item["content"].ToString()),
+                                CreateTime = DateTimeConvert.ConvertDateTime(item["created_at"].ToString()),
+                                Title = GetTitle(item["content"].ToString()),
+                                Category = 2,
+                                Logo = ""
+                            };
+                            list.Add(model);
+                        }
+                        _context.Articel.AddRange(list);
+                        _context.SaveChangesAsync();
+                        _context.Articel.RemoveRange(list);
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError(new EventId(ex.HResult), ex, "GetQuickNews Exception");
+            }
         }
 
         /// <summary>

@@ -6,7 +6,7 @@ namespace SSS.Domain.Seedwork.Model
     {
         /// <summary>
         ///     主键Id
-        /// </summary>
+        /// </summary> 
         public string Id { get; set; }
 
         /// <summary>
