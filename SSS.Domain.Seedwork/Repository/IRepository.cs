@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using SSS.Domain.Seedwork.Model;
@@ -16,6 +17,7 @@ namespace SSS.Domain.Seedwork.Repository
         where TEntity : Entity
     {
         void Add(TEntity obj, bool save = false);
+        void AddList(List<TEntity> list, bool save = false);
 
         TEntity Get(string id);
         TEntity Get(Expression<Func<TEntity, bool>> predicate);

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.Activity.Service;
 using SSS.Domain.Activity.Dto;
+using SSS.Infrastructure.Repository.Articel;
 
 namespace SSS.Api.Controllers
 {
@@ -15,15 +16,17 @@ namespace SSS.Api.Controllers
     [ApiController]
     public class ActivityController : ApiBaseController
     {
+        private readonly IArticelRepository _repository;
         private readonly IActivityService _service;
 
         /// <summary>
         ///     ActivityController
         /// </summary>
         /// <param name="service">IActivityService</param>
-        public ActivityController(IActivityService service)
+        public ActivityController(IActivityService service, IArticelRepository repository)
         {
             _service = service;
+            _repository = repository;
         }
 
         /// <summary>

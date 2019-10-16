@@ -40,6 +40,13 @@ namespace SSS.Infrastructure.Seedwork.Repository
                 Db.SaveChanges();
         }
 
+        public virtual void AddList(List<TEntity> list, bool save = false)
+        {
+            DbSet.AddRange(list);
+            if (save)
+                Db.SaveChanges();
+        }
+
         public virtual TEntity Get(string id)
         {
             return DbSet.Find(id);

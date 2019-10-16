@@ -19,6 +19,6 @@ namespace SSS.Domain.Seedwork.Model
     {
         public string id { get; set; }
 
-        public DateTime creatrtime { set; get; }
+        public string createtime { set; get; }
     }
 }

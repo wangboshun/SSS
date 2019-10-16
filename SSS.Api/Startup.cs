@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Reflection;
-using FluentValidation.AspNetCore;
+﻿using FluentValidation.AspNetCore;
 using Hangfire;
 using Hangfire.SQLite;
 using Microsoft.AspNetCore.Builder;
@@ -21,6 +19,9 @@ using SSS.Api.Bootstrap;
 using SSS.Api.Seedwork.Filter;
 using SSS.Api.Seedwork.Middleware;
 using StackExchange.Profiling.SqlFormatters;
+using System.IO;
+using System.Reflection;
+using SSS.Application.Articel.Job;
 
 namespace SSS.Api
 {
@@ -53,7 +54,12 @@ namespace SSS.Api
                 {
                     //全局Action Exception Result过滤器
                     options.Filters.Add<MvcFilter>();
-                }).AddFluentValidation(config =>
+                })
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+                })
+                .AddFluentValidation(config =>
                 {
                     config.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
                 })
@@ -62,6 +68,8 @@ namespace SSS.Api
                     //关闭默认模型验证过滤器
                     config.SuppressModelStateInvalidFilter = true;
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
+            services.AddHangfireServer();
 
             services.AddMemoryCacheEx();
 
@@ -105,15 +113,17 @@ namespace SSS.Api
 
             services.AddHangfire(config =>
             {
+
                 config.UseSQLiteStorage(Configuration.GetConnectionString("SQLITEConnection"));
+
                 //config.UseStorage(new MySqlStorage(Configuration.GetConnectionString("MYSQLConnection")));
                 //config.UseSqlServerStorage(Configuration.GetConnectionString("MSSQLConnection"));
             });
 
-            services.AddHangfireServer();
-
             services.AddSenparcGlobalServices(Configuration) //Senparc.CO2NET 全局注册
                 .AddSenparcWeixinServices(Configuration); //Senparc.Weixin 注册   
+
+            //services.AddHostedService<ArticelJob>();
 
             services.AddControllers();
         }
@@ -187,11 +197,11 @@ namespace SSS.Api
         /// <param name="app"></param>
         private void Hangfire(IApplicationBuilder app)
         {
-            GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute {Attempts = 1});
+            GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute { Attempts = 1 });
             app.UseHangfireServer();
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
-                Authorization = new[] {new CustomAuthorizeFilter()}
+                Authorization = new[] { new CustomAuthorizeFilter() }
             });
         }
 

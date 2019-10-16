@@ -22,12 +22,38 @@ namespace SSS.Infrastructure.Util.DateTime
         /// </summary>
         /// <param name="d"></param>
         /// <returns></returns>
-        public static System.DateTime ConvertIntDateTime(string val)
+        public static System.DateTime ConvertDateTime(string val)
         {
             System.DateTime dateTimeStart = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1));
             long lTime = long.Parse(val + "0000000");
             TimeSpan toNow = new TimeSpan(lTime);
             return dateTimeStart.Add(toNow);
+        }
+
+        /// <summary>
+        /// Unix时间 转 时间字符串  yyyy-MM-dd HH:mm:ss
+        /// </summary>
+        /// <param name="val"></param>
+        /// <param name="format">yyyy-MM-dd HH:mm:ss</param>
+        /// <returns></returns>
+        public static string ConvertIntDateTimeToString(string val, string format = "yyyy-MM-dd HH:mm:ss")
+        {
+            System.DateTime dateTimeStart = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1));
+            long lTime = long.Parse(val + "0000000");
+            TimeSpan toNow = new TimeSpan(lTime);
+            System.DateTime now = dateTimeStart.Add(toNow);
+            return now.ToString(format);
+        }
+
+        /// <summary>
+        /// DateTime 转 时间字符串  yyyy-MM-dd HH:mm:ss
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="format">yyyy-MM-dd HH:mm:ss</param>
+        /// <returns></returns>
+        public static string ConvertDateTimeToString(System.DateTime time, string format = "yyyy-MM-dd HH:mm:ss")
+        {
+            return time.ToString(format);
         }
 
         /// <summary>

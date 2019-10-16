@@ -4,13 +4,7 @@ using SSS.Domain.Seedwork.Model;
 namespace SSS.Domain.Activity
 {
     public class Activity : Entity
-    {
-        public Activity(string id)
-        {
-            Id = id;
-        }
-
-
+    { 
         public string Title { set; get; }
 
         public int Grouptotal { set; get; }
