@@ -12,5 +12,7 @@ namespace SSS.Application.Articel.Service
         Pages<List<ArticelOutputDto>> GetListArticel(ArticelInputDto input);
 
         List<ArticelOutputDto> GetNews(ArticelInputDto input);
+
+        List<ArticelOutputDto> GetQuickNews(ArticelInputDto input);
     }
 }

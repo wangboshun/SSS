@@ -14,8 +14,8 @@ namespace SSS.Application.Seedwork.Service
 
         TOutput Get(Expression<Func<TEntity, bool>> predicate);
 
-        Pages<List<TOutput>> GetList(TInput input);
+        Pages<List<TOutput>> GetList(TInput input, int pageindex = 0, int pagesize = 10);
 
-        Pages<List<TOutput>> GetList(Expression<Func<TEntity, bool>> predicate);
+        Pages<List<TOutput>> GetList(Expression<Func<TEntity, bool>> predicate, int pageindex = 0, int pagesize = 10);
     }
 }

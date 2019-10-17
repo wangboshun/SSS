@@ -10,6 +10,7 @@ using SSS.Infrastructure.Repository.Articel;
 using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SSS.Application.Articel.Service
 {
@@ -47,19 +48,12 @@ namespace SSS.Application.Articel.Service
 
         public List<ArticelOutputDto> GetNews(ArticelInputDto input)
         {
-            List<ArticelOutputDto> result = new List<ArticelOutputDto>();
-            return result;
+            return GetList(x => x.Category == 1, input.pageindex, input.pagesize).data;
         }
 
-        /// <summary>
-        /// 获取新闻
-        /// </summary>
-        /// <param name="token"></param>
-        /// <param name="model"></param>
-        public void GetNewsContnt(JToken token, ArticelOutputDto model)
+        public List<ArticelOutputDto> GetQuickNews(ArticelInputDto input)
         {
-
+            return GetList(x => x.Category == 2, input.pageindex, input.pagesize).data;
         }
-
     }
 }

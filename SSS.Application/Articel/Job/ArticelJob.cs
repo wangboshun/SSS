@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -34,7 +35,7 @@ namespace SSS.Application.Articel.Job
             {
                 GetNews();//15分钟一次新闻
                 GetQuickNews();//15分钟一次新闻
-                await Task.Delay(5000/* * 60 * 15*/, stoppingToken);
+                await Task.Delay(10000/* * 60 * 15*/, stoppingToken);
             }
         }
 
@@ -47,36 +48,34 @@ namespace SSS.Application.Articel.Job
             try
             {
                 WebClient web = new WebClient();
-                string json = web.DownloadString("https://api.jinse.com/v6/information/list?catelogue_key=news&limit=23&information_id=0&flag=down&version=9.9.9");
+                string json = web.DownloadString("https://api.jinse.com/v6/information/list?catelogue_key=news&limit=50&information_id=0&flag=down&version=9.9.9");
                 JToken data = Json.GetJsonValue(json, "list");
 
                 using (var scope = _scopeFactory.CreateScope())
                 {
-                    List<Domain.Articel.Articel> list = new List<Domain.Articel.Articel>();
-
-                    using (var _context = scope.ServiceProvider.GetRequiredService<DbcontextBase>())
+                    using (var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>())
                     {
-                        if (!_context.Articel.Any())
+                        List<Domain.Articel.Articel> list = new List<Domain.Articel.Articel>();
+                        foreach (var item in data.AsJEnumerable())
                         {
-                            foreach (var item in data.AsJEnumerable())
+                            if (context.Articel.Any(x => x.Title.Equals(item["title"].ToString())))
+                                continue;
+
+                            Domain.Articel.Articel model = new Domain.Articel.Articel
                             {
-                                if (_context.Articel.Select(x => x.Title.Equals(item["title"].ToString())).Any())
-                                    continue;
+                                Id = Guid.NewGuid().ToString(),
+                                Title = item["title"].ToString(),
+                                Category = 1
+                            };
 
-                                Domain.Articel.Articel model = new Domain.Articel.Articel
-                                {
-                                    Id = Guid.NewGuid().ToString(),
-                                    Title = item["title"].ToString(),
-                                    Category = 1
-                                };
-
-                                GetNewsContnt(item["extra"], model);
-                                list.Add(model);
-                            }
-                        };
-                        _context.Articel.AddRange(list);
-                        _context.SaveChangesAsync();
-                        _context.Articel.RemoveRange(list);
+                            GetNewsContnt(item["extra"], model);
+                            list.Add(model);
+                        }
+                        if (list.Any())
+                        {
+                            context.Articel.AddRange(list);
+                            context.SaveChangesAsync();
+                        }
                     }
                 }
             }
@@ -120,19 +119,26 @@ namespace SSS.Application.Articel.Job
             try
             {
                 WebClient web = new WebClient();
-                string json = web.DownloadString("https://api.jinse.com/v4/live/list?reading=false&sort=7&flag=down&id=0&limit=30");
+                string json = web.DownloadString("https://api.jinse.com/v4/live/list?reading=false&sort=7&flag=down&id=0&limit=50");
                 JToken data = Json.GetJsonValue(json, "list");
-                IJEnumerable<JToken> token = data.First.Last.AsJEnumerable().Values();
+                List<JToken> token = new List<JToken>();// data.First.Last.AsJEnumerable().Values();
+
+                for (int i = 0; i < data.Count(); i++)
+                {
+                    var temp = data[i].Last.AsJEnumerable().Values().ToList();
+                    token.AddRange(temp);
+                }
 
                 using (var scope = _scopeFactory.CreateScope())
                 {
-                    using (var _context = scope.ServiceProvider.GetRequiredService<DbcontextBase>())
+                    using (var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>())
                     {
                         List<Domain.Articel.Articel> list = new List<Domain.Articel.Articel>();
 
                         foreach (var item in token)
                         {
-                            if (_context.Articel.Select(x => x.Title.Equals(item["title"].ToString())).Any())
+                            var title = GetTitle(item["content"].ToString());
+                            if (context.Articel.Any(x => x.Title.Equals(title)))
                                 continue;
 
                             Domain.Articel.Articel model = new Domain.Articel.Articel
@@ -140,15 +146,18 @@ namespace SSS.Application.Articel.Job
                                 Id = Guid.NewGuid().ToString(),
                                 Content = GetDetail(item["content"].ToString()),
                                 CreateTime = DateTimeConvert.ConvertDateTime(item["created_at"].ToString()),
-                                Title = GetTitle(item["content"].ToString()),
+                                Title = title,
                                 Category = 2,
                                 Logo = ""
                             };
                             list.Add(model);
                         }
-                        _context.Articel.AddRange(list);
-                        _context.SaveChangesAsync();
-                        _context.Articel.RemoveRange(list);
+
+                        if (list.Any())
+                        {
+                            context.Articel.AddRange(list);
+                            context.SaveChangesAsync();
+                        }
                     }
                 }
             }
@@ -165,9 +174,9 @@ namespace SSS.Application.Articel.Job
         /// <returns></returns>
         private string GetTitle(string content)
         {
-            int first = content.IndexOf("【");
+            int first = content.IndexOf("分析 | ");
             int second = content.IndexOf("】");
-            return content.Substring(first + 1, second);
+            return content.Substring(first + 4, second - 5);
         }
 
         /// <summary>

@@ -163,6 +163,13 @@
             <param name="input">input</param>
             <returns></returns>
         </member>
+        <member name="M:SSS.Api.Controllers.ArticelController.GetQuickNews(SSS.Domain.Articel.Dto.ArticelInputDto)">
+            <summary>
+                GetQuickNews
+            </summary>
+            <param name="input">input</param>
+            <returns></returns>
+        </member>
         <member name="M:SSS.Api.Controllers.ArticelController.AddArticel(SSS.Domain.Articel.Dto.ArticelInputDto)">
             <summary>
                 AddArticel

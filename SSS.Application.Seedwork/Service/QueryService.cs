@@ -45,30 +45,43 @@ namespace SSS.Application.Seedwork.Service
             return Mapper.Map<TOutput>(Repository.Get(predicate));
         }
 
-        public Pages<List<TOutput>> GetList(TInput input)
+        public Pages<List<TOutput>> GetList(TInput input, int pageindex = 0, int pagesize = 10)
         {
             List<TOutput> list;
             int count = 0;
 
-            if (input.pagesize == 0 && input.pagesize == 0)
+            if (input.pageindex == 0 && input.pagesize == 0)
             {
                 list = Repository.GetAll().ProjectTo<TOutput>(Mapper.ConfigurationProvider).ToList();
                 count = list.Count;
             }
             else
             {
-                list = Repository.GetPage(input.pageindex, input.pagesize, ref count)
+                list = Repository.GetPage(input.pageindex, input.pagesize > 0 ? input.pagesize : 10, ref count)
                     .ProjectTo<TOutput>(Mapper.ConfigurationProvider).ToList();
+                count = list.Count;
             }
 
             return new Pages<List<TOutput>>(list, count);
         }
 
-        public Pages<List<TOutput>> GetList(Expression<Func<TEntity, bool>> predicate)
+        public Pages<List<TOutput>> GetList(Expression<Func<TEntity, bool>> predicate, int pageindex = 0, int pagesize = 10)
         {
             List<TOutput> list;
-            list = Repository.GetAll(predicate).ProjectTo<TOutput>(Mapper.ConfigurationProvider).ToList();
-            int count = list.Count;
+
+            int count = 0;
+
+            if (pageindex == 0 && pagesize == 0)
+            {
+                list = Repository.GetAll(predicate).ProjectTo<TOutput>(Mapper.ConfigurationProvider).ToList();
+                count = list.Count;
+            }
+            else
+            {
+                list = Repository.GetPage(pageindex, pagesize > 0 ? pagesize : 10, predicate, ref count).ProjectTo<TOutput>(Mapper.ConfigurationProvider).ToList();
+                count = list.Count;
+            }
+
             return new Pages<List<TOutput>>(list, count);
         }
     }
