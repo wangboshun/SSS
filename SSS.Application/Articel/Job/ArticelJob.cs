@@ -35,7 +35,7 @@ namespace SSS.Application.Articel.Job
             {
                 GetNews();//15分钟一次新闻
                 GetQuickNews();//15分钟一次新闻
-                await Task.Delay(10000/* * 60 * 15*/, stoppingToken);
+                await Task.Delay(1000 * 60 * 15, stoppingToken);
             }
         }
 

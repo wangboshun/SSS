@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SSS.Domain.Activity;
 using SSS.Domain.Articel;
+using SSS.Domain.DigitalCurrency;
 using SSS.Domain.UserActivity;
 using SSS.Domain.UserInfo;
 using SSS.Infrastructure.Util.Attribute;
@@ -25,6 +26,8 @@ namespace SSS.Infrastructure.Seedwork.DbContext
         public DbSet<Articel> Articel { get; set; }
 
         public DbSet<UserActivity> UserActivity { get; set; }
+
+        public DbSet<DigitalCurrency> DigitalCurrency { get; set; }
 
         public DbSet<UserInfo> UserInfo { get; set; }
 

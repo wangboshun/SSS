@@ -207,6 +207,31 @@
             </summary>
             <param name="name"></param>
         </member>
+        <member name="T:SSS.Api.Controllers.DigitalCurrencyController">
+            <summary>
+            DigitalCurrencyController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.DigitalCurrencyController.#ctor(SSS.Application.DigitalCurrency.Service.IDigitalCurrencyService)">
+            <summary>
+            DigitalCurrencyController
+            </summary>
+            <param name="service">IDigitalCurrencyService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.DigitalCurrencyController.GetList(SSS.Domain.DigitalCurrency.Dto.DigitalCurrencyInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.DigitalCurrencyController.AddDigitalCurrency(SSS.Domain.DigitalCurrency.Dto.DigitalCurrencyInputDto)">
+            <summary>
+            AddDigitalCurrency
+            </summary>
+            <param name="input">DigitalCurrencyInputDto</param>
+            <returns></returns> 
+        </member>
         <member name="T:SSS.Api.Controllers.UserActivityController">
             <summary>
                 UserActivityController

@@ -1,13 +1,8 @@
-﻿using SSS.Domain.Seedwork.Model;
-using System;
+﻿using SSS.Domain.Seedwork.Model; 
 
 namespace SSS.Domain.Template
 {
     public class Template : Entity
-    {
-        public Template(string id)
-        {
-            this.Id = id; 
-        } 
+    { 
     }
 }

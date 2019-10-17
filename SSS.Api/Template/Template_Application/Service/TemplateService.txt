@@ -2,11 +2,10 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using SSS.Application.Seedwork.Service;
+using SSS.Domain.Template.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
-using SSS.Domain.Template.Dto;
 using SSS.Infrastructure.Repository.Template;
-using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
@@ -16,31 +15,28 @@ namespace SSS.Application.Template.Service
     [DIService(ServiceLifetime.Scoped, typeof(ITemplateService))]
     public class TemplateService : QueryService<SSS.Domain.Template.Template, TemplateInputDto, TemplateOutputDto>, ITemplateService
     {
-        private readonly MemoryCacheEx _memorycache;
-
         public TemplateService(IMapper mapper,
             ITemplateRepository repository,
             IErrorHandler error,
-            MemoryCacheEx memorycache,
             IValidator<TemplateInputDto> validator) :
             base(mapper, repository, error, validator)
         {
-            _memorycache = memorycache;
+
         }
 
         public void AddTemplate(TemplateInputDto input)
         {
-            var result = _validator.Validate(input);
+            var result = Validator.Validate(input, ruleSet: "Insert");
             if (!result.IsValid)
             {
-                _error.Execute(result);
+                Error.Execute(result);
                 return;
             }
 
             input.id = Guid.NewGuid().ToString();
-            var model = _mapper.Map<SSS.Domain.Template.Template>(input);
-            _repository.Add(model);
-            _repository.SaveChanges();
+            var model = Mapper.Map<SSS.Domain.Template.Template>(input);
+            Repository.Add(model);
+            Repository.SaveChanges();
         }
 
         public Pages<List<TemplateOutputDto>> GetListTemplate(TemplateInputDto input)
