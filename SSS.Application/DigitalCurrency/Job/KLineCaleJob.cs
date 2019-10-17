@@ -212,7 +212,6 @@ namespace SSS.Application.DigitalCurrency.Job
                     time = temp.Last().time
                 });
 
-
                 var val = SpiltList<KLine>(list.Skip(index + 1).Take(list.Count).ToList(), 4);
 
                 for (int i = 0; i < val.Count; i++)
@@ -288,29 +287,37 @@ namespace SSS.Application.DigitalCurrency.Job
         /// <returns></returns>
         public List<CoinSymbols> GetAllCoin()
         {
-            WebClient http = new WebClient();
-
-            string result = http.DownloadString("https://api.huobi.vn/v1/common/symbols");
-
-            JObject json_root = (JObject)JsonConvert.DeserializeObject(result);
-
-            var json_data = json_root["data"];
-
-            List<CoinSymbols> list = new List<CoinSymbols>();
-
-            foreach (var item in json_data)
+            try
             {
-                if (item["quote-currency"].ToString().Contains("usdt"))
+                WebClient http = new WebClient();
+
+                string result = http.DownloadString("https://api.huobi.vn/v1/common/symbols");
+
+                JObject json_root = (JObject)JsonConvert.DeserializeObject(result);
+
+                var json_data = json_root["data"];
+
+                List<CoinSymbols> list = new List<CoinSymbols>();
+
+                foreach (var item in json_data)
                 {
-                    CoinSymbols s = new CoinSymbols();
+                    if (item["quote-currency"].ToString().Contains("usdt"))
+                    {
+                        CoinSymbols s = new CoinSymbols();
 
-                    s.base_currency = item["base-currency"].ToString();
-                    s.quote_currency = item["quote-currency"].ToString();
-                    list.Add(s);
+                        s.base_currency = item["base-currency"].ToString();
+                        s.quote_currency = item["quote-currency"].ToString();
+                        list.Add(s);
+                    }
                 }
-            }
 
-            return list;
+                return list;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(new EventId(ex.HResult), ex, "---GetAllCoin---");
+                return null;
+            }
         }
 
         /// <summary>
@@ -321,26 +328,32 @@ namespace SSS.Application.DigitalCurrency.Job
         /// <returns></returns>
         public List<KLine> GetKLine(string coin, string type, int size)
         {
-
-            WebClient http = new WebClient();
-
-            string result = http.DownloadString($"https://api.huobi.vn/market/history/kline?period={type}&size={size}&symbol={coin}");
-
-            JObject json_root = (JObject)JsonConvert.DeserializeObject(result);
-
-            if (json_root.GetValue("status").ToString().Equals("error"))
-                return null;
-
-            List<KLine> list = JsonConvert.DeserializeObject<List<KLine>>(json_root["data"].ToString());
-
-            foreach (var item in list)
+            try
             {
-                item.time = DateTimeConvert.ConvertIntDateTime(item.id);
+                WebClient http = new WebClient();
+
+                string result = http.DownloadString($"https://api.huobi.vn/market/history/kline?period={type}&size={size}&symbol={coin}");
+
+                JObject json_root = (JObject)JsonConvert.DeserializeObject(result);
+
+                if (json_root.GetValue("status").ToString().Equals("error"))
+                    return null;
+
+                List<KLine> list = JsonConvert.DeserializeObject<List<KLine>>(json_root["data"].ToString());
+
+                foreach (var item in list)
+                {
+                    item.time = DateTimeConvert.ConvertIntDateTime(item.id);
+                }
+
+                return list;
             }
+            catch (Exception ex)
+            {
 
-            return list;
+                _logger.LogError(new EventId(ex.HResult), ex, "---GetKLine---");
+                return null;
+            }
         }
-
-
     }
 }

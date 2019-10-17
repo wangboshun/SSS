@@ -92,22 +92,30 @@ namespace SSS.Application.Articel.Job
         /// <param name="model"></param>
         public void GetNewsContnt(JToken token, Domain.Articel.Articel model)
         {
-            HtmlWeb htmlWeb = new HtmlWeb();
-
-            HtmlAgilityPack.HtmlDocument document = htmlWeb.Load(token["topic_url"].ToString());
-
-            HtmlNode node = document.DocumentNode.SelectSingleNode("//div[@class='js-article-detail']");
-
-            foreach (var item in node.ChildNodes)
+            try
             {
-                if (item.InnerText.Contains("文|") || item.InnerText.Contains("编辑|"))
-                    item.InnerHtml = "";
-            }
+                HtmlWeb htmlWeb = new HtmlWeb();
 
-            model.Content = node.InnerHtml;
-            model.CreateTime = DateTimeConvert.ConvertDateTime(token["published_at"].ToString());
-            model.Logo = token["thumbnail_pic"].ToString();
-            model.Author = token["author"].ToString();
+                HtmlAgilityPack.HtmlDocument document = htmlWeb.Load(token["topic_url"].ToString());
+
+                HtmlNode node = document.DocumentNode.SelectSingleNode("//div[@class='js-article-detail']");
+
+                foreach (var item in node.ChildNodes)
+                {
+                    if (item.InnerText.Contains("文|") || item.InnerText.Contains("编辑|"))
+                        item.InnerHtml = "";
+                }
+
+                model.Content = node.InnerHtml;
+                model.CreateTime = DateTimeConvert.ConvertDateTime(token["published_at"].ToString());
+                model.Logo = token["thumbnail_pic"].ToString();
+                model.Author = token["author"].ToString();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(new EventId(ex.HResult), ex, "---GetNewsContnt---");
+            }
+         
         }
 
         /// <summary>
