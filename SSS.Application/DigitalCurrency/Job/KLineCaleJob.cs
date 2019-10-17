@@ -121,6 +121,10 @@ namespace SSS.Application.DigitalCurrency.Job
 
                     model.Desc = "突破10K压力位,金叉";
                     System.Console.WriteLine(base_currency.ToUpper() + "—" + quote_currency.ToUpper() + $"【{typename}】突破10K压力位,金叉");
+
+                    model.HighRange = (model.High / model.Low) - 1;
+                    model.CloseRange = (model.Close / model.High) - 1;
+
                     ListCoin.Add(model);
                 }
             }

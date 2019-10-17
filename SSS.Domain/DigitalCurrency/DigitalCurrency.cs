@@ -1,14 +1,14 @@
-using SSS.Domain.Seedwork.Model; 
+using SSS.Domain.Seedwork.Model;
 
 namespace SSS.Domain.DigitalCurrency
 {
     public class DigitalCurrency : Entity
-    {  
+    {
         /// <summary>
         /// 交易对
         /// </summary>
         public string Coin { set; get; }
-         
+
         /// <summary>
         /// 交易所
         /// </summary>
@@ -43,5 +43,15 @@ namespace SSS.Domain.DigitalCurrency
         /// 描述
         /// </summary>
         public string Desc { set; get; }
+
+        /// <summary>
+        /// 涨跌幅
+        /// </summary>
+        public double HighRange { set; get; }
+
+        /// <summary>
+        /// 当前涨幅
+        /// </summary>
+        public double CloseRange { set; get; }
     }
 }
