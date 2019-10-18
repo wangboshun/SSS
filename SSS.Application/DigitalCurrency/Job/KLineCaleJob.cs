@@ -1,19 +1,22 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SSS.Application.Articel.Job;
 using SSS.Domain.DigitalCurrency;
+using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.DateTime;
+using SSS.Infrastructure.Util.IO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using SSS.Application.Articel.Job;
-using SSS.Infrastructure.Seedwork.DbContext;
 
 namespace SSS.Application.DigitalCurrency.Job
 {
@@ -54,10 +57,40 @@ namespace SSS.Application.DigitalCurrency.Job
                 {
                     if (ListCoin.Any())
                     {
+                        context.Database.ExecuteSqlCommand("UPDATE DigitalCurrency SET IsDelete=1");
                         context.DigitalCurrency.AddRange(ListCoin);
                         context.SaveChangesAsync();
+                        ListCoin.Clear();
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// 获取币币的Logo
+        /// </summary>
+        /// <returns></returns>
+        public string GetLogo(string coin)
+        {
+            string logo = "https://s1.bqiapp.com/coin/20181030_72_png/bitcoin_200_200.png?v=1566978037";
+            try
+            {
+                string json = IO.ReadAllText(AppContext.BaseDirectory + "\\coin.json");
+                JArray j = (JArray)JsonConvert.DeserializeObject(json);
+                foreach (var item in j)
+                {
+                    if (item["symbol"].ToString().Equals(coin.ToUpper()))
+                    {
+                        if (!string.IsNullOrWhiteSpace(item["logo_png"].ToString()))
+                            logo = item["logo_png"].ToString();
+                    }
+                }
+                return logo;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(new EventId(ex.HResult), ex, "---GetLogo---");
+                return logo;
             }
         }
 
@@ -123,8 +156,8 @@ namespace SSS.Application.DigitalCurrency.Job
                     System.Console.WriteLine(base_currency.ToUpper() + "—" + quote_currency.ToUpper() + $"【{typename}】突破10K压力位,金叉");
 
                     model.HighRange = (model.High / model.Low) - 1;
-                    model.CloseRange = (model.Close / model.High) - 1;
-
+                    model.CloseRange = (model.Close / model.Open) - 1;
+                    model.Logo = GetLogo(base_currency);
                     ListCoin.Add(model);
                 }
             }
@@ -212,6 +245,7 @@ namespace SSS.Application.DigitalCurrency.Job
                     time = temp.Last().time
                 });
 
+
                 var val = SpiltList<KLine>(list.Skip(index + 1).Take(list.Count).ToList(), 4);
 
                 for (int i = 0; i < val.Count; i++)
@@ -287,6 +321,8 @@ namespace SSS.Application.DigitalCurrency.Job
         /// <returns></returns>
         public List<CoinSymbols> GetAllCoin()
         {
+            List<CoinSymbols> list = new List<CoinSymbols>();
+
             try
             {
                 WebClient http = new WebClient();
@@ -296,9 +332,6 @@ namespace SSS.Application.DigitalCurrency.Job
                 JObject json_root = (JObject)JsonConvert.DeserializeObject(result);
 
                 var json_data = json_root["data"];
-
-                List<CoinSymbols> list = new List<CoinSymbols>();
-
                 foreach (var item in json_data)
                 {
                     if (item["quote-currency"].ToString().Contains("usdt"))
@@ -316,7 +349,7 @@ namespace SSS.Application.DigitalCurrency.Job
             catch (Exception ex)
             {
                 _logger.LogError(new EventId(ex.HResult), ex, "---GetAllCoin---");
-                return null;
+                return list;
             }
         }
 
@@ -328,6 +361,7 @@ namespace SSS.Application.DigitalCurrency.Job
         /// <returns></returns>
         public List<KLine> GetKLine(string coin, string type, int size)
         {
+            List<KLine> list = new List<KLine>();
             try
             {
                 WebClient http = new WebClient();
@@ -339,7 +373,7 @@ namespace SSS.Application.DigitalCurrency.Job
                 if (json_root.GetValue("status").ToString().Equals("error"))
                     return null;
 
-                List<KLine> list = JsonConvert.DeserializeObject<List<KLine>>(json_root["data"].ToString());
+                list = JsonConvert.DeserializeObject<List<KLine>>(json_root["data"].ToString());
 
                 foreach (var item in list)
                 {
@@ -350,9 +384,8 @@ namespace SSS.Application.DigitalCurrency.Job
             }
             catch (Exception ex)
             {
-
                 _logger.LogError(new EventId(ex.HResult), ex, "---GetKLine---");
-                return null;
+                return list;
             }
         }
     }
