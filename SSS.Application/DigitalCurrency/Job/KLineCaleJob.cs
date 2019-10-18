@@ -5,12 +5,13 @@ using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
 using SSS.Application.Articel.Job;
 using SSS.Domain.DigitalCurrency;
 using SSS.Infrastructure.Seedwork.DbContext;
-using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.DateTime;
 using SSS.Infrastructure.Util.IO;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,11 +21,11 @@ using System.Threading.Tasks;
 
 namespace SSS.Application.DigitalCurrency.Job
 {
-    [DIService(ServiceLifetime.Transient, typeof(IHostedService))]
-    public class KLineCaleJob : BackgroundService
+    public class KLineCaleJob : IHostedService, IDisposable
     {
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _scopeFactory;
+        private Timer _timer;
         private readonly List<Domain.DigitalCurrency.DigitalCurrency> ListCoin = new List<Domain.DigitalCurrency.DigitalCurrency>();
 
         public KLineCaleJob(ILogger<ArticelJob> logger, IServiceScopeFactory scopeFactory)
@@ -33,17 +34,35 @@ namespace SSS.Application.DigitalCurrency.Job
             _scopeFactory = scopeFactory;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public Task StartAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                OutDay();
-                await Task.Delay(1000/* * 60 * 15 */ , stoppingToken);
-            }
+            _timer = new Timer(DoWork, null, TimeSpan.Zero,
+                TimeSpan.FromMinutes(10));
+
+            return Task.CompletedTask;
         }
+
+        private void DoWork(object state)
+        {
+            OutDay();
+        }
+
+        public Task StopAsync(CancellationToken stoppingToken)
+        {
+            _timer?.Change(Timeout.Infinite, 0);
+
+            return Task.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            _timer?.Dispose();
+        }
+
 
         public void OutDay()
         {
+            System.Console.WriteLine("---OutDay---");
             List<CoinSymbols> allcoin = GetAllCoin();
 
             foreach (var coin in allcoin)
@@ -61,6 +80,7 @@ namespace SSS.Application.DigitalCurrency.Job
                         context.DigitalCurrency.AddRange(ListCoin);
                         context.SaveChangesAsync();
                         ListCoin.Clear();
+                        System.Console.WriteLine("---OutDay  SaveChangesAsync---");
                     }
                 }
             }
@@ -100,6 +120,8 @@ namespace SSS.Application.DigitalCurrency.Job
         /// <param name="type"></param>
         public void Calc(string base_currency, string quote_currency, CoinTime type)
         {
+            System.Console.WriteLine("---Calc---" + base_currency);
+
             try
             {
                 int size = type == CoinTime.Time4_60min ? 800 : 200;

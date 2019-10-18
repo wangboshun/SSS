@@ -341,3 +341,6 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 /SSS.Api/nlog.txt
+/SSS.WorkService/TimedHostedService2.cs
+/SSS.WorkService/TimedHostedService.cs
+/SSS_Data.db

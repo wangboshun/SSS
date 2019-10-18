@@ -76,12 +76,6 @@
     <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
  
-  <ItemGroup>
-    <None Update="SSS_Data.db">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
- 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions> 
 
 </Project>

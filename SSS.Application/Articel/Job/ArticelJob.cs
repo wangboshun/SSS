@@ -1,13 +1,16 @@
 ﻿using HtmlAgilityPack;
+
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
 using Newtonsoft.Json.Linq;
+
 using SSS.Infrastructure.Seedwork.DbContext;
-using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.DateTime;
 using SSS.Infrastructure.Util.Json;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,11 +20,11 @@ using System.Threading.Tasks;
 
 namespace SSS.Application.Articel.Job
 {
-    [DIService(ServiceLifetime.Transient, typeof(IHostedService))]
-    public class ArticelJob : BackgroundService
+    public class ArticelJob : IHostedService, IDisposable
     {
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _scopeFactory;
+        private Timer _timer;
 
         public ArticelJob(ILogger<ArticelJob> logger, IServiceScopeFactory scopeFactory)
         {
@@ -29,14 +32,30 @@ namespace SSS.Application.Articel.Job
             _scopeFactory = scopeFactory;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public Task StartAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                GetNews();//15分钟一次新闻
-                GetQuickNews();//15分钟一次新闻
-                await Task.Delay(1000 * 60 * 15, stoppingToken);
-            }
+            _timer = new Timer(DoWork, null, TimeSpan.Zero,
+                TimeSpan.FromMinutes(10));
+
+            return Task.CompletedTask;
+        }
+
+        private void DoWork(object state)
+        {
+            GetNews();
+            GetQuickNews();
+        }
+
+        public Task StopAsync(CancellationToken stoppingToken)
+        {
+            _timer?.Change(Timeout.Infinite, 0);
+
+            return Task.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            _timer?.Dispose();
         }
 
         /// <summary>
@@ -45,6 +64,7 @@ namespace SSS.Application.Articel.Job
         /// <returns></returns>
         public void GetNews()
         {
+            System.Console.WriteLine("---GetNews---");
             try
             {
                 WebClient web = new WebClient();
@@ -61,6 +81,8 @@ namespace SSS.Application.Articel.Job
                             if (context.Articel.Any(x => x.Title.Equals(item["title"].ToString())))
                                 continue;
 
+                            System.Console.WriteLine("---GetNews---" + item["title"].ToString());
+
                             Domain.Articel.Articel model = new Domain.Articel.Articel
                             {
                                 Id = Guid.NewGuid().ToString(),
@@ -75,6 +97,7 @@ namespace SSS.Application.Articel.Job
                         {
                             context.Articel.AddRange(list);
                             context.SaveChangesAsync();
+                            System.Console.WriteLine("---GetNews  SaveChangesAsync---");
                         }
                     }
                 }
@@ -115,7 +138,7 @@ namespace SSS.Application.Articel.Job
             {
                 _logger.LogError(new EventId(ex.HResult), ex, "---GetNewsContnt---");
             }
-         
+
         }
 
         /// <summary>
@@ -124,6 +147,7 @@ namespace SSS.Application.Articel.Job
         /// <returns></returns>
         public void GetQuickNews()
         {
+            System.Console.WriteLine("---GetQuickNews---");
             try
             {
                 WebClient web = new WebClient();
@@ -146,6 +170,9 @@ namespace SSS.Application.Articel.Job
                         foreach (var item in token)
                         {
                             var title = GetTitle(item["content"].ToString());
+
+                            System.Console.WriteLine("---GetQuickNews---" + title);
+
                             if (context.Articel.Any(x => x.Title.Equals(title)))
                                 continue;
 
@@ -165,6 +192,7 @@ namespace SSS.Application.Articel.Job
                         {
                             context.Articel.AddRange(list);
                             context.SaveChangesAsync();
+                            System.Console.WriteLine("---GetQuickNews  SaveChangesAsync---");
                         }
                     }
                 }

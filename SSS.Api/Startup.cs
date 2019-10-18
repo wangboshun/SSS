@@ -122,9 +122,7 @@ namespace SSS.Api
 
             services.AddSenparcGlobalServices(Configuration) //Senparc.CO2NET 全局注册
                 .AddSenparcWeixinServices(Configuration); //Senparc.Weixin 注册   
-
-            //services.AddHostedService<ArticelJob>();
-
+             
             services.AddControllers();
         }
 
