@@ -1,6 +1,8 @@
 ﻿using FluentValidation.AspNetCore;
+
 using Hangfire;
 using Hangfire.SQLite;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -9,19 +11,22 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+
 using Senparc.CO2NET;
 using Senparc.CO2NET.RegisterServices;
 using Senparc.Weixin;
 using Senparc.Weixin.Entities;
 using Senparc.Weixin.RegisterServices;
 using Senparc.Weixin.WxOpen;
+
 using SSS.Api.Bootstrap;
 using SSS.Api.Seedwork.Filter;
 using SSS.Api.Seedwork.Middleware;
+
 using StackExchange.Profiling.SqlFormatters;
+
 using System.IO;
 using System.Reflection;
-using SSS.Application.Articel.Job;
 
 namespace SSS.Api
 {
@@ -122,7 +127,7 @@ namespace SSS.Api
 
             services.AddSenparcGlobalServices(Configuration) //Senparc.CO2NET 全局注册
                 .AddSenparcWeixinServices(Configuration); //Senparc.Weixin 注册   
-             
+
             services.AddControllers();
         }
 

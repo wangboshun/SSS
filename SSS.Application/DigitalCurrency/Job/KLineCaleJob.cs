@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using SSS.Application.Articel.Job;
 using SSS.Domain.DigitalCurrency;
 using SSS.Infrastructure.Seedwork.DbContext;
+using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.DateTime;
 using SSS.Infrastructure.Util.IO;
 
@@ -21,6 +22,7 @@ using System.Threading.Tasks;
 
 namespace SSS.Application.DigitalCurrency.Job
 {
+    [DIService(ServiceLifetime.Transient, typeof(IHostedService))]
     public class KLineCaleJob : IHostedService, IDisposable
     {
         private readonly ILogger _logger;

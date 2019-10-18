@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
 using SSS.Infrastructure.Seedwork.DbContext;
+using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.DateTime;
 using SSS.Infrastructure.Util.Json;
 
@@ -20,6 +21,7 @@ using System.Threading.Tasks;
 
 namespace SSS.Application.Articel.Job
 {
+    [DIService(ServiceLifetime.Transient, typeof(IHostedService))]
     public class ArticelJob : IHostedService, IDisposable
     {
         private readonly ILogger _logger;
