@@ -9,6 +9,7 @@ using SSS.Infrastructure.Repository.DigitalCurrency;
 using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SSS.Application.DigitalCurrency.Service
 {
@@ -41,7 +42,9 @@ namespace SSS.Application.DigitalCurrency.Service
 
         public Pages<List<DigitalCurrencyOutputDto>> GetListDigitalCurrency(DigitalCurrencyInputDto input)
         {
-            return GetList(input);
+            var data = GetList(x => x.IsDelete == 0);
+            data.data = data.data.OrderByDescending(x => x.CloseRange).ToList();
+            return data;
         }
     }
 }

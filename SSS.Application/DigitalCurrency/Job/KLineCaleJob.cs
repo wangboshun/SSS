@@ -164,20 +164,20 @@ namespace SSS.Application.DigitalCurrency.Job
                     {
                         if (data5.Count > 0 && data60.Count > 0 && data5.First().price > data60.First().price)
                         {
-                            System.Console.WriteLine(base_currency.ToUpper() + "—" + quote_currency.ToUpper() +
-                                                     $"【{typename}】突破60K压力位,金叉");
+                            System.Console.WriteLine(base_currency.ToUpper() + "—" + quote_currency.ToUpper() +$"【{typename}】突破60K压力位,金叉");
                             model.Desc = "突破60K压力位,金叉";
-                            return;
                         }
-
-                        System.Console.WriteLine(base_currency.ToUpper() + "—" + quote_currency.ToUpper() +
-                                                 $"【{typename}】突破30K压力位,金叉");
-                        model.Desc = "突破30K压力位,金叉";
-                        return;
+                        else
+                        {
+                            System.Console.WriteLine(base_currency.ToUpper() + "—" + quote_currency.ToUpper() +$"【{typename}】突破30K压力位,金叉");
+                            model.Desc = "突破30K压力位,金叉";
+                        } 
                     }
-
-                    model.Desc = "突破10K压力位,金叉";
-                    System.Console.WriteLine(base_currency.ToUpper() + "—" + quote_currency.ToUpper() + $"【{typename}】突破10K压力位,金叉");
+                    else
+                    {
+                        model.Desc = "突破10K压力位,金叉";
+                        System.Console.WriteLine(base_currency.ToUpper() + "—" + quote_currency.ToUpper() + $"【{typename}】突破10K压力位,金叉");
+                    } 
 
                     model.HighRange = (model.High / model.Low) - 1;
                     model.CloseRange = (model.Close / model.Open) - 1;
