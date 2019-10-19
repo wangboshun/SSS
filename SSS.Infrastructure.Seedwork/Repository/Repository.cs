@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -59,12 +60,12 @@ namespace SSS.Infrastructure.Seedwork.Repository
 
         public virtual IQueryable<TEntity> GetBySql(string sql)
         {
-            return DbSet.FromSql(sql);
+            return DbSet.FromSqlRaw(sql);
         }
 
         public virtual IQueryable<TEntity> GetBySql(string sql, params object[] parameter)
         {
-            return DbSet.FromSql(sql, GeneratorParameter(parameter));
+            return DbSet.FromSqlRaw(sql, GeneratorParameter(parameter));
         }
 
         public virtual IQueryable<TEntity> GetAll()
