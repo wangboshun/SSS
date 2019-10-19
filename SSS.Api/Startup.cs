@@ -116,6 +116,7 @@ namespace SSS.Api
                 options.TrackConnectionOpenClose = true;
             }).AddEntityFramework();
 
+            //Hangfire DataBase
             services.AddHangfire(config =>
             {
 

@@ -78,7 +78,7 @@ namespace SSS.Application.DigitalCurrency.Job
                 {
                     if (ListCoin.Any())
                     {
-                        context.Database.ExecuteSqlCommand("UPDATE DigitalCurrency SET IsDelete=1");
+                        context.Database.ExecuteSqlRaw("UPDATE DigitalCurrency SET IsDelete=1");
                         context.DigitalCurrency.AddRange(ListCoin);
                         context.SaveChangesAsync();
                         ListCoin.Clear();
