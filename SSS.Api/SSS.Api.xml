@@ -207,6 +207,31 @@
             </summary>
             <param name="name"></param>
         </member>
+        <member name="T:SSS.Api.Controllers.CoinInfoController">
+            <summary>
+            CoinInfoController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.CoinInfoController.#ctor(SSS.Application.CoinInfo.Service.ICoinInfoService)">
+            <summary>
+            CoinInfoController
+            </summary>
+            <param name="service">ICoinInfoService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.CoinInfoController.GetList(SSS.Domain.CoinInfo.Dto.CoinInfoInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.CoinInfoController.AddCoinInfo(SSS.Domain.CoinInfo.Dto.CoinInfoInputDto)">
+            <summary>
+            AddCoinInfo
+            </summary>
+            <param name="input">CoinInfoInputDto</param>
+            <returns></returns> 
+        </member>
         <member name="T:SSS.Api.Controllers.DigitalCurrencyController">
             <summary>
             DigitalCurrencyController

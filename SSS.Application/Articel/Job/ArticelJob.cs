@@ -44,7 +44,8 @@ namespace SSS.Application.Articel.Job
 
         private void DoWork(object state)
         {
-            GetGoodNews();
+            GetCoinInfo();
+            //GetGoodNews();
             //GetNews();
             //GetQuickNews();
         }
@@ -278,6 +279,56 @@ namespace SSS.Application.Articel.Job
             catch (Exception ex)
             {
                 _logger.LogError(new EventId(ex.HResult), ex, "---GetGoodNews---");
+            }
+        }
+
+        /// <summary>
+        /// 获取币币信息
+        /// </summary>
+        public void GetCoinInfo()
+        {
+            try
+            {
+                using (var scope = _scopeFactory.CreateScope())
+                {
+                    using (var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>())
+                    {
+                        HtmlWeb htmlWeb = new HtmlWeb();
+                        List<SSS.Domain.CoinInfo.CoinInfo> list = new List<Domain.CoinInfo.CoinInfo>();
+                        for (int i = 1; i < 15; i++)
+                        {
+                            HtmlDocument document = htmlWeb.Load("http://biknow.com:81/bzzl.php?classid=1&page=" + i);
+                            var node = document.DocumentNode.SelectNodes("//div[@id='jiazai']//div//p");
+                            if (node == null)
+                                continue;
+
+                            foreach (var item in node)
+                            {     
+                                SSS.Domain.CoinInfo.CoinInfo model = new Domain.CoinInfo.CoinInfo();
+                                model.Content = item.SelectSingleNode(".//a").InnerText.Trim();
+                                int first = model.Content.IndexOf("（");
+                                int last = model.Content.IndexOf("）");
+                                model.Coin = model.Content.Substring(first + 1, last - (first + 1));
+
+                                if (context.CoinInfo.Any(x => x.Coin.Equals(model.Coin)))
+                                    continue;
+
+                                model.Id = Guid.NewGuid().ToString();
+                                model.Logo = "http://biknow.com:81/" + item.SelectSingleNode(".//img").Attributes["src"].Value;
+                                model.Name = model.Content.Substring(0, first);
+                                list.Add(model);
+                            }
+                        }
+
+                        context.CoinInfo.AddRange(list);
+                        context.SaveChangesAsync();
+                        System.Console.WriteLine("---GetCoinInfo  SaveChangesAsync---");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(new EventId(ex.HResult), ex, "---GetCoinInfo---");
             }
         }
     }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SSS.Domain.Activity;
 using SSS.Domain.Articel;
+using SSS.Domain.CoinInfo;
 using SSS.Domain.DigitalCurrency;
 using SSS.Domain.UserActivity;
 using SSS.Domain.UserInfo;
@@ -31,7 +32,8 @@ namespace SSS.Infrastructure.Seedwork.DbContext
 
         public DbSet<UserInfo> UserInfo { get; set; }
 
-
+        public DbSet<CoinInfo> CoinInfo { get; set; }
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var config = new ConfigurationBuilder()
