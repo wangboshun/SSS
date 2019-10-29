@@ -44,8 +44,9 @@ namespace SSS.Application.Articel.Job
 
         private void DoWork(object state)
         {
-            GetNews();
-            GetQuickNews();
+            GetGoodNews();
+            //GetNews();
+            //GetQuickNews();
         }
 
         public Task StopAsync(CancellationToken stoppingToken)
@@ -226,6 +227,58 @@ namespace SSS.Application.Articel.Job
         {
             int second = content.IndexOf("】");
             return content.Substring(second + 1);
+        }
+
+        /// <summary>
+        /// 获取利好新闻消息
+        /// </summary>
+        public void GetGoodNews()
+        {
+            try
+            {
+                HtmlWeb htmlWeb = new HtmlWeb();
+
+                HtmlAgilityPack.HtmlDocument document = htmlWeb.Load("http://www.biknow.com/");
+
+                var node = document.DocumentNode.SelectNodes("//div[@class='list']//div[@class='list_con']//div[@class='box']");
+
+                using (var scope = _scopeFactory.CreateScope())
+                {
+                    using (var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>())
+                    {
+                        List<Domain.Articel.Articel> list = new List<Domain.Articel.Articel>();
+
+                        foreach (var item in node)
+                        {
+                            string title = item.SelectSingleNode(".//lable").InnerText.Trim() + "【" + item.SelectSingleNode(".//lable").InnerText.Trim() + "】【" + item.SelectSingleNode(".//div[@class='time']").InnerText.Trim() + "】";
+                            if (context.Articel.Any(x => x.Title.Equals(title)))
+                                continue;
+
+                            Domain.Articel.Articel model = new Domain.Articel.Articel
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Content = item.SelectSingleNode(".//h3").InnerText.Trim(),
+                                CreateTime = DateTime.Now,
+                                Title = title,
+                                Category = 3,
+                                Logo = ""
+                            };
+                            list.Add(model);
+                        }
+                        if (list.Any())
+                        {
+                            context.Articel.AddRange(list);
+                            context.SaveChangesAsync();
+                            System.Console.WriteLine("---GetGoodNews  SaveChangesAsync---");
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(new EventId(ex.HResult), ex, "---GetGoodNews---");
+            }
         }
     }
 }
