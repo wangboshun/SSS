@@ -42,7 +42,7 @@ namespace SSS.Application.DigitalCurrency.Service
 
         public Pages<List<DigitalCurrencyOutputDto>> GetListDigitalCurrency(DigitalCurrencyInputDto input)
         {
-            var data = GetList(x => x.IsDelete == 0);
+            var data = GetPage(input,x => x.IsDelete == 0);
             data.data = data.data.OrderByDescending(x => x.CloseRange).ToList();
             return data;
         }

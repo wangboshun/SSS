@@ -11,6 +11,7 @@ using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper.QueryableExtensions;
 
 namespace SSS.Application.Articel.Service
 {
@@ -18,12 +19,15 @@ namespace SSS.Application.Articel.Service
     public class ArticelService : QueryService<Domain.Articel.Articel, ArticelInputDto, ArticelOutputDto>,
         IArticelService
     {
+        private readonly IArticelRepository _repository;
+
         public ArticelService(IMapper mapper,
             IArticelRepository repository,
             IErrorHandler error,
             IValidator<ArticelInputDto> validator) :
             base(mapper, repository, error, validator)
         {
+            _repository = repository;
         }
 
         public void AddArticel(ArticelInputDto input)
@@ -43,17 +47,19 @@ namespace SSS.Application.Articel.Service
 
         public Pages<List<ArticelOutputDto>> GetListArticel(ArticelInputDto input)
         {
-            return GetList(input);
+            return GetPage(input);
         }
 
         public List<ArticelOutputDto> GetNews(ArticelInputDto input)
         {
-            return GetList(x => x.Category == 1, input.pageindex, input.pagesize).data;
+            var data = _repository.GetNews(input);
+            return data.AsQueryable().ProjectTo<ArticelOutputDto>(Mapper.ConfigurationProvider).ToList();
         }
 
         public List<ArticelOutputDto> GetQuickNews(ArticelInputDto input)
         {
-            return GetList(x => x.Category == 2, input.pageindex, input.pagesize).data;
-        }
+            var data = _repository.GetQuickNews(input);
+            return data.AsQueryable().ProjectTo<ArticelOutputDto>(Mapper.ConfigurationProvider).ToList();
+        } 
     }
 }

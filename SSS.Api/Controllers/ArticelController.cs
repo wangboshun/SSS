@@ -65,6 +65,14 @@ namespace SSS.Api.Controllers
             return Response(result);
         }
 
+        [HttpGet("getnewsdetail")]
+        [AllowAnonymous] //匿名访问
+        public IActionResult GetNewsDetail(string id)
+        {
+            var result = _service.Get(id);
+            return Response(result);
+        }
+
         /// <summary>
         ///     AddArticel
         /// </summary>

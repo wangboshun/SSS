@@ -40,7 +40,7 @@ namespace SSS.Application.Activity.Service
 
         public Pages<List<ActivityOutputDto>> GetListActivity(ActivityInputDto input)
         {
-            return GetList(input);
+            return GetPage(input);
         }
 
         public ActivityOutputDto GetById(ActivityInputDto input)

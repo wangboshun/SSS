@@ -52,7 +52,7 @@ namespace SSS.Application.UserActivity.Service
 
         public Pages<List<UserActivityOutputDto>> GetListUserActivity(UserActivityInputDto input)
         {
-            return GetList(input);
+            return GetPage(input);
         }
     }
 }

@@ -148,8 +148,21 @@ namespace SSS.Api
                 app.UseHsts();
 
             //跨域
-            app.UseHttpsRedirection().UseCors(builder =>
-                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseHttpsRedirection().UseCors(options =>
+            {
+                options.AllowAnyOrigin();
+                options.AllowAnyMethod();
+                options.AllowAnyHeader();
+            });
+
+            //跨域
+            app.UseCors(options =>
+            {
+                options.AllowAnyHeader();
+                options.AllowAnyMethod();
+                options.AllowAnyOrigin();
+                //options.AllowCredentials();
+            });
 
             //异常拦截
             app.UseApiException();

@@ -23,8 +23,8 @@ namespace SSS.Infrastructure.Seedwork.Repository
     {
         private readonly IErrorHandler _error;
         private readonly ILogger _logger;
-        protected readonly DbcontextBase Db;
-        protected readonly DbSet<TEntity> DbSet;
+        public readonly DbcontextBase Db;
+        public readonly DbSet<TEntity> DbSet;
 
         public Repository(DbcontextBase context)
         {
@@ -66,6 +66,25 @@ namespace SSS.Infrastructure.Seedwork.Repository
         public virtual IQueryable<TEntity> GetBySql(string sql, params object[] parameter)
         {
             return DbSet.FromSqlRaw(sql, GeneratorParameter(parameter));
+        }
+
+        public IQueryable<TEntity> GetBySql(string sql, Expression<Func<TEntity, bool>> predicate)
+        {
+            return DbSet.FromSqlRaw(sql).Where(predicate);
+        }
+
+        public IQueryable<TEntity> GetBySql(string sql, int index, int size, ref int count)
+        {
+            var data = GetBySql(sql);
+            count = data.Count();
+            return data.OrderByDescending(x => x.CreateTime).Skip(size * (index > 0 ? index - 1 : 0)).Take(size);
+        }
+
+        public IQueryable<TEntity> GetBySql(string sql, Expression<Func<TEntity, bool>> predicate, int index, int size, ref int count)
+        {
+            var data = GetBySql(sql, predicate);
+            count = data.Count();
+            return data.OrderByDescending(x => x.CreateTime).Skip(size * (index > 0 ? index - 1 : 0)).Take(size);
         }
 
         public virtual IQueryable<TEntity> GetAll()

@@ -65,7 +65,7 @@ namespace SSS.Application.UserInfo.Service
 
         public Pages<List<UserInfoOutputDto>> GetListUserInfo(UserInfoInputDto input)
         {
-            return GetList(input);
+            return GetPage(input);
         }
     }
 }

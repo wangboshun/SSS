@@ -9,7 +9,9 @@ namespace SSS.Domain.CoinInfo
 
         public string Name { set; get; }
 
-        public string Logo { set; get; }
+        public string RomteLogo { set; get; }
+
+        public string LocalLogo { set; get; }
 
         public string Imagedata { set; get; }
 

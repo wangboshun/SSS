@@ -41,7 +41,7 @@ namespace SSS.Application.CoinInfo.Service
 
         public Pages<List<CoinInfoOutputDto>> GetListCoinInfo(CoinInfoInputDto input)
         {
-            return GetList(input);
+            return GetPage(input);
         }
     }
 }
