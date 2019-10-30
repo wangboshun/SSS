@@ -1,20 +1,31 @@
 ﻿using FluentValidation;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using SSS.Domain.Articel.Dto;
 using SSS.Infrastructure.Util.Attribute;
 
-namespace SSS.Domain.UserActivity.Validation
+namespace SSS.Domain.Articel.Validation
 {
     [DIService(ServiceLifetime.Scoped, typeof(IValidator<ArticelInputDto>))]
     public class ArticelValidation : AbstractValidator<ArticelInputDto>
     {
         public ArticelValidation()
         {
-            RuleSet("Insert", () => { });
+            RuleSet("Insert", () =>
+            {
+                RuleFor(x => x.id).NotNull().WithMessage("ID不能为空");
+            });
 
-            RuleSet("Delete", () => { });
+            RuleSet("Delete", () =>
+            {
 
-            RuleSet("Update", () => { });
+            });
+
+            RuleSet("Update", () =>
+            {
+
+            });
 
             RuleSet("Select", () => { });
         }

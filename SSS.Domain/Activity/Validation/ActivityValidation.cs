@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SSS.Domain.Activity.Dto;
 using SSS.Infrastructure.Util.Attribute;
 
-namespace SSS.Domain.UserActivity.Validation
+namespace SSS.Domain.Activity.Validation
 {
     [DIService(ServiceLifetime.Scoped, typeof(IValidator<ActivityInputDto>))]
     public class ActivityValidation : AbstractValidator<ActivityInputDto>
