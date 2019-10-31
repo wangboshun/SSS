@@ -41,7 +41,7 @@ namespace SSS.Application.Template.Service
 
         public Pages<List<TemplateOutputDto>> GetListTemplate(TemplateInputDto input)
         {
-            return GetList(input);
+            return GetPage(input);
         }
     }
 }
