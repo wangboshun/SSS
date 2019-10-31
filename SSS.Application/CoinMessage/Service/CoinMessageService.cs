@@ -9,19 +9,26 @@ using SSS.Infrastructure.Repository.CoinMessage;
 using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using AutoMapper.QueryableExtensions;
+using SSS.Infrastructure.Repository.CoinInfo;
 
 namespace SSS.Application.CoinMessage.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(ICoinMessageService))]
     public class CoinMessageService : QueryService<SSS.Domain.CoinMessage.CoinMessage, CoinMessageInputDto, CoinMessageOutputDto>, ICoinMessageService
     {
+        private readonly ICoinInfoRepository _coininforepository;
+        private readonly ICoinMessageRepository _coinmessagerepository;
         public CoinMessageService(IMapper mapper,
             ICoinMessageRepository repository,
             IErrorHandler error,
-            IValidator<CoinMessageInputDto> validator) :
+            IValidator<CoinMessageInputDto> validator,
+            ICoinInfoRepository coininforepository) :
             base(mapper, repository, error, validator)
         {
-
+            _coininforepository = coininforepository;
+            _coinmessagerepository = repository;
         }
 
         public void AddCoinMessage(CoinMessageInputDto input)
@@ -41,7 +48,15 @@ namespace SSS.Application.CoinMessage.Service
 
         public Pages<List<CoinMessageOutputDto>> GetListCoinMessage(CoinMessageInputDto input)
         {
-            return GetPage(input);
+            int count = 0;
+            var data = _coinmessagerepository.GetPageOrderByAsc(input,ref count);
+            var list= data.ProjectTo<CoinMessageOutputDto>(Mapper.ConfigurationProvider).ToList();
+            foreach (var item in list)
+            {
+                item.Logo = _coininforepository.Get(x => x.Coin.Equals(item.Coin))?.RomteLogo;
+            }
+
+            return new Pages<List<CoinMessageOutputDto>>(list, count);
         }
     }
 }

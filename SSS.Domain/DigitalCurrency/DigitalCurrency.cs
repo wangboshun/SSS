@@ -52,11 +52,6 @@ namespace SSS.Domain.DigitalCurrency
         /// <summary>
         /// µ±Ç°ÕÇ·ù
         /// </summary>
-        public double CloseRange { set; get; }
-
-        /// <summary>
-        /// Logo
-        /// </summary>
-        public string Logo { set; get; }
+        public double CloseRange { set; get; } 
     }
 }

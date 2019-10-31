@@ -172,8 +172,7 @@ namespace SSS.Application.DigitalCurrency.Job
                     }
 
                     model.HighRange = (model.High / model.Low) - 1;
-                    model.CloseRange = (model.Close / model.Open) - 1;
-                    model.Logo = GetLogo(base_currency);
+                    model.CloseRange = (model.Close / model.Open) - 1; 
                     ListCoin.Add(model);
                 }
             }

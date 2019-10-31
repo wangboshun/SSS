@@ -57,9 +57,7 @@ namespace SSS.Application.Seedwork.Service
             }
             else
             {
-                list = Repository.GetPage(input.pageindex, input.pagesize > 0 ? input.pagesize : 10, ref count)
-                    .ProjectTo<TOutput>(Mapper.ConfigurationProvider).ToList();
-                count = list.Count;
+                list = Repository.GetPage(input.pageindex, input.pagesize > 0 ? input.pagesize : 10, ref count).ProjectTo<TOutput>(Mapper.ConfigurationProvider).ToList();
             }
 
             return new Pages<List<TOutput>>(list, count);
@@ -79,7 +77,6 @@ namespace SSS.Application.Seedwork.Service
             else
             {
                 list = Repository.GetPage(input.pageindex, input.pagesize > 0 ? input.pagesize : 10, predicate, ref count).ProjectTo<TOutput>(Mapper.ConfigurationProvider).ToList();
-                count = list.Count;
             }
 
             return new Pages<List<TOutput>>(list, count);
@@ -98,7 +95,6 @@ namespace SSS.Application.Seedwork.Service
             else
             {
                 list = Repository.GetBySql(sql, pageindex, pagesize > 0 ? pagesize : 10, ref count).ProjectTo<TOutput>(Mapper.ConfigurationProvider).ToList();
-                count = list.Count;
             }
 
             return new Pages<List<TOutput>>(list, count);
@@ -118,7 +114,6 @@ namespace SSS.Application.Seedwork.Service
             else
             {
                 list = Repository.GetBySql(sql, predicate, pageindex, pagesize > 0 ? pagesize : 10, ref count).ProjectTo<TOutput>(Mapper.ConfigurationProvider).ToList();
-                count = list.Count;
             }
 
             return new Pages<List<TOutput>>(list, count);

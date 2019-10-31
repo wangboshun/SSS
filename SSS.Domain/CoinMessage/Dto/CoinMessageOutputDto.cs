@@ -11,5 +11,6 @@ namespace SSS.Domain.CoinMessage.Dto
         public string Content { set; get; }
 
         public string Calendar { set; get; }
+        public string Logo { set; get; }
     }
 }

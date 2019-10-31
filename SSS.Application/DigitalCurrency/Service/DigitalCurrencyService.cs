@@ -10,19 +10,25 @@ using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper.QueryableExtensions;
+using SSS.Infrastructure.Repository.CoinInfo;
 
 namespace SSS.Application.DigitalCurrency.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IDigitalCurrencyService))]
     public class DigitalCurrencyService : QueryService<SSS.Domain.DigitalCurrency.DigitalCurrency, DigitalCurrencyInputDto, DigitalCurrencyOutputDto>, IDigitalCurrencyService
     {
+        private readonly ICoinInfoRepository _coininforepository;
+        private readonly IDigitalCurrencyRepository _repository;
         public DigitalCurrencyService(IMapper mapper,
             IDigitalCurrencyRepository repository,
             IErrorHandler error,
-            IValidator<DigitalCurrencyInputDto> validator) :
+            IValidator<DigitalCurrencyInputDto> validator,
+            ICoinInfoRepository coininforepository) :
             base(mapper, repository, error, validator)
         {
-
+            _coininforepository = coininforepository;
+            _repository = repository;
         }
 
         public void AddDigitalCurrency(DigitalCurrencyInputDto input)
@@ -42,9 +48,16 @@ namespace SSS.Application.DigitalCurrency.Service
 
         public Pages<List<DigitalCurrencyOutputDto>> GetListDigitalCurrency(DigitalCurrencyInputDto input)
         {
-            var data = GetPage(input,x => x.IsDelete == 0);
-            data.data = data.data.OrderByDescending(x => x.CloseRange).ToList();
-            return data;
+            int count = 0;
+            var data = _repository.GetPageOrderByAsc(input, ref count);
+            var list = data.ProjectTo<DigitalCurrencyOutputDto>(Mapper.ConfigurationProvider).ToList();
+
+            foreach (var item in list)
+            {
+                item.Logo = _coininforepository.Get(x => x.Coin.Equals(item.Coin.Replace("-USDT", "")))?.RomteLogo;
+            }
+
+            return new Pages<List<DigitalCurrencyOutputDto>>(list, count);
         }
     }
 }

@@ -42,7 +42,7 @@
 
             private void DoWork(object state)
             {
-                //GetCoinMessage();
+                GetCoinMessage();
             }
 
             public Task StopAsync(CancellationToken stoppingToken)
@@ -94,7 +94,9 @@
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Content = item.SelectSingleNode(".//h3").InnerText.Trim(),
-                                CreateTime = DateTime.Now,
+                                CreateTime = new DateTime(Convert.ToInt32(calendar.Substring(0, 4)),
+                                    Convert.ToInt32(calendar.Substring(5, 2)),
+                                    Convert.ToInt32(calendar.Substring(8, 2))),
                                 Calendar = calendar,
                                 Coin = coin,
                                 Title = title
