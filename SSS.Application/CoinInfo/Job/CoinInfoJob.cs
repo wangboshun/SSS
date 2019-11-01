@@ -36,14 +36,14 @@ namespace SSS.Application.CoinInfo.Job
         public Task StartAsync(CancellationToken stoppingToken)
         {
             _timer = new Timer(DoWork, null, TimeSpan.Zero,
-                TimeSpan.FromMinutes(100));
+                TimeSpan.FromMinutes(60));
 
             return Task.CompletedTask;
         }
 
         private void DoWork(object state)
         {
-            //GetCoinInfo();
+            GetCoinInfo();
         }
 
         public Task StopAsync(CancellationToken stoppingToken)

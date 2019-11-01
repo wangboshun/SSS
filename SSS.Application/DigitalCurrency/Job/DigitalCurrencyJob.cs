@@ -37,14 +37,14 @@ namespace SSS.Application.DigitalCurrency.Job
         public Task StartAsync(CancellationToken stoppingToken)
         {
             _timer = new Timer(DoWork, null, TimeSpan.Zero,
-                TimeSpan.FromMinutes(10));
+                TimeSpan.FromMinutes(60));
 
             return Task.CompletedTask;
         }
 
         private void DoWork(object state)
         {
-            //OutDay();
+            OutDay();
         }
 
         public Task StopAsync(CancellationToken stoppingToken)
