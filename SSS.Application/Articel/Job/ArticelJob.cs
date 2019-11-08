@@ -1,5 +1,5 @@
 ﻿using HtmlAgilityPack;
- 
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -44,7 +44,7 @@ namespace SSS.Application.Articel.Job
         }
 
         private void DoWork(object state)
-        { 
+        {
             GetNews();
             GetQuickNews();
         }
@@ -83,6 +83,9 @@ namespace SSS.Application.Articel.Job
                 foreach (var item in data.AsJEnumerable())
                 {
                     if (source.Any(x => x.Title.Equals(item["title"].ToString())))
+                        continue;
+
+                    if (list.Any(x => x.Title.Equals(item["title"].ToString())))
                         continue;
 
                     System.Console.WriteLine("---GetNews---" + item["title"].ToString());
@@ -133,7 +136,11 @@ namespace SSS.Application.Articel.Job
 
                 model.Content = node.InnerHtml;
                 model.CreateTime = DateTimeConvert.ConvertDateTime(token["published_at"].ToString());
-                model.Logo = token["thumbnail_pic"].ToString();
+                string logo = "http://pic.51yuansu.com/pic3/cover/02/61/11/59fc30d0b8598_610.jpg";
+                if (!string.IsNullOrWhiteSpace(token["thumbnail_pic"].ToString()))
+                    logo = token["thumbnail_pic"].ToString();
+
+                model.Logo = logo;
                 model.Author = token["author"].ToString();
             }
             catch (Exception ex)

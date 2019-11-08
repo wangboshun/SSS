@@ -50,20 +50,7 @@ namespace SSS.Api.Controllers
         {
             var result = _service.GetNews(input);
             return Response(result);
-        }
-
-        /// <summary>
-        ///     GetQuickNews
-        /// </summary>
-        /// <param name="input">input</param>
-        /// <returns></returns>
-        [HttpGet("getquicknews")]
-        [AllowAnonymous] //匿名访问
-        public IActionResult GetQuickNews([FromQuery] ArticelInputDto input)
-        {
-            var result = _service.GetQuickNews(input);
-            return Response(result);
-        }
+        } 
 
         [HttpGet("getnewsdetail")]
         [AllowAnonymous] //匿名访问

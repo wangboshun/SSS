@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.DependencyInjection;
 using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Seedwork.DbContext;
@@ -18,8 +19,8 @@ namespace SSS.Infrastructure.Repository.CoinMessage
 
         public IQueryable<Domain.CoinMessage.CoinMessage> GetPageOrderByAsc(CoinMessageInputDto input, ref int count)
         {
-            count = DbSet.Count();
-            var data = DbSet.OrderBy(x => x.CreateTime)
+            count = DbSet.Count(x => x.CreateTime > DateTime.Now);
+            var data = DbSet.Where(x => x.CreateTime > DateTime.Now).OrderBy(x => x.CreateTime)
                 .Skip(input.pagesize * (input.pageindex > 0 ? input.pageindex - 1 : 0)).Take(input.pagesize);
 
             return data;

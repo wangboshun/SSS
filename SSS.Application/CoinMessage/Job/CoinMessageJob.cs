@@ -90,6 +90,9 @@
                             if (source.Any(x => x.Coin.Equals(coin) && x.Calendar.Contains(calendar)))
                                 continue;
 
+                            if (list.Any(x => x.Coin.Equals(coin) && x.Calendar.Contains(calendar)))
+                                continue;
+
                             Domain.CoinMessage.CoinMessage model = new Domain.CoinMessage.CoinMessage
                             {
                                 Id = Guid.NewGuid().ToString(),

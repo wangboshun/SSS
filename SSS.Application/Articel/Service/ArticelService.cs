@@ -53,13 +53,7 @@ namespace SSS.Application.Articel.Service
         public List<ArticelOutputDto> GetNews(ArticelInputDto input)
         {
             var data = _repository.GetNews(input);
-            return data.AsQueryable().ProjectTo<ArticelOutputDto>(Mapper.ConfigurationProvider).ToList();
-        }
-
-        public List<ArticelOutputDto> GetQuickNews(ArticelInputDto input)
-        {
-            var data = _repository.GetQuickNews(input);
-            return data.AsQueryable().ProjectTo<ArticelOutputDto>(Mapper.ConfigurationProvider).ToList();
+            return data?.AsQueryable().ProjectTo<ArticelOutputDto>(Mapper.ConfigurationProvider).ToList();
         } 
     }
 }

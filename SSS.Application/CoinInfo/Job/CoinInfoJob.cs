@@ -83,6 +83,9 @@ namespace SSS.Application.CoinInfo.Job
                     if (source.Any(x => x.Coin.Equals(model.Coin) && !string.IsNullOrWhiteSpace(x.Imagedata)))
                         continue;
 
+                    if (list.Any(x => x.Coin.Equals(model.Coin) && !string.IsNullOrWhiteSpace(x.Imagedata)))
+                        continue;
+
                     string src = item.logo_png;
                     model.RomteLogo = src;
                     model.LocalLogo = DownLoadCoinLogo(model.Coin, src);

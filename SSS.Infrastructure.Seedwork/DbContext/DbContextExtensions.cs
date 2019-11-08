@@ -61,7 +61,7 @@ namespace SSS.Infrastructure.Seedwork.DbContext
             {
                 if (dt == null || dt.Rows.Count == 0)
                 {
-                    throw new Exception("DataTable is Null!");
+                    return null;
                 }
                 List<T> ts = new List<T>();
                 Type type = typeof(T);
