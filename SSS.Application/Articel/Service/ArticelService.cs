@@ -1,17 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Linq;
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Articel.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Articel;
 using SSS.Infrastructure.Util.Attribute;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using AutoMapper.QueryableExtensions;
 
 namespace SSS.Application.Articel.Service
 {
@@ -54,6 +53,6 @@ namespace SSS.Application.Articel.Service
         {
             var data = _repository.GetNews(input);
             return data?.AsQueryable().ProjectTo<ArticelOutputDto>(Mapper.ConfigurationProvider).ToList();
-        } 
+        }
     }
 }

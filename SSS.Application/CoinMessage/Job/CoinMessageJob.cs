@@ -1,35 +1,37 @@
-﻿namespace SSS.Application.CoinMessage.Job
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using HtmlAgilityPack;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using SSS.Infrastructure.Seedwork.DbContext;
+using SSS.Infrastructure.Util.Attribute;
+
+namespace SSS.Application.CoinMessage.Job
 {
-    using global::SSS.Infrastructure.Seedwork.DbContext;
-    using global::SSS.Infrastructure.Util.Attribute;
-
-    using HtmlAgilityPack;
-
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
-    using Microsoft.Extensions.Logging;
-
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-
     namespace SSS.Application.CoinMessageJob.Job
     {
         [DIService(ServiceLifetime.Transient, typeof(IHostedService))]
         public class CoinMessageJob : IHostedService, IDisposable
         {
+            private readonly IHostEnvironment _env;
             private readonly ILogger _logger;
             private readonly IServiceScopeFactory _scopeFactory;
             private Timer _timer;
-            private readonly IHostEnvironment _env;
 
-            public CoinMessageJob(ILogger<CoinMessageJob> logger, IServiceScopeFactory scopeFactory, IHostEnvironment env)
+            public CoinMessageJob(ILogger<CoinMessageJob> logger, IServiceScopeFactory scopeFactory,IHostEnvironment env)
             {
                 _logger = logger;
                 _env = env;
                 _scopeFactory = scopeFactory;
+            }
+
+            public void Dispose()
+            {
+                _timer?.Dispose();
             }
 
             public Task StartAsync(CancellationToken stoppingToken)
@@ -40,11 +42,6 @@
                 return Task.CompletedTask;
             }
 
-            private void DoWork(object state)
-            {
-                GetCoinMessage();
-            }
-
             public Task StopAsync(CancellationToken stoppingToken)
             {
                 _timer?.Change(Timeout.Infinite, 0);
@@ -52,13 +49,13 @@
                 return Task.CompletedTask;
             }
 
-            public void Dispose()
+            private void DoWork(object state)
             {
-                _timer?.Dispose();
+                GetCoinMessage();
             }
 
             /// <summary>
-            /// 获取利好新闻消息
+            ///     获取利好新闻消息
             /// </summary>
             public void GetCoinMessage()
             {
@@ -73,7 +70,7 @@
                     {
                         HtmlWeb htmlWeb = new HtmlWeb();
 
-                        HtmlAgilityPack.HtmlDocument document = htmlWeb.Load("http://www.biknow.com/?pageNum=" + i);
+                        HtmlDocument document = htmlWeb.Load("http://www.biknow.com/?pageNum=" + i);
 
                         var node = document.DocumentNode.SelectNodes("//div[@class='list']//div[@class='list_con']//div[@class='box']");
                         if (node == null)
@@ -112,7 +109,7 @@
                     {
                         context.CoinMessage.AddRange(list);
                         context.SaveChangesAsync();
-                        System.Console.WriteLine("---GetGoodNews  SaveChangesAsync---");
+                        Console.WriteLine("---GetGoodNews  SaveChangesAsync---");
                     }
                 }
                 catch (Exception ex)
@@ -122,5 +119,4 @@
             }
         }
     }
-
 }

@@ -1,36 +1,41 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-
-using SSS.Domain.CoinInfo;
-using SSS.Infrastructure.Seedwork.DbContext;
-using SSS.Infrastructure.Util.Attribute;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using SSS.Domain.CoinInfo;
+using SSS.Infrastructure.Seedwork.DbContext;
+using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Application.CoinInfo.Job
 {
     [DIService(ServiceLifetime.Transient, typeof(IHostedService))]
     public class CoinInfoJob : IHostedService, IDisposable
     {
+        private readonly IHostEnvironment _env;
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _scopeFactory;
         private Timer _timer;
-        private readonly IHostEnvironment _env;
 
         public CoinInfoJob(ILogger<CoinInfoJob> logger, IServiceScopeFactory scopeFactory, IHostEnvironment env)
         {
             _logger = logger;
             _env = env;
             _scopeFactory = scopeFactory;
+        }
+
+        public void Dispose()
+        {
+            _timer?.Dispose();
         }
 
         public Task StartAsync(CancellationToken stoppingToken)
@@ -41,42 +46,38 @@ namespace SSS.Application.CoinInfo.Job
             return Task.CompletedTask;
         }
 
-        private void DoWork(object state)
-        {
-            GetCoinInfo();
-        }
-
         public Task StopAsync(CancellationToken stoppingToken)
         {
             _timer?.Change(Timeout.Infinite, 0);
 
             return Task.CompletedTask;
         }
-        public void Dispose()
+
+        private void DoWork(object state)
         {
-            _timer?.Dispose();
+            GetCoinInfo();
         }
 
         /// <summary>
-        /// 获取币币信息
+        ///     获取币币信息
         /// </summary>
         public void GetCoinInfo()
         {
             try
-            { 
+            {
                 WebClient web = new WebClient();
                 var json = web.DownloadString("https://fxhapi.feixiaohao.com/public/v1/ticker?start=0&limit=10000");
-                List<CoinJson> data = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CoinJson>>(json);
-                 
+                List<CoinJson> data = JsonConvert.DeserializeObject<List<CoinJson>>(json);
+
                 using var scope = _scopeFactory.CreateScope();
                 using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
                 var source = context.CoinInfo.ToList();
 
-                List<SSS.Domain.CoinInfo.CoinInfo> list = new List<Domain.CoinInfo.CoinInfo>();
+                List<Domain.CoinInfo.CoinInfo> list = new List<Domain.CoinInfo.CoinInfo>();
 
                 foreach (var item in data)
                 {
-                    SSS.Domain.CoinInfo.CoinInfo model = new Domain.CoinInfo.CoinInfo();
+                    Domain.CoinInfo.CoinInfo model = new Domain.CoinInfo.CoinInfo();
                     model.Content = item.id;
                     model.Coin = item.symbol;
 
@@ -94,9 +95,10 @@ namespace SSS.Application.CoinInfo.Job
                     model.Name = item.name;
                     list.Add(model);
                 }
+
                 context.CoinInfo.AddRange(list);
                 context.SaveChangesAsync();
-                System.Console.WriteLine("---GetCoinInfo  SaveChangesAsync---");
+                Console.WriteLine("---GetCoinInfo  SaveChangesAsync---");
             }
             catch (Exception ex)
             {
@@ -105,7 +107,7 @@ namespace SSS.Application.CoinInfo.Job
         }
 
         /// <summary>
-        /// 下载币币Logo
+        ///     下载币币Logo
         /// </summary>
         /// <param name="coin"></param>
         /// <param name="url"></param>
@@ -131,7 +133,7 @@ namespace SSS.Application.CoinInfo.Job
         }
 
         /// <summary>
-        /// 币币Logo转换为Base64
+        ///     币币Logo转换为Base64
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
@@ -147,10 +149,10 @@ namespace SSS.Application.CoinInfo.Job
                     Bitmap bmp = new Bitmap(img);
                     using (MemoryStream stream = new MemoryStream())
                     {
-                        bmp.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
+                        bmp.Save(stream, ImageFormat.Jpeg);
                         byte[] arr = new byte[stream.Length];
                         stream.Position = 0;
-                        stream.Read(arr, 0, (int)stream.Length);
+                        stream.Read(arr, 0, (int) stream.Length);
                         stream.Close();
                         return Convert.ToBase64String(arr);
                     }
@@ -158,7 +160,7 @@ namespace SSS.Application.CoinInfo.Job
             }
             catch (Exception ex)
             {
-                _logger.LogError(new EventId(ex.HResult), ex, $"---UrlToBase64 Exception---");
+                _logger.LogError(new EventId(ex.HResult), ex, "---UrlToBase64 Exception---");
                 return "";
             }
         }

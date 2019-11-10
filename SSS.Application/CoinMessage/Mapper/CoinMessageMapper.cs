@@ -1,14 +1,15 @@
+using AutoMapper;
 using SSS.Domain.CoinMessage.Dto;
 
 namespace SSS.Application.CoinMessage.Mapper
 {
-    public class CoinMessageProfile : AutoMapper.Profile
+    public class CoinMessageProfile : Profile
     {
         public CoinMessageProfile()
         {
-            CreateMap<SSS.Domain.CoinMessage.CoinMessage, CoinMessageOutputDto>();
+            CreateMap<Domain.CoinMessage.CoinMessage, CoinMessageOutputDto>();
 
-            CreateMap<CoinMessageInputDto, SSS.Domain.CoinMessage.CoinMessage>();
+            CreateMap<CoinMessageInputDto, Domain.CoinMessage.CoinMessage>();
         }
     }
 }

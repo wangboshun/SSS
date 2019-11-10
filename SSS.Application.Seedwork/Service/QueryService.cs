@@ -57,7 +57,8 @@ namespace SSS.Application.Seedwork.Service
             }
             else
             {
-                list = Repository.GetPage(input.pageindex, input.pagesize > 0 ? input.pagesize : 10, ref count).ProjectTo<TOutput>(Mapper.ConfigurationProvider).ToList();
+                list = Repository.GetPage(input.pageindex, input.pagesize > 0 ? input.pagesize : 10, ref count)
+                    .ProjectTo<TOutput>(Mapper.ConfigurationProvider).ToList();
             }
 
             return new Pages<List<TOutput>>(list, count);
@@ -76,7 +77,9 @@ namespace SSS.Application.Seedwork.Service
             }
             else
             {
-                list = Repository.GetPage(input.pageindex, input.pagesize > 0 ? input.pagesize : 10, predicate, ref count).ProjectTo<TOutput>(Mapper.ConfigurationProvider).ToList();
+                list = Repository
+                    .GetPage(input.pageindex, input.pagesize > 0 ? input.pagesize : 10, predicate, ref count)
+                    .ProjectTo<TOutput>(Mapper.ConfigurationProvider).ToList();
             }
 
             return new Pages<List<TOutput>>(list, count);
@@ -94,13 +97,15 @@ namespace SSS.Application.Seedwork.Service
             }
             else
             {
-                list = Repository.GetBySql(sql, pageindex, pagesize > 0 ? pagesize : 10, ref count).ProjectTo<TOutput>(Mapper.ConfigurationProvider).ToList();
+                list = Repository.GetBySql(sql, pageindex, pagesize > 0 ? pagesize : 10, ref count)
+                    .ProjectTo<TOutput>(Mapper.ConfigurationProvider).ToList();
             }
 
             return new Pages<List<TOutput>>(list, count);
         }
 
-        public Pages<List<TOutput>> GetPageBySql(string sql, Expression<Func<TEntity, bool>> predicate, int pageindex = 0, int pagesize = 10)
+        public Pages<List<TOutput>> GetPageBySql(string sql, Expression<Func<TEntity, bool>> predicate,
+            int pageindex = 0, int pagesize = 10)
         {
             List<TOutput> list;
 
@@ -113,10 +118,11 @@ namespace SSS.Application.Seedwork.Service
             }
             else
             {
-                list = Repository.GetBySql(sql, predicate, pageindex, pagesize > 0 ? pagesize : 10, ref count).ProjectTo<TOutput>(Mapper.ConfigurationProvider).ToList();
+                list = Repository.GetBySql(sql, predicate, pageindex, pagesize > 0 ? pagesize : 10, ref count)
+                    .ProjectTo<TOutput>(Mapper.ConfigurationProvider).ToList();
             }
 
             return new Pages<List<TOutput>>(list, count);
-        } 
+        }
     }
 }

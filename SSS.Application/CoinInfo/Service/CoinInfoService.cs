@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using AutoMapper;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,13 +9,11 @@ using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.CoinInfo;
 using SSS.Infrastructure.Util.Attribute;
-using System;
-using System.Collections.Generic;
 
 namespace SSS.Application.CoinInfo.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(ICoinInfoService))]
-    public class CoinInfoService : QueryService<SSS.Domain.CoinInfo.CoinInfo, CoinInfoInputDto, CoinInfoOutputDto>, ICoinInfoService
+    public class CoinInfoService : QueryService<Domain.CoinInfo.CoinInfo, CoinInfoInputDto, CoinInfoOutputDto>,ICoinInfoService
     {
         public CoinInfoService(IMapper mapper,
             ICoinInfoRepository repository,
@@ -21,7 +21,6 @@ namespace SSS.Application.CoinInfo.Service
             IValidator<CoinInfoInputDto> validator) :
             base(mapper, repository, error, validator)
         {
-
         }
 
         public void AddCoinInfo(CoinInfoInputDto input)
@@ -34,7 +33,7 @@ namespace SSS.Application.CoinInfo.Service
             }
 
             input.id = Guid.NewGuid().ToString();
-            var model = Mapper.Map<SSS.Domain.CoinInfo.CoinInfo>(input);
+            var model = Mapper.Map<Domain.CoinInfo.CoinInfo>(input);
             Repository.Add(model);
             Repository.SaveChanges();
         }

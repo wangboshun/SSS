@@ -1,25 +1,28 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.DigitalCurrency.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
+using SSS.Infrastructure.Repository.CoinInfo;
 using SSS.Infrastructure.Repository.DigitalCurrency;
 using SSS.Infrastructure.Util.Attribute;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using AutoMapper.QueryableExtensions;
-using SSS.Infrastructure.Repository.CoinInfo;
 
 namespace SSS.Application.DigitalCurrency.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IDigitalCurrencyService))]
-    public class DigitalCurrencyService : QueryService<SSS.Domain.DigitalCurrency.DigitalCurrency, DigitalCurrencyInputDto, DigitalCurrencyOutputDto>, IDigitalCurrencyService
+    public class DigitalCurrencyService :
+        QueryService<Domain.DigitalCurrency.DigitalCurrency, DigitalCurrencyInputDto, DigitalCurrencyOutputDto>,
+        IDigitalCurrencyService
     {
         private readonly ICoinInfoRepository _coininforepository;
         private readonly IDigitalCurrencyRepository _repository;
+
         public DigitalCurrencyService(IMapper mapper,
             IDigitalCurrencyRepository repository,
             IErrorHandler error,
@@ -41,7 +44,7 @@ namespace SSS.Application.DigitalCurrency.Service
             }
 
             input.id = Guid.NewGuid().ToString();
-            var model = Mapper.Map<SSS.Domain.DigitalCurrency.DigitalCurrency>(input);
+            var model = Mapper.Map<Domain.DigitalCurrency.DigitalCurrency>(input);
             Repository.Add(model);
             Repository.SaveChanges();
         }
@@ -53,9 +56,7 @@ namespace SSS.Application.DigitalCurrency.Service
             var list = data.ProjectTo<DigitalCurrencyOutputDto>(Mapper.ConfigurationProvider).ToList();
 
             foreach (var item in list)
-            {
                 item.Logo = _coininforepository.Get(x => x.Coin.Equals(item.Coin.Replace("-USDT", "")))?.RomteLogo;
-            }
 
             return new Pages<List<DigitalCurrencyOutputDto>>(list, count);
         }

@@ -1,8 +1,7 @@
-﻿using SSS.Domain.Seedwork.Model;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using SSS.Domain.Seedwork.Model;
 
 namespace SSS.Application.Seedwork.Service
 {
@@ -15,7 +14,9 @@ namespace SSS.Application.Seedwork.Service
         TOutput Get(Expression<Func<TEntity, bool>> predicate);
 
         Pages<List<TOutput>> GetPageBySql(string sql, int pageindex = 0, int pagesize = 10);
-        Pages<List<TOutput>> GetPageBySql(string sql, Expression<Func<TEntity, bool>> predicate, int pageindex = 0, int pagesize = 10);
+
+        Pages<List<TOutput>> GetPageBySql(string sql, Expression<Func<TEntity, bool>> predicate, int pageindex = 0,
+            int pagesize = 10);
 
         Pages<List<TOutput>> GetPage(TInput input);
         Pages<List<TOutput>> GetPage(TInput input, Expression<Func<TEntity, bool>> predicate);
