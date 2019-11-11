@@ -19,7 +19,7 @@ namespace SSS.Api
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
             return WebHost.CreateDefaultBuilder(args)
-                .UseUrls("http://*:1234")
+                .UseUrls("http://*:81")
                 //.UseKestrel(ConfigHttps())
                 .UseStartup<Startup>()
                 .UseNLog();
