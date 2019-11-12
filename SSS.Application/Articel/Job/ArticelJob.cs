@@ -110,8 +110,8 @@ namespace SSS.Application.Articel.Job
                 if (list.Any())
                 {
                     context.Articel.AddRange(list);
-                    context.SaveChangesAsync();
-                    Console.WriteLine("---GetNotice  SaveChangesAsync---");
+                    context.SaveChanges();
+                    Console.WriteLine("---GetNotice  SaveChanges---");
                 }
             }
             catch (Exception ex)
@@ -167,8 +167,8 @@ namespace SSS.Application.Articel.Job
                 if (list.Any())
                 {
                     context.Articel.AddRange(list);
-                    context.SaveChangesAsync();
-                    Console.WriteLine("---GetPolicy  SaveChangesAsync---");
+                    context.SaveChanges();
+                    Console.WriteLine("---GetPolicy  SaveChanges---");
                 }
             }
             catch (Exception ex)
@@ -227,8 +227,8 @@ namespace SSS.Application.Articel.Job
                 if (list.Any())
                 {
                     context.Articel.AddRange(list);
-                    context.SaveChangesAsync();
-                    Console.WriteLine("---GetNews  SaveChangesAsync---");
+                    context.SaveChanges();
+                    Console.WriteLine("---GetNews  SaveChanges---");
                 }
             }
             catch (Exception ex)
@@ -328,8 +328,8 @@ namespace SSS.Application.Articel.Job
                 if (list.Any())
                 {
                     context.Articel.AddRange(list);
-                    context.SaveChangesAsync();
-                    Console.WriteLine("---GetQuickNews  SaveChangesAsync---");
+                    context.SaveChanges();
+                    Console.WriteLine("---GetQuickNews  SaveChanges---");
                 }
             }
             catch (Exception ex)

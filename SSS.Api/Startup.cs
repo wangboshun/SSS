@@ -27,6 +27,7 @@ using StackExchange.Profiling.SqlFormatters;
 
 using System.IO;
 using System.Reflection;
+using Hangfire.MySql.Core;
 
 namespace SSS.Api
 {
@@ -120,9 +121,9 @@ namespace SSS.Api
             services.AddHangfire(config =>
             {
 
-                config.UseSQLiteStorage(Configuration.GetConnectionString("SQLITEConnection"));
+                // config.UseSQLiteStorage(Configuration.GetConnectionString("SQLITEConnection"));
 
-                //config.UseStorage(new MySqlStorage(Configuration.GetConnectionString("MYSQLConnection")));
+                config.UseStorage(new MySqlStorage(Configuration.GetConnectionString("MYSQLConnection")));
                 //config.UseSqlServerStorage(Configuration.GetConnectionString("MSSQLConnection"));
             });
 

@@ -93,12 +93,13 @@ namespace SSS.Application.CoinInfo.Job
                     model.Imagedata = UrlToBase64(src);
                     model.Id = Guid.NewGuid().ToString();
                     model.Name = item.name;
+                    model.CreateTime = DateTime.Now;
                     list.Add(model);
                 }
 
                 context.CoinInfo.AddRange(list);
-                context.SaveChangesAsync();
-                Console.WriteLine("---GetCoinInfo  SaveChangesAsync---");
+                context.SaveChanges();
+                Console.WriteLine("---GetCoinInfo  SaveChanges---");
             }
             catch (Exception ex)
             {
@@ -121,7 +122,8 @@ namespace SSS.Application.CoinInfo.Job
                     : _env.ContentRootPath + "\\File\\coin\\";
                 string filename = filepath + coin + ".png";
 
-                web.DownloadFile(url, filename);
+                if (!File.Exists(filename))
+                    web.DownloadFile(url, filename);
 
                 return "/File/coin/" + coin + ".png";
             }
@@ -152,7 +154,7 @@ namespace SSS.Application.CoinInfo.Job
                         bmp.Save(stream, ImageFormat.Jpeg);
                         byte[] arr = new byte[stream.Length];
                         stream.Position = 0;
-                        stream.Read(arr, 0, (int) stream.Length);
+                        stream.Read(arr, 0, (int)stream.Length);
                         stream.Close();
                         return Convert.ToBase64String(arr);
                     }

@@ -108,8 +108,8 @@ namespace SSS.Application.CoinMessage.Job
                     if (list.Any())
                     {
                         context.CoinMessage.AddRange(list);
-                        context.SaveChangesAsync();
-                        Console.WriteLine("---GetGoodNews  SaveChangesAsync---");
+                        context.SaveChanges();
+                        Console.WriteLine("---GetGoodNews  SaveChanges---");
                     }
                 }
                 catch (Exception ex)
