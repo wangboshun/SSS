@@ -51,7 +51,7 @@ namespace SSS.Application.CoinMessage.Job
 
             private void DoWork(object state)
             {
-                GetCoinMessage();
+                //GetCoinMessage();
             }
 
             /// <summary>

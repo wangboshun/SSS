@@ -7,8 +7,6 @@ using SSS.Infrastructure.Util.Attribute;
 
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 
 namespace SSS.Infrastructure.Repository.Articel
 {

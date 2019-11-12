@@ -14,6 +14,7 @@ using SSS.Domain.DigitalCurrency;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.DateTime;
+using static TALibrary.Core;
 
 namespace SSS.Application.DigitalCurrency.Job
 {
@@ -56,18 +57,22 @@ namespace SSS.Application.DigitalCurrency.Job
 
         private void DoWork(object state)
         {
-            OutDay();
+            //Average(CoinTime.Time_1day);
+            MACD(CoinTime.Time_1day);
+            //KDJ(CoinTime.Time_1day);
         }
 
+        #region 均线系统
+
         /// <summary>
-        ///     计算日线
+        ///     均线系统
         /// </summary>
-        public void OutDay()
+        public void Average(CoinTime type)
         {
             Console.WriteLine("---OutDay---");
             List<CoinSymbols> allcoin = GetAllCoin();
 
-            foreach (var coin in allcoin) Calc(coin.base_currency, coin.quote_currency, CoinTime.Time_1day);
+            foreach (var coin in allcoin) Calc(coin.base_currency, coin.quote_currency, type);
 
             using var scope = _scopeFactory.CreateScope();
             using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
@@ -79,29 +84,6 @@ namespace SSS.Application.DigitalCurrency.Job
                 context.SaveChanges();
                 ListCoin.Clear();
                 Console.WriteLine("---OutDay  SaveChanges---");
-            }
-        }
-
-        /// <summary>
-        ///     获取币币的Logo
-        /// </summary>
-        /// <returns></returns>
-        public string GetLogo(string coin)
-        {
-            string logo = "https://s1.bqiapp.com/coin/20181030_72_png/bitcoin_200_200.png?v=1566978037";
-            try
-            {
-                using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
-                var info = context.CoinInfo.FirstOrDefault(x => x.Coin.Equals(coin.ToUpper()));
-                if (info != null)
-                    return info.RomteLogo;
-                return logo;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(new EventId(ex.HResult), ex, "---GetLogo---");
-                return logo;
             }
         }
 
@@ -283,7 +265,7 @@ namespace SSS.Application.DigitalCurrency.Job
         public List<List<T>> SpiltList<T>(List<T> Lists, int num) //where T:class
         {
             return Lists
-                .Select((x, i) => new {Index = i, Value = x})
+                .Select((x, i) => new { Index = i, Value = x })
                 .GroupBy(x => x.Index / num)
                 .Select(x => x.Select(v => v.Value).ToList())
                 .ToList();
@@ -315,6 +297,79 @@ namespace SSS.Application.DigitalCurrency.Job
             return list;
         }
 
+        #endregion
+
+        #region MACD
+
+        public void MACD(CoinTime type)
+        {
+            try
+            {
+                int optInFastPeriod = 12;
+                int optInSlowPeriod = 26;
+                int optInSignalPeriod = 9;
+                int outBegIdx = 0;
+                int outNBElement = 0;
+
+                double[] outEMA9 = new double[200];
+                double[] outEMA26 = new double[200];
+
+                double[] outMACD = new double[200];  //DIF线:12天平均和26天平均的差
+                double[] outMACDSignal = new double[200];  // DEA线：MACD9天均值
+                double[] outMACDHist = new double[200];   // MACD柱线：macd与signal的差值
+
+                var kline = GetKLine("btcusdt", type.ToString().Split('_')[1], 200);
+
+                var avg1 = TALibrary.Core.Ema(0, 200 - 1, kline.Select(x => x.close).ToArray(), 9, ref outBegIdx,
+                    ref outNBElement, outEMA9);
+
+                var avg2 = TALibrary.Core.Ema(0, 200 - 1, kline.Select(x => x.close).ToArray(), 26, ref outBegIdx,
+                    ref outNBElement, outEMA26);
+
+
+                var result = TALibrary.Core.Macd(0, 200 - 1, kline.Select(x => x.close).ToArray(), optInFastPeriod, optInSlowPeriod, optInSignalPeriod,
+                    ref outBegIdx, ref outNBElement, outMACD, outMACDSignal, outMACDHist);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        #endregion
+
+        #region KDJ
+
+        public void KDJ(CoinTime type)
+        {
+            try
+            {
+                int optInFastK_Period = 9;
+                int optInSlowK_Period = 3;
+                MAType optInSlowK_MAType = MAType.Sma;
+                int optInSlowD_Period = 3;
+                MAType optInSlowD_MAType = MAType.Sma;
+                int outBegIdx = 0;
+                int outNBElement = 0;
+                double[] outSlowK = new double[200];
+                double[] outSlowD = new double[200];
+                var kline = GetKLine("btcusdt", type.ToString().Split('_')[1], 200);
+                TALibrary.Core.Stoch(0, 200-1,
+                    kline.Select(x => x.high).ToArray(),
+                    kline.Select(x => x.low).ToArray(),
+                    kline.Select(x => x.close).ToArray(),
+                    optInFastK_Period, optInSlowK_Period,
+                    optInSlowK_MAType, optInSlowD_Period, optInSlowD_MAType, ref outBegIdx, ref outNBElement, outSlowK, outSlowD);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        #endregion
+
+        #region 公共
 
         /// <summary>
         ///     获取所有USDT交易对
@@ -328,9 +383,9 @@ namespace SSS.Application.DigitalCurrency.Job
             {
                 WebClient http = new WebClient();
 
-                string result = http.DownloadString("https://api.huobi.vn/v1/common/symbols");
+                string result = http.DownloadString("https://api.huobiasia.vip/v1/common/symbols");
 
-                JObject json_root = (JObject) JsonConvert.DeserializeObject(result);
+                JObject json_root = (JObject)JsonConvert.DeserializeObject(result);
 
                 var json_data = json_root["data"];
                 foreach (var item in json_data)
@@ -367,9 +422,9 @@ namespace SSS.Application.DigitalCurrency.Job
 
                 string result =
                     http.DownloadString(
-                        $"https://api.huobi.vn/market/history/kline?period={type}&size={size}&symbol={coin}");
+                        $"https://api.huobiasia.vip/market/history/kline?period={type}&size={size}&symbol={coin}");
 
-                JObject json_root = (JObject) JsonConvert.DeserializeObject(result);
+                JObject json_root = (JObject)JsonConvert.DeserializeObject(result);
 
                 if (json_root.GetValue("status").ToString().Equals("error"))
                     return null;
@@ -386,5 +441,30 @@ namespace SSS.Application.DigitalCurrency.Job
                 return list;
             }
         }
+
+        /// <summary>
+        ///     获取币币的Logo
+        /// </summary>
+        /// <returns></returns>
+        public string GetLogo(string coin)
+        {
+            string logo = "https://s1.bqiapp.com/coin/20181030_72_png/bitcoin_200_200.png?v=1566978037";
+            try
+            {
+                using var scope = _scopeFactory.CreateScope();
+                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+                var info = context.CoinInfo.FirstOrDefault(x => x.Coin.Equals(coin.ToUpper()));
+                if (info != null)
+                    return info.RomteLogo;
+                return logo;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(new EventId(ex.HResult), ex, "---GetLogo---");
+                return logo;
+            }
+        }
+
+        #endregion 
     }
 }

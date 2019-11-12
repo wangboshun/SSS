@@ -55,7 +55,7 @@ namespace SSS.Application.CoinInfo.Job
 
         private void DoWork(object state)
         {
-            GetCoinInfo();
+            //GetCoinInfo();
         }
 
         /// <summary>
