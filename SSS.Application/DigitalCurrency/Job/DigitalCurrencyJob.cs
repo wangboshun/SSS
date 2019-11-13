@@ -73,26 +73,86 @@ namespace SSS.Application.DigitalCurrency.Job
         /// </summary>
         public void Average(CoinTime type)
         {
+            try
+            {
+                Console.WriteLine("---Average---");
 
-            Calc("btc", "usdt", CoinTime.Time_1day);
+                List<CoinSymbols> allcoin = _huobi.GetAllCoin();
 
-            //Console.WriteLine("---OutDay---");
-            //List<CoinSymbols> allcoin = _huobi.GetAllCoin();
+                foreach (var coin in allcoin)
+                {
+                    var kline = _huobi.GetKLine(coin.base_currency, coin.quote_currency, type.ToString().Split('_')[1], 2000);
 
-            //foreach (var coin in allcoin)
-            //    Calc(coin.base_currency, coin.quote_currency, type);
+                    if (kline == null || kline.Count < 1)
+                        return;
 
-            //using var scope = _scopeFactory.CreateScope();
-            //using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+                    var data5 = _indicator.SMA(kline, 5);
+                    var data10 = _indicator.SMA(kline, 10);
+                    var data30 = _indicator.SMA(kline, 30);
+                    var data60 = _indicator.SMA(kline, 60);
 
-            //if (ListCoin.Any())
-            //{
-            //    context.Database.ExecuteSqlRaw("UPDATE DigitalCurrency SET IsDelete=1");
-            //    context.DigitalCurrency.AddRange(ListCoin);
-            //    context.SaveChanges();
-            //    ListCoin.Clear();
-            //    Console.WriteLine("---OutDay  SaveChanges---");
-            //}
+                    //获取时间段
+                    string typename = GetTimeType(type);
+
+                    if (data5.Count > 0 && data10.Count > 0 && data5.First().Item2 > data10.First().Item2)
+                    {
+                        Domain.DigitalCurrency.DigitalCurrency model =
+                            new Domain.DigitalCurrency.DigitalCurrency
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Coin = coin.base_currency.ToUpper() + "-" + coin.quote_currency.ToUpper(),
+                                TimeType = typename,
+                                CreateTime = DateTime.Now,
+                                Platform = "火币",
+                                Close = kline.First().close,
+                                Open = kline.First().open,
+                                High = kline.First().high,
+                                Low = kline.First().low
+                            };
+
+                        if (data5.Count > 0 && data30.Count > 0 && data5.First().Item2 > data30.First().Item2)
+                        {
+                            if (data5.Count > 0 && data60.Count > 0 && data5.First().Item2 > data60.First().Item2)
+                            {
+                                Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() +
+                                                  $"【{typename}】突破60K压力位,金叉");
+                                model.Desc = "突破60K压力位,金叉";
+                            }
+                            else
+                            {
+                                Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() +
+                                                  $"【{typename}】突破30K压力位,金叉");
+                                model.Desc = "突破30K压力位,金叉";
+                            }
+                        }
+                        else
+                        {
+                            model.Desc = "突破10K压力位,金叉";
+                            Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() +
+                                              $"【{typename}】突破10K压力位,金叉");
+                        }
+
+                        model.HighRange = model.High / model.Low - 1;
+                        model.CloseRange = model.Close / model.Open - 1;
+                        ListCoin.Add(model);
+                    }
+                }
+                using var scope = _scopeFactory.CreateScope();
+                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+
+                if (ListCoin.Any())
+                {
+                    context.Database.ExecuteSqlRaw("UPDATE DigitalCurrency SET IsDelete=1");
+                    context.DigitalCurrency.AddRange(ListCoin);
+                    context.SaveChanges();
+                    ListCoin.Clear();
+                    Console.WriteLine("---Average  SaveChanges---");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(new EventId(ex.HResult), ex, "---Average---");
+            }
         }
 
         /// <summary>
@@ -103,72 +163,7 @@ namespace SSS.Application.DigitalCurrency.Job
         {
             Console.WriteLine("---Calc---" + base_currency);
 
-            try
-            {
-                var kline = _huobi.GetKLine(base_currency, quote_currency, type.ToString().Split('_')[1], 2000);
 
-                if (kline == null || kline.Count < 1)
-                    return;
-
-                //var ema8 = _indicator.EMA(kline, 9);
-                var macd = _indicator.MACD(kline);
-
-                var data5 = _indicator.SMA(kline, 5);
-                var data10 = _indicator.SMA(kline, 10);
-                var data30 = _indicator.SMA(kline, 30);
-                var data60 = _indicator.SMA(kline, 60);
-
-
-                //获取时间段
-                string typename = GetTimeType(type);
-
-                if (data5.Count > 0 && data10.Count > 0 && data5.First().Item2 > data10.First().Item2)
-                {
-                    Domain.DigitalCurrency.DigitalCurrency model =
-                        new Domain.DigitalCurrency.DigitalCurrency
-                        {
-                            Id = Guid.NewGuid().ToString(),
-                            Coin = base_currency.ToUpper() + "-" + quote_currency.ToUpper(),
-                            TimeType = typename,
-                            CreateTime = DateTime.Now,
-                            Platform = "火币",
-                            Close = kline.First().close,
-                            Open = kline.First().open,
-                            High = kline.First().high,
-                            Low = kline.First().low
-                        };
-
-                    if (data5.Count > 0 && data30.Count > 0 && data5.First().Item2 > data30.First().Item2)
-                    {
-                        if (data5.Count > 0 && data60.Count > 0 && data5.First().Item2 > data60.First().Item2)
-                        {
-                            Console.WriteLine(base_currency.ToUpper() + "—" + quote_currency.ToUpper() +
-                                              $"【{typename}】突破60K压力位,金叉");
-                            model.Desc = "突破60K压力位,金叉";
-                        }
-                        else
-                        {
-                            Console.WriteLine(base_currency.ToUpper() + "—" + quote_currency.ToUpper() +
-                                              $"【{typename}】突破30K压力位,金叉");
-                            model.Desc = "突破30K压力位,金叉";
-                        }
-                    }
-                    else
-                    {
-                        model.Desc = "突破10K压力位,金叉";
-                        Console.WriteLine(base_currency.ToUpper() + "—" + quote_currency.ToUpper() +
-                                          $"【{typename}】突破10K压力位,金叉");
-                    }
-
-                    model.HighRange = model.High / model.Low - 1;
-                    model.CloseRange = model.Close / model.Open - 1;
-                    ListCoin.Add(model);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(new EventId(ex.HResult), ex, "---Calc---");
-            }
         }
 
         /// <summary>
@@ -204,7 +199,11 @@ namespace SSS.Application.DigitalCurrency.Job
         {
             try
             {
-                var kline = _huobi.GetKLine("btc", "usdt", type.ToString().Split('_')[1], 300);
+                Console.WriteLine("---Average---");
+
+                List<CoinSymbols> allcoin = _huobi.GetAllCoin();
+
+                //var macd = _indicator.MACD(kline);
             }
             catch (Exception e)
             {
@@ -256,6 +255,6 @@ namespace SSS.Application.DigitalCurrency.Job
             }
         }
 
-        #endregion 
+        #endregion
     }
 }
