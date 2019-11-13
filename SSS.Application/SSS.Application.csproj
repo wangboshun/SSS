@@ -10,6 +10,7 @@
     <PackageReference Include="Polly" Version="7.1.1" /> 
     <PackageReference Include="Senparc.Weixin.WxOpen" Version="3.7.102" />
     <ProjectReference Include="..\SSS.Application.Seedwork\SSS.Application.Seedwork.csproj" />
+    <ProjectReference Include="..\SSS.DigitalCurrency\SSS.DigitalCurrency.csproj" />
     <ProjectReference Include="..\SSS.Domain\SSS.Domain.csproj" />
     <ProjectReference Include="..\SSS.Infrastructure.Seedwork\SSS.Infrastructure.Seedwork.csproj" />
     <ProjectReference Include="..\SSS.Infrastructure.Util\SSS.Infrastructure.Util.csproj" />

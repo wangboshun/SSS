@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using SSS.Domain.DigitalCurrency;
+
+using SSS.DigitalCurrency.Domain;
+using SSS.DigitalCurrency.Huobi;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
-using SSS.Infrastructure.Util.DateTime;
-using static TALibrary.Core;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using SSS.DigitalCurrency.Indicator;
 
 namespace SSS.Application.DigitalCurrency.Job
 {
@@ -24,15 +23,20 @@ namespace SSS.Application.DigitalCurrency.Job
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _scopeFactory;
 
+        private readonly Indicator _indicator;
+        private readonly HuobiUtils _huobi;
+
         private readonly List<Domain.DigitalCurrency.DigitalCurrency> ListCoin =
             new List<Domain.DigitalCurrency.DigitalCurrency>();
 
         private Timer _timer;
 
-        public DigitalCurrencyJob(ILogger<DigitalCurrencyJob> logger, IServiceScopeFactory scopeFactory)
+        public DigitalCurrencyJob(ILogger<DigitalCurrencyJob> logger, IServiceScopeFactory scopeFactory, HuobiUtils huobi, Indicator indicator)
         {
             _logger = logger;
             _scopeFactory = scopeFactory;
+            _huobi = huobi;
+            _indicator = indicator;
         }
 
         public void Dispose()
@@ -57,8 +61,8 @@ namespace SSS.Application.DigitalCurrency.Job
 
         private void DoWork(object state)
         {
-            //Average(CoinTime.Time_1day);
-            MACD(CoinTime.Time_1day);
+            Average(CoinTime.Time_1day);
+            //MACD(CoinTime.Time_1day);
             //KDJ(CoinTime.Time_1day);
         }
 
@@ -69,22 +73,26 @@ namespace SSS.Application.DigitalCurrency.Job
         /// </summary>
         public void Average(CoinTime type)
         {
-            Console.WriteLine("---OutDay---");
-            List<CoinSymbols> allcoin = GetAllCoin();
 
-            foreach (var coin in allcoin) Calc(coin.base_currency, coin.quote_currency, type);
+            Calc("btc", "usdt", CoinTime.Time_1day);
 
-            using var scope = _scopeFactory.CreateScope();
-            using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+            //Console.WriteLine("---OutDay---");
+            //List<CoinSymbols> allcoin = _huobi.GetAllCoin();
 
-            if (ListCoin.Any())
-            {
-                context.Database.ExecuteSqlRaw("UPDATE DigitalCurrency SET IsDelete=1");
-                context.DigitalCurrency.AddRange(ListCoin);
-                context.SaveChanges();
-                ListCoin.Clear();
-                Console.WriteLine("---OutDay  SaveChanges---");
-            }
+            //foreach (var coin in allcoin)
+            //    Calc(coin.base_currency, coin.quote_currency, type);
+
+            //using var scope = _scopeFactory.CreateScope();
+            //using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+
+            //if (ListCoin.Any())
+            //{
+            //    context.Database.ExecuteSqlRaw("UPDATE DigitalCurrency SET IsDelete=1");
+            //    context.DigitalCurrency.AddRange(ListCoin);
+            //    context.SaveChanges();
+            //    ListCoin.Clear();
+            //    Console.WriteLine("---OutDay  SaveChanges---");
+            //}
         }
 
         /// <summary>
@@ -97,25 +105,24 @@ namespace SSS.Application.DigitalCurrency.Job
 
             try
             {
-                int size = type == CoinTime.Time4_60min ? 800 : 200;
-
-                var kline = GetKLine(base_currency + quote_currency, type.ToString().Split('_')[1], size);
+                var kline = _huobi.GetKLine(base_currency, quote_currency, type.ToString().Split('_')[1], 2000);
 
                 if (kline == null || kline.Count < 1)
                     return;
 
-                if (type == CoinTime.Time4_60min)
-                    kline = Cacl4Hour(kline);
+                //var ema8 = _indicator.EMA(kline, 9);
+                var macd = _indicator.MACD(kline);
 
-                var data5 = CalcList(kline, 5);
-                var data10 = CalcList(kline, 10);
-                var data30 = CalcList(kline, 30);
-                var data60 = CalcList(kline, 60);
+                var data5 = _indicator.SMA(kline, 5);
+                var data10 = _indicator.SMA(kline, 10);
+                var data30 = _indicator.SMA(kline, 30);
+                var data60 = _indicator.SMA(kline, 60);
+
 
                 //获取时间段
                 string typename = GetTimeType(type);
 
-                if (data5.Count > 0 && data10.Count > 0 && data5.First().price > data10.First().price)
+                if (data5.Count > 0 && data10.Count > 0 && data5.First().Item2 > data10.First().Item2)
                 {
                     Domain.DigitalCurrency.DigitalCurrency model =
                         new Domain.DigitalCurrency.DigitalCurrency
@@ -131,9 +138,9 @@ namespace SSS.Application.DigitalCurrency.Job
                             Low = kline.First().low
                         };
 
-                    if (data5.Count > 0 && data30.Count > 0 && data5.First().price > data30.First().price)
+                    if (data5.Count > 0 && data30.Count > 0 && data5.First().Item2 > data30.First().Item2)
                     {
-                        if (data5.Count > 0 && data60.Count > 0 && data5.First().price > data60.First().price)
+                        if (data5.Count > 0 && data60.Count > 0 && data5.First().Item2 > data60.First().Item2)
                         {
                             Console.WriteLine(base_currency.ToUpper() + "—" + quote_currency.ToUpper() +
                                               $"【{typename}】突破60K压力位,金叉");
@@ -189,114 +196,6 @@ namespace SSS.Application.DigitalCurrency.Job
             return "";
         }
 
-        /// <summary>
-        ///     计算四小时
-        /// </summary>
-        /// <param name="list"></param>
-        /// <returns></returns>
-        public List<KLine> Cacl4Hour(List<KLine> list)
-        {
-            try
-            {
-                List<KLine> templist = new List<KLine>();
-                int index = 0;
-                int hour = list.First().time.Hour;
-
-                if (hour >= 0 && hour < 4)
-                    index = hour - 0;
-                else if (hour >= 4 && hour < 8)
-                    index = hour - 4;
-                else if (hour >= 8 && hour < 12)
-                    index = hour - 8;
-                else if (hour >= 12 && hour < 16)
-                    index = hour - 12;
-                else if (hour >= 16 && hour < 20)
-                    index = hour - 16;
-                else if (hour >= 20 && hour < 24) index = hour - 20;
-
-                var temp = list.Skip(0).Take(index + 1).ToList();
-
-                templist.Add(new KLine
-                {
-                    open = temp.Last().open,
-                    close = temp.First().close,
-                    high = temp.Max(x => x.high),
-                    count = temp.Sum(x => x.count),
-                    vol = temp.Sum(x => x.vol),
-                    amount = temp.Sum(x => x.amount),
-                    id = temp.Last().id,
-                    low = temp.Min(x => x.low),
-                    time = temp.Last().time
-                });
-
-
-                var val = SpiltList(list.Skip(index + 1).Take(list.Count).ToList(), 4);
-
-                for (int i = 0; i < val.Count; i++)
-                    templist.Add(new KLine
-                    {
-                        open = val[i].Last().open,
-                        close = val[i].First().close,
-                        high = val[i].Max(x => x.high),
-                        count = val[i].Sum(x => x.count),
-                        vol = val[i].Sum(x => x.vol),
-                        amount = val[i].Sum(x => x.amount),
-                        id = val[i].Last().id,
-                        low = val[i].Min(x => x.low),
-                        time = val[i].Last().time
-                    });
-
-                return templist;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(new EventId(ex.HResult), ex, "---Cacl4Hour---");
-                return null;
-            }
-        }
-
-        /// <summary>
-        ///     分组
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="Lists"></param>
-        /// <param name="num"></param>
-        /// <returns></returns>
-        public List<List<T>> SpiltList<T>(List<T> Lists, int num) //where T:class
-        {
-            return Lists
-                .Select((x, i) => new { Index = i, Value = x })
-                .GroupBy(x => x.Index / num)
-                .Select(x => x.Select(v => v.Value).ToList())
-                .ToList();
-        }
-
-        /// <summary>
-        ///     计算均价
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public List<AvgPrice> CalcList(List<KLine> data, int size) //where T:class
-        {
-            List<AvgPrice> list = new List<AvgPrice>();
-
-            for (int i = 0; i < data.Count; i++)
-            {
-                if (data.Skip(i).Take(size).Count() < size)
-                    return list;
-
-                AvgPrice price = new AvgPrice
-                {
-                    time = data[i].time,
-                    price = data.Skip(i).Take(size).Sum(x => x.close) / size
-                };
-
-                list.Add(price);
-            }
-
-            return list;
-        }
-
         #endregion
 
         #region MACD
@@ -305,30 +204,7 @@ namespace SSS.Application.DigitalCurrency.Job
         {
             try
             {
-                int optInFastPeriod = 12;
-                int optInSlowPeriod = 26;
-                int optInSignalPeriod = 9;
-                int outBegIdx = 0;
-                int outNBElement = 0;
-
-                double[] outEMA9 = new double[200];
-                double[] outEMA26 = new double[200];
-
-                double[] outMACD = new double[200];  //DIF线:12天平均和26天平均的差
-                double[] outMACDSignal = new double[200];  // DEA线：MACD9天均值
-                double[] outMACDHist = new double[200];   // MACD柱线：macd与signal的差值
-
-                var kline = GetKLine("btcusdt", type.ToString().Split('_')[1], 200);
-
-                var avg1 = TALibrary.Core.Ema(0, 200 - 1, kline.Select(x => x.close).ToArray(), 9, ref outBegIdx,
-                    ref outNBElement, outEMA9);
-
-                var avg2 = TALibrary.Core.Ema(0, 200 - 1, kline.Select(x => x.close).ToArray(), 26, ref outBegIdx,
-                    ref outNBElement, outEMA26);
-
-
-                var result = TALibrary.Core.Macd(0, 200 - 1, kline.Select(x => x.close).ToArray(), optInFastPeriod, optInSlowPeriod, optInSignalPeriod,
-                    ref outBegIdx, ref outNBElement, outMACD, outMACDSignal, outMACDHist);
+                var kline = _huobi.GetKLine("btc", "usdt", type.ToString().Split('_')[1], 300);
             }
             catch (Exception e)
             {
@@ -344,22 +220,8 @@ namespace SSS.Application.DigitalCurrency.Job
         {
             try
             {
-                int optInFastK_Period = 9;
-                int optInSlowK_Period = 3;
-                MAType optInSlowK_MAType = MAType.Sma;
-                int optInSlowD_Period = 3;
-                MAType optInSlowD_MAType = MAType.Sma;
-                int outBegIdx = 0;
-                int outNBElement = 0;
-                double[] outSlowK = new double[200];
-                double[] outSlowD = new double[200];
-                var kline = GetKLine("btcusdt", type.ToString().Split('_')[1], 200);
-                TALibrary.Core.Stoch(0, 200-1,
-                    kline.Select(x => x.high).ToArray(),
-                    kline.Select(x => x.low).ToArray(),
-                    kline.Select(x => x.close).ToArray(),
-                    optInFastK_Period, optInSlowK_Period,
-                    optInSlowK_MAType, optInSlowD_Period, optInSlowD_MAType, ref outBegIdx, ref outNBElement, outSlowK, outSlowD);
+
+                var kline = _huobi.GetKLine("btc", "usdt", type.ToString().Split('_')[1], 200);
             }
             catch (Exception e)
             {
@@ -370,77 +232,6 @@ namespace SSS.Application.DigitalCurrency.Job
         #endregion
 
         #region 公共
-
-        /// <summary>
-        ///     获取所有USDT交易对
-        /// </summary>
-        /// <returns></returns>
-        public List<CoinSymbols> GetAllCoin()
-        {
-            List<CoinSymbols> list = new List<CoinSymbols>();
-
-            try
-            {
-                WebClient http = new WebClient();
-
-                string result = http.DownloadString("https://api.huobiasia.vip/v1/common/symbols");
-
-                JObject json_root = (JObject)JsonConvert.DeserializeObject(result);
-
-                var json_data = json_root["data"];
-                foreach (var item in json_data)
-                    if (item["quote-currency"].ToString().Contains("usdt"))
-                    {
-                        CoinSymbols s = new CoinSymbols();
-
-                        s.base_currency = item["base-currency"].ToString();
-                        s.quote_currency = item["quote-currency"].ToString();
-                        list.Add(s);
-                    }
-
-                return list;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(new EventId(ex.HResult), ex, "---GetAllCoin---");
-                return list;
-            }
-        }
-
-        /// <summary>
-        ///     获取K线
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="size"></param>
-        /// <returns></returns>
-        public List<KLine> GetKLine(string coin, string type, int size)
-        {
-            List<KLine> list = new List<KLine>();
-            try
-            {
-                WebClient http = new WebClient();
-
-                string result =
-                    http.DownloadString(
-                        $"https://api.huobiasia.vip/market/history/kline?period={type}&size={size}&symbol={coin}");
-
-                JObject json_root = (JObject)JsonConvert.DeserializeObject(result);
-
-                if (json_root.GetValue("status").ToString().Equals("error"))
-                    return null;
-
-                list = JsonConvert.DeserializeObject<List<KLine>>(json_root["data"].ToString());
-
-                foreach (var item in list) item.time = DateTimeConvert.ConvertIntDateTime(item.id);
-
-                return list;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(new EventId(ex.HResult), ex, "---GetKLine---");
-                return list;
-            }
-        }
 
         /// <summary>
         ///     获取币币的Logo

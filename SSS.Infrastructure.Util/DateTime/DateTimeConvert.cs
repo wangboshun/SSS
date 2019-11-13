@@ -11,10 +11,15 @@ namespace SSS.Infrastructure.Util.DateTime
         /// <returns></returns>
         public static System.DateTime ConvertIntDateTime(double val)
         {
-            System.DateTime time = System.DateTime.MinValue;
-            System.DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1));
-            time = startTime.AddMilliseconds(val);
-            return time;
+            //System.DateTime time = System.DateTime.MinValue;
+            //System.DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1));
+            //time = startTime.AddMilliseconds(val);
+            //return time; 
+
+            System.DateTime dateTimeStart = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1));
+            long lTime = long.Parse(val + "0000000");
+            TimeSpan toNow = new TimeSpan(lTime);
+            return dateTimeStart.Add(toNow);
         }
 
         /// <summary>

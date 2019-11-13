@@ -29,6 +29,9 @@ namespace SSS.Api.Bootstrap
             // HttpContext
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+            // Sdk
+            services.AutoRegisterServicesFromAssembly("SSS.DigitalCurrency");
+
             // Domain  
             services.AutoRegisterServicesFromAssembly("SSS.Domain.Seedwork");
             services.AutoRegisterServicesFromAssembly("SSS.Domain");

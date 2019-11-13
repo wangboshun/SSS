@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SSS.Domain.DigitalCurrency
+namespace SSS.DigitalCurrency.Domain
 {
     public class KLine
     {
