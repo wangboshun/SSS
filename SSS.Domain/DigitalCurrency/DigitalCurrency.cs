@@ -52,6 +52,11 @@ namespace SSS.Domain.DigitalCurrency
         /// <summary>
         /// 当前涨幅
         /// </summary>
-        public double CloseRange { set; get; } 
+        public double CloseRange { set; get; }
+
+        /// <summary>
+        /// 指标类型 SMA=1 MACD=2 KDJ=3
+        /// </summary>
+        public int IndicatorType { set; get; }
     }
 }
