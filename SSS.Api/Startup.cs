@@ -119,7 +119,7 @@ namespace SSS.Api
 
             //Hangfire DataBase
             services.AddHangfire(config =>
-            { 
+            {
                 // config.UseSQLiteStorage(Configuration.GetConnectionString("SQLITEConnection")); 
                 config.UseStorage(new MySqlStorage(Configuration.GetConnectionString("MYSQLConnection")));
                 //config.UseSqlServerStorage(Configuration.GetConnectionString("MSSQLConnection"));

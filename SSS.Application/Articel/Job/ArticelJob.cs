@@ -53,10 +53,10 @@ namespace SSS.Application.Articel.Job
 
         private void DoWork(object state)
         {
-            //GetNotice();
-            //GetPolicy();
-            //GetNews();
-            //GetQuickNews();
+            GetNotice();
+            GetPolicy();
+            GetNews();
+            GetQuickNews();
         }
 
         #region 公告频道

@@ -48,7 +48,7 @@ namespace SSS.Application.DigitalCurrency.Job
         public Task StartAsync(CancellationToken stoppingToken)
         {
             _timer = new Timer(DoWork, null, TimeSpan.Zero,
-                TimeSpan.FromMinutes(60));
+                TimeSpan.FromMinutes(15));
 
             return Task.CompletedTask;
         }
@@ -62,9 +62,9 @@ namespace SSS.Application.DigitalCurrency.Job
 
         private void DoWork(object state)
         {
-            //Average(CoinTime.Time_1day);
-            //MACD(CoinTime.Time_1day);
-            //KDJ(CoinTime.Time_1day);
+            Average(CoinTime.Time_1day);
+            MACD(CoinTime.Time_1day);
+            KDJ(CoinTime.Time_1day);
             Analyse(CoinTime.Time_1day);
         }
 
@@ -95,7 +95,7 @@ namespace SSS.Application.DigitalCurrency.Job
                 {
                     string val;
                     if (data.TryGetValue(item.Coin, out val))
-                        data[item.Coin] = "【" + val + "】【" + item.Desc + "】";
+                        data[item.Coin] = val[0].ToString().Contains("【") ? val + "【" + item.Desc + "】" : val + "【" + item.Desc + "】";
                     else
                         data.Add(item.Coin, item.Desc);
                 }
@@ -103,13 +103,9 @@ namespace SSS.Application.DigitalCurrency.Job
                 List<string> removecoin = new List<string>();
                 foreach (var item in data)
                 {
-                    if (!item.Value.Contains("【"))
+                    if (item.Value.Contains("【"))
                     {
                         removecoin.Add(item.Key);
-                        data.Remove(item.Key);
-                    }
-                    else
-                    {
                         Domain.DigitalCurrency.DigitalCurrency model = new Domain.DigitalCurrency.DigitalCurrency
                         {
                             Id = Guid.NewGuid().ToString(),
@@ -126,6 +122,7 @@ namespace SSS.Application.DigitalCurrency.Job
 
                 if (ListCoin.Any())
                 {
+                    context.Database.ExecuteSqlRaw("UPDATE DigitalCurrency SET IsDelete=1 where IndicatorType=0 ");
                     string sql = @"UPDATE DigitalCurrency SET IsDelete=1 where Coin in ('{0}')";
                     sql = string.Format(sql, string.Join("','", removecoin.ToArray()));
                     context.Database.ExecuteSqlRaw(sql);
@@ -191,17 +188,17 @@ namespace SSS.Application.DigitalCurrency.Job
                             if (data5.Count > 0 && data60.Count > 0 && data5.First().Item2 > data60.First().Item2)
                             {
                                 Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() + $"【{typename}】突破60K压力位,金叉");
-                                model.Desc = $"{typename}级别,突破60K压力位,金叉";
+                                model.Desc = $"{typename}级别,均线突破60K压力位,金叉";
                             }
                             else
                             {
                                 Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() + $"【{typename}】突破30K压力位,金叉");
-                                model.Desc = $"{typename}级别,突破30K压力位,金叉";
+                                model.Desc = $"{typename}级别,均线突破30K压力位,金叉";
                             }
                         }
                         else
                         {
-                            model.Desc = $"{typename}级别,突破10K压力位,金叉";
+                            model.Desc = $"{typename}级别,均线突破10K压力位,金叉";
                             Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() + $"【{typename}】突破10K压力位,金叉");
                         }
 
