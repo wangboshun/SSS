@@ -20,7 +20,7 @@ namespace SSS.Infrastructure.Repository.Articel
         public IEnumerable<Domain.Articel.Articel> GetNews(ArticelInputDto input)
         {
             var data = Db.Database.SqlQuery<Domain.Articel.Articel>($"select Title,Author,Logo,Id,CreateTime from Articel where Category={input.Category} ORDER BY CreateTime desc");
-            return data?.Skip(input.pagesize * (input.pageindex > 0 ? input.pageindex - 1 : 0)).Take(input.pagesize);
+            return data?.Skip(input.pagesize * input.pageindex).Take(input.pagesize);
         }
     }
 }

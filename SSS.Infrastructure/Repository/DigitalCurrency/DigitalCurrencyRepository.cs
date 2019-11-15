@@ -21,7 +21,7 @@ namespace SSS.Infrastructure.Repository.DigitalCurrency
         {
             count = DbSet.Count(x => x.IsDelete == 0);
             var data = DbSet.OrderByDescending(x => x.CloseRange).Where(x => x.IsDelete == 0)
-                .Skip(input.pagesize * (input.pageindex > 0 ? input.pageindex - 1 : 0)).Take(input.pagesize);
+                .Skip(input.pagesize * (input.pageindex > 1 ? input.pageindex : 0)).Take(input.pagesize);
 
             return data;
         }

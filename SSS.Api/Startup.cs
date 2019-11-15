@@ -63,7 +63,7 @@ namespace SSS.Api
                 })
                 .AddNewtonsoftJson(options =>
                 {
-                    options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+                    //options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
                 })
                 .AddFluentValidation(config =>
                 {

@@ -1,4 +1,15 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+using Newtonsoft.Json;
+
+using SSS.Domain.CoinInfo;
+using SSS.Infrastructure.Seedwork.DbContext;
+using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Config;
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -8,14 +19,6 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using SSS.Domain.CoinInfo;
-using SSS.Infrastructure.Seedwork.DbContext;
-using SSS.Infrastructure.Util.Attribute;
-
 namespace SSS.Application.CoinInfo.Job
 {
     [DIService(ServiceLifetime.Transient, typeof(IHostedService))]
@@ -40,8 +43,7 @@ namespace SSS.Application.CoinInfo.Job
 
         public Task StartAsync(CancellationToken stoppingToken)
         {
-            _timer = new Timer(DoWork, null, TimeSpan.Zero,
-                TimeSpan.FromMinutes(60));
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromDays(1));
 
             return Task.CompletedTask;
         }
@@ -55,6 +57,9 @@ namespace SSS.Application.CoinInfo.Job
 
         private void DoWork(object state)
         {
+            if (Config.GetSectionValue("JobManager:CoinInfo").Equals("OFF"))
+                return;
+
             GetCoinInfo();
         }
 
@@ -81,10 +86,10 @@ namespace SSS.Application.CoinInfo.Job
                     model.Content = item.id;
                     model.Coin = item.symbol;
 
-                    if (source.Any(x => x.Coin.Equals(model.Coin) && !string.IsNullOrWhiteSpace(x.Imagedata)))
+                    if (source.Any(x => x.Name.Equals(item.name)))
                         continue;
 
-                    if (list.Any(x => x.Coin.Equals(model.Coin) && !string.IsNullOrWhiteSpace(x.Imagedata)))
+                    if (list.Any(x => x.Name.Equals(item.name)))
                         continue;
 
                     string src = item.logo_png;
@@ -130,7 +135,7 @@ namespace SSS.Application.CoinInfo.Job
             catch (Exception ex)
             {
                 _logger.LogError(new EventId(ex.HResult), ex, $"---{coin} DownLoadCoinLogo Exception---");
-                return "";
+                return "https://s1.bqiapp.com/coin/20181030_72_png/bitcoin_200_200.png?v=1566978037";
             }
         }
 

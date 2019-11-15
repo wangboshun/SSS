@@ -1,14 +1,18 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+using SSS.Infrastructure.Seedwork.DbContext;
+using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Config;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using HtmlAgilityPack;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using SSS.Infrastructure.Seedwork.DbContext;
-using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Application.CoinMessage.Job
 {
@@ -22,7 +26,7 @@ namespace SSS.Application.CoinMessage.Job
             private readonly IServiceScopeFactory _scopeFactory;
             private Timer _timer;
 
-            public CoinMessageJob(ILogger<CoinMessageJob> logger, IServiceScopeFactory scopeFactory,IHostEnvironment env)
+            public CoinMessageJob(ILogger<CoinMessageJob> logger, IServiceScopeFactory scopeFactory, IHostEnvironment env)
             {
                 _logger = logger;
                 _env = env;
@@ -35,9 +39,9 @@ namespace SSS.Application.CoinMessage.Job
             }
 
             public Task StartAsync(CancellationToken stoppingToken)
-            {
+            { 
                 _timer = new Timer(DoWork, null, TimeSpan.Zero,
-                    TimeSpan.FromMinutes(60));
+                    TimeSpan.FromDays(1));
 
                 return Task.CompletedTask;
             }
@@ -51,6 +55,9 @@ namespace SSS.Application.CoinMessage.Job
 
             private void DoWork(object state)
             {
+                if (Config.GetSectionValue("JobManager:CoinMessage").Equals("OFF"))
+                    return;
+
                 GetCoinMessage();
             }
 

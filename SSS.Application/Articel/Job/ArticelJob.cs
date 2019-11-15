@@ -1,18 +1,23 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+using Newtonsoft.Json.Linq;
+
+using SSS.Infrastructure.Seedwork.DbContext;
+using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Config;
+using SSS.Infrastructure.Util.DateTime;
+using SSS.Infrastructure.Util.Json;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using HtmlAgilityPack;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
-using SSS.Infrastructure.Seedwork.DbContext;
-using SSS.Infrastructure.Util.Attribute;
-using SSS.Infrastructure.Util.DateTime;
-using SSS.Infrastructure.Util.Json;
 
 namespace SSS.Application.Articel.Job
 {
@@ -38,8 +43,7 @@ namespace SSS.Application.Articel.Job
 
         public Task StartAsync(CancellationToken stoppingToken)
         {
-            _timer = new Timer(DoWork, null, TimeSpan.Zero,
-                TimeSpan.FromMinutes(60));
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(15));
 
             return Task.CompletedTask;
         }
@@ -53,6 +57,9 @@ namespace SSS.Application.Articel.Job
 
         private void DoWork(object state)
         {
+            if (Config.GetSectionValue("JobManager:Articel").Equals("OFF"))
+                return;
+
             GetNotice();
             GetPolicy();
             GetNews();
@@ -61,6 +68,9 @@ namespace SSS.Application.Articel.Job
 
         #region 公告频道
 
+        /// <summary>
+        /// 公告频道
+        /// </summary>
         public void GetNotice()
         {
             Console.WriteLine("---GetNotice---");
@@ -124,6 +134,9 @@ namespace SSS.Application.Articel.Job
 
         #region 政策频道
 
+        /// <summary>
+        /// 政策新闻
+        /// </summary>
 
         public void GetPolicy()
         {
@@ -182,7 +195,7 @@ namespace SSS.Application.Articel.Job
         #region 新闻频道 
 
         /// <summary>
-        ///     获取新闻
+        ///     热点新闻
         /// </summary>
         /// <returns></returns>
         public void GetNews()
@@ -191,8 +204,7 @@ namespace SSS.Application.Articel.Job
             try
             {
                 WebClient web = new WebClient();
-                string json =
-                    web.DownloadString("https://api.jinse.com/v6/information/list?catelogue_key=news&limit=50&information_id=0&flag=down&version=9.9.9");
+                string json = web.DownloadString("https://api.jinse.com/v6/information/list?catelogue_key=news&limit=50&information_id=0&flag=down&version=9.9.9");
                 JToken data = json.GetJsonValue("list");
 
                 using var scope = _scopeFactory.CreateScope();
@@ -252,11 +264,18 @@ namespace SSS.Application.Articel.Job
 
                 HtmlNode node = document.DocumentNode.SelectSingleNode("//div[@class='js-article-detail']");
 
-                foreach (var item in node.ChildNodes)
-                    if (item.InnerText.Contains("文|") || item.InnerText.Contains("编辑|"))
-                        item.InnerHtml = "";
+                if (node == null)
+                    node = document.DocumentNode.SelectSingleNode("//div[@class='js-article']");
 
-                model.Content = node.InnerHtml;
+                if (node != null)
+                {
+                    foreach (var item in node.ChildNodes)
+                        if (item.InnerText.Contains("文|") || item.InnerText.Contains("编辑|"))
+                            item.InnerHtml = "";
+
+                    model.Content = node.InnerHtml;
+                }
+
                 model.CreateTime = DateTimeConvert.ConvertDateTime(token["published_at"].ToString());
                 string logo = "http://pic.51yuansu.com/pic3/cover/02/61/11/59fc30d0b8598_610.jpg";
                 if (!string.IsNullOrWhiteSpace(token["thumbnail_pic"].ToString()))
@@ -276,7 +295,7 @@ namespace SSS.Application.Articel.Job
         #region 快讯频道 
 
         /// <summary>
-        ///     获取快讯
+        ///     快讯频道
         /// </summary>
         /// <returns></returns>
         public void GetQuickNews()

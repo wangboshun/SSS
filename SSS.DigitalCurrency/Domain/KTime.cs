@@ -28,11 +28,16 @@ namespace SSS.DigitalCurrency.Domain
         public string quote_currency { set; get; }
     }
 
+    /// <summary>
+    /// 时间线  分钟为单位
+    /// </summary>
     public enum CoinTime
     {
-        Time_15min = 1,
-        Time_60min = 2,
-        Time4_60min = 3,
-        Time_1day = 4
+        Time_1min = 1,
+        Time_5min = 5,
+        Time_15min = 15,
+        Time_60min = 60,
+        Time4_60min = 240,
+        Time_1day = 1440
     }
 }

@@ -8,11 +8,11 @@ using SSS.DigitalCurrency.Huobi;
 using SSS.DigitalCurrency.Indicator;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Config;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,7 +30,11 @@ namespace SSS.Application.DigitalCurrency.Job
         private readonly List<Domain.DigitalCurrency.DigitalCurrency> ListCoin =
             new List<Domain.DigitalCurrency.DigitalCurrency>();
 
-        private Timer _timer;
+        private readonly List<Domain.DigitalCurrency.DigitalCurrency> FastListCoin =
+          new List<Domain.DigitalCurrency.DigitalCurrency>(); 
+
+        private Timer _timer1;
+        private Timer _timer2;
 
         public DigitalCurrencyJob(ILogger<DigitalCurrencyJob> logger, IServiceScopeFactory scopeFactory, HuobiUtils huobi, Indicator indicator)
         {
@@ -42,32 +46,109 @@ namespace SSS.Application.DigitalCurrency.Job
 
         public void Dispose()
         {
-            _timer?.Dispose();
+            _timer1?.Dispose();
+            _timer2?.Dispose();
         }
 
         public Task StartAsync(CancellationToken stoppingToken)
         {
-            _timer = new Timer(DoWork, null, TimeSpan.Zero,
-                TimeSpan.FromMinutes(15));
+            _timer1 = new Timer(DoWorkForFast, null, TimeSpan.Zero,
+              TimeSpan.FromMinutes(0.2));
+
+            _timer2 = new Timer(DoWork, null, TimeSpan.Zero,
+                TimeSpan.FromMinutes(30));
 
             return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken stoppingToken)
         {
-            _timer?.Change(Timeout.Infinite, 0);
+            _timer1?.Change(Timeout.Infinite, 0);
+            _timer2?.Change(Timeout.Infinite, 0);
 
             return Task.CompletedTask;
         }
 
+        private void DoWorkForFast(object state)
+        {
+            if (Config.GetSectionValue("JobManager:DigitalCurrency").Equals("OFF"))
+                return;
+
+            _logger.LogInformation("---爆拉分析---");
+
+            Fast(CoinTime.Time_5min);
+        }
+
         private void DoWork(object state)
         {
+            if (Config.GetSectionValue("JobManager:DigitalCurrency").Equals("OFF"))
+                return;
+
             Average(CoinTime.Time_1day);
             MACD(CoinTime.Time_1day);
             KDJ(CoinTime.Time_1day);
             Analyse(CoinTime.Time_1day);
         }
 
+        /// <summary>
+        /// 爆拉分析
+        /// </summary>
+        public void Fast(CoinTime type)
+        {
+            try
+            {
+                using var scope = _scopeFactory.CreateScope();
+                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+
+                List<CoinSymbols> allcoin = _huobi.GetAllCoin();
+
+                foreach (var coin in allcoin)
+                {
+                    var kline = _huobi.GetKLine(coin.base_currency, coin.quote_currency, type.ToString().Split('_')[1], 6);
+
+                    if (kline == null || kline.Count < 1)
+                        continue;
+
+                    if (kline.First().close / kline.Last().close > 1.1)
+                    {
+                        Domain.DigitalCurrency.DigitalCurrency model = new Domain.DigitalCurrency.DigitalCurrency
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Coin = coin.base_currency.ToUpper() + "-" + coin.quote_currency.ToUpper(),
+                            CreateTime = DateTime.Now,
+                            Platform = "火币",
+                            CloseRange = 0.1,
+                            HighRange = 0.1,
+                            Open = 100,
+                            Close = 110,
+                            TimeType = GetTimeType(type),
+                            IsDelete = 0,
+                            Desc = "【" + "短时间内，爆拉" + "】",
+                            IndicatorType = 4
+                        };
+                        FastListCoin.Add(model);
+                    }
+                }
+
+                if (FastListCoin.Any())
+                {
+                    context.Database.ExecuteSqlRaw("UPDATE DigitalCurrency SET IsDelete=1 where IndicatorType=4 ");
+                    context.DigitalCurrency.AddRange(FastListCoin);
+                    context.SaveChanges();
+                    FastListCoin.Clear();
+                    Console.WriteLine("---Fast  SaveChanges---");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(new EventId(ex.HResult), ex, "---Fast---");
+            }
+        }
+
+        /// <summary>
+        /// 综合分析
+        /// </summary>
+        /// <param name="type"></param>
         public void Analyse(CoinTime type)
         {
             try
@@ -75,45 +156,39 @@ namespace SSS.Application.DigitalCurrency.Job
                 using var scope = _scopeFactory.CreateScope();
                 using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
 
-                //均线
                 var Average = context.DigitalCurrency.Where(x => x.IsDelete == 0 && x.IndicatorType == 1).ToList();
                 var Macd = context.DigitalCurrency.Where(x => x.IsDelete == 0 && x.IndicatorType == 2).ToList();
                 var Kdj = context.DigitalCurrency.Where(x => x.IsDelete == 0 && x.IndicatorType == 3).ToList();
+                var Fast = context.DigitalCurrency.Where(x => x.IsDelete == 0 && x.IndicatorType == 4).ToList();
 
-                Dictionary<string, string> data = Average.ToDictionary(item => item.Coin, item => item.Desc);
+                List<SSS.Domain.DigitalCurrency.DigitalCurrency> list = new List<SSS.Domain.DigitalCurrency.DigitalCurrency>();
+                list.AddRange(Average);
 
-                foreach (var item in Macd)
-                {
-                    string val;
-                    if (data.TryGetValue(item.Coin, out val))
-                        data[item.Coin] = "【" + val + "】【" + item.Desc + "】";
-                    else
-                        data.Add(item.Coin, item.Desc);
-                }
-
-                foreach (var item in Kdj)
-                {
-                    string val;
-                    if (data.TryGetValue(item.Coin, out val))
-                        data[item.Coin] = val[0].ToString().Contains("【") ? val + "【" + item.Desc + "】" : val + "【" + item.Desc + "】";
-                    else
-                        data.Add(item.Coin, item.Desc);
-                }
+                TotalDesc(list, Macd);
+                TotalDesc(list, Kdj);
+                TotalDesc(list, Fast);
 
                 List<string> removecoin = new List<string>();
-                foreach (var item in data)
+                list = list.GroupBy(c => c.Coin).Select(c => c.First()).ToList();
+
+                foreach (var item in list)
                 {
-                    if (item.Value.Contains("【"))
+                    if (item.Desc.Contains("☆"))
                     {
-                        removecoin.Add(item.Key);
+                        removecoin.Add(item.Coin);
                         Domain.DigitalCurrency.DigitalCurrency model = new Domain.DigitalCurrency.DigitalCurrency
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Coin = item.Key,
+                            Coin = item.Coin,
                             CreateTime = DateTime.Now,
                             Platform = "火币",
                             IsDelete = 0,
-                            Desc = item.Value,
+                            Open = item.Open,
+                            Close = item.Close,
+                            CloseRange = item.CloseRange,
+                            HighRange = item.HighRange,
+                            TimeType = GetTimeType(type),
+                            Desc = item.Desc,
                             IndicatorType = 0
                         };
                         ListCoin.Add(model);
@@ -129,12 +204,26 @@ namespace SSS.Application.DigitalCurrency.Job
                     context.DigitalCurrency.AddRange(ListCoin);
                     context.SaveChanges();
                     ListCoin.Clear();
-                    Console.WriteLine("---Average  SaveChanges---");
+                    Console.WriteLine("---Analyse  SaveChanges---");
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(new EventId(ex.HResult), ex, "---Analyse---");
+            }
+        }
+
+        private void TotalDesc(List<SSS.Domain.DigitalCurrency.DigitalCurrency> list, List<SSS.Domain.DigitalCurrency.DigitalCurrency> source)
+        {
+            foreach (var item in source)
+            {
+                var model = list.FirstOrDefault(x => x.Coin.Equals(item.Coin));
+                if (model == null)
+                    continue;
+
+                list.Remove(model);
+                model.Desc += "☆" + item.Desc;
+                list.Add(model);
             }
         }
 
@@ -188,17 +277,17 @@ namespace SSS.Application.DigitalCurrency.Job
                             if (data5.Count > 0 && data60.Count > 0 && data5.First().Item2 > data60.First().Item2)
                             {
                                 Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() + $"【{typename}】突破60K压力位,金叉");
-                                model.Desc = $"{typename}级别,均线突破60K压力位,金叉";
+                                model.Desc = $"【{typename}级别,均线突破60K压力位】";
                             }
                             else
                             {
                                 Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() + $"【{typename}】突破30K压力位,金叉");
-                                model.Desc = $"{typename}级别,均线突破30K压力位,金叉";
+                                model.Desc = $"【{typename}级别,均线突破30K压力位】";
                             }
                         }
                         else
                         {
-                            model.Desc = $"{typename}级别,均线突破10K压力位,金叉";
+                            model.Desc = $"【{typename}级别,均线突破10K压力位】";
                             Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() + $"【{typename}】突破10K压力位,金叉");
                         }
 
@@ -265,7 +354,7 @@ namespace SSS.Application.DigitalCurrency.Job
                         High = kline.First().high,
                         Low = kline.First().low,
                         IndicatorType = 2,
-                        Desc = $"{typename}级别,MACD,金叉"
+                        Desc = $"【{typename}级别,MACD金叉】"
                     };
 
                     model.HighRange = model.High / model.Low - 1;
@@ -317,21 +406,21 @@ namespace SSS.Application.DigitalCurrency.Job
                     //获取时间段
                     string typename = GetTimeType(type);
 
-                    string desc = $"{typename}级别,KDJ,金叉";
+                    string desc = $"【{typename}级别,KDJ金叉】";
 
                     //J值大于K值
                     if (kdj.Count < 1 || kdj.FirstOrDefault()?.Item4 < kdj.FirstOrDefault()?.Item2)
                     {
                         //超卖状态
                         if (kdj.FirstOrDefault()?.Item2 < 20 && kdj.FirstOrDefault()?.Item3 < 20 && kdj.FirstOrDefault()?.Item4 < 20)
-                            desc = $"{typename}级别,KDJ超卖状态，建议买入";
+                            desc = $"【{typename}级别,KDJ超卖状态，建议买入】";
                         else
                             continue;
                     }
 
                     //超买状态
                     if (kdj.FirstOrDefault()?.Item2 > 80 && kdj.FirstOrDefault()?.Item3 > 80 && kdj.FirstOrDefault()?.Item4 > 80)
-                        desc = $"{typename}级别,KDJ超买状态，建议卖出";
+                        desc = $"【{typename}级别,KDJ超买状态，建议卖出】";
 
                     Domain.DigitalCurrency.DigitalCurrency model = new Domain.DigitalCurrency.DigitalCurrency
                     {
@@ -411,6 +500,10 @@ namespace SSS.Application.DigitalCurrency.Job
         {
             switch (type)
             {
+                case CoinTime.Time_1min:
+                    return "1分钟";
+                case CoinTime.Time_5min:
+                    return "5分钟";
                 case CoinTime.Time_15min:
                     return "15分钟";
 

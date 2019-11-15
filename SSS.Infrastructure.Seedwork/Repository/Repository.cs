@@ -79,14 +79,14 @@ namespace SSS.Infrastructure.Seedwork.Repository
         {
             var data = GetBySql(sql);
             count = data.Count();
-            return data.OrderByDescending(x => x.CreateTime).Skip(size * (index > 0 ? index - 1 : 0)).Take(size);
+            return data.OrderByDescending(x => x.CreateTime).Skip(size * index).Take(size);
         }
 
         public IQueryable<TEntity> GetBySql(string sql, Expression<Func<TEntity, bool>> predicate, int index, int size, ref int count)
         {
             var data = GetBySql(sql, predicate);
             count = data.Count();
-            return data.OrderByDescending(x => x.CreateTime).Skip(size * (index > 0 ? index - 1 : 0)).Take(size);
+            return data.OrderByDescending(x => x.CreateTime).Skip(size * index).Take(size);
         }
 
         public virtual IQueryable<TEntity> GetAll()
@@ -102,15 +102,14 @@ namespace SSS.Infrastructure.Seedwork.Repository
         public IQueryable<TEntity> GetPage(int index, int size, ref int count)
         {
             count = DbSet.Count();
-            return DbSet.OrderByDescending(x => x.CreateTime).Skip(size * (index > 0 ? index - 1 : 0)).Take(size);
+            return DbSet.OrderByDescending(x => x.CreateTime).Skip(size * index).Take(size);
         }
 
         public IQueryable<TEntity> GetPage(int index, int size, Expression<Func<TEntity, bool>> predicate,
             ref int count)
         {
             count = DbSet.Where(predicate).Count();
-            return DbSet.OrderByDescending(x => x.CreateTime).Where(predicate).Skip(size * (index > 0 ? index - 1 : 0))
-                .Take(size);
+            return DbSet.OrderByDescending(x => x.CreateTime).Where(predicate).Skip(size * index).Take(size);
         }
 
         public virtual void Update(TEntity obj, bool save = false)

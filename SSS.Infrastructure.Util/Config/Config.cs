@@ -23,7 +23,7 @@ namespace SSS.Infrastructure.Util.Config
                 filePath = $"{directory.Substring(0, length)}/{fileName}";
             }
 
-            var builder = new ConfigurationBuilder().AddJsonFile(filePath, false, true);
+            var builder = new ConfigurationBuilder().AddJsonFile(filePath, true, true);
 
             _configuration = builder.Build();
         }
