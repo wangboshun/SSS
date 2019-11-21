@@ -31,7 +31,9 @@ namespace SSS.Application.DigitalCurrency.Job
             new List<Domain.DigitalCurrency.DigitalCurrency>();
 
         private readonly List<Domain.DigitalCurrency.DigitalCurrency> FastListCoin =
-          new List<Domain.DigitalCurrency.DigitalCurrency>(); 
+          new List<Domain.DigitalCurrency.DigitalCurrency>();
+
+        private static int FastFlag = 0;
 
         private Timer _timer1;
         private Timer _timer2;
@@ -53,7 +55,7 @@ namespace SSS.Application.DigitalCurrency.Job
         public Task StartAsync(CancellationToken stoppingToken)
         {
             _timer1 = new Timer(DoWorkForFast, null, TimeSpan.Zero,
-              TimeSpan.FromMinutes(0.2));
+              TimeSpan.FromMinutes(2));
 
             _timer2 = new Timer(DoWork, null, TimeSpan.Zero,
                 TimeSpan.FromMinutes(30));
@@ -75,8 +77,8 @@ namespace SSS.Application.DigitalCurrency.Job
                 return;
 
             _logger.LogInformation("---爆拉分析---");
-
-            Fast(CoinTime.Time_5min);
+            if (FastFlag == 1)
+                Fast(CoinTime.Time_5min);
         }
 
         private void DoWork(object state)
@@ -84,10 +86,12 @@ namespace SSS.Application.DigitalCurrency.Job
             if (Config.GetSectionValue("JobManager:DigitalCurrency").Equals("OFF"))
                 return;
 
+            FastFlag = 0;
             Average(CoinTime.Time_1day);
             MACD(CoinTime.Time_1day);
             KDJ(CoinTime.Time_1day);
             Analyse(CoinTime.Time_1day);
+            FastFlag = 1;
         }
 
         /// <summary>

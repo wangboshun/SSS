@@ -1,7 +1,8 @@
 ﻿using FluentValidation.AspNetCore;
 
 using Hangfire;
-using Hangfire.SQLite;
+using Hangfire.MySql.Core;
+using Hangfire.RecurringJobExtensions;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,7 +28,6 @@ using StackExchange.Profiling.SqlFormatters;
 
 using System.IO;
 using System.Reflection;
-using Hangfire.MySql.Core;
 
 namespace SSS.Api
 {
@@ -122,6 +122,7 @@ namespace SSS.Api
             {
                 // config.UseSQLiteStorage(Configuration.GetConnectionString("SQLITEConnection")); 
                 config.UseStorage(new MySqlStorage(Configuration.GetConnectionString("MYSQLConnection")));
+                config.UseRecurringJob("jobs.json");
                 //config.UseSqlServerStorage(Configuration.GetConnectionString("MSSQLConnection"));
             });
 

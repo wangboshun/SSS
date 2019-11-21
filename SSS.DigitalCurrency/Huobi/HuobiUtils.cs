@@ -1,16 +1,17 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using SSS.DigitalCurrency.Domain;
+using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.DateTime;
 
 using System;
 using System.Collections.Generic;
 using System.Net;
-using Microsoft.Extensions.DependencyInjection;
-using SSS.Infrastructure.Util.Attribute;
+using System.Threading;
 
 namespace SSS.DigitalCurrency.Huobi
 {
@@ -66,15 +67,17 @@ namespace SSS.DigitalCurrency.Huobi
         /// <param name="time"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        public List<KLine> GetKLine(string coin,string quote, string time, int size)
+        public List<KLine> GetKLine(string coin, string quote, string time, int size)
         {
             List<KLine> list = new List<KLine>();
             try
             {
                 WebClient http = new WebClient();
 
-                string result =
-                    http.DownloadString($"https://api.huobiasia.vip/market/history/kline?period={time}&size={size}&symbol={coin+quote}");
+                //延时，防止请求频率过高
+                Thread.Sleep(500);
+
+                string result = http.DownloadString($"https://api.huobiasia.vip/market/history/kline?period={time}&size={size}&symbol={coin + quote}");
 
                 JObject json_root = (JObject)JsonConvert.DeserializeObject(result);
 

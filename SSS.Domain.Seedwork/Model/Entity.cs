@@ -30,6 +30,7 @@ namespace SSS.Domain.Seedwork.Model
         }
 
         public static bool operator ==(Entity a, Entity b)
+
         {
             if (ReferenceEquals(a, null) && ReferenceEquals(b, null))
                 return true;

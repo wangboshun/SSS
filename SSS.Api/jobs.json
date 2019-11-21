@@ -1,0 +1,9 @@
+[
+  {
+    "job-name": "ArticelJob",
+    "job-type": "SSS.Application.Articel.Job.ArticelJob,SSS.Application.Articel.Job",
+    "cron-expression": "*/1 * * * *",
+    "timezone": "China Standard Time",
+    "queue": "jobs"
+  }
+]
