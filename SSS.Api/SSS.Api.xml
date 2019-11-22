@@ -361,12 +361,6 @@
             <param name="app">IApplicationBuilder</param>
             <param name="env">IHostingEnvironment</param>
         </member>
-        <member name="M:SSS.Api.Startup.Hangfire(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
-            <summary>
-                Hangfire
-            </summary>
-            <param name="app"></param>
-        </member>
         <member name="M:SSS.Api.Startup.Swagger(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
             <summary>
                 Swagger

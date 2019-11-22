@@ -1,6 +1,4 @@
-﻿using Hangfire;
-using Hangfire.RecurringJobExtensions;
-using Hangfire.Server;
+﻿
 using HtmlAgilityPack;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -24,11 +22,8 @@ using System.Threading.Tasks;
 
 namespace SSS.Application.Articel.Job
 {
-    //[DIService(ServiceLifetime.Transient, typeof(IHostedService))]
-
-    [AutomaticRetry(Attempts = 0)]
-    [DisableConcurrentExecution(90)]
-    public class ArticelJob : IRecurringJob // : IHostedService, IDisposable
+    [DIService(ServiceLifetime.Transient, typeof(IHostedService))]
+    public class ArticelJob : IHostedService, IDisposable
     {
         private readonly IHostEnvironment _env;
         private readonly ILogger _logger;
@@ -406,12 +401,6 @@ namespace SSS.Application.Articel.Job
         {
             int second = content.IndexOf("】");
             return content.Substring(second + 1);
-        }
-
-        public void Execute(PerformContext context)
-        {
-
-
         }
 
         #endregion

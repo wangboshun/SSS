@@ -1,9 +1,5 @@
 ﻿using FluentValidation.AspNetCore;
 
-using Hangfire;
-using Hangfire.MySql.Core;
-using Hangfire.RecurringJobExtensions;
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -75,8 +71,6 @@ namespace SSS.Api
                     config.SuppressModelStateInvalidFilter = true;
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
-            services.AddHangfireServer();
-
             services.AddMemoryCacheEx();
 
             //services.AddSingleton<ITypeActivatorCache, DefaultTypeActivatorCache>();
@@ -117,14 +111,7 @@ namespace SSS.Api
                 options.TrackConnectionOpenClose = true;
             }).AddEntityFramework();
 
-            //Hangfire DataBase
-            services.AddHangfire(config =>
-            {
-                // config.UseSQLiteStorage(Configuration.GetConnectionString("SQLITEConnection")); 
-                config.UseStorage(new MySqlStorage(Configuration.GetConnectionString("MYSQLConnection")));
-                config.UseRecurringJob("jobs.json");
-                //config.UseSqlServerStorage(Configuration.GetConnectionString("MSSQLConnection"));
-            });
+          
 
             services.AddSenparcGlobalServices(Configuration) //Senparc.CO2NET 全局注册
                 .AddSenparcWeixinServices(Configuration); //Senparc.Weixin 注册   
@@ -165,10 +152,7 @@ namespace SSS.Api
             });
 
             //异常拦截
-            app.UseApiException();
-
-            //Hangfire
-            Hangfire(app);
+            app.UseApiException(); 
 
             ////认证中间件
             app.UseAuthentication();
@@ -207,21 +191,7 @@ namespace SSS.Api
             register.UseSenparcWeixin(senparcWeixinSetting.Value, senparcSetting.Value)
                 .RegisterWxOpenAccount(senparcWeixinSetting.Value, "SSS");
         }
-
-        /// <summary>
-        ///     Hangfire
-        /// </summary>
-        /// <param name="app"></param>
-        private void Hangfire(IApplicationBuilder app)
-        {
-            GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute { Attempts = 1 });
-            app.UseHangfireServer();
-            app.UseHangfireDashboard("/hangfire", new DashboardOptions
-            {
-                Authorization = new[] { new CustomAuthorizeFilter() }
-            });
-        }
-
+         
         /// <summary>
         ///     Swagger
         /// </summary>

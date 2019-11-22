@@ -1,9 +1,12 @@
 [
   {
     "job-name": "ArticelJob",
-    "job-type": "SSS.Application.Articel.Job.ArticelJob,SSS.Application.Articel.Job",
-    "cron-expression": "*/1 * * * *",
-    "timezone": "China Standard Time",
-    "queue": "jobs"
+    "job-type": "SSS.Application.Articel.Job.ArticelJob",
+    "job-cron": "*/1 * * * *"
+  },
+  {
+    "job-name": "CoinInfoJob",
+    "job-type": "SSS.Application.CoinInfo.Job.CoinInfoJob",
+    "job-cron": "*/1 * * * *"
   }
 ]
