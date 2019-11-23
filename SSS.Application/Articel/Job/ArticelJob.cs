@@ -58,7 +58,7 @@ namespace SSS.Application.Articel.Job
 
         private void DoWork(object state)
         {
-            if (Config.GetSectionValue("JobManager:Articel").Equals("OFF"))
+            if (Config.GetSectionValue("JobManager:ArticelJob").Equals("OFF"))
                 return;
 
             GetNotice();

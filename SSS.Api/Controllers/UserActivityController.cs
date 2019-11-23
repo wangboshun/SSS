@@ -37,7 +37,7 @@ namespace SSS.Api.Controllers
         public IActionResult GetList([FromQuery] UserActivityInputDto input)
         {
             var result = _service.GetListUserActivity(input);
-            return Response(result);
+            return ApiResponse(result);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace SSS.Api.Controllers
         {
             input.userid = UserInfo?.id;
             var result = _service.GetGroupNumber(input);
-            return Response(result);
+            return ApiResponse(result);
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace SSS.Api.Controllers
         {
             input.userid = UserInfo?.id;
             _service.AddUserActivity(input);
-            return Response(input);
+            return ApiResponse(input);
         }
     }
 }

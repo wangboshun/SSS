@@ -37,7 +37,7 @@ namespace SSS.Api.Controllers
         public IActionResult GetList([FromQuery]CoinInfoInputDto input)
         {
             var result = _service.GetListCoinInfo(input);
-            return Response(result);
+            return ApiResponse(result);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace SSS.Api.Controllers
         public IActionResult AddCoinInfo([FromBody]CoinInfoInputDto input)
         {
             _service.AddCoinInfo(input);
-            return Response(input);
+            return ApiResponse(input);
         }
     }
 }

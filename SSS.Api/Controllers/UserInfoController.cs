@@ -37,7 +37,7 @@ namespace SSS.Api.Controllers
         public IActionResult GetList([FromQuery] UserInfoInputDto input)
         {
             var result = _service.GetListUserInfo(input);
-            return Response(result);
+            return ApiResponse(result);
         }
 
         [HttpPost("login")]
@@ -45,7 +45,7 @@ namespace SSS.Api.Controllers
         public IActionResult Login([FromBody] UserInfoInputDto input)
         {
             var result = _service.GetByUserName(input);
-            return Response(result);
+            return ApiResponse(result);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace SSS.Api.Controllers
         public IActionResult AddUserInfo([FromBody] UserInfoInputDto input)
         {
             _service.AddUserInfo(input);
-            return Response(input);
+            return ApiResponse(input);
         }
     }
 }

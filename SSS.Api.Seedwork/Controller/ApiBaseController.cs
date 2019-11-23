@@ -41,7 +41,7 @@ namespace SSS.Api.Seedwork.Controller
             return !_error.HasNotice();
         }
 
-        protected IActionResult Response(object data, bool status = true, string message = "", int code = 200)
+        protected IActionResult ApiResponse(object data, bool status = true, string message = "", int code = 200)
         {
             if (!status)
                 return Accepted(new { status, data = "", message = "处理失败", code = 202 });

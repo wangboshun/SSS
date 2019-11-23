@@ -22,9 +22,9 @@ namespace SSS.Api.Controllers
     public class CodeController : ApiBaseController
     {
         private static string current_path;
-        private readonly IHostingEnvironment _env;
+        private readonly IWebHostEnvironment _env;
 
-        public CodeController(IHostingEnvironment env)
+        public CodeController(IWebHostEnvironment env)
         {
             _env = env;
             current_path = _env.ContentRootPath;
@@ -56,7 +56,7 @@ namespace SSS.Api.Controllers
         {
             string class_name = HttpContext.Request.Form["class_name"];
             if (string.IsNullOrWhiteSpace(class_name))
-                return Response(null);
+                return ApiResponse(null);
 
             Generator_Domain(class_name);
             Generator_Infrastructure(class_name);
@@ -68,7 +68,7 @@ namespace SSS.Api.Controllers
             list = list.Where(x => !string.IsNullOrWhiteSpace(x.field_name)).ToList();
             AppDomainContext(class_name, list);
 
-            return Response(null);
+            return ApiResponse(null);
         }
 
         /// <summary>

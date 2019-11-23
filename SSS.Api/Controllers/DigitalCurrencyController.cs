@@ -37,7 +37,7 @@ namespace SSS.Api.Controllers
         public IActionResult GetList([FromQuery]DigitalCurrencyInputDto input)
         {
             var result = _service.GetListDigitalCurrency(input);
-            return Response(result);
+            return ApiResponse(result);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace SSS.Api.Controllers
         public IActionResult AddDigitalCurrency([FromBody]DigitalCurrencyInputDto input)
         {
             _service.AddDigitalCurrency(input);
-            return Response(input);
+            return ApiResponse(input);
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using Enyim.Caching;
-using Enyim.Caching.Configuration;
-using Enyim.Caching.Memcached;
+﻿using Enyim.Caching.Memcached;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -24,14 +22,16 @@ namespace SSS.Infrastructure.Seedwork.Cache.Memcached
 
             try
             {
-                MemcachedClientConfiguration config = new MemcachedClientConfiguration();
+                MemcachedCluster cluster;
 
                 if (!string.IsNullOrWhiteSpace(options.Value.host))
-                    config.AddServer(options.Value.host, options.Value.port);
+                    cluster = new MemcachedCluster($"{options.Value.host}:{options.Value.port}");
                 else
-                    config.AddServer("localhost", 11211);
+                    cluster = new MemcachedCluster("localhost:11212");
 
-                _memcache = new MemcachedClient(config);
+                cluster.Start();
+
+                _memcache = cluster.GetClient();
             }
             catch (Exception ex)
             {
@@ -45,12 +45,12 @@ namespace SSS.Infrastructure.Seedwork.Cache.Memcached
         /// <param name="key"></param>
         public void Remove(string key)
         {
-            _memcache.Remove(key);
+            _memcache.DeleteAsync(key);
         }
 
         public void StringSet(string key, string value)
         {
-            _memcache.Store(StoreMode.Set, key, value);
+            _memcache.SetAsync(key, value);
         }
 
         /// <summary>
@@ -62,12 +62,12 @@ namespace SSS.Infrastructure.Seedwork.Cache.Memcached
         public void StringSet(string key, string value, double minute)
         {
             TimeSpan time = TimeSpan.FromMinutes(minute);
-            _memcache.Store(StoreMode.Set, key, value, time);
+            _memcache.SetAsync(key, value, time);
         }
 
         public string StringGet(string key)
         {
-            return _memcache.Get<string>(key);
+            return _memcache.GetAsync<string>(key).Result;
         }
     }
 }

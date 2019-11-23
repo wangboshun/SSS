@@ -37,7 +37,7 @@ namespace SSS.Api.Controllers
         public IActionResult GetList([FromQuery]TradeInputDto input)
         {
             var result = _service.GetListTrade(input);
-            return Response(result);
+            return ApiResponse(result);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace SSS.Api.Controllers
         public IActionResult AddTrade([FromBody]TradeInputDto input)
         {
             _service.AddTrade(input);
-            return Response(input);
+            return ApiResponse(input);
         }
     }
 }

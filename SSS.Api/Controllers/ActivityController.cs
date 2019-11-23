@@ -40,7 +40,7 @@ namespace SSS.Api.Controllers
         public IActionResult GetList([FromQuery] ActivityInputDto input)
         {
             var result = _service.GetListActivity(input);
-            return Response(result);
+            return ApiResponse(result);
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace SSS.Api.Controllers
         public IActionResult GetById([FromQuery] ActivityInputDto input)
         {
             var result = _service.GetById(input);
-            return Response(result);
+            return ApiResponse(result);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace SSS.Api.Controllers
         public IActionResult AddActivity([FromBody] ActivityInputDto input)
         {
             _service.AddActivity(input);
-            return Response(input);
+            return ApiResponse(input);
         }
     }
 }

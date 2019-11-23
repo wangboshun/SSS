@@ -37,7 +37,7 @@ namespace SSS.Api.Controllers
         public IActionResult GetList([FromQuery] ArticelInputDto input)
         {
             var result = _service.GetListArticel(input);
-            return Response(result);
+            return ApiResponse(result);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace SSS.Api.Controllers
         public IActionResult GetNews([FromQuery] ArticelInputDto input)
         {
             var result = _service.GetNews(input);
-            return Response(result);
+            return ApiResponse(result);
         }
 
         [HttpGet("getnewsdetail")]
@@ -58,7 +58,7 @@ namespace SSS.Api.Controllers
         public IActionResult GetNewsDetail(string id)
         {
             var result = _service.Get(id);
-            return Response(result);
+            return ApiResponse(result);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace SSS.Api.Controllers
         public IActionResult AddArticel([FromBody] ArticelInputDto input)
         {
             _service.AddArticel(input);
-            return Response(input);
+            return ApiResponse(input);
 
         }
     }

@@ -90,19 +90,17 @@ namespace SSS.DigitalCurrency.Indicator
         }
 
         /// <summary>
-        ///     ///
-        ///     <summary>
-        ///         计算MACD
-        ///     </summary>
-        ///     <param name="data">k线</param>
-        ///     <param name="long_">长周期</param>
-        ///     <param name="short_">短周期</param>
-        ///     <param name="day">周期</param>
-        ///     <returns></returns>
-        ///     https://blog.csdn.net/smxueer/article/details/52801507  参考资料
-        ///     DIF=EMA(12)-EMA(26)
-        ///     DEA=(2/(N+1))*DIF+(N-1)/(N+1)*DEA`  N 默认为9
-        ///     MACD=2*(DIF-DEA)
+        ///     计算MACD
+        /// </summary>
+        /// <param name="data">k线</param>
+        /// <param name="long_">长周期</param>
+        /// <param name="short_">短周期</param>
+        /// <param name="day">周期</param>
+        /// <returns></returns>
+        ///https://blog.csdn.net/smxueer/article/details/52801507  参考资料
+        /// DIF=EMA(12)-EMA(26)
+        /// DEA=(2/(N+1))*DIF+(N-1)/(N+1)*DEA`  N 默认为9
+        /// MACD=2*(DIF-DEA)
         public List<Tuple<DateTime, double, double, double>> MACD(List<KLine> data, int long_ = 26, int short_ = 12,
             int day = 9)
         {

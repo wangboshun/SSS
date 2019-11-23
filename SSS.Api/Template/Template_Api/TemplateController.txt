@@ -36,7 +36,7 @@ namespace SSS.Api.Controllers
         public IActionResult GetList([FromQuery]TemplateInputDto input)
         {
             var result = _service.GetListTemplate(input);
-            return Response(result);
+            return ApiResponse(result);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace SSS.Api.Controllers
         public IActionResult AddTemplate([FromBody]TemplateInputDto input)
         {
             _service.AddTemplate(input);
-            return Response(input);
+            return ApiResponse(input);
         }
     }
 }
