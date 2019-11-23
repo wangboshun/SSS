@@ -275,6 +275,31 @@
             <param name="input">DigitalCurrencyInputDto</param>
             <returns></returns> 
         </member>
+        <member name="T:SSS.Api.Controllers.TradeController">
+            <summary>
+            TradeController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.TradeController.#ctor(SSS.Application.Trade.Service.ITradeService)">
+            <summary>
+            TradeController
+            </summary>
+            <param name="service">ITradeService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.TradeController.GetList(SSS.Domain.Trade.Dto.TradeInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.TradeController.AddTrade(SSS.Domain.Trade.Dto.TradeInputDto)">
+            <summary>
+            AddTrade
+            </summary>
+            <param name="input">TradeInputDto</param>
+            <returns></returns> 
+        </member>
         <member name="T:SSS.Api.Controllers.UserActivityController">
             <summary>
                 UserActivityController

@@ -7,6 +7,7 @@ using SSS.Domain.Articel;
 using SSS.Domain.CoinInfo;
 using SSS.Domain.CoinMessage;
 using SSS.Domain.DigitalCurrency;
+using SSS.Domain.Trade;
 using SSS.Domain.UserActivity;
 using SSS.Domain.UserInfo;
 using SSS.Infrastructure.Util.Attribute;
@@ -36,6 +37,8 @@ namespace SSS.Infrastructure.Seedwork.DbContext
         public DbSet<CoinInfo> CoinInfo { get; set; }
 
         public DbSet<CoinMessage> CoinMessage { get; set; }
+
+        public DbSet<Trade> Trade { set; get; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

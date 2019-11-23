@@ -52,6 +52,8 @@ namespace SSS.Infrastructure.Util.IO
                         return string.Empty;
                     buff = File.ReadAllBytes(fileName);
                 }
+                if (buff == null)
+                    return string.Empty;
 
                 if (buff[0] == 239 && buff[1] == 187 && buff[2] == 191)
                     return Encoding.UTF8.GetString(buff, 3, buff.Length - 3);
