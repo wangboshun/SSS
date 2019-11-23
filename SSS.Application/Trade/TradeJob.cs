@@ -195,8 +195,7 @@ namespace SSS.Application.Trade
         {
             using var scope = _scopeFactory.CreateScope();
             using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
-
-            context.Database.ExecuteSqlRaw($"UPDATE Trade SET Status=2,Last_Price={price},UpdateTime=Now()  where Id={id}");
+            context.Database.ExecuteSqlRaw("UPDATE Trade SET Status=2,Last_Price={0},UpdateTime=Now()  where Id={1}", price, id);
             context.SaveChanges();
 
             _logger.LogInformation($"---订单：{id}，平单成功---");
