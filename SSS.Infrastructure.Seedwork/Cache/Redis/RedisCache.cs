@@ -1,9 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json;
+
 using StackExchange.Redis;
+
+using System;
+using System.Collections.Generic;
 
 namespace SSS.Infrastructure.Seedwork.Cache.Redis
 {
@@ -23,11 +26,11 @@ namespace SSS.Infrastructure.Seedwork.Cache.Redis
             {
                 if (!string.IsNullOrWhiteSpace(options.Value.host))
                     _connect = ConnectionMultiplexer.Connect(new ConfigurationOptions
-                        {EndPoints = {{options.Value.host, options.Value.port}}});
+                    { EndPoints = { { options.Value.host, options.Value.port } } });
 
                 else
                     _connect = ConnectionMultiplexer.Connect(new ConfigurationOptions
-                        {EndPoints = {{"localhost", 6379}}});
+                    { EndPoints = { { "localhost", 6379 } } });
 
                 if (_connect.IsConnected)
                     _db = _connect.GetDatabase();
@@ -108,6 +111,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.Redis
             var data = _db.ListGetByIndex(key, index);
             return JsonConvert.DeserializeObject<T>(data);
         }
+
 
         #endregion
     }

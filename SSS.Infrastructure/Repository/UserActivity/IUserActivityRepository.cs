@@ -1,5 +1,6 @@
-using System.Collections.Generic;
 using SSS.Domain.Seedwork.Repository;
+
+using System.Collections.Generic;
 
 namespace SSS.Infrastructure.Repository.UserActivity
 {

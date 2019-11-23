@@ -1,9 +1,11 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+
 using SSS.Domain.UserInfo.Dto;
 using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Util.Json;
+
+using System.Threading.Tasks;
 
 namespace SSS.Api.Seedwork.Middleware
 {
@@ -62,7 +64,7 @@ namespace SSS.Api.Seedwork.Middleware
 
         private static Task LoginAsync(HttpContext context, int code, string msg = "请求失败，权限不足！")
         {
-            var data = new {status = false, data = msg, message = msg, code};
+            var data = new { status = false, data = msg, message = msg, code };
             var result = data.ToJson();
             context.Response.Headers["Access-Control-Allow-Origin"] = "*";
             context.Response.ContentType = "application/json;charset=utf-8";

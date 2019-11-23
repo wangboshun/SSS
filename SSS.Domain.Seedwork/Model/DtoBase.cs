@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SSS.Domain.Seedwork.Model
+﻿namespace SSS.Domain.Seedwork.Model
 {
     public abstract class InputDtoBase
     {

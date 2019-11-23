@@ -14,7 +14,6 @@ namespace SSS.Infrastructure.Repository.DigitalCurrency
     {
         public DigitalCurrencyRepository(DbcontextBase context) : base(context)
         {
-
         }
 
         public IQueryable<Domain.DigitalCurrency.DigitalCurrency> GetPageOrderByAsc(DigitalCurrencyInputDto input, ref int count)

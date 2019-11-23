@@ -1,7 +1,6 @@
 using SSS.Domain.CoinMessage.Dto;
 using SSS.Domain.Seedwork.Repository;
 
-using System.Collections.Generic;
 using System.Linq;
 
 namespace SSS.Infrastructure.Repository.CoinMessage

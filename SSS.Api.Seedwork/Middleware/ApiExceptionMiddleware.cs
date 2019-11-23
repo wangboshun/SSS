@@ -1,8 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+
 using SSS.Infrastructure.Util.Json;
+
+using System;
+using System.Threading.Tasks;
 
 namespace SSS.Api.Seedwork.Middleware
 {
@@ -40,7 +42,7 @@ namespace SSS.Api.Seedwork.Middleware
 
         private static Task HandleExceptionAsync(HttpContext context, int code, string msg)
         {
-            var data = new {status = false, data = "内部异常", message = msg, code};
+            var data = new { status = false, data = "内部异常", message = msg, code };
             var result = data.ToJson();
             context.Response.ContentType = "application/json;charset=utf-8";
             return context.Response.WriteAsync(result);

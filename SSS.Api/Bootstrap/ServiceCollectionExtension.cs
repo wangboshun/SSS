@@ -1,17 +1,20 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using AutoMapper;
+﻿using AutoMapper;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+
 using SSS.Api.Seedwork.ServiceCollection;
 using SSS.Infrastructure.Seedwork.Cache.Memcached;
 using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Seedwork.Cache.Redis;
+
+using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace SSS.Api.Bootstrap
 {
@@ -73,8 +76,8 @@ namespace SSS.Api.Bootstrap
                     Title = "SSS Project V1",
                     Description = "SSS API Swagger docs",
                     Contact = new OpenApiContact
-                        {Name = "wbs", Email = "512742341@qq.com", Url = new Uri("https://github.com/wangboshun")},
-                    License = new OpenApiLicense {Name = "MIT", Url = new Uri("https://github.com/wangboshun/SSS")}
+                    { Name = "wbs", Email = "512742341@qq.com", Url = new Uri("https://github.com/wangboshun") },
+                    License = new OpenApiLicense { Name = "MIT", Url = new Uri("https://github.com/wangboshun/SSS") }
                 });
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

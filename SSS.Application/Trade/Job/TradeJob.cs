@@ -8,6 +8,7 @@ using SSS.DigitalCurrency.Huobi;
 using SSS.DigitalCurrency.Indicator;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Config;
 using SSS.Infrastructure.Util.Json;
 
 using System;
@@ -15,7 +16,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SSS.Application.Trade
+namespace SSS.Application.Trade.Job
 {
     [DIService(ServiceLifetime.Transient, typeof(IHostedService))]
     public class TradeJob : IHostedService, IDisposable
@@ -26,7 +27,9 @@ namespace SSS.Application.Trade
         private readonly IServiceScopeFactory _scopeFactory;
 
         private Timer _timer;
-        public TradeJob(ILogger<TradeJob> logger, HuobiUtils huobi, IServiceScopeFactory scopeFactory, Indicator indicator)
+
+        public TradeJob(ILogger<TradeJob> logger, HuobiUtils huobi, IServiceScopeFactory scopeFactory,
+            Indicator indicator)
         {
             _logger = logger;
             _scopeFactory = scopeFactory;
@@ -41,20 +44,29 @@ namespace SSS.Application.Trade
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _timer = new Timer(Futures, null, TimeSpan.Zero,
-            TimeSpan.FromMinutes(1));
+            _timer = new Timer(DoWork, null, TimeSpan.Zero,
+                TimeSpan.FromMinutes(1));
 
             return Task.CompletedTask;
         }
+
         public Task StopAsync(CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
         }
 
+        private void DoWork(object state)
+        {
+            if (Config.GetSectionValue("JobManager:TradeJob").Equals("OFF"))
+                return;
+
+            Futures();
+        }
+
         /// <summary>
-        /// 合约分析
+        ///     合约分析
         /// </summary>
-        public void Futures(object state)
+        public void Futures()
         {
             try
             {
@@ -86,30 +98,31 @@ namespace SSS.Application.Trade
                 //均线是否金叉    5日线>10日线
                 bool avg_status = data5.First()?.Item2 > data10.First()?.Item2;
 
-                _logger.LogInformation($"均线指标    时间：{data5.First()?.Item1} ，5日线{data5.First()?.Item2}，10日线{data10.First()?.Item2}   状态：{avg_status}");
+                _logger.LogInformation(
+                    $"均线指标    时间：{data5.First()?.Item1} ，5日线{data5.First()?.Item2}，10日线{data10.First()?.Item2}   状态：{avg_status}");
 
                 //macd是否金叉   macd>0 && dif>dea
-                bool macd_status =/* macd.FirstOrDefault().Item4 > 0 &&*/ macd.FirstOrDefault()?.Item2 > macd.FirstOrDefault()?.Item3;
+                bool macd_status = /* macd.FirstOrDefault().Item4 > 0 &&*/
+                    macd.FirstOrDefault()?.Item2 > macd.FirstOrDefault()?.Item3;
 
-                _logger.LogInformation($"macd指标   时间：{macd.FirstOrDefault()?.Item1} , macd:{macd.FirstOrDefault()?.Item4} , dif:{macd.FirstOrDefault()?.Item2}， dea:{macd.FirstOrDefault()?.Item3}   状态：{macd_status}");
+                _logger.LogInformation(
+                    $"macd指标   时间：{macd.FirstOrDefault()?.Item1} , macd:{macd.FirstOrDefault()?.Item4} , dif:{macd.FirstOrDefault()?.Item2}， dea:{macd.FirstOrDefault()?.Item3}   状态：{macd_status}");
 
                 //kdj是否金叉    j<20  && k>d
-                bool kdj_status =/* kdj.FirstOrDefault()?.Item4 < 20 &&*/ kdj.FirstOrDefault()?.Item2 > kdj.FirstOrDefault()?.Item3;
+                bool kdj_status = /* kdj.FirstOrDefault()?.Item4 < 20 &&*/
+                    kdj.FirstOrDefault()?.Item2 > kdj.FirstOrDefault()?.Item3;
 
-                _logger.LogInformation($"kdj指标    时间：{kdj.FirstOrDefault()?.Item1} ，j:{kdj.FirstOrDefault()?.Item4} , k:{kdj.FirstOrDefault()?.Item2}， d:{kdj.FirstOrDefault()?.Item3}   状态：{kdj_status}");
+                _logger.LogInformation(
+                    $"kdj指标    时间：{kdj.FirstOrDefault()?.Item1} ，j:{kdj.FirstOrDefault()?.Item4} , k:{kdj.FirstOrDefault()?.Item2}， d:{kdj.FirstOrDefault()?.Item3}   状态：{kdj_status}");
 
                 //三线金叉
                 if (avg_status && macd_status && kdj_status)
-                {
                     //做多
                     DoBuy(coin, current_price);
-                }
                 //三线死叉
                 else if (!avg_status && !macd_status && !kdj_status)
-                {
                     //做空
                     DoSell(coin, current_price);
-                }
             }
             catch (Exception ex)
             {
@@ -118,22 +131,24 @@ namespace SSS.Application.Trade
         }
 
         /// <summary>
-        /// 做空
+        ///     做空
         /// </summary>
         private void DoSell(string coin, double price)
         {
             using var scope = _scopeFactory.CreateScope();
             using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
 
-            var trade = context.Trade.FirstOrDefault(x => x.Coin.Equals(coin) && x.Status == 1 && x.Direction.Equals("做空"));
+            var trade = context.Trade.FirstOrDefault(x =>
+                x.Coin.Equals(coin) && x.Status == 1 && x.Direction.Equals("做空"));
             if (trade != null)
                 return;
 
-            var ping = context.Trade.FirstOrDefault(x => x.Coin.Equals(coin) && x.Status == 1 && x.Direction.Equals("做多"));
+            var ping = context.Trade.FirstOrDefault(x =>
+                x.Coin.Equals(coin) && x.Status == 1 && x.Direction.Equals("做多"));
             if (ping != null)
                 Ping(ping.Id, price);
 
-            SSS.Domain.Trade.Trade model = new Domain.Trade.Trade()
+            Domain.Trade.Trade model = new Domain.Trade.Trade
             {
                 Id = Guid.NewGuid().ToString(),
                 Coin = coin,
@@ -153,22 +168,24 @@ namespace SSS.Application.Trade
         }
 
         /// <summary>
-        /// 做多
+        ///     做多
         /// </summary>
         private void DoBuy(string coin, double price)
         {
             using var scope = _scopeFactory.CreateScope();
             using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
 
-            var trade = context.Trade.FirstOrDefault(x => x.Coin.Equals(coin) && x.Status == 1 && x.Direction.Equals("做多"));
+            var trade = context.Trade.FirstOrDefault(x =>
+                x.Coin.Equals(coin) && x.Status == 1 && x.Direction.Equals("做多"));
             if (trade != null)
                 return;
 
-            var ping = context.Trade.FirstOrDefault(x => x.Coin.Equals(coin) && x.Status == 1 && x.Direction.Equals("做空"));
+            var ping = context.Trade.FirstOrDefault(x =>
+                x.Coin.Equals(coin) && x.Status == 1 && x.Direction.Equals("做空"));
             if (ping != null)
                 Ping(ping.Id, price);
 
-            SSS.Domain.Trade.Trade model = new Domain.Trade.Trade()
+            Domain.Trade.Trade model = new Domain.Trade.Trade
             {
                 Id = Guid.NewGuid().ToString(),
                 Coin = coin,
@@ -187,7 +204,7 @@ namespace SSS.Application.Trade
         }
 
         /// <summary>
-        /// 平仓
+        ///     平仓
         /// </summary>
         /// <param name="id"></param>
         /// <param name="price"></param>
@@ -195,7 +212,8 @@ namespace SSS.Application.Trade
         {
             using var scope = _scopeFactory.CreateScope();
             using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
-            context.Database.ExecuteSqlRaw("UPDATE Trade SET Status=2,Last_Price={0},UpdateTime=Now()  where Id={1}", price, id);
+            context.Database.ExecuteSqlRaw("UPDATE Trade SET Status=2,Last_Price={0},UpdateTime=Now()  where Id={1}",
+                price, id);
             context.SaveChanges();
 
             _logger.LogInformation($"---订单：{id}，平单成功---");

@@ -1,15 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using AutoMapper;
+
 using FluentValidation;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Domain.UserActivity.Dto;
 using SSS.Infrastructure.Repository.UserActivity;
 using SSS.Infrastructure.Util.Attribute;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SSS.Application.UserActivity.Service
 {

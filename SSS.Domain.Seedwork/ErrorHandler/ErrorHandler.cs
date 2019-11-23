@@ -1,12 +1,15 @@
-﻿using System;
+﻿using FluentValidation.Results;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Http;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FluentValidation.Results;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using SSS.Infrastructure.Util.Attribute;
-using SSS.Infrastructure.Util.Http;
 
 namespace SSS.Domain.Seedwork.ErrorHandler
 {
@@ -58,4 +61,5 @@ namespace SSS.Domain.Seedwork.ErrorHandler
             GC.SuppressFinalize(this);
         }
     }
+
 }

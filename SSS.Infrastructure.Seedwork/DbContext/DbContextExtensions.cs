@@ -1,13 +1,12 @@
-﻿using System;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace SSS.Infrastructure.Seedwork.DbContext
 {
@@ -16,14 +15,12 @@ namespace SSS.Infrastructure.Seedwork.DbContext
         private static void CombineParams(ref DbCommand command, params object[] parameters)
         {
             if (parameters != null)
-            {
                 foreach (SqlParameter parameter in parameters)
                 {
                     if (!parameter.ParameterName.Contains("@"))
                         parameter.ParameterName = $"@{parameter.ParameterName}";
                     command.Parameters.Add(parameter);
                 }
-            }
         }
 
         private static DbCommand CreateCommand(DatabaseFacade facade, string sql, out DbConnection dbConn, params object[] parameters)
@@ -60,9 +57,7 @@ namespace SSS.Infrastructure.Seedwork.DbContext
             try
             {
                 if (dt == null || dt.Rows.Count == 0)
-                {
                     return null;
-                }
                 List<T> ts = new List<T>();
                 Type type = typeof(T);
                 string tempName;
@@ -106,11 +101,12 @@ namespace SSS.Infrastructure.Seedwork.DbContext
                                     pi.SetValue(t, Convert.ToBoolean(value), null);
                                     break;
                             }
-
                         }
                     }
+
                     ts.Add(t);
                 }
+
                 return ts;
             }
             catch (Exception)

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using SSS.Domain.Activity;
 using SSS.Domain.Articel;
 using SSS.Domain.CoinInfo;

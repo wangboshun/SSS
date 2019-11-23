@@ -1,4 +1,5 @@
 using SSS.Domain.Seedwork.Model;
+
 using System;
 
 namespace SSS.Domain.Trade
@@ -20,5 +21,6 @@ namespace SSS.Domain.Trade
         public int Status { set; get; }
 
         public DateTime? UpdateTime { set; get; }
+
     }
 }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.Articel.Service;
 using SSS.Domain.Articel.Dto;
@@ -50,7 +51,7 @@ namespace SSS.Api.Controllers
         {
             var result = _service.GetNews(input);
             return Response(result);
-        } 
+        }
 
         [HttpGet("getnewsdetail")]
         [AllowAnonymous] //匿名访问
@@ -71,6 +72,7 @@ namespace SSS.Api.Controllers
         {
             _service.AddArticel(input);
             return Response(input);
+
         }
     }
 }

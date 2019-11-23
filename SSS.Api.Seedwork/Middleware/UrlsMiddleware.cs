@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+
+using System.Threading.Tasks;
 
 namespace SSS.Api.Seedwork.Middleware
 {

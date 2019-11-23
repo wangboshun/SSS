@@ -1,10 +1,13 @@
-﻿using System;
-using Enyim.Caching;
+﻿using Enyim.Caching;
 using Enyim.Caching.Configuration;
 using Enyim.Caching.Memcached;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
 using SSS.Infrastructure.Seedwork.Cache.Redis;
+
+using System;
 
 namespace SSS.Infrastructure.Seedwork.Cache.Memcached
 {

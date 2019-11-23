@@ -1,7 +1,8 @@
-﻿using System;
+﻿using FluentValidation.Results;
+
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FluentValidation.Results;
 
 namespace SSS.Domain.Seedwork.ErrorHandler
 {

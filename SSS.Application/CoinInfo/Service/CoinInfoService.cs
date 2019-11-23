@@ -1,8 +1,9 @@
-using System;
-using System.Collections.Generic;
 using AutoMapper;
+
 using FluentValidation;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.CoinInfo.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
@@ -10,10 +11,13 @@ using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.CoinInfo;
 using SSS.Infrastructure.Util.Attribute;
 
+using System;
+using System.Collections.Generic;
+
 namespace SSS.Application.CoinInfo.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(ICoinInfoService))]
-    public class CoinInfoService : QueryService<Domain.CoinInfo.CoinInfo, CoinInfoInputDto, CoinInfoOutputDto>,ICoinInfoService
+    public class CoinInfoService : QueryService<Domain.CoinInfo.CoinInfo, CoinInfoInputDto, CoinInfoOutputDto>, ICoinInfoService
     {
         public CoinInfoService(IMapper mapper,
             ICoinInfoRepository repository,

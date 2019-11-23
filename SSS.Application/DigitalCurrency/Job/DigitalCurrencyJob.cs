@@ -16,6 +16,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+
+
 namespace SSS.Application.DigitalCurrency.Job
 {
     [DIService(ServiceLifetime.Transient, typeof(IHostedService))]
@@ -34,7 +36,6 @@ namespace SSS.Application.DigitalCurrency.Job
           new List<Domain.DigitalCurrency.DigitalCurrency>();
 
         private static int FastFlag = 0;
-
         private Timer _timer1;
         private Timer _timer2;
 
@@ -73,7 +74,7 @@ namespace SSS.Application.DigitalCurrency.Job
 
         private void DoWorkForFast(object state)
         {
-            if (Config.GetSectionValue("JobManager:DigitalCurrency").Equals("OFF"))
+            if (Config.GetSectionValue("JobManager:DigitalCurrencyJob").Equals("OFF"))
                 return;
 
             _logger.LogInformation("---爆拉分析---");
@@ -83,7 +84,7 @@ namespace SSS.Application.DigitalCurrency.Job
 
         private void DoWork(object state)
         {
-            if (Config.GetSectionValue("JobManager:DigitalCurrency").Equals("OFF"))
+            if (Config.GetSectionValue("JobManager:DigitalCurrencyJob").Equals("OFF"))
                 return;
 
             FastFlag = 0;

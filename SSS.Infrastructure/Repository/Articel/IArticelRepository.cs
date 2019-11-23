@@ -7,6 +7,6 @@ namespace SSS.Infrastructure.Repository.Articel
 {
     public interface IArticelRepository : IRepository<Domain.Articel.Articel>
     {
-        IEnumerable<Domain.Articel.Articel> GetNews(ArticelInputDto input); 
+        IEnumerable<Domain.Articel.Articel> GetNews(ArticelInputDto input);
     }
 }

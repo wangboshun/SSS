@@ -1,10 +1,11 @@
-using System;
 using SSS.Domain.Seedwork.Model;
+
+using System;
 
 namespace SSS.Domain.Activity
 {
     public class Activity : Entity
-    { 
+    {
         public string Title { set; get; }
 
         public int Grouptotal { set; get; }

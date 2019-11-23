@@ -10,6 +10,7 @@ using SSS.Infrastructure.Util.DateTime;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 
@@ -42,13 +43,15 @@ namespace SSS.DigitalCurrency.Huobi
                 JObject json_root = (JObject)JsonConvert.DeserializeObject(result);
 
                 var json_data = json_root["data"];
-                foreach (var item in json_data)
-                    if (item["quote-currency"].ToString().Contains("usdt"))
-                    {
-                        CoinSymbols s = new CoinSymbols();
 
-                        s.base_currency = item["base-currency"].ToString();
-                        s.quote_currency = item["quote-currency"].ToString();
+                foreach (var item in json_data)
+                    if (item["quote-currency"].Contains("usdt"))
+                    {
+                        CoinSymbols s = new CoinSymbols
+                        {
+                            base_currency = item["base-currency"]?.ToString(),
+                            quote_currency = item["quote-currency"]?.ToString()
+                        };
                         list.Add(s);
                     }
 
@@ -84,7 +87,7 @@ namespace SSS.DigitalCurrency.Huobi
                 if (json_root.GetValue("status").ToString().Equals("error"))
                     return null;
 
-                list = JsonConvert.DeserializeObject<List<KLine>>(json_root["data"].ToString());
+                list = JsonConvert.DeserializeObject<List<KLine>>(json_root["data"]?.ToString());
 
                 foreach (var item in list) item.time = DateTimeConvert.ConvertIntDateTime(item.id);
 

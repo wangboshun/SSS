@@ -1,7 +1,8 @@
-using System.Collections.Generic;
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.DigitalCurrency.Dto;
 using SSS.Domain.Seedwork.Model;
+
+using System.Collections.Generic;
 
 namespace SSS.Application.DigitalCurrency.Service
 {

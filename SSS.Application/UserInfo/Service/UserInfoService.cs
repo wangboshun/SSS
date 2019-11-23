@@ -1,8 +1,9 @@
-using System;
-using System.Collections.Generic;
 using AutoMapper;
+
 using FluentValidation;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
@@ -10,6 +11,9 @@ using SSS.Domain.UserInfo.Dto;
 using SSS.Infrastructure.Repository.UserInfo;
 using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Util.Attribute;
+
+using System;
+using System.Collections.Generic;
 
 namespace SSS.Application.UserInfo.Service
 {

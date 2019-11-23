@@ -1,4 +1,5 @@
 using AutoMapper;
+
 using SSS.Domain.UserActivity.Dto;
 
 namespace SSS.Application.UserActivity.Mapper

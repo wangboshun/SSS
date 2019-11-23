@@ -1,15 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+
+using Newtonsoft.Json;
+
+using SSS.Api.Seedwork.Controller;
+using SSS.Infrastructure.Util.IO;
+
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using SSS.Api.Seedwork.Controller;
-using SSS.Infrastructure.Util.IO;
 
 namespace SSS.Api.Controllers
 {
@@ -43,7 +46,7 @@ namespace SSS.Api.Controllers
             return new ContentResult
             {
                 ContentType = "text/html",
-                StatusCode = (int) HttpStatusCode.OK,
+                StatusCode = (int)HttpStatusCode.OK,
                 Content = html
             };
         }

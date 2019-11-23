@@ -52,13 +52,14 @@ namespace SSS.Infrastructure.Util.IO
                         return string.Empty;
                     buff = File.ReadAllBytes(fileName);
                 }
+
                 if (buff == null)
                     return string.Empty;
 
                 if (buff[0] == 239 && buff[1] == 187 && buff[2] == 191)
                     return Encoding.UTF8.GetString(buff, 3, buff.Length - 3);
 
-                if (buff[0] == 255 && buff[1] == 254)
+                if (buff[0] == 255 && buff[1] == 254) return Encoding.Unicode.GetString(buff, 2, buff.Length - 2);
                 {
                     return Encoding.Unicode.GetString(buff, 2, buff.Length - 2);
                 }

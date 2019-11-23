@@ -1,4 +1,5 @@
 using AutoMapper;
+
 using SSS.Domain.DigitalCurrency.Dto;
 
 namespace SSS.Application.DigitalCurrency.Mapper

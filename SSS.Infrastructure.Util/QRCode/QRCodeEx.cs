@@ -1,5 +1,6 @@
-﻿using System.Drawing;
-using QRCoder;
+﻿using QRCoder;
+
+using System.Drawing;
 
 namespace SSS.Infrastructure.Util.QRCode
 {

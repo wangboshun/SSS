@@ -29,7 +29,7 @@ namespace SSS.DigitalCurrency.Domain
     }
 
     /// <summary>
-    /// 时间线  分钟为单位
+    ///     时间线  分钟为单位
     /// </summary>
     public enum CoinTime
     {

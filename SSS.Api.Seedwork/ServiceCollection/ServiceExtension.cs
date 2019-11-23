@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+
+using SSS.Infrastructure.Util.Attribute;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
-using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Api.Seedwork.ServiceCollection
 {
@@ -171,7 +173,7 @@ namespace SSS.Api.Seedwork.ServiceCollection
         /// <returns></returns>
         public static T CreateInstance<T>(this IServiceProvider provider, params object[] parameters)
         {
-            return (T) CreateInstance(provider, typeof(T), parameters);
+            return (T)CreateInstance(provider, typeof(T), parameters);
         }
 
         /// <summary>
@@ -182,7 +184,7 @@ namespace SSS.Api.Seedwork.ServiceCollection
         /// <returns></returns>
         public static T GetServiceOrCreateInstance<T>(this IServiceProvider provider)
         {
-            return (T) GetServiceOrCreateInstance(provider, typeof(T));
+            return (T)GetServiceOrCreateInstance(provider, typeof(T));
         }
 
         /// <summary>

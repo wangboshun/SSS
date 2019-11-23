@@ -39,7 +39,7 @@ namespace SSS.Application.CoinMessage.Job
             }
 
             public Task StartAsync(CancellationToken stoppingToken)
-            { 
+            {
                 _timer = new Timer(DoWork, null, TimeSpan.Zero,
                     TimeSpan.FromDays(1));
 
@@ -55,7 +55,7 @@ namespace SSS.Application.CoinMessage.Job
 
             private void DoWork(object state)
             {
-                if (Config.GetSectionValue("JobManager:CoinMessage").Equals("OFF"))
+                if (Config.GetSectionValue("JobManager:CoinMessageJob").Equals("OFF"))
                     return;
 
                 GetCoinMessage();

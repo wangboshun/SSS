@@ -5,7 +5,7 @@ namespace SSS.Infrastructure.Util.DateTime
     public static class DateTimeConvert
     {
         /// <summary>
-        /// Unix时间 转 DateTime 
+        ///     Unix时间 转 DateTime
         /// </summary>
         /// <param name="d"></param>
         /// <returns></returns>
@@ -23,7 +23,7 @@ namespace SSS.Infrastructure.Util.DateTime
         }
 
         /// <summary>
-        /// Unix时间 转 DateTime 
+        ///     Unix时间 转 DateTime
         /// </summary>
         /// <param name="d"></param>
         /// <returns></returns>
@@ -36,7 +36,7 @@ namespace SSS.Infrastructure.Util.DateTime
         }
 
         /// <summary>
-        /// Unix时间 转 时间字符串  yyyy-MM-dd HH:mm:ss
+        ///     Unix时间 转 时间字符串  yyyy-MM-dd HH:mm:ss
         /// </summary>
         /// <param name="val"></param>
         /// <param name="format">yyyy-MM-dd HH:mm:ss</param>
@@ -51,7 +51,7 @@ namespace SSS.Infrastructure.Util.DateTime
         }
 
         /// <summary>
-        /// DateTime 转 时间字符串  yyyy-MM-dd HH:mm:ss
+        ///     DateTime 转 时间字符串  yyyy-MM-dd HH:mm:ss
         /// </summary>
         /// <param name="time"></param>
         /// <param name="format">yyyy-MM-dd HH:mm:ss</param>
@@ -62,7 +62,7 @@ namespace SSS.Infrastructure.Util.DateTime
         }
 
         /// <summary>
-        /// DateTime 转 Unix时间
+        ///     DateTime 转 Unix时间
         /// </summary>
         /// <param name="time"></param>
         /// <returns></returns>

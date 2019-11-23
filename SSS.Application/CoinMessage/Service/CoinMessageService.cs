@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+
 using FluentValidation;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.CoinMessage.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
@@ -12,6 +12,10 @@ using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.CoinInfo;
 using SSS.Infrastructure.Repository.CoinMessage;
 using SSS.Infrastructure.Util.Attribute;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SSS.Application.CoinMessage.Service
 {

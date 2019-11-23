@@ -19,6 +19,7 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+
 namespace SSS.Application.CoinInfo.Job
 {
     [DIService(ServiceLifetime.Transient, typeof(IHostedService))]
@@ -57,7 +58,7 @@ namespace SSS.Application.CoinInfo.Job
 
         private void DoWork(object state)
         {
-            if (Config.GetSectionValue("JobManager:CoinInfo").Equals("OFF"))
+            if (Config.GetSectionValue("JobManager:CoinInfoJob").Equals("OFF"))
                 return;
 
             GetCoinInfo();

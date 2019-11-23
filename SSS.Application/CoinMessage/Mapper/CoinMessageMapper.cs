@@ -1,4 +1,5 @@
 using AutoMapper;
+
 using SSS.Domain.CoinMessage.Dto;
 
 namespace SSS.Application.CoinMessage.Mapper

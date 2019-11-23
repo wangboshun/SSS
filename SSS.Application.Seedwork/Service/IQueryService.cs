@@ -1,7 +1,8 @@
-﻿using System;
+﻿using SSS.Domain.Seedwork.Model;
+
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using SSS.Domain.Seedwork.Model;
 
 namespace SSS.Application.Seedwork.Service
 {

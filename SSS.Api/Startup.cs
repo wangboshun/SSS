@@ -109,7 +109,7 @@ namespace SSS.Api
                 // (Optional) You can disable "Connection Open()", "Connection Close()" (and async variant) tracking.
                 // (defaults to true, and connection opening/closing is tracked)
                 options.TrackConnectionOpenClose = true;
-            }).AddEntityFramework(); 
+            }).AddEntityFramework();
 
             services.AddSenparcGlobalServices(Configuration) //Senparc.CO2NET 全局注册
                 .AddSenparcWeixinServices(Configuration); //Senparc.Weixin 注册   
@@ -150,7 +150,7 @@ namespace SSS.Api
             });
 
             //异常拦截
-            app.UseApiException(); 
+            app.UseApiException();
 
             ////认证中间件
             app.UseAuthentication();
@@ -189,7 +189,7 @@ namespace SSS.Api
             register.UseSenparcWeixin(senparcWeixinSetting.Value, senparcSetting.Value)
                 .RegisterWxOpenAccount(senparcWeixinSetting.Value, "SSS");
         }
-         
+
         /// <summary>
         ///     Swagger
         /// </summary>

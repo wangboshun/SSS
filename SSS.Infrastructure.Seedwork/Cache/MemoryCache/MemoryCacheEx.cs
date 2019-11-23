@@ -1,5 +1,6 @@
-﻿using System;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
+
+using System;
 
 namespace SSS.Infrastructure.Seedwork.Cache.MemoryCache
 {
@@ -42,7 +43,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.MemoryCache
         public void StringSet(string key, string value, double minute)
         {
             MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
-                {SlidingExpiration = TimeSpan.FromMinutes(minute)};
+            { SlidingExpiration = TimeSpan.FromMinutes(minute) };
             _cache.Set(key, value, options);
         }
 
@@ -55,7 +56,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.MemoryCache
         public void Set<T>(string key, T value, double minute)
         {
             MemoryCacheEntryOptions options = new MemoryCacheEntryOptions
-                {SlidingExpiration = TimeSpan.FromMinutes(minute)};
+            { SlidingExpiration = TimeSpan.FromMinutes(minute) };
             _cache.Set(key, value, options);
         }
 
@@ -67,7 +68,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.MemoryCache
         /// <param name="minute">minute</param>
         public void StringSet(string key, string value, DateTime minute)
         {
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions {AbsoluteExpiration = minute};
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions { AbsoluteExpiration = minute };
             _cache.Set(key, value, options);
         }
 
@@ -79,7 +80,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.MemoryCache
         /// <param name="minute">minute</param>
         public void Set<T>(string key, T value, DateTime minute)
         {
-            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions {AbsoluteExpiration = minute};
+            MemoryCacheEntryOptions options = new MemoryCacheEntryOptions { AbsoluteExpiration = minute };
             _cache.Set(key, value, options);
         }
 

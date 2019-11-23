@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Seedwork.Repository;
 using SSS.Infrastructure.Util.Attribute;

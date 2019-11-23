@@ -1,6 +1,7 @@
-﻿using System;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+
+using System;
 
 namespace SSS.Infrastructure.Util.Http
 {

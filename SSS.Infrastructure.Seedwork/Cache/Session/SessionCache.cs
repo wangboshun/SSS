@@ -1,5 +1,6 @@
-﻿using System.Text;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
+
+using System.Text;
 
 namespace SSS.Infrastructure.Seedwork.Cache.Session
 {

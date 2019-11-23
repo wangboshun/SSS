@@ -1,11 +1,13 @@
-﻿using System;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+
 using SSS.Api.Seedwork.Middleware;
 using SSS.Infrastructure.Seedwork.Cache.Redis;
 using SSS.Infrastructure.Util.Http;
+
+using System;
 
 namespace SSS.Api.Bootstrap
 {
@@ -51,7 +53,7 @@ namespace SSS.Api.Bootstrap
             RedisOptions config = null;
             options(config);
             if (config == null)
-                config = new RedisOptions {host = "localhost", port = 6379};
+                config = new RedisOptions { host = "localhost", port = 6379 };
 
             return app;
         }
@@ -67,7 +69,7 @@ namespace SSS.Api.Bootstrap
             MemCachedOptions config = null;
             options(config);
             if (config == null)
-                config = new MemCachedOptions {host = "localhost", port = 11211};
+                config = new MemCachedOptions { host = "localhost", port = 11211 };
 
             return app;
         }

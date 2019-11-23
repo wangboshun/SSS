@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 using SSS.DigitalCurrency.Domain;
 using SSS.Infrastructure.Util.Attribute;
@@ -6,7 +7,6 @@ using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.Logging;
 
 namespace SSS.DigitalCurrency.Indicator
 {
@@ -21,10 +21,10 @@ namespace SSS.DigitalCurrency.Indicator
         }
 
         /// <summary>
-        /// 计算SMA
+        ///     计算SMA
         /// </summary>
-        /// <param name="close"></param>
-        /// <param name="length"></param>
+        /// <param name="data">k线</param>
+        /// <param name="length">周期</param>
         /// <returns>时间，值，长度</returns>
         public List<Tuple<DateTime, double>> SMA(List<KLine> data, int length)
         {
@@ -37,15 +37,16 @@ namespace SSS.DigitalCurrency.Indicator
 
                 result.Add(new Tuple<DateTime, double>(data[i].time, data.Skip(i).Take(length).Sum(x => x.close) / length));
             }
+
             return result;
         }
 
         /// <summary>
-        /// 计算EMA
+        ///     计算EMA
         /// </summary>
-        /// <param name="data"></param>
-        /// <param name="length"></param>
-        /// <returns></returns> 
+        /// <param name="data">k线</param>
+        /// <param name="length">周期</param>
+        /// <returns></returns>
         public List<Tuple<DateTime, double>> EMA(List<KLine> data, int length)
         {
             List<Tuple<DateTime, double>> result = new List<Tuple<DateTime, double>>();
@@ -77,27 +78,33 @@ namespace SSS.DigitalCurrency.Indicator
         }
 
         /// <summary>
-        /// EMA换算   EMA(n)=(2/(N+1))*(C-EMA`)+EMA`   N=长度  C=今日收盘价  EMA`=昨日EMA
+        ///     EMA换算   EMA(n)=(2/(N+1))*(C-EMA`)+EMA`   N=长度  C=今日收盘价  EMA`=昨日EMA
         /// </summary>
         /// <param name="close">收盘价</param>
         /// <param name="old_close">上个收盘价</param>
-        /// <param name="length">时间</param>
+        /// <param name="length">周期</param>
         /// <returns></returns>
         private double EmaCale(double close, double old_close, int length)
         {
-            return (2.0 / (length + 1.0)) * close + ((length - 1.0) / (length + 1.0)) * old_close;
+            return 2.0 / (length + 1.0) * close + (length - 1.0) / (length + 1.0) * old_close;
         }
 
         /// <summary>
-        /// 计算MACD
-        /// </summary> 
-        /// <param name="length"></param>
-        /// <returns></returns>
-        /// https://blog.csdn.net/smxueer/article/details/52801507  参考资料 
-        /// DIF=EMA(12)-EMA(26)
-        /// DEA=(2/(N+1))*DIF+(N-1)/(N+1)*DEA`  N 默认为9
-        /// MACD=2*(DIF-DEA)
-        public List<Tuple<DateTime, double, double, double>> MACD(List<KLine> data, int long_ = 26, int short_ = 12, int day = 9)
+        ///     ///
+        ///     <summary>
+        ///         计算MACD
+        ///     </summary>
+        ///     <param name="data">k线</param>
+        ///     <param name="long_">长周期</param>
+        ///     <param name="short_">短周期</param>
+        ///     <param name="day">周期</param>
+        ///     <returns></returns>
+        ///     https://blog.csdn.net/smxueer/article/details/52801507  参考资料
+        ///     DIF=EMA(12)-EMA(26)
+        ///     DEA=(2/(N+1))*DIF+(N-1)/(N+1)*DEA`  N 默认为9
+        ///     MACD=2*(DIF-DEA)
+        public List<Tuple<DateTime, double, double, double>> MACD(List<KLine> data, int long_ = 26, int short_ = 12,
+            int day = 9)
         {
             List<Tuple<DateTime, double, double, double>> result = new List<Tuple<DateTime, double, double, double>>();
             try
@@ -122,6 +129,7 @@ namespace SSS.DigitalCurrency.Indicator
                     var macd = 2 * (dif - dea);
                     result.Add(new Tuple<DateTime, double, double, double>(data[i].time, dif, dea, macd));
                 }
+
                 result.Reverse();
             }
             catch (Exception ex)
@@ -132,6 +140,14 @@ namespace SSS.DigitalCurrency.Indicator
             return result;
         }
 
+        /// <summary>
+        ///     计算KDJ
+        /// </summary>
+        /// <param name="data">k线</param>
+        /// <param name="n">周期N</param>
+        /// <param name="m1">周期M1</param>
+        /// <param name="m2">周期M2</param>
+        /// <returns></returns>
         public List<Tuple<DateTime, double, double, double>> KDJ(List<KLine> data, int n = 9, int m1 = 3, int m2 = 3)
         {
             List<Tuple<DateTime, double, double, double>> result = new List<Tuple<DateTime, double, double, double>>();
@@ -158,6 +174,7 @@ namespace SSS.DigitalCurrency.Indicator
                     old_k = k;
                     result.Add(new Tuple<DateTime, double, double, double>(data[i].time, k, d, j));
                 }
+
                 result.Reverse();
             }
             catch (Exception ex)

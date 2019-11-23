@@ -1,5 +1,6 @@
-using System;
 using SSS.Domain.Seedwork.Model;
+
+using System;
 
 namespace SSS.Domain.Activity.Dto
 {

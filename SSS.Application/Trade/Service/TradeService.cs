@@ -1,12 +1,16 @@
 using AutoMapper;
+
 using FluentValidation;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using SSS.Application.Seedwork.Service;
-using SSS.Domain.Trade.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
+using SSS.Domain.Trade.Dto;
 using SSS.Infrastructure.Repository.Trade;
 using SSS.Infrastructure.Util.Attribute;
+
 using System;
 using System.Collections.Generic;
 
@@ -21,7 +25,6 @@ namespace SSS.Application.Trade.Service
             IValidator<TradeInputDto> validator) :
             base(mapper, repository, error, validator)
         {
-
         }
 
         public void AddTrade(TradeInputDto input)

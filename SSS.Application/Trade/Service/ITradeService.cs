@@ -1,7 +1,8 @@
-using SSS.Domain.Trade.Dto;
-using SSS.Domain.Seedwork.Model;
-using System.Collections.Generic;
 using SSS.Application.Seedwork.Service;
+using SSS.Domain.Seedwork.Model;
+using SSS.Domain.Trade.Dto;
+
+using System.Collections.Generic;
 
 namespace SSS.Application.Trade.Service
 {
@@ -9,6 +10,6 @@ namespace SSS.Application.Trade.Service
     {
         void AddTrade(TradeInputDto input);
 
-		Pages<List<TradeOutputDto>> GetListTrade(TradeInputDto input);
+        Pages<List<TradeOutputDto>> GetListTrade(TradeInputDto input);
     }
 }
