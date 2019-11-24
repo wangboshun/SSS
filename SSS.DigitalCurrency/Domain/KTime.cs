@@ -37,7 +37,7 @@ namespace SSS.DigitalCurrency.Domain
         Time_5min = 5,
         Time_15min = 15,
         Time_60min = 60,
-        Time4_60min = 240,
+        Time_4hour = 240,
         Time_1day = 1440
     }
 }

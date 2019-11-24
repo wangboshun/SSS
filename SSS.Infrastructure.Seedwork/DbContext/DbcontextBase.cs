@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -49,7 +50,15 @@ namespace SSS.Infrastructure.Seedwork.DbContext
                 .Build();
 
             //optionsBuilder.UseSqlServer(config.GetConnectionString("MSSQLConnection"));
-            optionsBuilder.UseMySql(config.GetConnectionString("MYSQLConnection"));
+            optionsBuilder.UseMySql(
+                config.GetConnectionString("MYSQLConnection"), 
+                builder =>
+                {
+                    builder.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(30),
+                        null);
+                });
             //optionsBuilder.UseSqlite(config.GetConnectionString("SQLITEConnection"));
         }
     }

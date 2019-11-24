@@ -515,7 +515,7 @@ namespace SSS.Application.DigitalCurrency.Job
                 case CoinTime.Time_60min:
                     return "1小时";
 
-                case CoinTime.Time4_60min:
+                case CoinTime.Time_4hour:
                     return "4小时";
 
                 case CoinTime.Time_1day:
