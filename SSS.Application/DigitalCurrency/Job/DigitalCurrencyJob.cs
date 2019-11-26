@@ -186,6 +186,7 @@ namespace SSS.Application.DigitalCurrency.Job
                             Id = Guid.NewGuid().ToString(),
                             Coin = item.Coin,
                             CreateTime = DateTime.Now,
+
                             Platform = "火币",
                             IsDelete = 0,
                             Open = item.Open,

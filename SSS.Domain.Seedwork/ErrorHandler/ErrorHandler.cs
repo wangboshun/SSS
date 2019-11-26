@@ -61,5 +61,4 @@ namespace SSS.Domain.Seedwork.ErrorHandler
             GC.SuppressFinalize(this);
         }
     }
-
 }

@@ -59,7 +59,7 @@ namespace SSS.Infrastructure.Util.IO
                 if (buff[0] == 239 && buff[1] == 187 && buff[2] == 191)
                     return Encoding.UTF8.GetString(buff, 3, buff.Length - 3);
 
-                if (buff[0] == 255 && buff[1] == 254) return Encoding.Unicode.GetString(buff, 2, buff.Length - 2);
+                if (buff[0] == 255 && buff[1] == 254)
                 {
                     return Encoding.Unicode.GetString(buff, 2, buff.Length - 2);
                 }
@@ -73,8 +73,9 @@ namespace SSS.Infrastructure.Util.IO
 
                 return encoding.GetString(buff);
             }
-            catch (Exception err)
+            catch (Exception ex)
             {
+               
             }
 
             return string.Empty;
@@ -150,7 +151,7 @@ namespace SSS.Infrastructure.Util.IO
 
                 return true;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
             }
 
@@ -175,7 +176,7 @@ namespace SSS.Infrastructure.Util.IO
                         }
                     }
             }
-            catch (Exception err)
+            catch (Exception ex)
             {
             }
 

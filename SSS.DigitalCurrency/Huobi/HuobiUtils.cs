@@ -10,7 +10,6 @@ using SSS.Infrastructure.Util.DateTime;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading;
 
@@ -45,7 +44,7 @@ namespace SSS.DigitalCurrency.Huobi
                 var json_data = json_root["data"];
 
                 foreach (var item in json_data)
-                    if (item["quote-currency"].Contains("usdt"))
+                    if (item.Value<string>("quote-currency").Contains("usdt"))
                     {
                         CoinSymbols s = new CoinSymbols
                         {

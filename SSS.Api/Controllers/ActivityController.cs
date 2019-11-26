@@ -21,9 +21,10 @@ namespace SSS.Api.Controllers
         private readonly IActivityService _service;
 
         /// <summary>
-        ///     ActivityController
+        /// ActivityController
         /// </summary>
-        /// <param name="service">IActivityService</param>
+        /// <param name="service"></param>
+        /// <param name="repository"></param>
         public ActivityController(IActivityService service, IArticelRepository repository)
         {
             _service = service;

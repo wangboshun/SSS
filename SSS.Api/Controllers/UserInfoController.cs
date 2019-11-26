@@ -40,6 +40,11 @@ namespace SSS.Api.Controllers
             return ApiResponse(result);
         }
 
+        /// <summary>
+        /// login
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         [HttpPost("login")]
         [AllowAnonymous] //匿名访问
         public IActionResult Login([FromBody] UserInfoInputDto input)

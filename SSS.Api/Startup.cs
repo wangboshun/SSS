@@ -118,10 +118,12 @@ namespace SSS.Api
         }
 
         /// <summary>
-        ///     Configure
+        /// Configure
         /// </summary>
-        /// <param name="app">IApplicationBuilder</param>
-        /// <param name="env">IHostingEnvironment</param>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
+        /// <param name="senparcSetting"></param>
+        /// <param name="senparcWeixinSetting"></param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<SenparcSetting> senparcSetting,
             IOptions<SenparcWeixinSetting> senparcWeixinSetting)
         {

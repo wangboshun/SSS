@@ -43,9 +43,10 @@ namespace SSS.Api.Bootstrap
         }
 
         /// <summary>
-        ///     注入RedisCache
+        /// 注入RedisCache
         /// </summary>
         /// <param name="app"></param>
+        /// <param name="options"></param>
         /// <returns></returns>
         public static IApplicationBuilder UseRedisCache(this IApplicationBuilder app,
             Action<RedisOptions> options = null)
@@ -59,9 +60,10 @@ namespace SSS.Api.Bootstrap
         }
 
         /// <summary>
-        ///     注入Memcached
+        /// 注入Memcached
         /// </summary>
         /// <param name="app"></param>
+        /// <param name="options"></param>
         /// <returns></returns>
         public static IApplicationBuilder UseMemCached(this IApplicationBuilder app,
             Action<MemCachedOptions> options = null)

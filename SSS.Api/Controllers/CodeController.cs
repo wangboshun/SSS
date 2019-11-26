@@ -16,6 +16,9 @@ using System.Threading;
 
 namespace SSS.Api.Controllers
 {
+    /// <summary>
+    /// 代码生成
+    /// </summary>
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
@@ -24,12 +27,20 @@ namespace SSS.Api.Controllers
         private static string current_path;
         private readonly IWebHostEnvironment _env;
 
+        /// <summary>
+        /// 构造
+        /// </summary>
+        /// <param name="env"></param>
         public CodeController(IWebHostEnvironment env)
         {
             _env = env;
             current_path = _env.ContentRootPath;
         }
 
+        /// <summary>
+        /// Index
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("index")]
         public ContentResult Index()
         {
@@ -51,6 +62,10 @@ namespace SSS.Api.Controllers
             };
         }
 
+        /// <summary>
+        /// 生成操作
+        /// </summary>
+        /// <returns></returns>
         [HttpPost("createcode")]
         public IActionResult CreateCode()
         {
@@ -72,8 +87,9 @@ namespace SSS.Api.Controllers
         }
 
         /// <summary>
-        ///     填充类字段信息
+        /// 填充类字段信息
         /// </summary>
+        /// <param name="name"></param>
         /// <param name="fields"></param>
         private void AppDomainContext(string name, List<Field> fields)
         {
@@ -214,9 +230,19 @@ namespace SSS.Api.Controllers
         }
     }
 
+    /// <summary>
+    /// Field
+    /// </summary>
     public class Field
     {
+        /// <summary>
+        /// field_name
+        /// </summary>
         public string field_name { set; get; }
+
+        /// <summary>
+        /// field_type
+        /// </summary>
         public string field_type { set; get; }
     }
 }

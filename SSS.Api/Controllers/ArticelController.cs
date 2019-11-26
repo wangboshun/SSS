@@ -53,6 +53,11 @@ namespace SSS.Api.Controllers
             return ApiResponse(result);
         }
 
+        /// <summary>
+        /// GetNewsDetail
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("getnewsdetail")]
         [AllowAnonymous] //匿名访问
         public IActionResult GetNewsDetail(string id)

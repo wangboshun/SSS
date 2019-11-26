@@ -25,16 +25,18 @@
         </member>
         <member name="M:SSS.Api.Bootstrap.ApplicationBuilderExtension.UseRedisCache(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.Action{SSS.Infrastructure.Seedwork.Cache.Redis.RedisOptions})">
             <summary>
-                注入RedisCache
+            注入RedisCache
             </summary>
             <param name="app"></param>
+            <param name="options"></param>
             <returns></returns>
         </member>
         <member name="M:SSS.Api.Bootstrap.ApplicationBuilderExtension.UseMemCached(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.Action{SSS.Infrastructure.Seedwork.Cache.Redis.MemCachedOptions})">
             <summary>
-                注入Memcached
+            注入Memcached
             </summary>
             <param name="app"></param>
+            <param name="options"></param>
             <returns></returns>
         </member>
         <member name="T:SSS.Api.Bootstrap.ServiceCollectionExtension">
@@ -57,6 +59,12 @@
         <member name="M:SSS.Api.Bootstrap.ServiceCollectionExtension.AddSwagger(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
                 Swagger
+            </summary>
+            <param name="services"></param>
+        </member>
+        <member name="M:SSS.Api.Bootstrap.ServiceCollectionExtension.AddApiVersion(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            ApiVersion
             </summary>
             <param name="services"></param>
         </member>
@@ -113,9 +121,10 @@
         </member>
         <member name="M:SSS.Api.Controllers.ActivityController.#ctor(SSS.Application.Activity.Service.IActivityService,SSS.Infrastructure.Repository.Articel.IArticelRepository)">
             <summary>
-                ActivityController
+            ActivityController
             </summary>
-            <param name="service">IActivityService</param>
+            <param name="service"></param>
+            <param name="repository"></param>
         </member>
         <member name="M:SSS.Api.Controllers.ActivityController.GetList(SSS.Domain.Activity.Dto.ActivityInputDto)">
             <summary>
@@ -163,6 +172,13 @@
             <param name="input">input</param>
             <returns></returns>
         </member>
+        <member name="M:SSS.Api.Controllers.ArticelController.GetNewsDetail(System.String)">
+            <summary>
+            GetNewsDetail
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
         <member name="M:SSS.Api.Controllers.ArticelController.AddArticel(SSS.Domain.Articel.Dto.ArticelInputDto)">
             <summary>
                 AddArticel
@@ -170,10 +186,34 @@
             <param name="input">ArticelInputDto</param>
             <returns></returns>
         </member>
+        <member name="T:SSS.Api.Controllers.CodeController">
+            <summary>
+            代码生成
+            </summary>
+        </member>
+        <member name="M:SSS.Api.Controllers.CodeController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            构造
+            </summary>
+            <param name="env"></param>
+        </member>
+        <member name="M:SSS.Api.Controllers.CodeController.Index">
+            <summary>
+            Index
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SSS.Api.Controllers.CodeController.CreateCode">
+            <summary>
+            生成操作
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:SSS.Api.Controllers.CodeController.AppDomainContext(System.String,System.Collections.Generic.List{SSS.Api.Controllers.Field})">
             <summary>
-                填充类字段信息
+            填充类字段信息
             </summary>
+            <param name="name"></param>
             <param name="fields"></param>
         </member>
         <member name="M:SSS.Api.Controllers.CodeController.Generator_Domain(System.String)">
@@ -199,6 +239,21 @@
                 4
             </summary>
             <param name="name"></param>
+        </member>
+        <member name="T:SSS.Api.Controllers.Field">
+            <summary>
+            Field
+            </summary>
+        </member>
+        <member name="P:SSS.Api.Controllers.Field.field_name">
+            <summary>
+            field_name
+            </summary>
+        </member>
+        <member name="P:SSS.Api.Controllers.Field.field_type">
+            <summary>
+            field_type
+            </summary>
         </member>
         <member name="T:SSS.Api.Controllers.CoinInfoController">
             <summary>
@@ -350,11 +405,36 @@
             <param name="input">input</param>
             <returns></returns>
         </member>
+        <member name="M:SSS.Api.Controllers.UserInfoController.Login(SSS.Domain.UserInfo.Dto.UserInfoInputDto)">
+            <summary>
+            login
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
         <member name="M:SSS.Api.Controllers.UserInfoController.AddUserInfo(SSS.Domain.UserInfo.Dto.UserInfoInputDto)">
             <summary>
                 AddUserInfo
             </summary>
             <param name="input">UserInfoInputDto</param>
+            <returns></returns>
+        </member>
+        <member name="T:SSS.Api.Program">
+            <summary>
+            Program
+            </summary>
+        </member>
+        <member name="M:SSS.Api.Program.Main(System.String[])">
+            <summary>
+            Main
+            </summary>
+            <param name="args"></param>
+        </member>
+        <member name="M:SSS.Api.Program.CreateWebHostBuilder(System.String[])">
+            <summary>
+            CreateWebHostBuilder
+            </summary>
+            <param name="args"></param>
             <returns></returns>
         </member>
         <member name="T:SSS.Api.Startup">
@@ -381,10 +461,12 @@
         </member>
         <member name="M:SSS.Api.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Options.IOptions{Senparc.CO2NET.SenparcSetting},Microsoft.Extensions.Options.IOptions{Senparc.Weixin.Entities.SenparcWeixinSetting})">
             <summary>
-                Configure
+            Configure
             </summary>
-            <param name="app">IApplicationBuilder</param>
-            <param name="env">IHostingEnvironment</param>
+            <param name="app"></param>
+            <param name="env"></param>
+            <param name="senparcSetting"></param>
+            <param name="senparcWeixinSetting"></param>
         </member>
         <member name="M:SSS.Api.Startup.Swagger(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
             <summary>

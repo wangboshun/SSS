@@ -86,7 +86,10 @@ namespace SSS.Api.Bootstrap
             });
         }
 
-        //ApiVersion
+        /// <summary>
+        /// ApiVersion
+        /// </summary>
+        /// <param name="services"></param>
         public static void AddApiVersion(this IServiceCollection services)
         {
             services.AddApiVersioning(options =>
