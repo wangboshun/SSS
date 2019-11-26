@@ -421,7 +421,7 @@
         </member>
         <member name="T:SSS.Api.Program">
             <summary>
-            Program
+            Program 
             </summary>
         </member>
         <member name="M:SSS.Api.Program.Main(System.String[])">
