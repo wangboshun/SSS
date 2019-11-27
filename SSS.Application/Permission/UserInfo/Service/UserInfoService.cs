@@ -1,4 +1,5 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 using FluentValidation;
 
@@ -14,6 +15,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SSS.Application.Permission.UserInfo.Service
 {
@@ -22,6 +24,7 @@ namespace SSS.Application.Permission.UserInfo.Service
         IUserInfoService
     {
         private readonly MemoryCacheEx _memorycache;
+        private readonly IUserInfoRepository _repository;
 
         public UserInfoService(IMapper mapper,
             IUserInfoRepository repository,
@@ -30,6 +33,17 @@ namespace SSS.Application.Permission.UserInfo.Service
             MemoryCacheEx memorycache) : base(mapper, repository, error, validator)
         {
             _memorycache = memorycache;
+            _repository = repository;
+        }
+
+        /// <summary>
+        /// GetChildren
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public List<UserInfoTreeOutputDto> GetChildren(UserInfoInputDto input)
+        {
+            return _repository.GetChildren(input);
         }
 
         public void AddUserInfo(UserInfoInputDto input)

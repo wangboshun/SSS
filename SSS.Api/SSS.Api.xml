@@ -114,39 +114,6 @@
             <param name="services"></param>
             <param name="options"></param>
         </member>
-        <member name="T:SSS.Api.Controllers.ActivityController">
-            <summary>
-                ActivityController
-            </summary>
-        </member>
-        <member name="M:SSS.Api.Controllers.ActivityController.#ctor(SSS.Application.Activity.Service.IActivityService,SSS.Infrastructure.Repository.CoinArticel.ICoinArticelRepository)">
-            <summary>
-            ActivityController
-            </summary>
-            <param name="service"></param>
-            <param name="repository"></param>
-        </member>
-        <member name="M:SSS.Api.Controllers.ActivityController.GetList(SSS.Domain.Activity.Dto.ActivityInputDto)">
-            <summary>
-                GetList
-            </summary>
-            <param name="input">input</param>
-            <returns></returns>
-        </member>
-        <member name="M:SSS.Api.Controllers.ActivityController.GetById(SSS.Domain.Activity.Dto.ActivityInputDto)">
-            <summary>
-                Get
-            </summary>
-            <param name="input">input</param>
-            <returns></returns>
-        </member>
-        <member name="M:SSS.Api.Controllers.ActivityController.AddActivity(SSS.Domain.Activity.Dto.ActivityInputDto)">
-            <summary>
-                AddActivity
-            </summary>
-            <param name="input">ActivityInputDto</param>
-            <returns></returns>
-        </member>
         <member name="T:SSS.Api.Controllers.CodeController">
             <summary>
             代码生成
@@ -498,6 +465,13 @@
             <param name="input">input</param>
             <returns></returns>
         </member>
+        <member name="M:SSS.Api.Controllers.Permission.UserInfoController.GetChildren(SSS.Domain.Permission.UserInfo.Dto.UserInfoInputDto)">
+            <summary>
+                GetChildren
+            </summary>
+            <param name="input">input</param>
+            <returns></returns>
+        </member>
         <member name="M:SSS.Api.Controllers.Permission.UserInfoController.Login(SSS.Domain.Permission.UserInfo.Dto.UserInfoInputDto)">
             <summary>
             login
@@ -536,38 +510,6 @@
             </summary>
             <param name="input">UserRoleInputDto</param>
             <returns></returns> 
-        </member>
-        <member name="T:SSS.Api.Controllers.UserActivityController">
-            <summary>
-                UserActivityController
-            </summary>
-        </member>
-        <member name="M:SSS.Api.Controllers.UserActivityController.#ctor(SSS.Application.UserActivity.Service.IUserActivityService)">
-            <summary>
-                UserActivityController
-            </summary>
-            <param name="service">IUserActivityService</param>
-        </member>
-        <member name="M:SSS.Api.Controllers.UserActivityController.GetList(SSS.Domain.UserActivity.Dto.UserActivityInputDto)">
-            <summary>
-                GetList
-            </summary>
-            <param name="input">input</param>
-            <returns></returns>
-        </member>
-        <member name="M:SSS.Api.Controllers.UserActivityController.GetGroupNumber(SSS.Domain.UserActivity.Dto.UserActivityInputDto)">
-            <summary>
-                GetGroupNumberByName
-            </summary>
-            <param name="input">input</param>
-            <returns></returns>
-        </member>
-        <member name="M:SSS.Api.Controllers.UserActivityController.AddUserActivity(SSS.Domain.UserActivity.Dto.UserActivityInputDto)">
-            <summary>
-                AddUserActivity
-            </summary>
-            <param name="input">UserActivityInputDto</param>
-            <returns></returns>
         </member>
         <member name="T:SSS.Api.Program">
             <summary>

@@ -13,5 +13,6 @@ namespace SSS.Application.Permission.UserInfo.Service
         UserInfoOutputDto GetByUserName(UserInfoInputDto input);
 
         Pages<List<UserInfoOutputDto>> GetListUserInfo(UserInfoInputDto input);
+        List<UserInfoTreeOutputDto> GetChildren(UserInfoInputDto input);
     }
 }

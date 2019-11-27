@@ -18,12 +18,17 @@ using Senparc.Weixin.WxOpen;
 
 using SSS.Api.Bootstrap;
 using SSS.Api.Seedwork.Filter;
+using SSS.Api.Seedwork.Json;
 using SSS.Api.Seedwork.Middleware;
 
 using StackExchange.Profiling.SqlFormatters;
-
+using System;
 using System.IO;
 using System.Reflection;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.Unicode;
 
 namespace SSS.Api
 {
@@ -57,10 +62,10 @@ namespace SSS.Api
                     //全局Action Exception Result过滤器
                     options.Filters.Add<MvcFilter>();
                 })
-                .AddNewtonsoftJson(options =>
-                {
-                    //options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
-                })
+                //.AddNewtonsoftJson(options =>
+                //{
+                //    options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+                //})
                 .AddFluentValidation(config =>
                 {
                     config.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
@@ -69,7 +74,13 @@ namespace SSS.Api
                 {
                     //关闭默认模型验证过滤器
                     config.SuppressModelStateInvalidFilter = true;
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+                    options.JsonSerializerOptions.Converters.Add(new DateTimeNullConverter());
+                });
 
             services.AddMemoryCacheEx();
 
@@ -233,5 +244,5 @@ namespace SSS.Api
                 RequestPath = "/file"
             });
         }
-    }
+    } 
 }

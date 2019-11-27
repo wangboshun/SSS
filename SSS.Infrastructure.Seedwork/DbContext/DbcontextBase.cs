@@ -4,9 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-using SSS.Domain.Activity;
-using SSS.Domain.Coin.CoinArticel;
 using SSS.Domain.Coin.CoinAnalyse;
+using SSS.Domain.Coin.CoinArticel;
 using SSS.Domain.Coin.CoinInfo;
 using SSS.Domain.Coin.CoinMessage;
 using SSS.Domain.Coin.CoinTrade;
@@ -17,7 +16,6 @@ using SSS.Domain.Permission.RoleMenu;
 using SSS.Domain.Permission.RoleOperate;
 using SSS.Domain.Permission.UserInfo;
 using SSS.Domain.Permission.UserRole;
-using SSS.Domain.UserActivity;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
@@ -35,10 +33,6 @@ namespace SSS.Infrastructure.Seedwork.DbContext
             _env = env;
             _factory = factory;
         }
-
-        public DbSet<Activity> Activity { get; set; }
-
-        public DbSet<UserActivity> UserActivity { get; set; }
 
         #region Coin
 
