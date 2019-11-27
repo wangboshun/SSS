@@ -1,8 +1,0 @@
-using SSS.Domain.Seedwork.Repository;
-
-namespace SSS.Infrastructure.Repository.UserInfo
-{
-    public interface IUserInfoRepository : IRepository<Domain.UserInfo.UserInfo>
-    {
-    }
-}

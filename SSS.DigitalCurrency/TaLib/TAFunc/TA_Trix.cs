@@ -1,8 +1,7 @@
-using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode Trix(int startIdx, int endIdx, double[] inReal, int optInTimePeriod, ref int outBegIdx, ref int outNBElement, double[] outReal)
         {
             int nbElement = 0;
@@ -185,5 +184,5 @@ namespace TALibrary
             }
             return ((EmaLookback(optInTimePeriod) * 3) + RocRLookback(1));
         }
-     }
+    }
 }

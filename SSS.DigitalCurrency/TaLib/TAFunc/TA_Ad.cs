@@ -1,8 +1,7 @@
-using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode Ad(int startIdx, int endIdx, double[] inHigh, double[] inLow, double[] inClose, double[] inVolume, ref int outBegIdx, ref int outNBElement, double[] outReal)
         {
             if (startIdx < 0)
@@ -97,5 +96,5 @@ namespace TALibrary
         {
             return 0;
         }
-     }
+    }
 }

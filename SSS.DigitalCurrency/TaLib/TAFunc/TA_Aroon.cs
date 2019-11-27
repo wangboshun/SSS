@@ -1,8 +1,7 @@
-using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode Aroon(int startIdx, int endIdx, double[] inHigh, double[] inLow, int optInTimePeriod, ref int outBegIdx, ref int outNBElement, double[] outAroonDown, double[] outAroonUp)
         {
             int i;
@@ -249,5 +248,5 @@ namespace TALibrary
             }
             return optInTimePeriod;
         }
-     }
+    }
 }

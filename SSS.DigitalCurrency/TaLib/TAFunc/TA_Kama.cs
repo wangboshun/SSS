@@ -1,8 +1,8 @@
 using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode Kama(int startIdx, int endIdx, double[] inReal, int optInTimePeriod, ref int outBegIdx, ref int outNBElement, double[] outReal)
         {
             double tempReal;
@@ -287,5 +287,5 @@ namespace TALibrary
             }
             return (optInTimePeriod + ((int)Globals.unstablePeriod[12]));
         }
-     }
+    }
 }

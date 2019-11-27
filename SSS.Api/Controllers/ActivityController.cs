@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.Activity.Service;
 using SSS.Domain.Activity.Dto;
-using SSS.Infrastructure.Repository.Articel;
+using SSS.Infrastructure.Repository.CoinArticel;
 
 namespace SSS.Api.Controllers
 {
@@ -17,7 +17,7 @@ namespace SSS.Api.Controllers
     [ApiController]
     public class ActivityController : ApiBaseController
     {
-        private readonly IArticelRepository _repository;
+        private readonly ICoinArticelRepository _repository;
         private readonly IActivityService _service;
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace SSS.Api.Controllers
         /// </summary>
         /// <param name="service"></param>
         /// <param name="repository"></param>
-        public ActivityController(IActivityService service, IArticelRepository repository)
+        public ActivityController(IActivityService service, ICoinArticelRepository repository)
         {
             _service = service;
             _repository = repository;

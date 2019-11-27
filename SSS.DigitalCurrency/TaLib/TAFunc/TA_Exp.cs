@@ -1,8 +1,8 @@
 using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode Exp(int startIdx, int endIdx, double[] inReal, ref int outBegIdx, ref int outNBElement, double[] outReal)
         {
             if (startIdx < 0)
@@ -67,5 +67,5 @@ namespace TALibrary
         {
             return 0;
         }
-     }
+    }
 }

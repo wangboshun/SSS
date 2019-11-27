@@ -1,8 +1,8 @@
 using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode HtTrendMode(int startIdx, int endIdx, double[] inReal, ref int outBegIdx, ref int outNBElement, int[] outInteger)
         {
             double smoothedValue;
@@ -805,5 +805,5 @@ namespace TALibrary
         {
             return (((int)Globals.unstablePeriod[11]) + 0x3f);
         }
-     }
+    }
 }

@@ -1,8 +1,8 @@
 using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode Mama(int startIdx, int endIdx, double[] inReal, double optInFastLimit, double optInSlowLimit, ref int outBegIdx, ref int outNBElement, double[] outMAMA, double[] outFAMA)
         {
             double smoothedValue;
@@ -695,5 +695,5 @@ namespace TALibrary
             }
             return (((int)Globals.unstablePeriod[13]) + 0x20);
         }
-     }
+    }
 }

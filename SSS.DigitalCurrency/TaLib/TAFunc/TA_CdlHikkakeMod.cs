@@ -1,8 +1,8 @@
 using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode CdlHikkakeMod(int startIdx, int endIdx, double[] inOpen, double[] inHigh, double[] inLow, double[] inClose, ref int outBegIdx, ref int outNBElement, int[] outInteger)
         {
             int outIdx;
@@ -1249,5 +1249,5 @@ namespace TALibrary
         {
             return (((1 <= Globals.candleSettings[8].avgPeriod) ? Globals.candleSettings[8].avgPeriod : 1) + 5);
         }
-     }
+    }
 }

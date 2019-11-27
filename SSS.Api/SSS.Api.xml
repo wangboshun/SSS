@@ -119,7 +119,7 @@
                 ActivityController
             </summary>
         </member>
-        <member name="M:SSS.Api.Controllers.ActivityController.#ctor(SSS.Application.Activity.Service.IActivityService,SSS.Infrastructure.Repository.Articel.IArticelRepository)">
+        <member name="M:SSS.Api.Controllers.ActivityController.#ctor(SSS.Application.Activity.Service.IActivityService,SSS.Infrastructure.Repository.CoinArticel.ICoinArticelRepository)">
             <summary>
             ActivityController
             </summary>
@@ -145,45 +145,6 @@
                 AddActivity
             </summary>
             <param name="input">ActivityInputDto</param>
-            <returns></returns>
-        </member>
-        <member name="T:SSS.Api.Controllers.ArticelController">
-            <summary>
-                ArticelController
-            </summary>
-        </member>
-        <member name="M:SSS.Api.Controllers.ArticelController.#ctor(SSS.Application.Articel.Service.IArticelService)">
-            <summary>
-                ArticelController
-            </summary>
-            <param name="service">IArticelService</param>
-        </member>
-        <member name="M:SSS.Api.Controllers.ArticelController.GetList(SSS.Domain.Articel.Dto.ArticelInputDto)">
-            <summary>
-                GetList
-            </summary>
-            <param name="input">input</param>
-            <returns></returns>
-        </member>
-        <member name="M:SSS.Api.Controllers.ArticelController.GetNews(SSS.Domain.Articel.Dto.ArticelInputDto)">
-            <summary>
-                GetNews
-            </summary>
-            <param name="input">input</param>
-            <returns></returns>
-        </member>
-        <member name="M:SSS.Api.Controllers.ArticelController.GetNewsDetail(System.String)">
-            <summary>
-            GetNewsDetail
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SSS.Api.Controllers.ArticelController.AddArticel(SSS.Domain.Articel.Dto.ArticelInputDto)">
-            <summary>
-                AddArticel
-            </summary>
-            <param name="input">ArticelInputDto</param>
             <returns></returns>
         </member>
         <member name="T:SSS.Api.Controllers.CodeController">
@@ -255,104 +216,325 @@
             field_type
             </summary>
         </member>
-        <member name="T:SSS.Api.Controllers.CoinInfoController">
+        <member name="T:SSS.Api.Controllers.Coin.CoinAnalyseController">
             <summary>
-            CoinInfoController
+            CoinAnalyseController
             </summary> 
         </member>
-        <member name="M:SSS.Api.Controllers.CoinInfoController.#ctor(SSS.Application.CoinInfo.Service.ICoinInfoService)">
+        <member name="M:SSS.Api.Controllers.Coin.CoinAnalyseController.#ctor(SSS.Application.Coin.CoinAnalyse.Service.ICoinAnalyseService)">
             <summary>
-            CoinInfoController
+            CoinAnalyseController
             </summary>
-            <param name="service">ICoinInfoService</param>
+            <param name="service">ICoinAnalyseService</param>
         </member>
-        <member name="M:SSS.Api.Controllers.CoinInfoController.GetList(SSS.Domain.CoinInfo.Dto.CoinInfoInputDto)">
+        <member name="M:SSS.Api.Controllers.Coin.CoinAnalyseController.GetList(SSS.Domain.Coin.CoinAnalyse.Dto.CoinAnalyseInputDto)">
             <summary>
             GetList
             </summary>
             <param name="input">input</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.CoinInfoController.AddCoinInfo(SSS.Domain.CoinInfo.Dto.CoinInfoInputDto)">
+        <member name="M:SSS.Api.Controllers.Coin.CoinAnalyseController.AddCoinAnalyse(SSS.Domain.Coin.CoinAnalyse.Dto.CoinAnalyseInputDto)">
+            <summary>
+            AddCoinAnalyse
+            </summary>
+            <param name="input">CoinAnalyseInputDto</param>
+            <returns></returns> 
+        </member>
+        <member name="T:SSS.Api.Controllers.Coin.CoinArticelController">
+            <summary>
+                CoinArticelController
+            </summary>
+        </member>
+        <member name="M:SSS.Api.Controllers.Coin.CoinArticelController.#ctor(SSS.Application.Coin.CoinArticel.Service.ICoinArticelService)">
+            <summary>
+                CoinArticelController
+            </summary>
+            <param name="service">ICoinArticelService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.Coin.CoinArticelController.GetList(SSS.Domain.Coin.CoinArticel.Dto.CoinArticelInputDto)">
+            <summary>
+                GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns>
+        </member>
+        <member name="M:SSS.Api.Controllers.Coin.CoinArticelController.GetNews(SSS.Domain.Coin.CoinArticel.Dto.CoinArticelInputDto)">
+            <summary>
+                GetNews
+            </summary>
+            <param name="input">input</param>
+            <returns></returns>
+        </member>
+        <member name="M:SSS.Api.Controllers.Coin.CoinArticelController.GetNewsDetail(System.String)">
+            <summary>
+            GetNewsDetail
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SSS.Api.Controllers.Coin.CoinArticelController.AddCoinArticel(SSS.Domain.Coin.CoinArticel.Dto.CoinArticelInputDto)">
+            <summary>
+                AddCoinArticel
+            </summary>
+            <param name="input">CoinArticelInputDto</param>
+            <returns></returns>
+        </member>
+        <member name="T:SSS.Api.Controllers.Coin.CoinInfoController">
+            <summary>
+            CoinInfoController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Coin.CoinInfoController.#ctor(SSS.Application.Coin.CoinInfo.Service.ICoinInfoService)">
+            <summary>
+            CoinInfoController
+            </summary>
+            <param name="service">ICoinInfoService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.Coin.CoinInfoController.GetList(SSS.Domain.Coin.CoinInfo.Dto.CoinInfoInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Coin.CoinInfoController.AddCoinInfo(SSS.Domain.Coin.CoinInfo.Dto.CoinInfoInputDto)">
             <summary>
             AddCoinInfo
             </summary>
             <param name="input">CoinInfoInputDto</param>
             <returns></returns> 
         </member>
-        <member name="T:SSS.Api.Controllers.CoinMessageController">
+        <member name="T:SSS.Api.Controllers.Coin.CoinMessageController">
             <summary>
             CoinMessageController
             </summary> 
         </member>
-        <member name="M:SSS.Api.Controllers.CoinMessageController.#ctor(SSS.Application.CoinMessage.Service.ICoinMessageService)">
+        <member name="M:SSS.Api.Controllers.Coin.CoinMessageController.#ctor(SSS.Application.Coin.CoinMessage.Service.ICoinMessageService)">
             <summary>
             CoinMessageController
             </summary>
             <param name="service">ICoinMessageService</param>
         </member>
-        <member name="M:SSS.Api.Controllers.CoinMessageController.GetList(SSS.Domain.CoinMessage.Dto.CoinMessageInputDto)">
+        <member name="M:SSS.Api.Controllers.Coin.CoinMessageController.GetList(SSS.Domain.Coin.CoinMessage.Dto.CoinMessageInputDto)">
             <summary>
             GetList
             </summary>
             <param name="input">input</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.CoinMessageController.AddCoinMessage(SSS.Domain.CoinMessage.Dto.CoinMessageInputDto)">
+        <member name="M:SSS.Api.Controllers.Coin.CoinMessageController.AddCoinMessage(SSS.Domain.Coin.CoinMessage.Dto.CoinMessageInputDto)">
             <summary>
             AddCoinMessage
             </summary>
             <param name="input">CoinMessageInputDto</param>
             <returns></returns> 
         </member>
-        <member name="T:SSS.Api.Controllers.DigitalCurrencyController">
+        <member name="T:SSS.Api.Controllers.Coin.CoinTradeController">
             <summary>
-            DigitalCurrencyController
+            CoinTradeController
             </summary> 
         </member>
-        <member name="M:SSS.Api.Controllers.DigitalCurrencyController.#ctor(SSS.Application.DigitalCurrency.Service.IDigitalCurrencyService)">
+        <member name="M:SSS.Api.Controllers.Coin.CoinTradeController.#ctor(SSS.Application.Coin.CoinTrade.Service.ICoinTradeService)">
             <summary>
-            DigitalCurrencyController
+            CoinTradeController
             </summary>
-            <param name="service">IDigitalCurrencyService</param>
+            <param name="service">ICoinTradeService</param>
         </member>
-        <member name="M:SSS.Api.Controllers.DigitalCurrencyController.GetList(SSS.Domain.DigitalCurrency.Dto.DigitalCurrencyInputDto)">
+        <member name="M:SSS.Api.Controllers.Coin.CoinTradeController.GetList(SSS.Domain.Coin.CoinTrade.Dto.CoinTradeInputDto)">
             <summary>
             GetList
             </summary>
             <param name="input">input</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.DigitalCurrencyController.AddDigitalCurrency(SSS.Domain.DigitalCurrency.Dto.DigitalCurrencyInputDto)">
+        <member name="M:SSS.Api.Controllers.Coin.CoinTradeController.AddCoinTrade(SSS.Domain.Coin.CoinTrade.Dto.CoinTradeInputDto)">
             <summary>
-            AddDigitalCurrency
+            AddCoinTrade
             </summary>
-            <param name="input">DigitalCurrencyInputDto</param>
+            <param name="input">CoinTradeInputDto</param>
             <returns></returns> 
         </member>
-        <member name="T:SSS.Api.Controllers.TradeController">
+        <member name="T:SSS.Api.Controllers.Permission.MenuInfoController">
             <summary>
-            TradeController
+            MenuInfoController
             </summary> 
         </member>
-        <member name="M:SSS.Api.Controllers.TradeController.#ctor(SSS.Application.Trade.Service.ITradeService)">
+        <member name="M:SSS.Api.Controllers.Permission.MenuInfoController.#ctor(SSS.Application.Permission.MenuInfo.Service.IMenuInfoService)">
             <summary>
-            TradeController
+            MenuInfoController
             </summary>
-            <param name="service">ITradeService</param>
+            <param name="service">IMenuInfoService</param>
         </member>
-        <member name="M:SSS.Api.Controllers.TradeController.GetList(SSS.Domain.Trade.Dto.TradeInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.MenuInfoController.GetList(SSS.Domain.Permission.MenuInfo.Dto.MenuInfoInputDto)">
             <summary>
             GetList
             </summary>
             <param name="input">input</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.TradeController.AddTrade(SSS.Domain.Trade.Dto.TradeInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.MenuInfoController.AddMenuInfo(SSS.Domain.Permission.MenuInfo.Dto.MenuInfoInputDto)">
             <summary>
-            AddTrade
+            AddMenuInfo
             </summary>
-            <param name="input">TradeInputDto</param>
+            <param name="input">MenuInfoInputDto</param>
+            <returns></returns> 
+        </member>
+        <member name="T:SSS.Api.Controllers.Permission.OperateInfoController">
+            <summary>
+            OperateInfoController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.OperateInfoController.#ctor(SSS.Application.Permission.OperateInfo.Service.IOperateInfoService)">
+            <summary>
+            OperateInfoController
+            </summary>
+            <param name="service">IOperateInfoService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.OperateInfoController.GetList(SSS.Domain.Permission.OperateInfo.Dto.OperateInfoInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.OperateInfoController.AddOperateInfo(SSS.Domain.Permission.OperateInfo.Dto.OperateInfoInputDto)">
+            <summary>
+            AddOperateInfo
+            </summary>
+            <param name="input">OperateInfoInputDto</param>
+            <returns></returns> 
+        </member>
+        <member name="T:SSS.Api.Controllers.Permission.RoleInfoController">
+            <summary>
+            RoleInfoController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.RoleInfoController.#ctor(SSS.Application.Permission.RoleInfo.Service.IRoleInfoService)">
+            <summary>
+            RoleInfoController
+            </summary>
+            <param name="service">IRoleInfoService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.RoleInfoController.GetList(SSS.Domain.Permission.RoleInfo.Dto.RoleInfoInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.RoleInfoController.AddRoleInfo(SSS.Domain.Permission.RoleInfo.Dto.RoleInfoInputDto)">
+            <summary>
+            AddRoleInfo
+            </summary>
+            <param name="input">RoleInfoInputDto</param>
+            <returns></returns> 
+        </member>
+        <member name="T:SSS.Api.Controllers.Permission.RoleMenuController">
+            <summary>
+            RoleMenuController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.RoleMenuController.#ctor(SSS.Application.Permission.RoleMenu.Service.IRoleMenuService)">
+            <summary>
+            RoleMenuController
+            </summary>
+            <param name="service">IRoleMenuService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.RoleMenuController.GetList(SSS.Domain.Permission.RoleMenu.Dto.RoleMenuInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.RoleMenuController.AddRoleMenu(SSS.Domain.Permission.RoleMenu.Dto.RoleMenuInputDto)">
+            <summary>
+            AddRoleMenu
+            </summary>
+            <param name="input">RoleMenuInputDto</param>
+            <returns></returns> 
+        </member>
+        <member name="T:SSS.Api.Controllers.Permission.RoleOperateController">
+            <summary>
+            RoleOperateController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.RoleOperateController.#ctor(SSS.Application.Permission.RoleOperate.Service.IRoleOperateService)">
+            <summary>
+            RoleOperateController
+            </summary>
+            <param name="service">IRoleOperateService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.RoleOperateController.GetList(SSS.Domain.Permission.RoleOperate.Dto.RoleOperateInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.RoleOperateController.AddRoleOperate(SSS.Domain.Permission.RoleOperate.Dto.RoleOperateInputDto)">
+            <summary>
+            AddRoleOperate
+            </summary>
+            <param name="input">RoleOperateInputDto</param>
+            <returns></returns> 
+        </member>
+        <member name="T:SSS.Api.Controllers.Permission.UserInfoController">
+            <summary>
+                UserInfoController
+            </summary>
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.UserInfoController.#ctor(SSS.Application.Permission.UserInfo.Service.IUserInfoService)">
+            <summary>
+                UserInfoController
+            </summary>
+            <param name="service">IUserInfoService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.UserInfoController.GetList(SSS.Domain.Permission.UserInfo.Dto.UserInfoInputDto)">
+            <summary>
+                GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns>
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.UserInfoController.Login(SSS.Domain.Permission.UserInfo.Dto.UserInfoInputDto)">
+            <summary>
+            login
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.UserInfoController.AddUserInfo(SSS.Domain.Permission.UserInfo.Dto.UserInfoInputDto)">
+            <summary>
+                AddUserInfo
+            </summary>
+            <param name="input">UserInfoInputDto</param>
+            <returns></returns>
+        </member>
+        <member name="T:SSS.Api.Controllers.Permission.UserRoleController">
+            <summary>
+            UserRoleController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.UserRoleController.#ctor(SSS.Application.Permission.UserRole.Service.IUserRoleService)">
+            <summary>
+            UserRoleController
+            </summary>
+            <param name="service">IUserRoleService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.UserRoleController.GetList(SSS.Domain.Permission.UserRole.Dto.UserRoleInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.UserRoleController.AddUserRole(SSS.Domain.Permission.UserRole.Dto.UserRoleInputDto)">
+            <summary>
+            AddUserRole
+            </summary>
+            <param name="input">UserRoleInputDto</param>
             <returns></returns> 
         </member>
         <member name="T:SSS.Api.Controllers.UserActivityController">
@@ -385,38 +567,6 @@
                 AddUserActivity
             </summary>
             <param name="input">UserActivityInputDto</param>
-            <returns></returns>
-        </member>
-        <member name="T:SSS.Api.Controllers.UserInfoController">
-            <summary>
-                UserInfoController
-            </summary>
-        </member>
-        <member name="M:SSS.Api.Controllers.UserInfoController.#ctor(SSS.Application.UserInfo.Service.IUserInfoService)">
-            <summary>
-                UserInfoController
-            </summary>
-            <param name="service">IUserInfoService</param>
-        </member>
-        <member name="M:SSS.Api.Controllers.UserInfoController.GetList(SSS.Domain.UserInfo.Dto.UserInfoInputDto)">
-            <summary>
-                GetList
-            </summary>
-            <param name="input">input</param>
-            <returns></returns>
-        </member>
-        <member name="M:SSS.Api.Controllers.UserInfoController.Login(SSS.Domain.UserInfo.Dto.UserInfoInputDto)">
-            <summary>
-            login
-            </summary>
-            <param name="input"></param>
-            <returns></returns>
-        </member>
-        <member name="M:SSS.Api.Controllers.UserInfoController.AddUserInfo(SSS.Domain.UserInfo.Dto.UserInfoInputDto)">
-            <summary>
-                AddUserInfo
-            </summary>
-            <param name="input">UserInfoInputDto</param>
             <returns></returns>
         </member>
         <member name="T:SSS.Api.Program">

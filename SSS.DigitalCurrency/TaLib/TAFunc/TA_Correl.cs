@@ -1,8 +1,8 @@
 using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode Correl(int startIdx, int endIdx, double[] inReal0, double[] inReal1, int optInTimePeriod, ref int outBegIdx, ref int outNBElement, double[] outReal)
         {
             double y;
@@ -231,5 +231,5 @@ namespace TALibrary
             }
             return (optInTimePeriod - 1);
         }
-     }
+    }
 }

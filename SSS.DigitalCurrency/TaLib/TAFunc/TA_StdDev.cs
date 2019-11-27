@@ -1,8 +1,8 @@
 using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode StdDev(int startIdx, int endIdx, double[] inReal, int optInTimePeriod, double optInNbDev, ref int outBegIdx, ref int outNBElement, double[] outReal)
         {
             int i;
@@ -173,5 +173,5 @@ namespace TALibrary
             }
             return VarianceLookback(optInTimePeriod, optInNbDev);
         }
-     }
+    }
 }

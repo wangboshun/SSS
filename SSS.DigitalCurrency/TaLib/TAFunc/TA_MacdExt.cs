@@ -1,8 +1,8 @@
 using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode MacdExt(int startIdx, int endIdx, double[] inReal, int optInFastPeriod, MAType optInFastMAType, int optInSlowPeriod, MAType optInSlowMAType, int optInSignalPeriod, MAType optInSignalMAType, ref int outBegIdx, ref int outNBElement, double[] outMACD, double[] outMACDSignal, double[] outMACDHist)
         {
             int i;
@@ -315,5 +315,5 @@ namespace TALibrary
             }
             return (lookbackLargest + MovingAverageLookback(optInSignalPeriod, optInSignalMAType));
         }
-     }
+    }
 }

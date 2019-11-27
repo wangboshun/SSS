@@ -1,8 +1,8 @@
 using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode CdlMatchingLow(int startIdx, int endIdx, double[] inOpen, double[] inHigh, double[] inLow, double[] inClose, ref int outBegIdx, ref int outNBElement, int[] outInteger)
         {
             double num5;
@@ -669,5 +669,5 @@ namespace TALibrary
         {
             return (Globals.candleSettings[10].avgPeriod + 1);
         }
-     }
+    }
 }

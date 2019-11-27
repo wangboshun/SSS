@@ -1,8 +1,8 @@
 using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode Stoch(int startIdx, int endIdx, double[] inHigh, double[] inLow, double[] inClose, int optInFastK_Period, int optInSlowK_Period, MAType optInSlowK_MAType, int optInSlowD_Period, MAType optInSlowD_MAType, ref int outBegIdx, ref int outNBElement, double[] outSlowK, double[] outSlowD)
         {
             double[] tempBuffer;
@@ -365,5 +365,5 @@ namespace TALibrary
             retValue += MovingAverageLookback(optInSlowK_Period, optInSlowK_MAType);
             return (retValue + MovingAverageLookback(optInSlowD_Period, optInSlowD_MAType));
         }
-     }
+    }
 }

@@ -1,8 +1,7 @@
-using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode StochRsi(int startIdx, int endIdx, double[] inReal, int optInTimePeriod, int optInFastK_Period, int optInFastD_Period, MAType optInFastD_MAType, ref int outBegIdx, ref int outNBElement, double[] outFastK, double[] outFastD)
         {
             int outNbElement1 = 0;
@@ -195,5 +194,5 @@ namespace TALibrary
             }
             return (RsiLookback(optInTimePeriod) + StochFLookback(optInFastK_Period, optInFastD_Period, optInFastD_MAType));
         }
-     }
+    }
 }

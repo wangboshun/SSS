@@ -1,8 +1,7 @@
-using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode CdlHikkake(int startIdx, int endIdx, double[] inOpen, double[] inHigh, double[] inLow, double[] inClose, ref int outBegIdx, ref int outNBElement, int[] outInteger)
         {
             if (startIdx < 0)
@@ -181,5 +180,5 @@ namespace TALibrary
         {
             return 5;
         }
-     }
+    }
 }

@@ -1,8 +1,7 @@
-using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode MacdFix(int startIdx, int endIdx, double[] inReal, int optInSignalPeriod, ref int outBegIdx, ref int outNBElement, double[] outMACD, double[] outMACDSignal, double[] outMACDHist)
         {
             if (startIdx < 0)
@@ -87,5 +86,5 @@ namespace TALibrary
             }
             return (EmaLookback(0x1a) + EmaLookback(optInSignalPeriod));
         }
-     }
+    }
 }

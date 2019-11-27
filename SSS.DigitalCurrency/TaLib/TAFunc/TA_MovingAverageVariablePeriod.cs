@@ -1,8 +1,7 @@
-using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode MovingAverageVariablePeriod(int startIdx, int endIdx, double[] inReal, double[] inPeriods, int optInMinPeriod, int optInMaxPeriod, MAType optInMAType, ref int outBegIdx, ref int outNBElement, double[] outReal)
         {
             int i;
@@ -253,5 +252,5 @@ namespace TALibrary
             }
             return MovingAverageLookback(optInMaxPeriod, optInMAType);
         }
-     }
+    }
 }

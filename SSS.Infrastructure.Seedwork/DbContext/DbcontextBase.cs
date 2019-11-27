@@ -1,18 +1,26 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
 using SSS.Domain.Activity;
-using SSS.Domain.Articel;
-using SSS.Domain.CoinInfo;
-using SSS.Domain.CoinMessage;
-using SSS.Domain.DigitalCurrency;
-using SSS.Domain.Trade;
+using SSS.Domain.Coin.CoinArticel;
+using SSS.Domain.Coin.CoinAnalyse;
+using SSS.Domain.Coin.CoinInfo;
+using SSS.Domain.Coin.CoinMessage;
+using SSS.Domain.Coin.CoinTrade;
+using SSS.Domain.Permission.MenuInfo;
+using SSS.Domain.Permission.OperateInfo;
+using SSS.Domain.Permission.RoleInfo;
+using SSS.Domain.Permission.RoleMenu;
+using SSS.Domain.Permission.RoleOperate;
+using SSS.Domain.Permission.UserInfo;
+using SSS.Domain.Permission.UserRole;
 using SSS.Domain.UserActivity;
-using SSS.Domain.UserInfo;
 using SSS.Infrastructure.Util.Attribute;
+
+using System;
 
 namespace SSS.Infrastructure.Seedwork.DbContext
 {
@@ -30,19 +38,40 @@ namespace SSS.Infrastructure.Seedwork.DbContext
 
         public DbSet<Activity> Activity { get; set; }
 
-        public DbSet<Articel> Articel { get; set; }
-
         public DbSet<UserActivity> UserActivity { get; set; }
 
-        public DbSet<DigitalCurrency> DigitalCurrency { get; set; }
+        #region Coin
 
-        public DbSet<UserInfo> UserInfo { get; set; }
+        public DbSet<CoinArticel> CoinArticel { get; set; }
+
+        public DbSet<CoinAnalyse> CoinAnalyse { get; set; }
 
         public DbSet<CoinInfo> CoinInfo { get; set; }
 
         public DbSet<CoinMessage> CoinMessage { get; set; }
 
-        public DbSet<Trade> Trade { set; get; }
+        public DbSet<CoinTrade> CoinTrade { set; get; }
+
+        #endregion
+
+
+        #region Permission
+
+        public DbSet<UserInfo> UserInfo { get; set; }
+
+        public DbSet<RoleInfo> RoleInfo { get; set; }
+
+        public DbSet<UserRole> UserRole { get; set; }
+
+        public DbSet<MenuInfo> MenuInfo { get; set; }
+
+        public DbSet<RoleMenu> RoleMenu { get; set; }
+
+        public DbSet<OperateInfo> OperateInfo { get; set; }
+
+        public DbSet<RoleOperate> RoleOperate { get; set; }
+
+        #endregion
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -51,7 +80,7 @@ namespace SSS.Infrastructure.Seedwork.DbContext
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            //optionsBuilder.UseSqlServer(config.GetConnectionString("MSSQLConnection"));
+
             optionsBuilder.UseMySql(
                 config.GetConnectionString("MYSQLConnection"),
                 builder =>
@@ -61,7 +90,9 @@ namespace SSS.Infrastructure.Seedwork.DbContext
                         maxRetryDelay: TimeSpan.FromSeconds(30),
                         null);
                 }).UseLoggerFactory(_factory);
+
             //optionsBuilder.UseSqlite(config.GetConnectionString("SQLITEConnection"));
+            //optionsBuilder.UseSqlServer(config.GetConnectionString("MSSQLConnection"));
         }
     }
 }

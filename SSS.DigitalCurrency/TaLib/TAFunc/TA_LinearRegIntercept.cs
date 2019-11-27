@@ -1,8 +1,7 @@
-using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode LinearRegIntercept(int startIdx, int endIdx, double[] inReal, int optInTimePeriod, ref int outBegIdx, ref int outNBElement, double[] outReal)
         {
             if (startIdx < 0)
@@ -155,5 +154,5 @@ namespace TALibrary
             }
             return (optInTimePeriod - 1);
         }
-     }
+    }
 }

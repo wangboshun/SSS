@@ -1,8 +1,7 @@
-using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode Ppo(int startIdx, int endIdx, double[] inReal, int optInFastPeriod, int optInSlowPeriod, MAType optInMAType, ref int outBegIdx, ref int outNBElement, double[] outReal)
         {
             if (startIdx < 0)
@@ -105,5 +104,5 @@ namespace TALibrary
             }
             return MovingAverageLookback((optInSlowPeriod <= optInFastPeriod) ? optInFastPeriod : optInSlowPeriod, optInMAType);
         }
-     }
+    }
 }

@@ -1,8 +1,8 @@
 using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode HtPhasor(int startIdx, int endIdx, double[] inReal, ref int outBegIdx, ref int outNBElement, double[] outInPhase, double[] outQuadrature)
         {
             double smoothedValue;
@@ -577,5 +577,5 @@ namespace TALibrary
         {
             return (((int)Globals.unstablePeriod[8]) + 0x20);
         }
-     }
+    }
 }

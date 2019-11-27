@@ -1,8 +1,8 @@
 using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode Bbands(int startIdx, int endIdx, double[] inReal, int optInTimePeriod, double optInNbDevUp, double optInNbDevDn, MAType optInMAType, ref int outBegIdx, ref int outNBElement, double[] outRealUpperBand, double[] outRealMiddleBand, double[] outRealLowerBand)
         {
             int i;
@@ -357,5 +357,5 @@ namespace TALibrary
             }
             return MovingAverageLookback(optInTimePeriod, optInMAType);
         }
-     }
+    }
 }

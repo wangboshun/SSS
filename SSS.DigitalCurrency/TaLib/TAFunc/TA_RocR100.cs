@@ -1,8 +1,7 @@
-using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode RocR100(int startIdx, int endIdx, double[] inReal, int optInTimePeriod, ref int outBegIdx, ref int outNBElement, double[] outReal)
         {
             if (startIdx < 0)
@@ -141,5 +140,5 @@ namespace TALibrary
             }
             return optInTimePeriod;
         }
-     }
+    }
 }

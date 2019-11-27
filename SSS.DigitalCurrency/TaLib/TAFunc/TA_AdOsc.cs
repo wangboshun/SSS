@@ -1,8 +1,7 @@
-using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode AdOsc(int startIdx, int endIdx, double[] inHigh, double[] inLow, double[] inClose, double[] inVolume, int optInFastPeriod, int optInSlowPeriod, ref int outBegIdx, ref int outNBElement, double[] outReal)
         {
             int slowestPeriod;
@@ -260,5 +259,5 @@ namespace TALibrary
             }
             return EmaLookback(slowestPeriod);
         }
-     }
+    }
 }

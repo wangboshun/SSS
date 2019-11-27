@@ -1,8 +1,8 @@
 using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode UltOsc(int startIdx, int endIdx, double[] inHigh, double[] inLow, double[] inClose, int optInTimePeriod1, int optInTimePeriod2, int optInTimePeriod3, ref int outBegIdx, ref int outNBElement, double[] outReal)
         {
             int outIdx;
@@ -715,5 +715,5 @@ namespace TALibrary
             int maxPeriod = num2;
             return (SmaLookback(maxPeriod) + 1);
         }
-     }
+    }
 }

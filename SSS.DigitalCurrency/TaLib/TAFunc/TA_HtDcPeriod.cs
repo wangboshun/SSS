@@ -1,8 +1,8 @@
 using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode HtDcPeriod(int startIdx, int endIdx, double[] inReal, ref int outBegIdx, ref int outNBElement, double[] outReal)
         {
             double smoothedValue;
@@ -559,5 +559,5 @@ namespace TALibrary
         {
             return (((int)Globals.unstablePeriod[6]) + 0x20);
         }
-     }
+    }
 }

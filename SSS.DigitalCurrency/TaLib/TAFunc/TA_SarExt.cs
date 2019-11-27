@@ -1,8 +1,8 @@
 using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode SarExt(int startIdx, int endIdx, double[] inHigh, double[] inLow, double optInStartValue, double optInOffsetOnReverse, double optInAccelerationInitLong, double optInAccelerationLong, double optInAccelerationMaxLong, double optInAccelerationInitShort, double optInAccelerationShort, double optInAccelerationMaxShort, ref int outBegIdx, ref int outNBElement, double[] outReal)
         {
             double sar;
@@ -657,5 +657,5 @@ namespace TALibrary
             }
             return 1;
         }
-     }
+    }
 }

@@ -1,8 +1,7 @@
-using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode Beta(int startIdx, int endIdx, double[] inReal0, double[] inReal1, int optInTimePeriod, ref int outBegIdx, ref int outNBElement, double[] outReal)
         {
             double x;
@@ -341,5 +340,5 @@ namespace TALibrary
             }
             return optInTimePeriod;
         }
-     }
+    }
 }

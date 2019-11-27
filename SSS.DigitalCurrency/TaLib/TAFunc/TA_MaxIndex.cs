@@ -1,8 +1,7 @@
-using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode MaxIndex(int startIdx, int endIdx, double[] inReal, int optInTimePeriod, ref int outBegIdx, ref int outNBElement, int[] outInteger)
         {
             if (startIdx < 0)
@@ -179,5 +178,5 @@ namespace TALibrary
             }
             return (optInTimePeriod - 1);
         }
-     }
+    }
 }

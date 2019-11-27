@@ -1,8 +1,8 @@
 using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode CdlMorningStar(int startIdx, int endIdx, double[] inOpen, double[] inHigh, double[] inLow, double[] inClose, double optInPenetration, ref int outBegIdx, ref int outNBElement, int[] outInteger)
         {
             double num5;
@@ -1435,5 +1435,5 @@ namespace TALibrary
             }
             return (((Globals.candleSettings[2].avgPeriod <= Globals.candleSettings[0].avgPeriod) ? Globals.candleSettings[0].avgPeriod : Globals.candleSettings[2].avgPeriod) + 2);
         }
-     }
+    }
 }

@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
+using SSS.Domain.Permission.UserInfo.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
-using SSS.Domain.UserInfo.Dto;
 using SSS.Infrastructure.Util.Http;
 
 using System.Collections.Generic;

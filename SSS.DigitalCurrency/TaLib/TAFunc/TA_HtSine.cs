@@ -1,8 +1,8 @@
 using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode HtSine(int startIdx, int endIdx, double[] inReal, ref int outBegIdx, ref int outNBElement, double[] outSine, double[] outLeadSine)
         {
             double smoothedValue;
@@ -705,5 +705,5 @@ namespace TALibrary
         {
             return (((int)Globals.unstablePeriod[9]) + 0x3f);
         }
-     }
+    }
 }

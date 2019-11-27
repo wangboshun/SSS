@@ -1,8 +1,7 @@
-using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode Atr(int startIdx, int endIdx, double[] inHigh, double[] inLow, double[] inClose, int optInTimePeriod, ref int outBegIdx, ref int outNBElement, double[] outReal)
         {
             int outNbElement1 = 0;
@@ -193,5 +192,5 @@ namespace TALibrary
             }
             return (optInTimePeriod + ((int)Globals.unstablePeriod[2]));
         }
-     }
+    }
 }

@@ -1,8 +1,7 @@
-using System;
 namespace TALibrary
-     {
-     public partial class Core
-     { 
+{
+    public partial class Core
+    {
         public static RetCode MinMaxIndex(int startIdx, int endIdx, double[] inReal, int optInTimePeriod, ref int outBegIdx, ref int outNBElement, int[] outMinIdx, int[] outMaxIdx)
         {
             int i;
@@ -249,5 +248,5 @@ namespace TALibrary
             }
             return (optInTimePeriod - 1);
         }
-     }
+    }
 }

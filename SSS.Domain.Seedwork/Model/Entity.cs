@@ -15,6 +15,11 @@ namespace SSS.Domain.Seedwork.Model
         public DateTime CreateTime { set; get; }
 
         /// <summary>
+        ///     更新时间
+        /// </summary>
+        public DateTime? UpdateTime { set; get; }
+
+        /// <summary>
         ///     是否删除 0代表正常 1代表已删除
         /// </summary>
         public int IsDelete { set; get; }
