@@ -1,5 +1,4 @@
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 
 using FluentValidation;
 
@@ -15,7 +14,6 @@ using SSS.Infrastructure.Util.Attribute;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SSS.Application.Permission.UserInfo.Service
 {

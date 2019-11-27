@@ -22,13 +22,9 @@ using SSS.Api.Seedwork.Json;
 using SSS.Api.Seedwork.Middleware;
 
 using StackExchange.Profiling.SqlFormatters;
-using System;
+
 using System.IO;
 using System.Reflection;
-using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Text.Unicode;
 
 namespace SSS.Api
 {
@@ -244,5 +240,5 @@ namespace SSS.Api
                 RequestPath = "/file"
             });
         }
-    } 
+    }
 }

@@ -75,7 +75,7 @@ namespace SSS.Infrastructure.Repository.Permission.UserInfo
                     username = x.UserName,
                     parentid = x.ParentId,
                     createtime = x.CreateTime,
-                    Item = new List<UserInfoTreeOutputDto>() { }
+                    Item = new List<UserInfoTreeOutputDto>()
                 }).ToList();
 
             foreach (UserInfoTreeOutputDto node in nodes)
@@ -100,7 +100,7 @@ namespace SSS.Infrastructure.Repository.Permission.UserInfo
                     username = x.UserName,
                     parentid = x.ParentId,
                     createtime = x.CreateTime,
-                    Item = new List<UserInfoTreeOutputDto>() { }
+                    Item = new List<UserInfoTreeOutputDto>()
                 }).ToList();
 
             foreach (UserInfoTreeOutputDto node in nodes)
