@@ -134,75 +134,6 @@
             <param name="services"></param>
             <param name="options"></param>
         </member>
-        <member name="T:SSS.Api.Controllers.CodeController">
-            <summary>
-            代码生成
-            </summary> 
-        </member>
-        <member name="M:SSS.Api.Controllers.CodeController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
-            <summary>
-            构造
-            </summary>
-            <param name="env"></param>
-        </member>
-        <member name="M:SSS.Api.Controllers.CodeController.Index">
-            <summary>
-            主页
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:SSS.Api.Controllers.CodeController.CreateCode">
-            <summary>
-            生成操作
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:SSS.Api.Controllers.CodeController.AppDomainContext(System.String,System.Collections.Generic.List{SSS.Api.Controllers.Field})">
-            <summary>
-            填充类字段信息
-            </summary>
-            <param name="name"></param>
-            <param name="fields"></param>
-        </member>
-        <member name="M:SSS.Api.Controllers.CodeController.Generator_Domain(System.String)">
-            <summary>
-                1
-            </summary>
-            <param name="name"></param>
-        </member>
-        <member name="M:SSS.Api.Controllers.CodeController.Generator_Infrastructure(System.String)">
-            <summary>
-                2
-            </summary>
-            <param name="name"></param>
-        </member>
-        <member name="M:SSS.Api.Controllers.CodeController.Generator_Application(System.String)">
-            <summary>
-                3
-            </summary>
-            <param name="name"></param>
-        </member>
-        <member name="M:SSS.Api.Controllers.CodeController.Generator_Api(System.String)">
-            <summary>
-                4
-            </summary>
-            <param name="name"></param>
-        </member>
-        <member name="T:SSS.Api.Controllers.Field">
-            <summary>
-            Field
-            </summary>
-        </member>
-        <member name="P:SSS.Api.Controllers.Field.field_name">
-            <summary>
-            field_name
-            </summary>
-        </member>
-        <member name="P:SSS.Api.Controllers.Field.field_type">
-            <summary>
-            field_type
-            </summary>
-        </member>
         <member name="T:SSS.Api.Controllers.Coin.CoinAnalyseController">
             <summary>
             CoinAnalyseController
@@ -572,6 +503,75 @@
             </summary>
             <param name="input">UserRoleInputDto</param>
             <returns></returns> 
+        </member>
+        <member name="T:SSS.Api.Controllers.System.CodeController">
+            <summary>
+            代码生成
+            </summary>
+        </member>
+        <member name="M:SSS.Api.Controllers.System.CodeController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            构造
+            </summary>
+            <param name="env"></param>
+        </member>
+        <member name="M:SSS.Api.Controllers.System.CodeController.Index">
+            <summary>
+            主页
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SSS.Api.Controllers.System.CodeController.CreateCode">
+            <summary>
+            生成操作
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SSS.Api.Controllers.System.CodeController.AppDomainContext(System.String,System.Collections.Generic.List{SSS.Api.Controllers.System.Field})">
+            <summary>
+            填充类字段信息
+            </summary>
+            <param name="name"></param>
+            <param name="fields"></param>
+        </member>
+        <member name="M:SSS.Api.Controllers.System.CodeController.Generator_Domain(System.String)">
+            <summary>
+                1
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:SSS.Api.Controllers.System.CodeController.Generator_Infrastructure(System.String)">
+            <summary>
+                2
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:SSS.Api.Controllers.System.CodeController.Generator_Application(System.String)">
+            <summary>
+                3
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:SSS.Api.Controllers.System.CodeController.Generator_Api(System.String)">
+            <summary>
+                4
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="T:SSS.Api.Controllers.System.Field">
+            <summary>
+            Field
+            </summary>
+        </member>
+        <member name="P:SSS.Api.Controllers.System.Field.field_name">
+            <summary>
+            field_name
+            </summary>
+        </member>
+        <member name="P:SSS.Api.Controllers.System.Field.field_type">
+            <summary>
+            field_type
+            </summary>
         </member>
         <member name="T:SSS.Api.Program">
             <summary>
