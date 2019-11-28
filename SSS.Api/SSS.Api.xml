@@ -114,6 +114,21 @@
             <param name="services"></param>
             <param name="options"></param>
         </member>
+        <member name="T:SSS.Api.Bootstrap.ApiVersions">
+            <summary>
+            版本号
+            </summary>
+        </member>
+        <member name="F:SSS.Api.Bootstrap.ApiVersions.v1">
+            <summary>
+            v1 版本
+            </summary>
+        </member>
+        <member name="F:SSS.Api.Bootstrap.ApiVersions.v2">
+            <summary>
+            v2 版本
+            </summary>
+        </member>
         <member name="T:SSS.Api.Controllers.CodeController">
             <summary>
             代码生成
@@ -127,7 +142,7 @@
         </member>
         <member name="M:SSS.Api.Controllers.CodeController.Index">
             <summary>
-            Index
+            主页
             </summary>
             <returns></returns>
         </member>
@@ -429,6 +444,13 @@
             <param name="input">input</param>
             <returns></returns> 
         </member>
+        <member name="M:SSS.Api.Controllers.Permission.RoleMenuController.GetMenuByRole(System.String)">
+            <summary>
+            GetMenuByRole
+            </summary>
+            <param name="roleid">roleid</param>
+            <returns></returns> 
+        </member>
         <member name="M:SSS.Api.Controllers.Permission.RoleMenuController.AddRoleMenu(SSS.Domain.Permission.RoleMenu.Dto.RoleMenuInputDto)">
             <summary>
             AddRoleMenu
@@ -452,6 +474,13 @@
             GetList
             </summary>
             <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.RoleOperateController.GetOperateByRole(System.String)">
+            <summary>
+            GetOperateByRole
+            </summary>
+            <param name="roleid">roleid</param>
             <returns></returns> 
         </member>
         <member name="M:SSS.Api.Controllers.Permission.RoleOperateController.AddRoleOperate(SSS.Domain.Permission.RoleOperate.Dto.RoleOperateInputDto)">
@@ -479,11 +508,18 @@
             <param name="input">input</param>
             <returns></returns>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.UserInfoController.GetChildren(SSS.Domain.Permission.UserInfo.Dto.UserInfoInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.UserInfoController.GetChildrenById(System.String)">
             <summary>
                 GetChildren
             </summary>
-            <param name="input">input</param>
+            <param name="userid">userid</param>
+            <returns></returns>
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.UserInfoController.GetUserPermission(System.String)">
+            <summary>
+                GetUserPermission
+            </summary>
+            <param name="userid">userid</param>
             <returns></returns>
         </member>
         <member name="M:SSS.Api.Controllers.Permission.UserInfoController.Login(SSS.Domain.Permission.UserInfo.Dto.UserInfoInputDto)">
@@ -516,6 +552,13 @@
             GetList
             </summary>
             <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.UserRoleController.GetOperateByRole(System.String)">
+            <summary>
+            GetUserByRole
+            </summary>
+            <param name="roleid">roleid</param>
             <returns></returns> 
         </member>
         <member name="M:SSS.Api.Controllers.Permission.UserRoleController.AddUserRole(SSS.Domain.Permission.UserRole.Dto.UserRoleInputDto)">

@@ -10,7 +10,7 @@ namespace SSS.Api.Controllers.Permission
     /// <summary>
     /// RoleMenuController
     /// </summary> 
-    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
     [ApiController]
@@ -37,6 +37,19 @@ namespace SSS.Api.Controllers.Permission
         public IActionResult GetList([FromQuery]RoleMenuInputDto input)
         {
             var result = _service.GetListRoleMenu(input);
+            return ApiResponse(result);
+        }
+
+        /// <summary>
+        /// GetMenuByRole
+        /// </summary>
+        /// <param name="roleid">roleid</param>
+        /// <returns></returns> 
+        [HttpGet("getmenubyrole")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult GetMenuByRole(string roleid)
+        {
+            var result = _service.GetMenuByRole(roleid);
             return ApiResponse(result);
         }
 

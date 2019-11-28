@@ -11,6 +11,7 @@ namespace SSS.Application.Permission.UserInfo.Service
         void AddUserInfo(UserInfoInputDto input);
         UserInfoOutputDto GetByUserName(UserInfoInputDto input);
         Pages<List<UserInfoOutputDto>> GetListUserInfo(UserInfoInputDto input);
-        List<UserInfoTreeOutputDto> GetChildren(UserInfoInputDto input);
+        List<UserInfoTreeOutputDto> GetChildrenById(string userid);
+        object GetUserPermission(string userid);
     }
 }

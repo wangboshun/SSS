@@ -68,16 +68,23 @@ namespace SSS.Api.Bootstrap
         /// <param name="services"></param>
         public static void AddSwagger(this IServiceCollection services)
         {
+            //版本分组
+            services.AddVersionedApiExplorer(option =>
+            {
+                option.GroupNameFormat = "'v'V";
+            });
+
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo
+                typeof(ApiVersions).GetEnumNames().ToList().ForEach(version =>
                 {
-                    Version = "v1",
-                    Title = "SSS Project V1",
-                    Description = "SSS API Swagger docs",
-                    Contact = new OpenApiContact
-                    { Name = "wbs", Email = "512742341@qq.com", Url = new Uri("https://github.com/wangboshun") },
-                    License = new OpenApiLicense { Name = "MIT", Url = new Uri("https://github.com/wangboshun/SSS") }
+                    options.SwaggerDoc(version, new OpenApiInfo
+                    {
+                        Version = version,
+                        Title = $"{version}",
+                        Description = "接口说明文档" + version,
+                        Contact = new OpenApiContact { Name = "WBS", Email = "512742341@qq.com" }
+                    });
                 });
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -183,5 +190,20 @@ namespace SSS.Api.Bootstrap
         }
 
         #endregion
+    }
+
+    /// <summary>
+    /// 版本号
+    /// </summary>
+    public enum ApiVersions
+    {
+        /// <summary>
+        /// v1 版本
+        /// </summary>
+        v1 = 1,
+        /// <summary>
+        /// v2 版本
+        /// </summary>
+        v2 = 2,
     }
 }

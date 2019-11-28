@@ -11,5 +11,7 @@ namespace SSS.Application.Permission.RoleMenu.Service
         void AddRoleMenu(RoleMenuInputDto input);
 
         Pages<List<RoleMenuOutputDto>> GetListRoleMenu(RoleMenuInputDto input);
+
+        List<RoleMenuOutputDto> GetMenuByRole(string roleid);
     }
 }

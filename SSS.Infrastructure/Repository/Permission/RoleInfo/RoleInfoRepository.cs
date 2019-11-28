@@ -41,7 +41,7 @@ namespace SSS.Infrastructure.Repository.Permission.RoleInfo
         /// GetParent(DbSet.ToList(), null, input.id);
         private void GetParent(List<Domain.Permission.RoleInfo.RoleInfo> source, RoleInfoTreeOutputDto node, string id)
         {
-            List<Domain.Permission.RoleInfo.RoleInfo> list = source.Where(x => x.ParentId == id).ToList();
+            List<Domain.Permission.RoleInfo.RoleInfo> list = source.Where(x => x.ParentId == id && x.IsDelete == 0).ToList();
             foreach (var item in list)
             {
                 RoleInfoTreeOutputDto model = new RoleInfoTreeOutputDto

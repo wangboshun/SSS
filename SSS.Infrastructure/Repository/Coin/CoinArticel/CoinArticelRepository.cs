@@ -19,7 +19,7 @@ namespace SSS.Infrastructure.Repository.CoinArticel
 
         public IEnumerable<Domain.Coin.CoinArticel.CoinArticel> GetNews(CoinArticelInputDto input)
         {
-            var data = Db.Database.SqlQuery<Domain.Coin.CoinArticel.CoinArticel>($"select Title,Author,Logo,Id,CreateTime from CoinArticel where Category={input.Category} ORDER BY CreateTime desc");
+            var data = Db.Database.SqlQuery<Domain.Coin.CoinArticel.CoinArticel>($"select Title,Author,Logo,Id,CreateTime from CoinArticel where Category={input.Category} and IsDelete=0 ORDER BY CreateTime desc");
             return data?.Skip(input.pagesize * input.pageindex).Take(input.pagesize);
         }
     }

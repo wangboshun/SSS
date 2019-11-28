@@ -19,13 +19,14 @@ namespace SSS.Application.Permission.RoleOperate.Service
     [DIService(ServiceLifetime.Scoped, typeof(IRoleOperateService))]
     public class RoleOperateService : QueryService<SSS.Domain.Permission.RoleOperate.RoleOperate, RoleOperateInputDto, RoleOperateOutputDto>, IRoleOperateService
     {
+        private readonly IRoleOperateRepository _repository;
         public RoleOperateService(IMapper mapper,
             IRoleOperateRepository repository,
             IErrorHandler error,
             IValidator<RoleOperateInputDto> validator) :
             base(mapper, repository, error, validator)
         {
-
+            _repository = repository;
         }
 
         public void AddRoleOperate(RoleOperateInputDto input)
@@ -46,6 +47,11 @@ namespace SSS.Application.Permission.RoleOperate.Service
         public Pages<List<RoleOperateOutputDto>> GetListRoleOperate(RoleOperateInputDto input)
         {
             return GetPage(input);
+        }
+
+        public List<RoleOperateOutputDto> GetOperateByRole(string roleid)
+        {
+            return _repository.GetOperateByRole(roleid);
         }
     }
 }

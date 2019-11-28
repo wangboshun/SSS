@@ -10,7 +10,7 @@ namespace SSS.Api.Controllers.Permission
     /// <summary>
     ///     UserInfoController
     /// </summary>
-    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
     [ApiController]
@@ -43,13 +43,26 @@ namespace SSS.Api.Controllers.Permission
         /// <summary>
         ///     GetChildren
         /// </summary>
-        /// <param name="input">input</param>
+        /// <param name="userid">userid</param>
         /// <returns></returns>
         [HttpGet("getchildren")]
         [AllowAnonymous] //匿名访问
-        public IActionResult GetChildren([FromQuery] UserInfoInputDto input)
+        public IActionResult GetChildrenById(string userid)
         {
-            var result = _service.GetChildren(input);
+            var result = _service.GetChildrenById(userid);
+            return ApiResponse(result);
+        }
+
+        /// <summary>
+        ///     GetUserPermission
+        /// </summary>
+        /// <param name="userid">userid</param>
+        /// <returns></returns>
+        [HttpGet("getpermission")]
+        [AllowAnonymous] //匿名访问
+        public IActionResult GetUserPermission(string userid)
+        {
+            var result = _service.GetUserPermission(userid);
             return ApiResponse(result);
         }
 

@@ -24,6 +24,7 @@ using SSS.Api.Seedwork.Middleware;
 using StackExchange.Profiling.SqlFormatters;
 
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace SSS.Api
@@ -208,11 +209,16 @@ namespace SSS.Api
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
+                //遍历版本号
+                typeof(ApiVersions).GetEnumNames().OrderByDescending(e => e).ToList().ForEach(version =>
+                {
+                    options.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"{version}");
+                });
+
                 options.RoutePrefix = "docs";
                 options.DocumentTitle = "SSS Project";
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "SSS API V1");
-                options.IndexStream = () =>
-                    GetType().GetTypeInfo().Assembly.GetManifestResourceStream("SSS.Api.miniprofiler.html");
+
+                options.IndexStream = () => GetType().GetTypeInfo().Assembly.GetManifestResourceStream("SSS.Api.miniprofiler.html");
             });
         }
 

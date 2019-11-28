@@ -7,6 +7,7 @@ namespace SSS.Domain.Permission.RoleInfo.Dto
 {
     public class RoleInfoOutputDto : OutputDtoBase
     {
+        public string name { set; get; }
     }
 
     public class RoleInfoTreeOutputDto

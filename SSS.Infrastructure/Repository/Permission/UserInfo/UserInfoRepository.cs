@@ -25,9 +25,9 @@ namespace SSS.Infrastructure.Repository.Permission.UserInfo
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public List<UserInfoTreeOutputDto> GetChildren(UserInfoInputDto input)
+        public List<UserInfoTreeOutputDto> GetChildrenById(string userid)
         {
-            GetParent(DbSet.ToList(), null, input.id);
+            GetParent(DbSet.ToList(), null, userid);
 
             return Tree;
         }
@@ -41,7 +41,7 @@ namespace SSS.Infrastructure.Repository.Permission.UserInfo
         /// GetParent(DbSet.ToList(), null, input.id);
         private void GetParent(List<Domain.Permission.UserInfo.UserInfo> source, UserInfoTreeOutputDto node, string id)
         {
-            List<Domain.Permission.UserInfo.UserInfo> list = source.Where(x => x.ParentId == id).ToList();
+            List<Domain.Permission.UserInfo.UserInfo> list = source.Where(x => x.ParentId == id && x.IsDelete == 0).ToList();
             foreach (var item in list)
             {
                 UserInfoTreeOutputDto model = new UserInfoTreeOutputDto
@@ -68,7 +68,7 @@ namespace SSS.Infrastructure.Repository.Permission.UserInfo
         /// <returns></returns>
         public static List<UserInfoTreeOutputDto> CreateNewTree(List<Domain.Permission.UserInfo.UserInfo> originalList)
         {
-            List<UserInfoTreeOutputDto> nodes = originalList.Where(v => v.ParentId == "0").
+            List<UserInfoTreeOutputDto> nodes = originalList.Where(v => v.ParentId == "0" && v.IsDelete == 0).
                 Select(x => new UserInfoTreeOutputDto()
                 {
                     id = x.Id,
@@ -93,7 +93,7 @@ namespace SSS.Infrastructure.Repository.Permission.UserInfo
         /// <returns></returns>
         public static List<UserInfoTreeOutputDto> GetAllLeaves(UserInfoTreeOutputDto val, List<Domain.Permission.UserInfo.UserInfo> originalList)
         {
-            List<UserInfoTreeOutputDto> nodes = originalList.Where(v => v.ParentId == val.id).
+            List<UserInfoTreeOutputDto> nodes = originalList.Where(v => v.ParentId == val.id && v.IsDelete == 0).
                 Select(x => new UserInfoTreeOutputDto()
                 {
                     id = x.Id,

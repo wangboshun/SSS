@@ -4,5 +4,6 @@ namespace SSS.Domain.Permission.RoleMenu.Dto
 {
     public class RoleMenuInputDto : InputDtoBase
     {
+        public string roleid { set; get; }
     }
 }

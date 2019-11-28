@@ -7,6 +7,6 @@ namespace SSS.Infrastructure.Repository.Permission.UserInfo
 {
     public interface IUserInfoRepository : IRepository<Domain.Permission.UserInfo.UserInfo>
     {
-        List<UserInfoTreeOutputDto> GetChildren(UserInfoInputDto input);
+        List<UserInfoTreeOutputDto> GetChildrenById(string userid);
     }
 }

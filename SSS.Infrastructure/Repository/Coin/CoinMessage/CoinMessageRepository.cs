@@ -20,7 +20,7 @@ namespace SSS.Infrastructure.Repository.Coin.CoinMessage
         public IQueryable<Domain.Coin.CoinMessage.CoinMessage> GetPageOrderByAsc(CoinMessageInputDto input, ref int count)
         {
             count = DbSet.Count(x => x.CreateTime > DateTime.Now);
-            var data = DbSet.Where(x => x.CreateTime > DateTime.Now).OrderBy(x => x.CreateTime)
+            var data = DbSet.Where(x => x.CreateTime > DateTime.Now && x.IsDelete == 0).OrderBy(x => x.CreateTime)
                 .Skip(input.pagesize * input.pageindex).Take(input.pagesize);
 
             return data;

@@ -41,7 +41,7 @@ namespace SSS.Infrastructure.Repository.Permission.MenuInfo
         /// GetParent(DbSet.ToList(), null, input.id);
         private void GetParent(List<Domain.Permission.MenuInfo.MenuInfo> source, MenuInfoTreeOutputDto node, string id)
         {
-            List<Domain.Permission.MenuInfo.MenuInfo> list = source.Where(x => x.ParentId == id).ToList();
+            List<Domain.Permission.MenuInfo.MenuInfo> list = source.Where(x => x.ParentId == id && x.IsDelete == 0).ToList();
             foreach (var item in list)
             {
                 MenuInfoTreeOutputDto model = new MenuInfoTreeOutputDto

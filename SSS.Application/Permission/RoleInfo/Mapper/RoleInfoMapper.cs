@@ -6,7 +6,8 @@ namespace SSS.Application.Permission.RoleInfo.Mapper
     {
         public RoleInfoProfile()
         {
-            CreateMap<SSS.Domain.Permission.RoleInfo.RoleInfo, RoleInfoOutputDto>();
+            CreateMap<SSS.Domain.Permission.RoleInfo.RoleInfo, RoleInfoOutputDto>()
+                .ForMember(x => x.name, y => y.MapFrom(z => z.RoleName));
 
             CreateMap<RoleInfoInputDto, SSS.Domain.Permission.RoleInfo.RoleInfo>();
         }

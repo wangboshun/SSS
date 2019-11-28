@@ -62,6 +62,17 @@ namespace SSS.Infrastructure.Util.DateTime
         }
 
         /// <summary>
+        ///     DateTime 转 时间字符串  yyyy-MM-dd HH:mm:ss
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="format">yyyy-MM-dd HH:mm:ss</param>
+        /// <returns></returns>
+        public static string ConvertDateTimeToStr(this System.DateTime time, string format = "yyyy-MM-dd HH:mm:ss")
+        {
+            return time.ToString(format);
+        }
+
+        /// <summary>
         ///     DateTime 转 Unix时间
         /// </summary>
         /// <param name="time"></param>

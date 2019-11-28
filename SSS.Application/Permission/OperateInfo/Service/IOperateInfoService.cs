@@ -1,5 +1,6 @@
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.OperateInfo.Dto;
+using SSS.Domain.Permission.RoleOperate.Dto;
 using SSS.Domain.Seedwork.Model;
 
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace SSS.Application.Permission.OperateInfo.Service
     {
         void AddOperateInfo(OperateInfoInputDto input);
 
-        Pages<List<OperateInfoOutputDto>> GetListOperateInfo(OperateInfoInputDto input);
+        Pages<List<OperateInfoOutputDto>> GetListOperateInfo(OperateInfoInputDto input); 
     }
 }

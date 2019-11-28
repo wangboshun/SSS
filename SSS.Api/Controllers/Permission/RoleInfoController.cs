@@ -10,7 +10,7 @@ namespace SSS.Api.Controllers.Permission
     /// <summary>
     /// RoleInfoController
     /// </summary> 
-    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
     [ApiController]

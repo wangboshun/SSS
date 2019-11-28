@@ -8,7 +8,10 @@ using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.UserInfo.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
+using SSS.Infrastructure.Repository.Permission.RoleMenu;
+using SSS.Infrastructure.Repository.Permission.RoleOperate;
 using SSS.Infrastructure.Repository.Permission.UserInfo;
+using SSS.Infrastructure.Repository.Permission.UserRole;
 using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Util.Attribute;
 
@@ -22,28 +25,60 @@ namespace SSS.Application.Permission.UserInfo.Service
         IUserInfoService
     {
         private readonly MemoryCacheEx _memorycache;
-        private readonly IUserInfoRepository _repository;
+
+        private readonly IUserRoleRepository _userroleRepository;
+        private readonly IUserInfoRepository _userinfoRepository;
+        private readonly IRoleMenuRepository _rolemenuRepository;
+        private readonly IRoleOperateRepository _roleoperateRepository;
 
         public UserInfoService(IMapper mapper,
             IUserInfoRepository repository,
             IErrorHandler error,
             IValidator<UserInfoInputDto> validator,
-            MemoryCacheEx memorycache) : base(mapper, repository, error, validator)
+            MemoryCacheEx memorycache,
+            IUserRoleRepository userroleRepository,
+            IRoleMenuRepository rolemenuRepository,
+            IRoleOperateRepository roleoperateRepository
+            ) : base(mapper, repository, error, validator)
         {
             _memorycache = memorycache;
-            _repository = repository;
+            _userinfoRepository = repository;
+            _userroleRepository = userroleRepository;
+            _rolemenuRepository = rolemenuRepository;
+            _roleoperateRepository = roleoperateRepository;
         }
 
         /// <summary>
-        /// GetChildren
+        /// 获取所有权限
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public object GetUserPermission(string userid)
+        {
+            var role = _userroleRepository.GetRoleByUser(userid);
+            if (role == null)
+                return null;
+
+            var menu = _rolemenuRepository.GetMenuByRole(role?.Id);
+            var operate = _roleoperateRepository.GetOperateByRole(role?.Id);
+
+            return new { menu, operate };
+        }
+
+        /// <summary>
+        /// 根据UserId获取所有节点
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public List<UserInfoTreeOutputDto> GetChildren(UserInfoInputDto input)
+        public List<UserInfoTreeOutputDto> GetChildrenById(string userid)
         {
-            return _repository.GetChildren(input);
+            return _userinfoRepository.GetChildrenById(userid);
         }
 
+        /// <summary>
+        /// 添加用户
+        /// </summary>
+        /// <param name="input"></param>
         public void AddUserInfo(UserInfoInputDto input)
         {
             var result = Validator.Validate(input, ruleSet: "Insert");

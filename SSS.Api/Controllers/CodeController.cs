@@ -38,7 +38,7 @@ namespace SSS.Api.Controllers
         }
 
         /// <summary>
-        /// Index
+        /// 主页
         /// </summary>
         /// <returns></returns>
         [HttpGet("index")]

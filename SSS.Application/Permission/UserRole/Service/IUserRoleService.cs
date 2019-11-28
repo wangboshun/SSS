@@ -11,5 +11,7 @@ namespace SSS.Application.Permission.UserRole.Service
         void AddUserRole(UserRoleInputDto input);
 
         Pages<List<UserRoleOutputDto>> GetListUserRole(UserRoleInputDto input);
+
+        List<UserRoleOutputDto> GetUserByRole(string roleid);
     }
 }

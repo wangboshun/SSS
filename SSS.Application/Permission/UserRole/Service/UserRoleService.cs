@@ -19,13 +19,15 @@ namespace SSS.Application.Permission.UserRole.Service
     [DIService(ServiceLifetime.Scoped, typeof(IUserRoleService))]
     public class UserRoleService : QueryService<SSS.Domain.Permission.UserRole.UserRole, UserRoleInputDto, UserRoleOutputDto>, IUserRoleService
     {
+        private readonly IUserRoleRepository _repository;
+
         public UserRoleService(IMapper mapper,
             IUserRoleRepository repository,
             IErrorHandler error,
             IValidator<UserRoleInputDto> validator) :
             base(mapper, repository, error, validator)
         {
-
+            _repository = repository;
         }
 
         public void AddUserRole(UserRoleInputDto input)
@@ -46,6 +48,11 @@ namespace SSS.Application.Permission.UserRole.Service
         public Pages<List<UserRoleOutputDto>> GetListUserRole(UserRoleInputDto input)
         {
             return GetPage(input);
+        }
+
+        public List<UserRoleOutputDto> GetUserByRole(string roleid)
+        {
+            return _repository.GetUserByRole(roleid);
         }
     }
 }

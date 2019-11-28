@@ -6,8 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.16" />
-    <PackageReference Include="Polly" Version="7.1.1" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.17" />
+    <PackageReference Include="Polly" Version="7.2.0" />
     <PackageReference Include="Senparc.Weixin.WxOpen" Version="3.7.103" />
     <ProjectReference Include="..\SSS.Application.Seedwork\SSS.Application.Seedwork.csproj" /> 
     <ProjectReference Include="..\SSS.DigitalCurrency\SSS.DigitalCurrency.csproj" />

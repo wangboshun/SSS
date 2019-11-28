@@ -1,4 +1,6 @@
-﻿namespace SSS.Domain.Seedwork.Model
+﻿using System;
+
+namespace SSS.Domain.Seedwork.Model
 {
     public abstract class InputDtoBase
     {
@@ -17,6 +19,6 @@
     {
         public string id { get; set; }
 
-        public string createtime { set; get; }
+        public DateTime createtime { set; get; }
     }
 }

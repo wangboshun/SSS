@@ -11,5 +11,7 @@ namespace SSS.Application.Permission.RoleOperate.Service
         void AddRoleOperate(RoleOperateInputDto input);
 
         Pages<List<RoleOperateOutputDto>> GetListRoleOperate(RoleOperateInputDto input);
+
+        List<RoleOperateOutputDto> GetOperateByRole(string roleid);
     }
 }

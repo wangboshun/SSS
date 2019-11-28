@@ -19,13 +19,14 @@ namespace SSS.Application.Permission.RoleMenu.Service
     [DIService(ServiceLifetime.Scoped, typeof(IRoleMenuService))]
     public class RoleMenuService : QueryService<SSS.Domain.Permission.RoleMenu.RoleMenu, RoleMenuInputDto, RoleMenuOutputDto>, IRoleMenuService
     {
+        private readonly IRoleMenuRepository _repository;
         public RoleMenuService(IMapper mapper,
             IRoleMenuRepository repository,
             IErrorHandler error,
             IValidator<RoleMenuInputDto> validator) :
             base(mapper, repository, error, validator)
         {
-
+            _repository = repository;
         }
 
         public void AddRoleMenu(RoleMenuInputDto input)
@@ -46,6 +47,11 @@ namespace SSS.Application.Permission.RoleMenu.Service
         public Pages<List<RoleMenuOutputDto>> GetListRoleMenu(RoleMenuInputDto input)
         {
             return GetPage(input);
+        }
+
+        public List<RoleMenuOutputDto> GetMenuByRole(string roleid)
+        {
+            return _repository.GetMenuByRole(roleid);
         }
     }
 }
