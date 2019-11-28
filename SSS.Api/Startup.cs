@@ -212,7 +212,7 @@ namespace SSS.Api
                 //遍历版本号
                 typeof(ApiVersions).GetEnumNames().OrderByDescending(e => e).ToList().ForEach(version =>
                 {
-                    options.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"{version}");
+                    options.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"{GetVersion(version)}");
                 });
 
                 options.RoutePrefix = "docs";
@@ -220,6 +220,21 @@ namespace SSS.Api
 
                 options.IndexStream = () => GetType().GetTypeInfo().Assembly.GetManifestResourceStream("SSS.Api.miniprofiler.html");
             });
+        }
+
+        private static string GetVersion(string version)
+        {
+            switch (version)
+            {
+                case "v1":
+                    return "交易接口";
+                case "v2":
+                    return "权限接口";
+                case "v3":
+                    return "系统接口";
+                default:
+                    return version;
+            }
         }
 
         /// <summary>

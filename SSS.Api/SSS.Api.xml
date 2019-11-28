@@ -4,6 +4,26 @@
         <name>SSS.Api</name>
     </assembly>
     <members>
+        <member name="T:ApiVersions">
+            <summary>
+            版本号
+            </summary>
+        </member>
+        <member name="F:ApiVersions.v1">
+            <summary>
+            v1 版本
+            </summary>
+        </member>
+        <member name="F:ApiVersions.v2">
+            <summary>
+            v2 版本
+            </summary>
+        </member>
+        <member name="F:ApiVersions.v3">
+            <summary>
+            v3 版本
+            </summary>
+        </member>
         <member name="T:SSS.Api.Bootstrap.ApplicationBuilderExtension">
             <summary>
                 ApplicationBuilderExtension
@@ -114,25 +134,10 @@
             <param name="services"></param>
             <param name="options"></param>
         </member>
-        <member name="T:SSS.Api.Bootstrap.ApiVersions">
-            <summary>
-            版本号
-            </summary>
-        </member>
-        <member name="F:SSS.Api.Bootstrap.ApiVersions.v1">
-            <summary>
-            v1 版本
-            </summary>
-        </member>
-        <member name="F:SSS.Api.Bootstrap.ApiVersions.v2">
-            <summary>
-            v2 版本
-            </summary>
-        </member>
         <member name="T:SSS.Api.Controllers.CodeController">
             <summary>
             代码生成
-            </summary>
+            </summary> 
         </member>
         <member name="M:SSS.Api.Controllers.CodeController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
             <summary>

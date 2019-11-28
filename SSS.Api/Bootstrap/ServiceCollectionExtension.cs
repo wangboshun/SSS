@@ -10,7 +10,7 @@ using SSS.Api.Seedwork.ServiceCollection;
 using SSS.Infrastructure.Seedwork.Cache.Memcached;
 using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Seedwork.Cache.Redis;
-
+using SSS.Infrastructure.Util.Enum;
 using System;
 using System.IO;
 using System.Linq;
@@ -56,8 +56,7 @@ namespace SSS.Api.Bootstrap
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
 
-            Type[] types = Assembly.Load("SSS.Application").GetTypes()
-                .Where(t => t.BaseType != null && t.BaseType.Name.Equals("Profile")).ToArray();
+            Type[] types = Assembly.Load("SSS.Application").GetTypes().Where(t => t.BaseType != null && t.BaseType.Name.Equals("Profile")).ToArray();
 
             services.AddAutoMapper(types);
         }
@@ -73,7 +72,7 @@ namespace SSS.Api.Bootstrap
             {
                 option.GroupNameFormat = "'v'V";
             });
-
+             
             services.AddSwaggerGen(options =>
             {
                 typeof(ApiVersions).GetEnumNames().ToList().ForEach(version =>
@@ -81,8 +80,8 @@ namespace SSS.Api.Bootstrap
                     options.SwaggerDoc(version, new OpenApiInfo
                     {
                         Version = version,
-                        Title = $"{version}",
-                        Description = "接口说明文档" + version,
+                        Title = GetVersion(version),
+                        Description = GetVersion(version) + "---说明文档",
                         Contact = new OpenApiContact { Name = "WBS", Email = "512742341@qq.com" }
                     });
                 });
@@ -91,6 +90,21 @@ namespace SSS.Api.Bootstrap
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
             });
+        }
+
+        private static string GetVersion(string version)
+        {
+            switch (version)
+            {
+                case "v1":
+                    return "交易接口";
+                case "v2":
+                    return "权限接口";
+                case "v3":
+                    return "系统接口";
+                default:
+                    return version;
+            }
         }
 
         /// <summary>
@@ -190,20 +204,5 @@ namespace SSS.Api.Bootstrap
         }
 
         #endregion
-    }
-
-    /// <summary>
-    /// 版本号
-    /// </summary>
-    public enum ApiVersions
-    {
-        /// <summary>
-        /// v1 版本
-        /// </summary>
-        v1 = 1,
-        /// <summary>
-        /// v2 版本
-        /// </summary>
-        v2 = 2,
     }
 }

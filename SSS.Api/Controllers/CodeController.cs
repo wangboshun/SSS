@@ -19,7 +19,7 @@ namespace SSS.Api.Controllers
     /// <summary>
     /// 代码生成
     /// </summary>
-    [ApiVersion("1.0")]
+    [ApiVersion("3.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class CodeController : ApiBaseController
