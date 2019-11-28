@@ -9,7 +9,7 @@ namespace SSS.Application.Permission.MenuInfo.Service
     public interface IMenuInfoService : IQueryService<SSS.Domain.Permission.MenuInfo.MenuInfo, MenuInfoInputDto, MenuInfoOutputDto>
     {
         void AddMenuInfo(MenuInfoInputDto input);
-
         Pages<List<MenuInfoOutputDto>> GetListMenuInfo(MenuInfoInputDto input);
+        List<MenuInfoTreeOutputDto> GetChildren(MenuInfoInputDto input);
     }
 }

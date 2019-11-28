@@ -19,13 +19,15 @@ namespace SSS.Application.Permission.RoleInfo.Service
     [DIService(ServiceLifetime.Scoped, typeof(IRoleInfoService))]
     public class RoleInfoService : QueryService<SSS.Domain.Permission.RoleInfo.RoleInfo, RoleInfoInputDto, RoleInfoOutputDto>, IRoleInfoService
     {
+        private readonly IRoleInfoRepository _repository;
+
         public RoleInfoService(IMapper mapper,
             IRoleInfoRepository repository,
             IErrorHandler error,
             IValidator<RoleInfoInputDto> validator) :
             base(mapper, repository, error, validator)
         {
-
+            _repository = repository;
         }
 
         public void AddRoleInfo(RoleInfoInputDto input)
@@ -41,6 +43,11 @@ namespace SSS.Application.Permission.RoleInfo.Service
             var model = Mapper.Map<SSS.Domain.Permission.RoleInfo.RoleInfo>(input);
             Repository.Add(model);
             Repository.SaveChanges();
+        }
+
+        public List<RoleInfoTreeOutputDto> GetChildren(RoleInfoInputDto input)
+        {
+            return _repository.GetChildren(input);
         }
 
         public Pages<List<RoleInfoOutputDto>> GetListRoleInfo(RoleInfoInputDto input)

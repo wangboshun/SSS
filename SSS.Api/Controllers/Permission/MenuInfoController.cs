@@ -41,6 +41,19 @@ namespace SSS.Api.Controllers.Permission
         }
 
         /// <summary>
+        ///     GetChildren
+        /// </summary>
+        /// <param name="input">input</param>
+        /// <returns></returns>
+        [HttpGet("getchildren")]
+        [AllowAnonymous] //匿名访问
+        public IActionResult GetChildren([FromQuery] MenuInfoInputDto input)
+        {
+            var result = _service.GetChildren(input);
+            return ApiResponse(result);
+        }
+
+        /// <summary>
         /// AddMenuInfo
         /// </summary>
         /// <param name="input">MenuInfoInputDto</param>

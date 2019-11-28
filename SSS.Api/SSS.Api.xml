@@ -340,6 +340,13 @@
             <param name="input">input</param>
             <returns></returns> 
         </member>
+        <member name="M:SSS.Api.Controllers.Permission.MenuInfoController.GetChildren(SSS.Domain.Permission.MenuInfo.Dto.MenuInfoInputDto)">
+            <summary>
+                GetChildren
+            </summary>
+            <param name="input">input</param>
+            <returns></returns>
+        </member>
         <member name="M:SSS.Api.Controllers.Permission.MenuInfoController.AddMenuInfo(SSS.Domain.Permission.MenuInfo.Dto.MenuInfoInputDto)">
             <summary>
             AddMenuInfo
@@ -389,6 +396,13 @@
             </summary>
             <param name="input">input</param>
             <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.RoleInfoController.GetChildren(SSS.Domain.Permission.RoleInfo.Dto.RoleInfoInputDto)">
+            <summary>
+                GetChildren
+            </summary>
+            <param name="input">input</param>
+            <returns></returns>
         </member>
         <member name="M:SSS.Api.Controllers.Permission.RoleInfoController.AddRoleInfo(SSS.Domain.Permission.RoleInfo.Dto.RoleInfoInputDto)">
             <summary>

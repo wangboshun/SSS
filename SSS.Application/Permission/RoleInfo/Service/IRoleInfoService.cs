@@ -9,7 +9,7 @@ namespace SSS.Application.Permission.RoleInfo.Service
     public interface IRoleInfoService : IQueryService<SSS.Domain.Permission.RoleInfo.RoleInfo, RoleInfoInputDto, RoleInfoOutputDto>
     {
         void AddRoleInfo(RoleInfoInputDto input);
-
         Pages<List<RoleInfoOutputDto>> GetListRoleInfo(RoleInfoInputDto input);
+        List<RoleInfoTreeOutputDto> GetChildren(RoleInfoInputDto input);
     }
 }

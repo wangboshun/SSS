@@ -19,13 +19,15 @@ namespace SSS.Application.Permission.MenuInfo.Service
     [DIService(ServiceLifetime.Scoped, typeof(IMenuInfoService))]
     public class MenuInfoService : QueryService<SSS.Domain.Permission.MenuInfo.MenuInfo, MenuInfoInputDto, MenuInfoOutputDto>, IMenuInfoService
     {
+        private readonly IMenuInfoRepository _repository;
+
         public MenuInfoService(IMapper mapper,
             IMenuInfoRepository repository,
             IErrorHandler error,
             IValidator<MenuInfoInputDto> validator) :
             base(mapper, repository, error, validator)
         {
-
+            _repository = repository;
         }
 
         public void AddMenuInfo(MenuInfoInputDto input)
@@ -41,6 +43,11 @@ namespace SSS.Application.Permission.MenuInfo.Service
             var model = Mapper.Map<SSS.Domain.Permission.MenuInfo.MenuInfo>(input);
             Repository.Add(model);
             Repository.SaveChanges();
+        }
+
+        public List<MenuInfoTreeOutputDto> GetChildren(MenuInfoInputDto input)
+        {
+            return _repository.GetChildren(input);
         }
 
         public Pages<List<MenuInfoOutputDto>> GetListMenuInfo(MenuInfoInputDto input)
