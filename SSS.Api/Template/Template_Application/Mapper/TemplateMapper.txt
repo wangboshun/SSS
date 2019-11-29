@@ -1,14 +1,14 @@
-﻿using SSS.Domain.Template.Dto;
+﻿using SSS.Domain.NameSpace.Template.Dto;
 
-namespace SSS.Application.Template.Mapper
+namespace SSS.Application.NameSpace.Template.Mapper
 {
     public class TemplateProfile : AutoMapper.Profile
     {
         public TemplateProfile()
         {
-            CreateMap<SSS.Domain.Template.Template, TemplateOutputDto>();
+            CreateMap<SSS.Domain.NameSpace.Template.Template, TemplateOutputDto>();
 
-            CreateMap<TemplateInputDto, SSS.Domain.Template.Template>();
+            CreateMap<TemplateInputDto, SSS.Domain.NameSpace.Template.Template>();
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SSS.Api.Seedwork.Controller;
-using SSS.Application.Template.Service;
-using SSS.Domain.Template.Dto;
+using SSS.Application.NameSpace.Template.Service;
+using SSS.Domain.NameSpace.Template.Dto;
 
-namespace SSS.Api.Controllers
+namespace SSS.Api.Controllers.NameSpace
 {
     /// <summary>
     /// TemplateController

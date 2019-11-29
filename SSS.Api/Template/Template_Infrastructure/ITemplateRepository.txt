@@ -1,8 +1,8 @@
 ﻿using SSS.Domain.Seedwork.Repository;
 
-namespace SSS.Infrastructure.Repository.Template
+namespace SSS.Infrastructure.Repository.NameSpace.Template
 {
-    public interface ITemplateRepository : IRepository<SSS.Domain.Template.Template>
+    public interface ITemplateRepository : IRepository<SSS.Domain.NameSpace.Template.Template>
     { 
     }
 }

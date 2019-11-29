@@ -1,70 +1,71 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <title>代码生成器</title>
     <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div class="container">
+    <div class="container">
 
-    <div class="row" style="padding: 10px">
-        <label>代码生成器</label>
-    </div>
-
-    <div class="row" style="padding: 10px">
-        <div class="col-lg-6">
-            <div class="input-group">
-                <span class="input-group-btn">
-                    <button class="btn btn-default" type="button">类名</button>
-                </span>
-                <input type="text" id="class_name" class="form-control">
-            </div>
+        <div class="row" style="padding: 10px">
+            <label>代码生成器</label>
         </div>
-    </div>
 
-    <div class="field row" style="padding: 10px">
-        <div class="col-lg-3">
-            <div class="input-group">
-                <span class="input-group-addon">
-                    字段名
-                </span>
-                <input type="text" name="field_name" class="form-control" aria-label="...">
-            </div>
-        </div>
-        <div class="col-lg-3">
-            <div class="input-group">
-                <span class="input-group-addon">
-                    字段类型
-                </span>
-                <select name="field_type" style="height: 30px; width: 80px;">
-                    <option>string</option>
-                    <option>int</option>
-                    <option>int?</option>
-                    <option>DateTime</option>
-                    <option>DateTime?</option>
-                    <option>bool</option>
-                    <option>double</option>
-                    <option>folat</option>
-                </select>
+        <div class="row" style="padding: 10px">
+            <div class="col-lg-6">
 
+                <div class="input-group" style="padding: 10px">
+                    <span class="input-group-btn" style="width: 20%;text-align: right;">
+                        <button class="btn btn-default" type="button">命名空间</button>
+                    </span>
+                    <input type="text" id="namespace_name" class="form-control">
+                </div>
+
+                <div class="input-group" style="padding: 10px">
+                    <span class="input-group-btn" style="width: 20%;text-align: right;">
+                        <button class="btn btn-default" type="button">类名</button>
+                    </span>
+                    <input type="text" id="class_name" class="form-control">
+                </div>
             </div>
         </div>
 
-        <div class="col-lg-1">
-            <button type="button" class="btn btn-default" onclick="del_field(this)" aria-label="Left Align">
-                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-            </button>
+        <div class="field row" style="padding: 10px">
+            <div class="col-lg-3">
+                <div class="input-group">
+                    <span class="input-group-addon" style="width: 45%;text-align: right;padding: 10px">
+                        字段名
+                    </span>
+                    <input type="text" name="field_name" class="form-control" aria-label="...">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="input-group">
+                    <span class="input-group-addon" style="width:20%;text-align: right;padding: 10px">
+                        字段类型
+                    </span>
+                    <select name="field_type" style="height: 40px; width: 20% !important;flex:inherit" class="form-control">
+                        <option>string</option>
+                        <option>int</option>
+                        <option>int?</option>
+                        <option>DateTime</option>
+                        <option>DateTime?</option>
+                        <option>bool</option>
+                        <option>double</option>
+                        <option>folat</option>
+                    </select>
+                    <button type="button" class="btn btn-danger" onclick="del_field(this)" style="margin-left: 10px" value="删除">删除</button>
+                </div>
+            </div> 
         </div>
-
     </div>
-</div>
 
-<div style="margin-left: 25%; padding: 20px">
-    <button type="button" class="btn btn-info" onclick="add_field()">添加一列</button>
+    <div style="margin-left:30%; padding: 20px">
+        <button type="button" class="btn btn-info" onclick="add_field()">添加一列</button>
 
-    <button type="button" class="btn btn-primary" onclick="ok()">提交</button>
-</div>
+        <button type="button" class="btn btn-primary" onclick="ok()">提交</button>
+    </div>
 
 
 </body>
@@ -73,7 +74,7 @@
 
 <script type="text/javascript">
 
-    $(function() {
+    $(function () {
 
     });
 
@@ -81,9 +82,8 @@
         if ($(".field").length < 2) {
             alert("至少要一个字段");
             return;
-        }
-
-        $(obj).parent().parent().remove();
+        } 
+        $(obj).parents(".field").remove();
     };
 
     function add_field() {
@@ -93,24 +93,24 @@
 
     function ok() {
         var class_name = $("#class_name").val();
+        var namespace_name = $("#namespace_name").val();
         var array = [];
 
-        $('.field').each(function(key, value) {
+        $('.field').each(function (key, value) {
             let field_name = $(this).find("input").val();
             let field_type = $(this).find("select").val();
             array.push({ "field_name": field_name, "field_type": field_type });
-        });
-
+        }); 
 
         $.ajax({
-            url: window.location.origin + '/api/v1/Code/createcode',
+            url: window.location.origin + '/api/v3/Code/createcode',
             type: 'post',
-            data: { class_name: class_name, fields: JSON.stringify(array) },
+            data: { namespace_name: namespace_name,class_name: class_name, fields: JSON.stringify(array) },
             contentType: 'application/x-www-form-urlencoded',
-            success: function(a, b, c) {
+            success: function (a, b, c) {
                 debugger;
             },
-            error: function(a, b, c) {
+            error: function (a, b, c) {
                 debugger;
             }
         });

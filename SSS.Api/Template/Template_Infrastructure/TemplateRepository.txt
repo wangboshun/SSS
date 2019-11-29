@@ -3,10 +3,10 @@ using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Seedwork.Repository;
 
-namespace SSS.Infrastructure.Repository.Template
+namespace SSS.Infrastructure.Repository.NameSpace.Template
 {
     [DIService(ServiceLifetime.Scoped, typeof(ITemplateRepository))]
-    public class TemplateRepository : Repository<SSS.Domain.Template.Template>, ITemplateRepository
+    public class TemplateRepository : Repository<SSS.Domain.NameSpace.Template.Template>, ITemplateRepository
     {
         public TemplateRepository(DbcontextBase context) : base(context)
         {

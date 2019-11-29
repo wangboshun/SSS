@@ -26,7 +26,7 @@ namespace SSS.Api.Seedwork.Middleware
 
         public async Task Invoke(HttpContext context)
         {
-            if (context.Request.Path.Value.Equals("/code")) context.Request.Path = "/api/v1/code/index";
+            if (context.Request.Path.Value.Equals("/code")) context.Request.Path = "/api/v3/code/index";
             await _next.Invoke(context);
         }
     }

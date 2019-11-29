@@ -2,18 +2,18 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using SSS.Application.Seedwork.Service;
-using SSS.Domain.Template.Dto;
+using SSS.Domain.NameSpace.Template.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
-using SSS.Infrastructure.Repository.Template;
+using SSS.Infrastructure.Repository.NameSpace.Template;
 using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
 
-namespace SSS.Application.Template.Service
+namespace SSS.Application.NameSpace.Template.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(ITemplateService))]
-    public class TemplateService : QueryService<SSS.Domain.Template.Template, TemplateInputDto, TemplateOutputDto>, ITemplateService
+    public class TemplateService : QueryService<SSS.Domain.NameSpace.Template.Template, TemplateInputDto, TemplateOutputDto>, ITemplateService
     {
         public TemplateService(IMapper mapper,
             ITemplateRepository repository,
@@ -34,7 +34,7 @@ namespace SSS.Application.Template.Service
             }
 
             input.id = Guid.NewGuid().ToString();
-            var model = Mapper.Map<SSS.Domain.Template.Template>(input);
+            var model = Mapper.Map<SSS.Domain.NameSpace.Template.Template>(input);
             Repository.Add(model);
             Repository.SaveChanges();
         }

@@ -1,6 +1,6 @@
 ﻿using SSS.Domain.Seedwork.Model; 
 
-namespace SSS.Domain.Template
+namespace SSS.Domain.NameSpace.Template
 {
     public class Template : Entity
     { 

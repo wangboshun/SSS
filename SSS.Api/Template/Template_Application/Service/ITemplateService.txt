@@ -1,11 +1,11 @@
-﻿using SSS.Domain.Template.Dto;
+﻿using SSS.Domain.NameSpace.Template.Dto;
 using SSS.Domain.Seedwork.Model;
 using System.Collections.Generic;
 using SSS.Application.Seedwork.Service;
 
-namespace SSS.Application.Template.Service
+namespace SSS.Application.NameSpace.Template.Service
 {
-    public interface ITemplateService : IQueryService<SSS.Domain.Template.Template, TemplateInputDto, TemplateOutputDto>
+    public interface ITemplateService : IQueryService<SSS.Domain.NameSpace.Template.Template, TemplateInputDto, TemplateOutputDto>
     {
         void AddTemplate(TemplateInputDto input);
 

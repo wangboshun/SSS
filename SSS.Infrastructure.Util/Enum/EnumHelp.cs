@@ -10,7 +10,7 @@ namespace SSS.Infrastructure.Util.Enum
         {
             Type type = val.GetType();   //获取类型  
             MemberInfo[] memberInfos = type.GetMember(val.ToString());   //获取成员  
-            if (memberInfos != null && memberInfos.Length > 0)
+            if (memberInfos.Length > 0)
             {
                 DescriptionAttribute[] attrs = memberInfos[0].GetCustomAttributes(typeof(DescriptionAttribute), false) as DescriptionAttribute[];   //获取描述特性  
                 if (attrs != null && attrs.Length > 0)

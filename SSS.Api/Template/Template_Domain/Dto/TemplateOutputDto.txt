@@ -1,6 +1,6 @@
 ﻿using SSS.Domain.Seedwork.Model; 
 
-namespace SSS.Domain.Template.Dto
+namespace SSS.Domain.NameSpace.Template.Dto
 {
     public class TemplateOutputDto : OutputDtoBase
     { 
