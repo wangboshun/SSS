@@ -1,11 +1,14 @@
 using Microsoft.Extensions.DependencyInjection;
 
+using MySql.Data.MySqlClient;
+
 using SSS.Domain.Permission.RoleMenu.Dto;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Seedwork.Repository;
 using SSS.Infrastructure.Util.Attribute;
 
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 
 namespace SSS.Infrastructure.Repository.Permission.RoleMenu
@@ -24,16 +27,17 @@ namespace SSS.Infrastructure.Repository.Permission.RoleMenu
         /// <returns></returns>
         public List<RoleMenuOutputDto> GetRoleMenuByRole(string roleid)
         {
-            var result = Db.RoleMenu.Where(x => x.RoleId.Equals(roleid) && x.IsDelete == 0).Join(Db.MenuInfo,
-                role => role.MenuId, menu => menu.Id,
-                (role, menu) => new RoleMenuOutputDto
-                {
-                    id = role.Id,
-                    menuid = menu.Id,
-                    menuname = menu.MenuName,
-                    createtime = role.CreateTime
-                }).ToList();
-            return result;
+            string sql = @"SELECT m.MenuName AS menuname,
+	                    m.id AS menuid,
+	                    r.id AS roleid,
+	                    r.RoleName AS rolename,
+	                    rm.id AS id,
+	                    rm.CreateTime AS createtime 
+                    FROM
+	                    MenuInfo AS m
+	                    INNER JOIN RoleMenu AS rm ON m.id = rm.MenuId
+	                    INNER JOIN RoleInfo AS r ON r.id = rm.RoleId where rm.RoleId=@roleid";
+            return Db.Database.SqlQuery<RoleMenuOutputDto>(sql, new DbParameter[] { new MySqlParameter("roleid", roleid) }).ToList();
         }
 
         /// <summary>

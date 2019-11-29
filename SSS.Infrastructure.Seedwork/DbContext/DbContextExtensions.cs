@@ -1,5 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
 using System;
@@ -15,7 +14,7 @@ namespace SSS.Infrastructure.Seedwork.DbContext
         private static void CombineParams(ref DbCommand command, params object[] parameters)
         {
             if (parameters != null)
-                foreach (SqlParameter parameter in parameters)
+                foreach (DbParameter parameter in parameters)
                 {
                     if (!parameter.ParameterName.Contains("@"))
                         parameter.ParameterName = $"@{parameter.ParameterName}";

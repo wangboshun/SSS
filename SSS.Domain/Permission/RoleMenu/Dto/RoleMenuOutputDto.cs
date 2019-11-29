@@ -6,5 +6,7 @@ namespace SSS.Domain.Permission.RoleMenu.Dto
     {
         public string menuname { set; get; }
         public string menuid { set; get; }
+        public string roleid { set; get; }
+        public string rolename { set; get; }
     }
 }

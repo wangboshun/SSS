@@ -6,7 +6,9 @@ namespace SSS.Domain.Permission.RoleOperate.Dto
     {
         public string operateid { set; get; }
 
-        public string operatename { set; get; }
+        public string operatename { set; get; } 
+        public string roleid { set; get; }
+        public string rolename { set; get; }
 
     }
 }

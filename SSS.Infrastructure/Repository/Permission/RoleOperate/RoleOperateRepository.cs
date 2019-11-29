@@ -1,11 +1,14 @@
 using Microsoft.Extensions.DependencyInjection;
 
+using MySql.Data.MySqlClient;
+
 using SSS.Domain.Permission.RoleOperate.Dto;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Seedwork.Repository;
 using SSS.Infrastructure.Util.Attribute;
 
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 
 namespace SSS.Infrastructure.Repository.Permission.RoleOperate
@@ -33,16 +36,17 @@ namespace SSS.Infrastructure.Repository.Permission.RoleOperate
         /// <returns></returns>
         public List<RoleOperateOutputDto> GetRoleOperateByRole(string roleid)
         {
-            var result = Db.RoleOperate.Where(x => x.RoleId.Equals(roleid) && x.IsDelete == 0).Join(Db.OperateInfo,
-                role => role.OperateId, operate => operate.Id,
-                (role, operate) => new RoleOperateOutputDto
-                {
-                    id = role.Id,
-                    operateid = operate.Id,
-                    operatename = operate.OperateName,
-                    createtime = role.CreateTime
-                }).ToList();
-            return result;
+            string sql = @"SELECT o.OperateName AS operatename,
+	            o.id AS operateid,
+	            r.id AS roleid,
+	            r.RoleName AS rolename,
+	            ro.id AS id,
+	            ro.CreateTime AS createtime 
+            FROM
+	            OperateInfo AS o
+	            INNER JOIN RoleOperate AS ro ON o.id = ro.OperateId
+	            INNER JOIN RoleInfo AS r ON r.id = ro.RoleId where ro.RoleId=@roleid";
+            return Db.Database.SqlQuery<RoleOperateOutputDto>(sql, new DbParameter[] { new MySqlParameter("roleid", roleid) }).ToList();
         }
     }
 }
