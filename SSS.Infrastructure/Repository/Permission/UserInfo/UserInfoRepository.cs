@@ -108,6 +108,6 @@ namespace SSS.Infrastructure.Repository.Permission.UserInfo
                 node.Item = GetAllLeaves(node, originalList);
             }
             return nodes;
-        }
+        } 
     }
 }

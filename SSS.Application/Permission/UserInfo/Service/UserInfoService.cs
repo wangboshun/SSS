@@ -59,27 +59,20 @@ namespace SSS.Application.Permission.UserInfo.Service
             if (role == null)
                 return null;
 
-            var menu = _rolemenuRepository.GetRoleMenuByRole(role?.Id);
-            var operate = _roleoperateRepository.GetRoleOperateByRole(role?.Id);
+            var menu = _rolemenuRepository.GetRoleMenuByRole(role.Id);
+            var operate = _roleoperateRepository.GetRoleOperateByRole(role.Id);
 
             return new { menu, operate };
         }
 
         /// <summary>
-        /// 删除用户权限
+        /// 删除用户所有权限
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
-        public object DeleteUserPermission(string userid)
-        {
-            var role = _userroleRepository.GetRoleByUser(userid);
-            if (role == null)
-                return null;
-
-            var menu = _rolemenuRepository.GetRoleMenuByRole(role.Id);
-            var operate = _roleoperateRepository.GetRoleOperateByRole(role.Id);
-
-            return new { menu, operate };
+        public bool DeleteUserPermission(string userid)
+        { 
+            return _userroleRepository.DeleteList(x => x.UserId.Equals(userid),true);
         }
 
         /// <summary>

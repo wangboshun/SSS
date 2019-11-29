@@ -25,6 +25,6 @@ namespace SSS.Infrastructure.Repository.Permission.UserRole
         /// 删除角色下的所有用户
         /// </summary>
         /// <param name="roleid"></param>
-        bool DeleteUserRoleByRole(string roleid);
+        bool DeleteUserRoleByRole(string roleid, bool save = true);
     }
 }

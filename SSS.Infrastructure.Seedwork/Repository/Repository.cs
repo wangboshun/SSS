@@ -56,6 +56,18 @@ namespace SSS.Infrastructure.Seedwork.Repository
         }
 
         /// <summary>
+        ///     批量更新
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="save"></param>
+        public virtual void UpdateList(List<TEntity> list, bool save = false)
+        {
+            DbSet.UpdateRange(list);
+            if (save)
+                Db.SaveChanges();
+        }
+         
+        /// <summary>
         ///     批量删除
         /// </summary>
         /// <param name="predicate"></param>

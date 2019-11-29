@@ -24,9 +24,9 @@ namespace SSS.Infrastructure.Repository.Permission.RoleOperate
         /// 删除角色下的所有操作
         /// </summary>
         /// <param name="roleid"></param>
-        public bool DeleteRoleOperateByRole(string roleid)
+        public bool DeleteRoleOperateByRole(string roleid, bool save = true)
         {
-            return DeleteList(x => x.RoleId.Equals(roleid), true);
+            return DeleteList(x => x.RoleId.Equals(roleid), save);
         }
 
         /// <summary>
@@ -45,8 +45,8 @@ namespace SSS.Infrastructure.Repository.Permission.RoleOperate
             FROM
 	            OperateInfo AS o
 	            INNER JOIN RoleOperate AS ro ON o.id = ro.OperateId
-	            INNER JOIN RoleInfo AS r ON r.id = ro.RoleId where ro.RoleId=@roleid";
-            return Db.Database.SqlQuery<RoleOperateOutputDto>(sql, new DbParameter[] { new MySqlParameter("roleid", roleid) }).ToList();
+	            INNER JOIN RoleInfo AS r ON r.id = ro.RoleId where ro.IsDelete=0 and r.IsDelete=0 and o.IsDelete=0 and ro.RoleId=@roleid";
+            return Db.Database.SqlQuery<RoleOperateOutputDto>(sql, new DbParameter[] { new MySqlParameter("roleid", roleid) })?.ToList();
         }
     }
 }

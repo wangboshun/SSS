@@ -18,6 +18,6 @@ namespace SSS.Infrastructure.Repository.Permission.RoleMenu
         /// 删除角色下的所有菜单
         /// </summary>
         /// <param name="roleid"></param>
-        bool DeleteRoleMenuByRole(string roleid);
+        bool DeleteRoleMenuByRole(string roleid, bool save = true);
     }
 }

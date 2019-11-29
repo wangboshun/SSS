@@ -479,6 +479,13 @@
             <param name="userid">用户Id</param>
             <returns></returns>
         </member>
+        <member name="M:SSS.Api.Controllers.Permission.UserInfoController.DeleteUserPermission(System.String)">
+            <summary>
+                删除用户所有权限：菜单、操作权限
+            </summary>
+            <param name="userid">用户Id</param>
+            <returns></returns>
+        </member>
         <member name="M:SSS.Api.Controllers.Permission.UserInfoController.Login(SSS.Domain.Permission.UserInfo.Dto.UserInfoInputDto)">
             <summary>
             用户登录

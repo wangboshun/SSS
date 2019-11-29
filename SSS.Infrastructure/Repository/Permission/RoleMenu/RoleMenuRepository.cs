@@ -36,17 +36,17 @@ namespace SSS.Infrastructure.Repository.Permission.RoleMenu
                     FROM
 	                    MenuInfo AS m
 	                    INNER JOIN RoleMenu AS rm ON m.id = rm.MenuId
-	                    INNER JOIN RoleInfo AS r ON r.id = rm.RoleId where rm.RoleId=@roleid";
-            return Db.Database.SqlQuery<RoleMenuOutputDto>(sql, new DbParameter[] { new MySqlParameter("roleid", roleid) }).ToList();
+	                    INNER JOIN RoleInfo AS r ON r.id = rm.RoleId where rm.IsDelete=0 and r.IsDelete=0 and m.IsDelete=0 and rm.RoleId=@roleid";
+            return Db.Database.SqlQuery<RoleMenuOutputDto>(sql, new DbParameter[] { new MySqlParameter("roleid", roleid) })?.ToList();
         }
 
         /// <summary>
         /// 删除角色下的所有菜单
         /// </summary>
         /// <param name="roleid"></param>
-        public bool DeleteRoleMenuByRole(string roleid)
+        public bool DeleteRoleMenuByRole(string roleid, bool save=true)
         {
-            return DeleteList(x => x.RoleId.Equals(roleid), true);
+            return DeleteList(x => x.RoleId.Equals(roleid), save);
         }
     }
 }

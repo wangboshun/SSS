@@ -67,6 +67,19 @@ namespace SSS.Api.Controllers.Permission
         }
 
         /// <summary>
+        ///     删除用户所有权限：菜单、操作权限
+        /// </summary>
+        /// <param name="userid">用户Id</param>
+        /// <returns></returns>
+        [HttpDelete("delete_permission_by_userid")]
+        [AllowAnonymous] //匿名访问
+        public IActionResult DeleteUserPermission(string userid)
+        {
+            var result = _service.DeleteUserPermission(userid);
+            return ApiResponse(result);
+        }
+
+        /// <summary>
         /// 用户登录
         /// </summary>
         /// <param name="input">账号、密码</param>

@@ -19,6 +19,7 @@ namespace SSS.Domain.Seedwork.Repository
     {
         void Add(TEntity obj, bool save = false);
         void AddList(List<TEntity> list, bool save = false);
+        void UpdateList(List<TEntity> list, bool save = false);
         bool DeleteList(Expression<Func<TEntity, bool>> predicate, bool save = false);
         TEntity Get(string id);
         TEntity Get(Expression<Func<TEntity, bool>> predicate);

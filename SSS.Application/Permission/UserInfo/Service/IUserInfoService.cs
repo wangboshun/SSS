@@ -26,6 +26,13 @@ namespace SSS.Application.Permission.UserInfo.Service
         /// <returns></returns>
         object GetUserPermission(string userid);
 
+        /// <summary>
+        /// 删除用户所有权限
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        bool DeleteUserPermission(string userid);
+
         void DeleteUserInfo(UserInfoInputDto input);
     }
 }

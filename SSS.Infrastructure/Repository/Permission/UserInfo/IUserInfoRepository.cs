@@ -12,6 +12,6 @@ namespace SSS.Infrastructure.Repository.Permission.UserInfo
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
-        List<UserInfoTreeOutputDto> GetChildrenById(string userid);
+        List<UserInfoTreeOutputDto> GetChildrenById(string userid); 
     }
 }

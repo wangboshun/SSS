@@ -36,8 +36,8 @@ namespace SSS.Infrastructure.Repository.Permission.UserRole
                         FROM
 	                        UserInfo AS u
 	                        INNER JOIN UserRole AS ur ON u.id = ur.UserId
-	                        INNER JOIN RoleInfo AS r ON r.id = ur.RoleId where ur.RoleId=@roleid";
-            return Db.Database.SqlQuery<UserRoleOutputDto>(sql, new DbParameter[] { new MySqlParameter("roleid", roleid) }).ToList();
+	                        INNER JOIN RoleInfo AS r ON r.id = ur.RoleId where  ur.IsDelete=0 and r.IsDelete=0 and u.IsDelete=0 and ur.RoleId=@roleid";
+            return Db.Database.SqlQuery<UserRoleOutputDto>(sql, new DbParameter[] { new MySqlParameter("roleid", roleid) })?.ToList();
         }
 
         /// <summary>
@@ -56,9 +56,9 @@ namespace SSS.Infrastructure.Repository.Permission.UserRole
         /// </summary>
         /// <param name="roleid"></param>
         /// <returns></returns>
-        public bool DeleteUserRoleByRole(string roleid)
+        public bool DeleteUserRoleByRole(string roleid, bool save = true)
         {
-            return DeleteList(x => x.RoleId.Equals(roleid), true);
+            return DeleteList(x => x.RoleId.Equals(roleid), save);
         }
     }
 }

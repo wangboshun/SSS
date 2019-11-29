@@ -18,6 +18,6 @@ namespace SSS.Infrastructure.Repository.Permission.RoleOperate
         /// 删除角色下的所有操作
         /// </summary>
         /// <param name="roleid"></param>
-        bool DeleteRoleOperateByRole(string roleid);
+        bool DeleteRoleOperateByRole(string roleid, bool save=true);
     }
 }
