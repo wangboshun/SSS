@@ -74,8 +74,8 @@ namespace TALibrary
                             prevGain += tempValue2;
                         }
                     }
-                    tempValue1 = prevLoss / ((double)optInTimePeriod);
-                    tempValue2 = prevGain / ((double)optInTimePeriod);
+                    tempValue1 = prevLoss / optInTimePeriod;
+                    tempValue2 = prevGain / optInTimePeriod;
                     double tempValue3 = tempValue2 - tempValue1;
                     double tempValue4 = tempValue1 + tempValue2;
                     if ((-1E-08 >= tempValue4) || (tempValue4 >= 1E-08))
@@ -115,8 +115,8 @@ namespace TALibrary
                         prevGain += tempValue2;
                     }
                 }
-                prevLoss /= (double)optInTimePeriod;
-                prevGain /= (double)optInTimePeriod;
+                prevLoss /= optInTimePeriod;
+                prevGain /= optInTimePeriod;
                 if (today > startIdx)
                 {
                     tempValue1 = prevGain + prevLoss;
@@ -148,8 +148,8 @@ namespace TALibrary
                         {
                             prevGain += tempValue2;
                         }
-                        prevLoss /= (double)optInTimePeriod;
-                        prevGain /= (double)optInTimePeriod;
+                        prevLoss /= optInTimePeriod;
+                        prevGain /= optInTimePeriod;
                         today++;
                     }
                 }
@@ -169,8 +169,8 @@ namespace TALibrary
                     {
                         prevGain += tempValue2;
                     }
-                    prevLoss /= (double)optInTimePeriod;
-                    prevGain /= (double)optInTimePeriod;
+                    prevLoss /= optInTimePeriod;
+                    prevGain /= optInTimePeriod;
                     tempValue1 = prevGain + prevLoss;
                     if ((-1E-08 >= tempValue1) || (tempValue1 >= 1E-08))
                     {
@@ -259,8 +259,8 @@ namespace TALibrary
                             prevGain += tempValue2;
                         }
                     }
-                    tempValue1 = prevLoss / ((double)optInTimePeriod);
-                    tempValue2 = prevGain / ((double)optInTimePeriod);
+                    tempValue1 = prevLoss / optInTimePeriod;
+                    tempValue2 = prevGain / optInTimePeriod;
                     double tempValue3 = tempValue2 - tempValue1;
                     double tempValue4 = tempValue1 + tempValue2;
                     if ((-1E-08 >= tempValue4) || (tempValue4 >= 1E-08))
@@ -300,8 +300,8 @@ namespace TALibrary
                         prevGain += tempValue2;
                     }
                 }
-                prevLoss /= (double)optInTimePeriod;
-                prevGain /= (double)optInTimePeriod;
+                prevLoss /= optInTimePeriod;
+                prevGain /= optInTimePeriod;
                 if (today > startIdx)
                 {
                     tempValue1 = prevGain + prevLoss;
@@ -333,8 +333,8 @@ namespace TALibrary
                         {
                             prevGain += tempValue2;
                         }
-                        prevLoss /= (double)optInTimePeriod;
-                        prevGain /= (double)optInTimePeriod;
+                        prevLoss /= optInTimePeriod;
+                        prevGain /= optInTimePeriod;
                         today++;
                     }
                 }
@@ -354,8 +354,8 @@ namespace TALibrary
                     {
                         prevGain += tempValue2;
                     }
-                    prevLoss /= (double)optInTimePeriod;
-                    prevGain /= (double)optInTimePeriod;
+                    prevLoss /= optInTimePeriod;
+                    prevGain /= optInTimePeriod;
                     tempValue1 = prevGain + prevLoss;
                     if ((-1E-08 >= tempValue1) || (tempValue1 >= 1E-08))
                     {

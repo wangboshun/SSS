@@ -14,7 +14,8 @@ namespace SSS.Domain.Permission.UserRole.Validation
         {
             RuleSet("Insert", () =>
             {
-
+                RuleFor(x => x.userid).NotEmpty().WithMessage("用户不能为空！");
+                RuleFor(x => x.roleid).NotEmpty().WithMessage("角色不能为空！");
             });
 
             RuleSet("Delete", () =>

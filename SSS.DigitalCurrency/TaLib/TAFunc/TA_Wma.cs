@@ -81,7 +81,7 @@ namespace TALibrary
                 periodSum += tempReal * optInTimePeriod;
                 trailingValue = inReal[trailingIdx];
                 trailingIdx++;
-                outReal[outIdx] = periodSum / ((double)divider);
+                outReal[outIdx] = periodSum / divider;
                 outIdx++;
                 periodSum -= periodSub;
             }
@@ -167,7 +167,7 @@ namespace TALibrary
                 periodSum += tempReal * optInTimePeriod;
                 trailingValue = inReal[trailingIdx];
                 trailingIdx++;
-                outReal[outIdx] = periodSum / ((double)divider);
+                outReal[outIdx] = periodSum / divider;
                 outIdx++;
                 periodSum -= periodSub;
             }

@@ -114,7 +114,7 @@ namespace TALibrary
                 trailingIdx++;
                 if (tempReal != 0.0)
                 {
-                    outReal[outIdx] = ((((double)inReal[inIdx]) / tempReal) - 1.0) * 100.0;
+                    outReal[outIdx] = ((inReal[inIdx] / tempReal) - 1.0) * 100.0;
                     outIdx++;
                 }
                 else

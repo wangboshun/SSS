@@ -78,16 +78,16 @@ namespace TALibrary
                     theAverage += circBuffer[j];
                     j++;
                 }
-                theAverage /= (double)optInTimePeriod;
+                theAverage /= optInTimePeriod;
                 double tempReal2 = 0.0;
                 for (j = 0; j < optInTimePeriod; j++)
                 {
-                    tempReal2 += Math.Abs((double)(circBuffer[j] - theAverage));
+                    tempReal2 += Math.Abs(circBuffer[j] - theAverage);
                 }
                 double tempReal = lastValue - theAverage;
                 if ((tempReal != 0.0) && (tempReal2 != 0.0))
                 {
-                    outReal[outIdx] = tempReal / (0.015 * (tempReal2 / ((double)optInTimePeriod)));
+                    outReal[outIdx] = tempReal / (0.015 * (tempReal2 / optInTimePeriod));
                     outIdx++;
                 }
                 else
@@ -182,16 +182,16 @@ namespace TALibrary
                     theAverage += circBuffer[j];
                     j++;
                 }
-                theAverage /= (double)optInTimePeriod;
+                theAverage /= optInTimePeriod;
                 double tempReal2 = 0.0;
                 for (j = 0; j < optInTimePeriod; j++)
                 {
-                    tempReal2 += Math.Abs((double)(circBuffer[j] - theAverage));
+                    tempReal2 += Math.Abs(circBuffer[j] - theAverage);
                 }
                 double tempReal = lastValue - theAverage;
                 if ((tempReal != 0.0) && (tempReal2 != 0.0))
                 {
-                    outReal[outIdx] = tempReal / (0.015 * (tempReal2 / ((double)optInTimePeriod)));
+                    outReal[outIdx] = tempReal / (0.015 * (tempReal2 / optInTimePeriod));
                     outIdx++;
                 }
                 else

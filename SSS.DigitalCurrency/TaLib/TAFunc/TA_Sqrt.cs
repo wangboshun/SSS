@@ -55,7 +55,7 @@ namespace TALibrary
             int outIdx = 0;
             while (i <= endIdx)
             {
-                outReal[outIdx] = Math.Sqrt((double)inReal[i]);
+                outReal[outIdx] = Math.Sqrt(inReal[i]);
                 i++;
                 outIdx++;
             }

@@ -307,7 +307,7 @@ namespace TALibrary
                 i = 0;
                 while (i < DCPeriodInt)
                 {
-                    tempReal = (i * constDeg2RadBy360) / ((double)DCPeriodInt);
+                    tempReal = (i * constDeg2RadBy360) / DCPeriodInt;
                     tempReal2 = smoothPrice[idx];
                     realPart += Math.Sin(tempReal) * tempReal2;
                     imagPart += Math.Cos(tempReal) * tempReal2;
@@ -362,7 +362,7 @@ namespace TALibrary
                 }
                 if (DCPeriodInt > 0)
                 {
-                    tempReal /= (double)DCPeriodInt;
+                    tempReal /= DCPeriodInt;
                 }
                 double trendline = ((((4.0 * tempReal) + (3.0 * iTrend1)) + (2.0 * iTrend2)) + iTrend3) / 10.0;
                 iTrend3 = iTrend2;
@@ -385,7 +385,7 @@ namespace TALibrary
                     trend = 0;
                 }
                 tempReal = smoothPrice[smoothPrice_Idx];
-                if ((trendline != 0.0) && (Math.Abs((double)((tempReal - trendline) / trendline)) >= 0.015))
+                if ((trendline != 0.0) && (Math.Abs((tempReal - trendline) / trendline) >= 0.015))
                 {
                     trend = 1;
                 }
@@ -706,7 +706,7 @@ namespace TALibrary
                 i = 0;
                 while (i < DCPeriodInt)
                 {
-                    tempReal = (i * constDeg2RadBy360) / ((double)DCPeriodInt);
+                    tempReal = (i * constDeg2RadBy360) / DCPeriodInt;
                     tempReal2 = smoothPrice[idx];
                     realPart += Math.Sin(tempReal) * tempReal2;
                     imagPart += Math.Cos(tempReal) * tempReal2;
@@ -761,7 +761,7 @@ namespace TALibrary
                 }
                 if (DCPeriodInt > 0)
                 {
-                    tempReal /= (double)DCPeriodInt;
+                    tempReal /= DCPeriodInt;
                 }
                 double trendline = ((((4.0 * tempReal) + (3.0 * iTrend1)) + (2.0 * iTrend2)) + iTrend3) / 10.0;
                 iTrend3 = iTrend2;
@@ -784,7 +784,7 @@ namespace TALibrary
                     trend = 0;
                 }
                 tempReal = smoothPrice[smoothPrice_Idx];
-                if ((trendline != 0.0) && (Math.Abs((double)((tempReal - trendline) / trendline)) >= 0.015))
+                if ((trendline != 0.0) && (Math.Abs((tempReal - trendline) / trendline) >= 0.015))
                 {
                     trend = 1;
                 }

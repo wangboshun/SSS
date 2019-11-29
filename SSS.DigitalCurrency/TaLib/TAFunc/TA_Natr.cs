@@ -67,7 +67,7 @@ namespace TALibrary
                     prevATR *= optInTimePeriod - 1;
                     prevATR += tempBuffer[today];
                     today++;
-                    prevATR /= (double)optInTimePeriod;
+                    prevATR /= optInTimePeriod;
                     outIdx--;
                 }
                 outIdx = 1;
@@ -91,7 +91,7 @@ namespace TALibrary
                     prevATR *= optInTimePeriod - 1;
                     prevATR += tempBuffer[today];
                     today++;
-                    prevATR /= (double)optInTimePeriod;
+                    prevATR /= optInTimePeriod;
                     tempValue = inClose[today];
                     if ((-1E-08 >= tempValue) || (tempValue >= 1E-08))
                     {
@@ -173,7 +173,7 @@ namespace TALibrary
                     prevATR *= optInTimePeriod - 1;
                     prevATR += tempBuffer[today];
                     today++;
-                    prevATR /= (double)optInTimePeriod;
+                    prevATR /= optInTimePeriod;
                     outIdx--;
                 }
                 outIdx = 1;
@@ -197,7 +197,7 @@ namespace TALibrary
                     prevATR *= optInTimePeriod - 1;
                     prevATR += tempBuffer[today];
                     today++;
-                    prevATR /= (double)optInTimePeriod;
+                    prevATR /= optInTimePeriod;
                     tempValue = inClose[today];
                     if ((-1E-08 >= tempValue) || (tempValue >= 1E-08))
                     {

@@ -14,7 +14,7 @@ namespace SSS.Domain.Permission.OperateInfo.Validation
         {
             RuleSet("Insert", () =>
             {
-
+                RuleFor(x => x.operatename).NotEmpty().WithMessage("操作名称不能为空！");
             });
 
             RuleSet("Delete", () =>

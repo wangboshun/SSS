@@ -28,7 +28,7 @@ namespace TALibrary
             {
                 return RetCode.BadParam;
             }
-            return TA_INT_EMA(startIdx, endIdx, inReal, optInTimePeriod, 2.0 / ((double)(optInTimePeriod + 1)), ref outBegIdx, ref outNBElement, outReal);
+            return TA_INT_EMA(startIdx, endIdx, inReal, optInTimePeriod, 2.0 / (optInTimePeriod + 1), ref outBegIdx, ref outNBElement, outReal);
         }
         public static RetCode Ema(int startIdx, int endIdx, float[] inReal, int optInTimePeriod, ref int outBegIdx, ref int outNBElement, double[] outReal)
         {
@@ -56,7 +56,7 @@ namespace TALibrary
             {
                 return RetCode.BadParam;
             }
-            return TA_INT_EMA(startIdx, endIdx, inReal, optInTimePeriod, 2.0 / ((double)(optInTimePeriod + 1)), ref outBegIdx, ref outNBElement, outReal);
+            return TA_INT_EMA(startIdx, endIdx, inReal, optInTimePeriod, 2.0 / (optInTimePeriod + 1), ref outBegIdx, ref outNBElement, outReal);
         }
         public static int EmaLookback(int optInTimePeriod)
         {

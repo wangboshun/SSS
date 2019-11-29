@@ -56,6 +56,24 @@ namespace SSS.Infrastructure.Seedwork.Repository
         }
 
         /// <summary>
+        ///     批量删除
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <param name="save"></param>
+        public virtual bool DeleteList(Expression<Func<TEntity, bool>> predicate, bool save = false)
+        {
+            var list = DbSet.Where(predicate);
+            foreach (TEntity item in list)
+            {
+                item.IsDelete = 1;
+            }
+            DbSet.UpdateRange(list);
+            if (save)
+                return Db.SaveChanges() > 0;
+            return false;
+        }
+
+        /// <summary>
         ///     Id查询
         /// </summary>
         /// <param name="id">Id</param>

@@ -8,7 +8,7 @@ using SSS.Domain.Permission.RoleInfo.Dto;
 namespace SSS.Api.Controllers.Permission
 {
     /// <summary>
-    /// RoleInfoController
+    /// 角色信息
     /// </summary> 
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -28,35 +28,35 @@ namespace SSS.Api.Controllers.Permission
         }
 
         /// <summary>
-        /// GetList
+        ///     获取所有角色信息
         /// </summary>
         /// <param name="input">input</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("getlist")]
-        [AllowAnonymous]  //匿名访问
-        public IActionResult GetList([FromQuery]RoleInfoInputDto input)
+        [AllowAnonymous] //匿名访问
+        public IActionResult GetList([FromQuery] RoleInfoInputDto input)
         {
             var result = _service.GetListRoleInfo(input);
             return ApiResponse(result);
         }
 
         /// <summary>
-        ///     GetChildren
+        ///     获取角色下的所有下级
         /// </summary>
-        /// <param name="input">input</param>
+        /// <param name="roleid">角色Id</param>
         /// <returns></returns>
-        [HttpGet("getchildren")]
+        [HttpGet("get_children_by_roleid")]
         [AllowAnonymous] //匿名访问
-        public IActionResult GetChildren([FromQuery] RoleInfoInputDto input)
+        public IActionResult GetChildren(string roleid)
         {
-            var result = _service.GetChildren(input);
+            var result = _service.GetChildren(roleid);
             return ApiResponse(result);
         }
 
         /// <summary>
-        /// AddRoleInfo
+        /// 添加角色信息
         /// </summary>
-        /// <param name="input">RoleInfoInputDto</param>
+        /// <param name="input">角色名称</param>
         /// <returns></returns> 
         [HttpPost("add")]
         [AllowAnonymous]  //匿名访问

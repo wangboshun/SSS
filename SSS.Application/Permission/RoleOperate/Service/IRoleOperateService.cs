@@ -10,8 +10,20 @@ namespace SSS.Application.Permission.RoleOperate.Service
     {
         void AddRoleOperate(RoleOperateInputDto input);
 
+        /// <summary>
+        /// 删除角色下的所有操作
+        /// </summary>
+        /// <param name="roleid"></param>
+        /// <returns></returns>
+        bool DeleteRoleOperateByRole(string roleid);
+
         Pages<List<RoleOperateOutputDto>> GetListRoleOperate(RoleOperateInputDto input);
 
+        /// <summary>
+        /// 获取角色下的所有操作
+        /// </summary>
+        /// <param name="roleid"></param>
+        /// <returns></returns>
         List<RoleOperateOutputDto> GetOperateByRole(string roleid);
     }
 }

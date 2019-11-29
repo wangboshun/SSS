@@ -10,5 +10,7 @@ namespace SSS.Application.NameSpace.Template.Service
         void AddTemplate(TemplateInputDto input);
 
 		Pages<List<TemplateOutputDto>> GetListTemplate(TemplateInputDto input);
+
+        void DeleteTemplate(TemplateInfoInputDto input);
     }
 }

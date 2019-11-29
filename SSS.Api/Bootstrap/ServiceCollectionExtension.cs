@@ -10,7 +10,7 @@ using SSS.Api.Seedwork.ServiceCollection;
 using SSS.Infrastructure.Seedwork.Cache.Memcached;
 using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Seedwork.Cache.Redis;
-using SSS.Infrastructure.Util.Enum;
+
 using System;
 using System.IO;
 using System.Linq;
@@ -72,7 +72,7 @@ namespace SSS.Api.Bootstrap
             {
                 option.GroupNameFormat = "'v'V";
             });
-             
+
             services.AddSwaggerGen(options =>
             {
                 typeof(ApiVersions).GetEnumNames().ToList().ForEach(version =>

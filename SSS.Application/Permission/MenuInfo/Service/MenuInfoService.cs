@@ -39,15 +39,33 @@ namespace SSS.Application.Permission.MenuInfo.Service
                 return;
             }
 
+            var menu = Get(x => x.MenuName.Equals(input.menuname));
+            if (menu != null)
+            {
+                Error.Execute("菜单名已存在！");
+                return;
+            }
+
             input.id = Guid.NewGuid().ToString();
             var model = Mapper.Map<SSS.Domain.Permission.MenuInfo.MenuInfo>(input);
+            model.CreateTime = DateTime.Now;
             Repository.Add(model);
             Repository.SaveChanges();
         }
 
-        public List<MenuInfoTreeOutputDto> GetChildren(MenuInfoInputDto input)
+        public void DeleteMenuInfo(MenuInfoInputDto input)
         {
-            return _repository.GetChildren(input);
+            Delete(input.id);
+        }
+
+        /// <summary>
+        /// 获取菜单下的所有下级
+        /// </summary>
+        /// <param name="menuid"></param>
+        /// <returns></returns>
+        public List<MenuInfoTreeOutputDto> GetChildren(string menuid)
+        {
+            return _repository.GetChildren(menuid);
         }
 
         public Pages<List<MenuInfoOutputDto>> GetListMenuInfo(MenuInfoInputDto input)

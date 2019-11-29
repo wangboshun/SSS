@@ -7,5 +7,7 @@ namespace SSS.Domain.Permission.UserInfo.Dto
         public string username { set; get; }
 
         public string password { set; get; }
+
+        public string parentid { set; get; }
     }
 }

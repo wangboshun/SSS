@@ -8,7 +8,7 @@ using SSS.Domain.Permission.UserInfo.Dto;
 namespace SSS.Api.Controllers.Permission
 {
     /// <summary>
-    ///     UserInfoController
+    ///     用户信息
     /// </summary>
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -28,7 +28,7 @@ namespace SSS.Api.Controllers.Permission
         }
 
         /// <summary>
-        ///     GetList
+        ///     获取所有用户信息
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns>
@@ -41,11 +41,11 @@ namespace SSS.Api.Controllers.Permission
         }
 
         /// <summary>
-        ///     GetChildren
+        ///     获取用户下的所有下级
         /// </summary>
-        /// <param name="userid">userid</param>
+        /// <param name="userid">用户Id</param>
         /// <returns></returns>
-        [HttpGet("getchildren")]
+        [HttpGet("get_children_by_userid")]
         [AllowAnonymous] //匿名访问
         public IActionResult GetChildrenById(string userid)
         {
@@ -54,11 +54,11 @@ namespace SSS.Api.Controllers.Permission
         }
 
         /// <summary>
-        ///     GetUserPermission
+        ///     获取用户所有权限：菜单、操作权限
         /// </summary>
-        /// <param name="userid">userid</param>
+        /// <param name="userid">用户Id</param>
         /// <returns></returns>
-        [HttpGet("getpermission")]
+        [HttpGet("get_permission_by_userid")]
         [AllowAnonymous] //匿名访问
         public IActionResult GetUserPermission(string userid)
         {
@@ -67,9 +67,9 @@ namespace SSS.Api.Controllers.Permission
         }
 
         /// <summary>
-        /// login
+        /// 用户登录
         /// </summary>
-        /// <param name="input"></param>
+        /// <param name="input">账号、密码</param>
         /// <returns></returns>
         [HttpPost("login")]
         [AllowAnonymous] //匿名访问
@@ -80,9 +80,9 @@ namespace SSS.Api.Controllers.Permission
         }
 
         /// <summary>
-        ///     AddUserInfo
+        ///  添加用户
         /// </summary>
-        /// <param name="input">UserInfoInputDto</param>
+        /// <param name="input">账号、密码</param>
         /// <returns></returns>
         [HttpPost("add")]
         [AllowAnonymous] //匿名访问

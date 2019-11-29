@@ -44,7 +44,7 @@ namespace TALibrary
                 }
                 if (Globals.candleSettings[3].rangeType == RangeType.RealBody)
                 {
-                    num22 = Math.Abs((double)(inClose[i] - inOpen[i]));
+                    num22 = Math.Abs(inClose[i] - inOpen[i]);
                 }
                 else
                 {
@@ -98,14 +98,14 @@ namespace TALibrary
                 double num17;
                 if (Globals.candleSettings[3].avgPeriod != 0.0)
                 {
-                    num17 = BodyDojiPeriodTotal / ((double)Globals.candleSettings[3].avgPeriod);
+                    num17 = BodyDojiPeriodTotal / Globals.candleSettings[3].avgPeriod;
                 }
                 else
                 {
                     double num16;
                     if (Globals.candleSettings[3].rangeType == RangeType.RealBody)
                     {
-                        num16 = Math.Abs((double)(inClose[i] - inOpen[i]));
+                        num16 = Math.Abs(inClose[i] - inOpen[i]);
                     }
                     else
                     {
@@ -157,7 +157,7 @@ namespace TALibrary
                 {
                     num11 = 1.0;
                 }
-                if (Math.Abs((double)(inClose[i] - inOpen[i])) <= ((Globals.candleSettings[3].factor * num17) / num11))
+                if (Math.Abs(inClose[i] - inOpen[i]) <= ((Globals.candleSettings[3].factor * num17) / num11))
                 {
                     outInteger[outIdx] = 100;
                     outIdx++;
@@ -169,7 +169,7 @@ namespace TALibrary
                 }
                 if (Globals.candleSettings[3].rangeType == RangeType.RealBody)
                 {
-                    num10 = Math.Abs((double)(inClose[i] - inOpen[i]));
+                    num10 = Math.Abs(inClose[i] - inOpen[i]);
                 }
                 else
                 {
@@ -213,7 +213,7 @@ namespace TALibrary
                 }
                 if (Globals.candleSettings[3].rangeType == RangeType.RealBody)
                 {
-                    num5 = Math.Abs((double)(inClose[BodyDojiTrailingIdx] - inOpen[BodyDojiTrailingIdx]));
+                    num5 = Math.Abs(inClose[BodyDojiTrailingIdx] - inOpen[BodyDojiTrailingIdx]);
                 }
                 else
                 {
@@ -305,7 +305,7 @@ namespace TALibrary
                 }
                 if (Globals.candleSettings[3].rangeType == RangeType.RealBody)
                 {
-                    num22 = Math.Abs((float)(inClose[i] - inOpen[i]));
+                    num22 = Math.Abs(inClose[i] - inOpen[i]);
                 }
                 else
                 {
@@ -359,14 +359,14 @@ namespace TALibrary
                 double num17;
                 if (Globals.candleSettings[3].avgPeriod != 0.0)
                 {
-                    num17 = BodyDojiPeriodTotal / ((double)Globals.candleSettings[3].avgPeriod);
+                    num17 = BodyDojiPeriodTotal / Globals.candleSettings[3].avgPeriod;
                 }
                 else
                 {
                     float num16;
                     if (Globals.candleSettings[3].rangeType == RangeType.RealBody)
                     {
-                        num16 = Math.Abs((float)(inClose[i] - inOpen[i]));
+                        num16 = Math.Abs(inClose[i] - inOpen[i]);
                     }
                     else
                     {
@@ -418,7 +418,7 @@ namespace TALibrary
                 {
                     num11 = 1.0;
                 }
-                if (Math.Abs((float)(inClose[i] - inOpen[i])) <= ((Globals.candleSettings[3].factor * num17) / num11))
+                if (Math.Abs(inClose[i] - inOpen[i]) <= ((Globals.candleSettings[3].factor * num17) / num11))
                 {
                     outInteger[outIdx] = 100;
                     outIdx++;
@@ -430,7 +430,7 @@ namespace TALibrary
                 }
                 if (Globals.candleSettings[3].rangeType == RangeType.RealBody)
                 {
-                    num10 = Math.Abs((float)(inClose[i] - inOpen[i]));
+                    num10 = Math.Abs(inClose[i] - inOpen[i]);
                 }
                 else
                 {
@@ -474,7 +474,7 @@ namespace TALibrary
                 }
                 if (Globals.candleSettings[3].rangeType == RangeType.RealBody)
                 {
-                    num5 = Math.Abs((float)(inClose[BodyDojiTrailingIdx] - inOpen[BodyDojiTrailingIdx]));
+                    num5 = Math.Abs(inClose[BodyDojiTrailingIdx] - inOpen[BodyDojiTrailingIdx]);
                 }
                 else
                 {

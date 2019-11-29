@@ -49,6 +49,7 @@ namespace SSS.Application.Coin.CoinAnalyse.Service
 
             input.id = Guid.NewGuid().ToString();
             var model = Mapper.Map<Domain.Coin.CoinAnalyse.CoinAnalyse>(input);
+            model.CreateTime = DateTime.Now;
             Repository.Add(model);
             Repository.SaveChanges();
         }

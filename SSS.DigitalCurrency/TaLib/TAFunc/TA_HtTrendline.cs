@@ -299,7 +299,7 @@ namespace TALibrary
                 }
                 if (DCPeriodInt > 0)
                 {
-                    tempReal /= (double)DCPeriodInt;
+                    tempReal /= DCPeriodInt;
                 }
                 tempReal2 = ((((4.0 * tempReal) + (3.0 * iTrend1)) + (2.0 * iTrend2)) + iTrend3) / 10.0;
                 iTrend3 = iTrend2;
@@ -614,7 +614,7 @@ namespace TALibrary
                 }
                 if (DCPeriodInt > 0)
                 {
-                    tempReal /= (double)DCPeriodInt;
+                    tempReal /= DCPeriodInt;
                 }
                 tempReal2 = ((((4.0 * tempReal) + (3.0 * iTrend1)) + (2.0 * iTrend2)) + iTrend3) / 10.0;
                 iTrend3 = iTrend2;

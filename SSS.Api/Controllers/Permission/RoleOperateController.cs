@@ -8,7 +8,7 @@ using SSS.Domain.Permission.RoleOperate.Dto;
 namespace SSS.Api.Controllers.Permission
 {
     /// <summary>
-    /// RoleOperateController
+    /// 角色操作映射
     /// </summary> 
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -28,24 +28,24 @@ namespace SSS.Api.Controllers.Permission
         }
 
         /// <summary>
-        /// GetList
+        ///     获取所有角色操作映射信息
         /// </summary>
         /// <param name="input">input</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("getlist")]
-        [AllowAnonymous]  //匿名访问
-        public IActionResult GetList([FromQuery]RoleOperateInputDto input)
+        [AllowAnonymous] //匿名访问
+        public IActionResult GetList([FromQuery] RoleOperateInputDto input)
         {
             var result = _service.GetListRoleOperate(input);
             return ApiResponse(result);
         }
 
         /// <summary>
-        /// GetOperateByRole
+        /// 获取角色下的所有操作
         /// </summary>
-        /// <param name="roleid">roleid</param>
+        /// <param name="roleid">角色Id</param>
         /// <returns></returns> 
-        [HttpGet("getoperatebyrole")]
+        [HttpGet("get_operates_by_roleid")]
         [AllowAnonymous]  //匿名访问
         public IActionResult GetOperateByRole(string roleid)
         {
@@ -54,9 +54,22 @@ namespace SSS.Api.Controllers.Permission
         }
 
         /// <summary>
-        /// AddRoleOperate
+        /// 删除角色下的所有操作
         /// </summary>
-        /// <param name="input">RoleOperateInputDto</param>
+        /// <param name="roleid">角色Id</param>
+        /// <returns></returns> 
+        [HttpGet("delete_roleoperate_by_roleid")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult DeleteRoleOperateByRole(string roleid)
+        {
+            var result = _service.DeleteRoleOperateByRole(roleid);
+            return ApiResponse(result);
+        }
+
+        /// <summary>
+        /// 添加角色操作关联关系
+        /// </summary>
+        /// <param name="input">角色Id、操作Id</param>
         /// <returns></returns> 
         [HttpPost("add")]
         [AllowAnonymous]  //匿名访问

@@ -14,7 +14,7 @@ namespace SSS.Domain.Permission.MenuInfo.Validation
         {
             RuleSet("Insert", () =>
             {
-
+                RuleFor(x => x.menuname).NotEmpty().WithMessage("菜单名称不能为空！");
             });
 
             RuleSet("Delete", () =>

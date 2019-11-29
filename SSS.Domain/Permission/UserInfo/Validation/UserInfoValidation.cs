@@ -12,7 +12,11 @@ namespace SSS.Domain.Permission.UserInfo.Validation
     {
         public UserInfoValidation()
         {
-            RuleSet("Insert", () => { });
+            RuleSet("Insert", () =>
+            {
+                RuleFor(x => x.username).NotEmpty().WithMessage("用户名不能为空！");
+                RuleFor(x => x.password).NotEmpty().WithMessage("密码不能为空！");
+            });
 
             RuleSet("Delete", () => { });
 

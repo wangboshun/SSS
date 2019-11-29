@@ -50,7 +50,7 @@ namespace TALibrary
                 {
                     return RetCode.AllocErr;
                 }
-                double k = 2.0 / ((double)(optInTimePeriod + 1));
+                double k = 2.0 / (optInTimePeriod + 1);
                 RetCode retCode = TA_INT_EMA(startIdx - (lookbackEMA * 2), endIdx, inReal, optInTimePeriod, k, ref firstEMABegIdx, ref firstEMANbElement, firstEMA);
                 if ((retCode != RetCode.Success) || (firstEMANbElement == 0))
                 {
@@ -138,7 +138,7 @@ namespace TALibrary
                 {
                     return RetCode.AllocErr;
                 }
-                double k = 2.0 / ((double)(optInTimePeriod + 1));
+                double k = 2.0 / (optInTimePeriod + 1);
                 RetCode retCode = TA_INT_EMA(startIdx - (lookbackEMA * 2), endIdx, inReal, optInTimePeriod, k, ref firstEMABegIdx, ref firstEMANbElement, firstEMA);
                 if ((retCode != RetCode.Success) || (firstEMANbElement == 0))
                 {

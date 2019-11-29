@@ -8,7 +8,7 @@ using SSS.Domain.Permission.OperateInfo.Dto;
 namespace SSS.Api.Controllers.Permission
 {
     /// <summary>
-    /// OperateInfoController
+    /// 操作信息
     /// </summary> 
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -28,22 +28,22 @@ namespace SSS.Api.Controllers.Permission
         }
 
         /// <summary>
-        /// GetList
+        ///     获取所有操作信息
         /// </summary>
         /// <param name="input">input</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("getlist")]
-        [AllowAnonymous]  //匿名访问
-        public IActionResult GetList([FromQuery]OperateInfoInputDto input)
+        [AllowAnonymous] //匿名访问
+        public IActionResult GetList([FromQuery] OperateInfoInputDto input)
         {
             var result = _service.GetListOperateInfo(input);
             return ApiResponse(result);
         }
 
         /// <summary>
-        /// AddOperateInfo
+        /// 添加操作
         /// </summary>
-        /// <param name="input">OperateInfoInputDto</param>
+        /// <param name="input">操作名称</param>
         /// <returns></returns> 
         [HttpPost("add")]
         [AllowAnonymous]  //匿名访问
@@ -51,6 +51,19 @@ namespace SSS.Api.Controllers.Permission
         {
             _service.AddOperateInfo(input);
             return ApiResponse(input);
+        }
+
+        /// <summary>
+        ///     获取操作下的所有下级
+        /// </summary>
+        /// <param name="operateid">操作Id</param>
+        /// <returns></returns>
+        [HttpGet("get_children_by_operateid")]
+        [AllowAnonymous] //匿名访问
+        public IActionResult GetChildren(string operateid)
+        {
+            var result = _service.GetChildrenById(operateid);
+            return ApiResponse(result);
         }
     }
 }

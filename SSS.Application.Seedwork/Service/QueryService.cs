@@ -49,6 +49,34 @@ namespace SSS.Application.Seedwork.Service
             return Mapper.Map<TOutput>(Repository.Get(predicate));
         }
 
+        public void Delete(Expression<Func<TEntity, bool>> predicate)
+        {
+            var model = Repository.Get(predicate);
+            if (model == null)
+            {
+                Error.Execute("数据不存在,删除失败！");
+                return;
+            }
+
+            model.IsDelete = 1;
+            Repository.Update(model);
+            Repository.SaveChanges();
+        }
+
+        public void Delete(string id)
+        {
+            var model = Repository.Get(x => x.Id.Equals(id) && x.IsDelete == 0);
+            if (model == null)
+            {
+                Error.Execute("数据不存在,删除失败！");
+                return;
+            }
+
+            model.IsDelete = 1;
+            Repository.Update(model);
+            Repository.SaveChanges();
+        }
+
         public Pages<List<TOutput>> GetPage(TInput input)
         {
             List<TOutput> list;

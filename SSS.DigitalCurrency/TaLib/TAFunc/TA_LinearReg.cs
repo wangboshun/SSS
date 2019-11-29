@@ -67,7 +67,7 @@ namespace TALibrary
                     SumXY += i * tempValue1;
                 }
                 double m = ((optInTimePeriod * SumXY) - (SumX * SumY)) / Divisor;
-                double b = (SumY - (m * SumX)) / ((double)optInTimePeriod);
+                double b = (SumY - (m * SumX)) / optInTimePeriod;
                 outReal[outIdx] = b + (m * (optInTimePeriod - 1));
                 outIdx++;
                 today++;
@@ -138,7 +138,7 @@ namespace TALibrary
                     SumXY += i * tempValue1;
                 }
                 double m = ((optInTimePeriod * SumXY) - (SumX * SumY)) / Divisor;
-                double b = (SumY - (m * SumX)) / ((double)optInTimePeriod);
+                double b = (SumY - (m * SumX)) / optInTimePeriod;
                 outReal[outIdx] = b + (m * (optInTimePeriod - 1));
                 outIdx++;
                 today++;

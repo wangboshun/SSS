@@ -10,8 +10,19 @@ namespace SSS.Application.Permission.RoleMenu.Service
     {
         void AddRoleMenu(RoleMenuInputDto input);
 
+        /// <summary>
+        /// 删除角色下的所有菜单
+        /// </summary>
+        /// <param name="roleid"></param>
+        bool DeleteRoleMenuByRole(string roleid);
+
         Pages<List<RoleMenuOutputDto>> GetListRoleMenu(RoleMenuInputDto input);
 
+        /// <summary>
+        /// 获取角色下所有菜单
+        /// </summary>
+        /// <param name="roleid"></param>
+        /// <returns></returns>
         List<RoleMenuOutputDto> GetMenuByRole(string roleid);
     }
 }

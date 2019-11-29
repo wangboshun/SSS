@@ -14,7 +14,7 @@ namespace SSS.Domain.Permission.RoleInfo.Validation
         {
             RuleSet("Insert", () =>
             {
-
+                RuleFor(x => x.rolename).NotEmpty().WithMessage("角色名称不能为空！");
             });
 
             RuleSet("Delete", () =>

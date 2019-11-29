@@ -49,7 +49,7 @@ namespace SSS.Application.Permission.UserInfo.Service
         }
 
         /// <summary>
-        /// 获取所有权限
+        /// 获取用户下所有权限
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
@@ -59,16 +59,33 @@ namespace SSS.Application.Permission.UserInfo.Service
             if (role == null)
                 return null;
 
-            var menu = _rolemenuRepository.GetMenuByRole(role?.Id);
-            var operate = _roleoperateRepository.GetOperateByRole(role?.Id);
+            var menu = _rolemenuRepository.GetRoleMenuByRole(role?.Id);
+            var operate = _roleoperateRepository.GetRoleOperateByRole(role?.Id);
 
             return new { menu, operate };
         }
 
         /// <summary>
-        /// 根据UserId获取所有节点
+        /// 删除用户权限
         /// </summary>
-        /// <param name="input"></param>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public object DeleteUserPermission(string userid)
+        {
+            var role = _userroleRepository.GetRoleByUser(userid);
+            if (role == null)
+                return null;
+
+            var menu = _rolemenuRepository.GetRoleMenuByRole(role.Id);
+            var operate = _roleoperateRepository.GetRoleOperateByRole(role.Id);
+
+            return new { menu, operate };
+        }
+
+        /// <summary>
+        /// 获取用户下的所有下级
+        /// </summary>
+        /// <param name="userid"></param>
         /// <returns></returns>
         public List<UserInfoTreeOutputDto> GetChildrenById(string userid)
         {
@@ -97,9 +114,20 @@ namespace SSS.Application.Permission.UserInfo.Service
 
             input.id = Guid.NewGuid().ToString();
             var model = Mapper.Map<Domain.Permission.UserInfo.UserInfo>(input);
+            model.CreateTime = DateTime.Now;
             Repository.Add(model, true);
         }
 
+        public void DeleteUserInfo(UserInfoInputDto input)
+        {
+            Delete(input.id);
+        }
+
+        /// <summary>
+        /// 账号密码登录
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public UserInfoOutputDto GetByUserName(UserInfoInputDto input)
         {
             var result = Get(x => x.UserName.Equals(input.username) && x.PassWord.Equals(input.password));

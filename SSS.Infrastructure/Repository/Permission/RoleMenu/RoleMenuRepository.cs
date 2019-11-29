@@ -17,7 +17,12 @@ namespace SSS.Infrastructure.Repository.Permission.RoleMenu
         {
         }
 
-        public List<RoleMenuOutputDto> GetMenuByRole(string roleid)
+        /// <summary>
+        /// 获取角色下的所有菜单
+        /// </summary>
+        /// <param name="roleid"></param>
+        /// <returns></returns>
+        public List<RoleMenuOutputDto> GetRoleMenuByRole(string roleid)
         {
             var result = Db.RoleMenu.Where(x => x.RoleId.Equals(roleid) && x.IsDelete == 0).Join(Db.MenuInfo,
                 role => role.MenuId, menu => menu.Id,
@@ -31,5 +36,13 @@ namespace SSS.Infrastructure.Repository.Permission.RoleMenu
             return result;
         }
 
+        /// <summary>
+        /// 删除角色下的所有菜单
+        /// </summary>
+        /// <param name="roleid"></param>
+        public bool DeleteRoleMenuByRole(string roleid)
+        {
+            return DeleteList(x => x.RoleId.Equals(roleid), true);
+        }
     }
 }

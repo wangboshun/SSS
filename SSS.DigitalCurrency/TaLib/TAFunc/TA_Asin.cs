@@ -55,7 +55,7 @@ namespace TALibrary
             int outIdx = 0;
             while (i <= endIdx)
             {
-                outReal[outIdx] = Math.Asin((double)inReal[i]);
+                outReal[outIdx] = Math.Asin(inReal[i]);
                 i++;
                 outIdx++;
             }

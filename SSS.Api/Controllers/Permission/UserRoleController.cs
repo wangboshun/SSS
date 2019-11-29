@@ -8,7 +8,7 @@ using SSS.Domain.Permission.UserRole.Dto;
 namespace SSS.Api.Controllers.Permission
 {
     /// <summary>
-    /// UserRoleController
+    /// 用户角色映射
     /// </summary> 
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -28,24 +28,24 @@ namespace SSS.Api.Controllers.Permission
         }
 
         /// <summary>
-        /// GetList
+        ///     获取所有用户角色映射信息
         /// </summary>
         /// <param name="input">input</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("getlist")]
-        [AllowAnonymous]  //匿名访问
-        public IActionResult GetList([FromQuery]UserRoleInputDto input)
+        [AllowAnonymous] //匿名访问
+        public IActionResult GetList([FromQuery] UserRoleInputDto input)
         {
             var result = _service.GetListUserRole(input);
             return ApiResponse(result);
         }
 
         /// <summary>
-        /// GetUserByRole
+        /// 获取角色下所有用户信息
         /// </summary>
-        /// <param name="roleid">roleid</param>
+        /// <param name="roleid">角色Id</param>
         /// <returns></returns> 
-        [HttpGet("getuserbyrole")]
+        [HttpGet("get_users_by_roleid")]
         [AllowAnonymous]  //匿名访问
         public IActionResult GetOperateByRole(string roleid)
         {
@@ -54,9 +54,22 @@ namespace SSS.Api.Controllers.Permission
         }
 
         /// <summary>
-        /// AddUserRole
+        /// 删除角色下的所有用户
         /// </summary>
-        /// <param name="input">UserRoleInputDto</param>
+        /// <param name="roleid">角色Id</param>
+        /// <returns></returns> 
+        [HttpGet("delete_userrole_by_roleid")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult DeleteUserRoleByRole(string roleid)
+        {
+            var result = _service.DeleteUserRoleByRole(roleid);
+            return ApiResponse(result);
+        }
+
+        /// <summary>
+        /// 添加用户角色关系
+        /// </summary>
+        /// <param name="input">用户Id、角色Id</param>
         /// <returns></returns> 
         [HttpPost("add")]
         [AllowAnonymous]  //匿名访问

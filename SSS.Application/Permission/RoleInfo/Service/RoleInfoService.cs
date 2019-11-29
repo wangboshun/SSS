@@ -39,15 +39,33 @@ namespace SSS.Application.Permission.RoleInfo.Service
                 return;
             }
 
+            var role = Get(x => x.RoleName.Equals(input.rolename));
+            if (role != null)
+            {
+                Error.Execute("角色名已存在！");
+                return;
+            }
+
             input.id = Guid.NewGuid().ToString();
             var model = Mapper.Map<SSS.Domain.Permission.RoleInfo.RoleInfo>(input);
+            model.CreateTime = DateTime.Now;
             Repository.Add(model);
             Repository.SaveChanges();
         }
 
-        public List<RoleInfoTreeOutputDto> GetChildren(RoleInfoInputDto input)
+        public void DeleteRoleInfo(RoleInfoInputDto input)
         {
-            return _repository.GetChildren(input);
+            Delete(input.id);
+        }
+
+        /// <summary>
+        /// 获取角色下的所有下级
+        /// </summary>
+        /// <param name="roleid"></param>
+        /// <returns></returns>
+        public List<RoleInfoTreeOutputDto> GetChildren(string roleid)
+        {
+            return _repository.GetChildren(roleid);
         }
 
         public Pages<List<RoleInfoOutputDto>> GetListRoleInfo(RoleInfoInputDto input)

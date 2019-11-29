@@ -35,6 +35,7 @@ namespace SSS.Application.NameSpace.Template.Service
 
             input.id = Guid.NewGuid().ToString();
             var model = Mapper.Map<SSS.Domain.NameSpace.Template.Template>(input);
+            model.CreateTime=DateTime.Now;
             Repository.Add(model);
             Repository.SaveChanges();
         }
@@ -42,6 +43,11 @@ namespace SSS.Application.NameSpace.Template.Service
         public Pages<List<TemplateOutputDto>> GetListTemplate(TemplateInputDto input)
         {
             return GetPage(input);
+        }
+
+        public void DeleteTemplate(TemplateInfoInputDto input)
+        {
+            Delete(input.id);
         }
     }
 }

@@ -294,7 +294,7 @@ namespace TALibrary
                 int idx = smoothPrice_Idx;
                 for (i = 0; i < DCPeriodInt; i++)
                 {
-                    tempReal = (i * constDeg2RadBy360) / ((double)DCPeriodInt);
+                    tempReal = (i * constDeg2RadBy360) / DCPeriodInt;
                     tempReal2 = smoothPrice[idx];
                     realPart += Math.Sin(tempReal) * tempReal2;
                     imagPart += Math.Cos(tempReal) * tempReal2;
@@ -637,7 +637,7 @@ namespace TALibrary
                 int idx = smoothPrice_Idx;
                 for (i = 0; i < DCPeriodInt; i++)
                 {
-                    tempReal = (i * constDeg2RadBy360) / ((double)DCPeriodInt);
+                    tempReal = (i * constDeg2RadBy360) / DCPeriodInt;
                     tempReal2 = smoothPrice[idx];
                     realPart += Math.Sin(tempReal) * tempReal2;
                     imagPart += Math.Cos(tempReal) * tempReal2;

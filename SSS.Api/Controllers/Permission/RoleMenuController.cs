@@ -8,7 +8,7 @@ using SSS.Domain.Permission.RoleMenu.Dto;
 namespace SSS.Api.Controllers.Permission
 {
     /// <summary>
-    /// RoleMenuController
+    /// 菜单角色映射
     /// </summary> 
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -28,24 +28,24 @@ namespace SSS.Api.Controllers.Permission
         }
 
         /// <summary>
-        /// GetList
+        ///     获取所有菜单角色映射信息
         /// </summary>
         /// <param name="input">input</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("getlist")]
-        [AllowAnonymous]  //匿名访问
-        public IActionResult GetList([FromQuery]RoleMenuInputDto input)
+        [AllowAnonymous] //匿名访问
+        public IActionResult GetList([FromQuery] RoleMenuInputDto input)
         {
             var result = _service.GetListRoleMenu(input);
             return ApiResponse(result);
         }
 
         /// <summary>
-        /// GetMenuByRole
+        /// 获取角色下所有菜单
         /// </summary>
-        /// <param name="roleid">roleid</param>
+        /// <param name="roleid">角色Id</param>
         /// <returns></returns> 
-        [HttpGet("getmenubyrole")]
+        [HttpGet("get_menus_by_roleid")]
         [AllowAnonymous]  //匿名访问
         public IActionResult GetMenuByRole(string roleid)
         {
@@ -54,9 +54,22 @@ namespace SSS.Api.Controllers.Permission
         }
 
         /// <summary>
-        /// AddRoleMenu
+        /// 删除角色下的所有菜单
         /// </summary>
-        /// <param name="input">RoleMenuInputDto</param>
+        /// <param name="roleid">角色Id</param>
+        /// <returns></returns> 
+        [HttpGet("delete_rolemenu_by_roleid")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult DeleteRoleMenuByRole(string roleid)
+        {
+            var result = _service.DeleteRoleMenuByRole(roleid);
+            return ApiResponse(result);
+        }
+
+        /// <summary>
+        /// 添加角色菜单关联关系
+        /// </summary>
+        /// <param name="input">角色Id、菜单Id</param>
         /// <returns></returns> 
         [HttpPost("add")]
         [AllowAnonymous]  //匿名访问

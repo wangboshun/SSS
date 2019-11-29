@@ -16,7 +16,22 @@ namespace SSS.Infrastructure.Repository.Permission.RoleOperate
         public RoleOperateRepository(DbcontextBase context) : base(context)
         {
         }
-        public List<RoleOperateOutputDto> GetOperateByRole(string roleid)
+
+        /// <summary>
+        /// 删除角色下的所有操作
+        /// </summary>
+        /// <param name="roleid"></param>
+        public bool DeleteRoleOperateByRole(string roleid)
+        {
+            return DeleteList(x => x.RoleId.Equals(roleid), true);
+        }
+
+        /// <summary>
+        /// 获取角色下的所有操作
+        /// </summary>
+        /// <param name="roleid"></param>
+        /// <returns></returns>
+        public List<RoleOperateOutputDto> GetRoleOperateByRole(string roleid)
         {
             var result = Db.RoleOperate.Where(x => x.RoleId.Equals(roleid) && x.IsDelete == 0).Join(Db.OperateInfo,
                 role => role.OperateId, operate => operate.Id,

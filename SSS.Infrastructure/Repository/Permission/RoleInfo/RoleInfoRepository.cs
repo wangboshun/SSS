@@ -21,13 +21,13 @@ namespace SSS.Infrastructure.Repository.Permission.RoleInfo
         }
 
         /// <summary>
-        /// 获取节点树
+        /// 获取角色下的所有下级
         /// </summary>
-        /// <param name="input"></param>
+        /// <param name="roleid"></param>
         /// <returns></returns>
-        public List<RoleInfoTreeOutputDto> GetChildren(RoleInfoInputDto input)
+        public List<RoleInfoTreeOutputDto> GetChildren(string roleid)
         {
-            GetParent(DbSet.ToList(), null, input.id);
+            GetParent(DbSet.ToList(), null, roleid);
 
             return Tree;
         }

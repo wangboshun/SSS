@@ -10,6 +10,13 @@ namespace SSS.Application.Permission.RoleInfo.Service
     {
         void AddRoleInfo(RoleInfoInputDto input);
         Pages<List<RoleInfoOutputDto>> GetListRoleInfo(RoleInfoInputDto input);
-        List<RoleInfoTreeOutputDto> GetChildren(RoleInfoInputDto input);
+
+        /// <summary>
+        /// 获取角色下的所有下级
+        /// </summary>
+        /// <param name="roleid"></param>
+        /// <returns></returns>
+        List<RoleInfoTreeOutputDto> GetChildren(string roleid);
+        void DeleteRoleInfo(RoleInfoInputDto input);
     }
 }

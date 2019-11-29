@@ -21,9 +21,9 @@ namespace SSS.Infrastructure.Repository.Permission.UserInfo
         }
 
         /// <summary>
-        /// 获取节点树
+        /// 获取用户下的所有下级
         /// </summary>
-        /// <param name="input"></param>
+        /// <param name="userid"></param>
         /// <returns></returns>
         public List<UserInfoTreeOutputDto> GetChildrenById(string userid)
         {

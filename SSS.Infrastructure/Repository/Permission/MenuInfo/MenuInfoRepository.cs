@@ -21,13 +21,13 @@ namespace SSS.Infrastructure.Repository.Permission.MenuInfo
         }
 
         /// <summary>
-        /// 获取节点树
+        /// 获取菜单下的所有下级
         /// </summary>
-        /// <param name="input"></param>
+        /// <param name="menuid"></param>
         /// <returns></returns>
-        public List<MenuInfoTreeOutputDto> GetChildren(MenuInfoInputDto input)
+        public List<MenuInfoTreeOutputDto> GetChildren(string menuid)
         {
-            GetParent(DbSet.ToList(), null, input.id);
+            GetParent(DbSet.ToList(), null, menuid);
 
             return Tree;
         }

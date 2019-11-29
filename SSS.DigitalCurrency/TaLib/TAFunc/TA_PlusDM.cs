@@ -120,11 +120,11 @@ namespace TALibrary
                 prevLow = tempReal;
                 if ((diffP > 0.0) && (diffP > diffM))
                 {
-                    prevPlusDM = (prevPlusDM - (prevPlusDM / ((double)optInTimePeriod))) + diffP;
+                    prevPlusDM = (prevPlusDM - (prevPlusDM / optInTimePeriod)) + diffP;
                 }
                 else
                 {
-                    prevPlusDM -= prevPlusDM / ((double)optInTimePeriod);
+                    prevPlusDM -= prevPlusDM / optInTimePeriod;
                 }
                 goto Label_0186;
             }
@@ -145,11 +145,11 @@ namespace TALibrary
                 prevLow = tempReal;
                 if ((diffP > 0.0) && (diffP > diffM))
                 {
-                    prevPlusDM = (prevPlusDM - (prevPlusDM / ((double)optInTimePeriod))) + diffP;
+                    prevPlusDM = (prevPlusDM - (prevPlusDM / optInTimePeriod)) + diffP;
                 }
                 else
                 {
-                    prevPlusDM -= prevPlusDM / ((double)optInTimePeriod);
+                    prevPlusDM -= prevPlusDM / optInTimePeriod;
                 }
                 outReal[outIdx] = prevPlusDM;
                 outIdx++;
@@ -275,11 +275,11 @@ namespace TALibrary
                 prevLow = tempReal;
                 if ((diffP > 0.0) && (diffP > diffM))
                 {
-                    prevPlusDM = (prevPlusDM - (prevPlusDM / ((double)optInTimePeriod))) + diffP;
+                    prevPlusDM = (prevPlusDM - (prevPlusDM / optInTimePeriod)) + diffP;
                 }
                 else
                 {
-                    prevPlusDM -= prevPlusDM / ((double)optInTimePeriod);
+                    prevPlusDM -= prevPlusDM / optInTimePeriod;
                 }
                 goto Label_0191;
             }
@@ -300,11 +300,11 @@ namespace TALibrary
                 prevLow = tempReal;
                 if ((diffP > 0.0) && (diffP > diffM))
                 {
-                    prevPlusDM = (prevPlusDM - (prevPlusDM / ((double)optInTimePeriod))) + diffP;
+                    prevPlusDM = (prevPlusDM - (prevPlusDM / optInTimePeriod)) + diffP;
                 }
                 else
                 {
-                    prevPlusDM -= prevPlusDM / ((double)optInTimePeriod);
+                    prevPlusDM -= prevPlusDM / optInTimePeriod;
                 }
                 outReal[outIdx] = prevPlusDM;
                 outIdx++;

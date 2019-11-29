@@ -7,6 +7,11 @@ namespace SSS.Infrastructure.Repository.Permission.RoleInfo
 {
     public interface IRoleInfoRepository : IRepository<SSS.Domain.Permission.RoleInfo.RoleInfo>
     {
-        List<RoleInfoTreeOutputDto> GetChildren(RoleInfoInputDto input);
+        /// <summary>
+        /// 获取角色下的所有下级
+        /// </summary>
+        /// <param name="roleid"></param>
+        /// <returns></returns>
+        List<RoleInfoTreeOutputDto> GetChildren(string roleid);
     }
 }

@@ -7,6 +7,11 @@ namespace SSS.Infrastructure.Repository.Permission.MenuInfo
 {
     public interface IMenuInfoRepository : IRepository<SSS.Domain.Permission.MenuInfo.MenuInfo>
     {
-        List<MenuInfoTreeOutputDto> GetChildren(MenuInfoInputDto input);
+        /// <summary>
+        /// 获取菜单下的所有下级
+        /// </summary>
+        /// <param name="menuid"></param>
+        /// <returns></returns>
+        List<MenuInfoTreeOutputDto> GetChildren(string menuid);
     }
 }

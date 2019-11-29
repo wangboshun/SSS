@@ -8,7 +8,7 @@ using SSS.Domain.Permission.MenuInfo.Dto;
 namespace SSS.Api.Controllers.Permission
 {
     /// <summary>
-    /// MenuInfoController
+    /// 菜单信息
     /// </summary> 
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -28,7 +28,7 @@ namespace SSS.Api.Controllers.Permission
         }
 
         /// <summary>
-        /// GetList
+        /// 获取所有菜单信息
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
@@ -41,22 +41,22 @@ namespace SSS.Api.Controllers.Permission
         }
 
         /// <summary>
-        ///     GetChildren
+        ///     获取菜单下的所有下级
         /// </summary>
-        /// <param name="input">input</param>
+        /// <param name="menuid">菜单Id</param>
         /// <returns></returns>
-        [HttpGet("getchildren")]
+        [HttpGet("get_children_by_menuid")]
         [AllowAnonymous] //匿名访问
-        public IActionResult GetChildren([FromQuery] MenuInfoInputDto input)
+        public IActionResult GetChildren(string menuid)
         {
-            var result = _service.GetChildren(input);
+            var result = _service.GetChildren(menuid);
             return ApiResponse(result);
         }
 
         /// <summary>
-        /// AddMenuInfo
+        /// 添加菜单
         /// </summary>
-        /// <param name="input">MenuInfoInputDto</param>
+        /// <param name="input">菜单名称</param>
         /// <returns></returns> 
         [HttpPost("add")]
         [AllowAnonymous]  //匿名访问
