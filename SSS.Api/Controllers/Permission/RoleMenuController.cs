@@ -58,7 +58,7 @@ namespace SSS.Api.Controllers.Permission
         /// </summary>
         /// <param name="roleid">角色Id</param>
         /// <returns></returns> 
-        [HttpGet("delete_rolemenu_by_roleid")]
+        [HttpDelete("delete_rolemenu_by_roleid")]
         [AllowAnonymous]  //匿名访问
         public IActionResult DeleteRoleMenuByRole(string roleid)
         {
