@@ -1,0 +1,70 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+using SSS.Api.Seedwork.Controller;
+using SSS.Application.Permission.Group.PowerGroup.Service;
+using SSS.Domain.Permission.Group.PowerGroup.Dto;
+using SSS.Domain.Permission.Relation.PowerPowerGroupRelation.Dto;
+
+namespace SSS.Api.Controllers.Permission.Group
+{
+    /// <summary>
+    /// PowerGroupController
+    /// </summary> 
+    [ApiVersion("2.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [Produces("application/json")]
+    [ApiController]
+    public class PowerGroupController : ApiBaseController
+    {
+        private readonly IPowerGroupService _service;
+
+        /// <summary>
+        /// 权限组
+        /// </summary>
+        /// <param name="service">IPowerGroupService</param>
+        public PowerGroupController(IPowerGroupService service)
+        {
+            _service = service;
+        }
+
+        /// <summary>
+        /// 获取所有权限组
+        /// </summary>
+        /// <param name="input">input</param>
+        /// <returns></returns> 
+        [HttpGet("getlist")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult GetList([FromQuery]PowerGroupInputDto input)
+        {
+            var result = _service.GetListPowerGroup(input);
+            return ApiResponse(result);
+        }
+
+        /// <summary>
+        /// 增加权限组
+        /// </summary>
+        /// <param name="input">权限组名称</param>
+        /// <returns></returns> 
+        [HttpPost("add")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult AddPowerGroup([FromBody]PowerGroupInputDto input)
+        {
+            _service.AddPowerGroup(input);
+            return ApiResponse(input);
+        }
+
+        /// <summary>
+        /// 根据权限Id或名称，遍历关联权限组
+        /// </summary>
+        /// <param name="input">权限Id或名称</param>
+        /// <returns></returns> 
+        [HttpGet("get_powergroup_by_power")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult GetUserGroupByUser([FromQuery]PowerPowerGroupRelationInputDto input)
+        {
+            var result = _service.GetPowerGroupByPower(input);
+            return ApiResponse(result);
+        }
+    }
+}

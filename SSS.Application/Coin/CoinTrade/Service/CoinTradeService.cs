@@ -17,7 +17,8 @@ using System.Collections.Generic;
 namespace SSS.Application.Coin.CoinTrade.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(ICoinTradeService))]
-    public class CoinTradeService : QueryService<SSS.Domain.Coin.CoinTrade.CoinTrade, CoinTradeInputDto, CoinTradeOutputDto>, ICoinTradeService
+    public class CoinTradeService :
+        QueryService<Domain.Coin.CoinTrade.CoinTrade, CoinTradeInputDto, CoinTradeOutputDto>, ICoinTradeService
     {
         public CoinTradeService(IMapper mapper,
             ICoinTradeRepository repository,
@@ -37,7 +38,7 @@ namespace SSS.Application.Coin.CoinTrade.Service
             }
 
             input.id = Guid.NewGuid().ToString();
-            var model = Mapper.Map<SSS.Domain.Coin.CoinTrade.CoinTrade>(input);
+            var model = Mapper.Map<Domain.Coin.CoinTrade.CoinTrade>(input);
             model.CreateTime = DateTime.Now;
             Repository.Add(model);
             Repository.SaveChanges();

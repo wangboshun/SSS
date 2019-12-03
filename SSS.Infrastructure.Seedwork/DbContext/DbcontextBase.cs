@@ -9,16 +9,25 @@ using SSS.Domain.Coin.CoinArticel;
 using SSS.Domain.Coin.CoinInfo;
 using SSS.Domain.Coin.CoinMessage;
 using SSS.Domain.Coin.CoinTrade;
-using SSS.Domain.Permission.MenuInfo;
-using SSS.Domain.Permission.OperateInfo;
-using SSS.Domain.Permission.RoleInfo;
-using SSS.Domain.Permission.RoleMenu;
-using SSS.Domain.Permission.RoleOperate;
-using SSS.Domain.Permission.UserInfo;
-using SSS.Domain.Permission.UserRole;
+using SSS.Domain.Permission.Group.UserGroup;
+using SSS.Domain.Permission.Info.MenuInfo;
+using SSS.Domain.Permission.Info.OperateInfo;
+using SSS.Domain.Permission.Info.RoleInfo;
+using SSS.Domain.Permission.Info.UserInfo;
+using SSS.Domain.Permission.Relation.RoleMenuRelation;
+using SSS.Domain.Permission.Relation.RoleOperateRelation;
+using SSS.Domain.Permission.Relation.RoleUserRelation;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
+using SSS.Domain.Permission.Group.PowerGroup;
+using SSS.Domain.Permission.Group.RoleGroup;
+using SSS.Domain.Permission.Info.PowerInfo;
+using SSS.Domain.Permission.Relation.PowerMenuRelation;
+using SSS.Domain.Permission.Relation.PowerOperateRelation;
+using SSS.Domain.Permission.Relation.RolePowerRelation;
+using SSS.Domain.Permission.Relation.RoleUserGroupRelation;
+using SSS.Domain.Permission.Relation.UserUserGroupRelation;
 
 namespace SSS.Infrastructure.Seedwork.DbContext
 {
@@ -54,16 +63,28 @@ namespace SSS.Infrastructure.Seedwork.DbContext
         public DbSet<UserInfo> UserInfo { get; set; }
 
         public DbSet<RoleInfo> RoleInfo { get; set; }
-
-        public DbSet<UserRole> UserRole { get; set; }
-
         public DbSet<MenuInfo> MenuInfo { get; set; }
-
-        public DbSet<RoleMenu> RoleMenu { get; set; }
-
         public DbSet<OperateInfo> OperateInfo { get; set; }
+        public DbSet<PowerInfo> PowerInfo { get; set; }
 
-        public DbSet<RoleOperate> RoleOperate { get; set; }
+
+
+        public DbSet<RoleUserRelation> RoleUserRelation { get; set; }
+        public DbSet<RolePowerRelation> RolePowerRelation { get; set; }
+        public DbSet<RoleMenuRelation> RoleMenuRelation { get; set; }
+        public DbSet<RoleOperateRelation> RoleOperateRelation { get; set; }
+        public DbSet<RoleUserGroupRelation> RoleUserGroupRelation { get; set; }
+        public DbSet<PowerOperateRelation> PowerOperateRelation { get; set; }
+        public DbSet<PowerMenuRelation> PowerMenuRelation { get; set; }
+        public DbSet<UserUserGroupRelation> UserUserGroupRelation { get; set; }
+
+
+
+
+
+        public DbSet<RoleGroup> RoleGroup { get; set; }
+        public DbSet<PowerGroup> PowerGroup { get; set; }
+        public DbSet<UserGroup> UserGroup { get; set; }
 
         #endregion
 

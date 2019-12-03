@@ -26,7 +26,8 @@ namespace SSS.Application.Coin.CoinMessage.Job
             private readonly IServiceScopeFactory _scopeFactory;
             private Timer _timer;
 
-            public CoinMessageJob(ILogger<CoinMessageJob> logger, IServiceScopeFactory scopeFactory, IHostEnvironment env)
+            public CoinMessageJob(ILogger<CoinMessageJob> logger, IServiceScopeFactory scopeFactory,
+                IHostEnvironment env)
             {
                 _logger = logger;
                 _env = env;
@@ -79,7 +80,8 @@ namespace SSS.Application.Coin.CoinMessage.Job
 
                         HtmlDocument document = htmlWeb.Load("http://www.biknow.com/?pageNum=" + i);
 
-                        var node = document.DocumentNode.SelectNodes("//div[@class='list']//div[@class='list_con']//div[@class='box']");
+                        var node = document.DocumentNode.SelectNodes(
+                            "//div[@class='list']//div[@class='list_con']//div[@class='box']");
                         if (node == null)
                             continue;
 

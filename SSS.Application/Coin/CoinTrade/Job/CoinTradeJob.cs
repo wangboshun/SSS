@@ -212,7 +212,8 @@ namespace SSS.Application.Coin.CoinTrade.Job
         {
             using var scope = _scopeFactory.CreateScope();
             using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
-            context.Database.ExecuteSqlRaw("UPDATE CoinTrade SET Status=2,Last_Price={0},UpdateTime=Now()  where Id={1}",
+            context.Database.ExecuteSqlRaw(
+                "UPDATE CoinTrade SET Status=2,Last_Price={0},UpdateTime=Now()  where Id={1}",
                 price, id);
             context.SaveChanges();
 

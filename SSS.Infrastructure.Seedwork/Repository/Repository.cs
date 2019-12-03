@@ -66,7 +66,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
             if (save)
                 Db.SaveChanges();
         }
-         
+
         /// <summary>
         ///     批量删除
         /// </summary>

@@ -1,5 +1,4 @@
-﻿
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -70,7 +69,7 @@ namespace SSS.Application.Coin.CoinArticel.Job
         #region 公告频道
 
         /// <summary>
-        /// 公告频道
+        ///     公告频道
         /// </summary>
         public void GetNotice()
         {
@@ -78,9 +77,11 @@ namespace SSS.Application.Coin.CoinArticel.Job
             try
             {
                 WebClient web = new WebClient();
-                string json = web.DownloadString("https://api.jinse.com/v4/live/list?limit=50&reading=false&source=web&sort=5&flag=down&id=0");
-                JToken data = Json.GetJsonValue(json, "list");
-                List<JToken> token = new List<JToken>();// data.First.Last.AsJEnumerable().Values();
+                string json =
+                    web.DownloadString(
+                        "https://api.jinse.com/v4/live/list?limit=50&reading=false&source=web&sort=5&flag=down&id=0");
+                JToken data = json.GetJsonValue("list");
+                List<JToken> token = new List<JToken>(); // data.First.Last.AsJEnumerable().Values();
 
                 for (int i = 0; i < data.Count(); i++)
                 {
@@ -136,9 +137,8 @@ namespace SSS.Application.Coin.CoinArticel.Job
         #region 政策频道
 
         /// <summary>
-        /// 政策新闻
+        ///     政策新闻
         /// </summary>
-
         public void GetPolicy()
         {
             Console.WriteLine("---GetPolicy---");
@@ -146,7 +146,8 @@ namespace SSS.Application.Coin.CoinArticel.Job
             {
                 WebClient web = new WebClient();
                 string json =
-                    web.DownloadString("https://api.jinse.com/v6/information/list?catelogue_key=zhengce&limit=50&information_id=0&flag=down&version=9.9.9");
+                    web.DownloadString(
+                        "https://api.jinse.com/v6/information/list?catelogue_key=zhengce&limit=50&information_id=0&flag=down&version=9.9.9");
                 JToken data = json.GetJsonValue("list");
 
                 using var scope = _scopeFactory.CreateScope();
@@ -193,7 +194,76 @@ namespace SSS.Application.Coin.CoinArticel.Job
 
         #endregion
 
-        #region 新闻频道 
+        #region 快讯频道
+
+        /// <summary>
+        ///     快讯频道
+        /// </summary>
+        /// <returns></returns>
+        public void GetQuickNews()
+        {
+            Console.WriteLine("---GetQuickNews---");
+            try
+            {
+                WebClient web = new WebClient();
+                string json =
+                    web.DownloadString(
+                        "https://api.jinse.com/v4/live/list?reading=false&sort=7&flag=down&id=0&limit=50");
+                JToken data = json.GetJsonValue("list");
+                List<JToken> token = new List<JToken>(); // data.First.Last.AsJEnumerable().Values();
+
+                for (int i = 0; i < data.Count(); i++)
+                {
+                    var temp = data[i].Last.AsJEnumerable().Values().ToList();
+                    token.AddRange(temp);
+                }
+
+                using var scope = _scopeFactory.CreateScope();
+                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+                var source = context.CoinArticel.ToList();
+
+                List<Domain.Coin.CoinArticel.CoinArticel> list = new List<Domain.Coin.CoinArticel.CoinArticel>();
+
+                foreach (var item in token)
+                {
+                    var title = GetTitleByContent(item["content"].ToString());
+
+                    Console.WriteLine("---GetQuickNews---" + title);
+
+                    if (source.Any(x => x.Title.Equals(title)))
+                        continue;
+
+                    if (list.Any(x => x.Title.Equals(title)))
+                        continue;
+
+                    Domain.Coin.CoinArticel.CoinArticel model = new Domain.Coin.CoinArticel.CoinArticel
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Content = GetDetail(item["content"].ToString()),
+                        CreateTime = DateTimeConvert.ConvertDateTime(item["created_at"].ToString()),
+                        Title = title,
+                        Category = 2,
+                        Logo = ""
+                    };
+                    list.Add(model);
+                }
+
+                if (list.Any())
+                {
+                    context.CoinArticel.AddRange(list);
+                    context.SaveChanges();
+                    Console.WriteLine("---GetQuickNews  SaveChanges---");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(new EventId(ex.HResult), ex, "---GetQuickNews Exception---");
+            }
+        }
+
+        #endregion
+
+        #region 新闻频道
 
         /// <summary>
         ///     热点新闻
@@ -205,7 +275,9 @@ namespace SSS.Application.Coin.CoinArticel.Job
             try
             {
                 WebClient web = new WebClient();
-                string json = web.DownloadString("https://api.jinse.com/v6/information/list?catelogue_key=news&limit=50&information_id=0&flag=down&version=9.9.9");
+                string json =
+                    web.DownloadString(
+                        "https://api.jinse.com/v6/information/list?catelogue_key=news&limit=50&information_id=0&flag=down&version=9.9.9");
                 JToken data = json.GetJsonValue("list");
 
                 using var scope = _scopeFactory.CreateScope();
@@ -293,72 +365,6 @@ namespace SSS.Application.Coin.CoinArticel.Job
 
         #endregion
 
-        #region 快讯频道 
-
-        /// <summary>
-        ///     快讯频道
-        /// </summary>
-        /// <returns></returns>
-        public void GetQuickNews()
-        {
-            Console.WriteLine("---GetQuickNews---");
-            try
-            {
-                WebClient web = new WebClient();
-                string json = web.DownloadString("https://api.jinse.com/v4/live/list?reading=false&sort=7&flag=down&id=0&limit=50");
-                JToken data = Json.GetJsonValue(json, "list");
-                List<JToken> token = new List<JToken>();// data.First.Last.AsJEnumerable().Values();
-
-                for (int i = 0; i < data.Count(); i++)
-                {
-                    var temp = data[i].Last.AsJEnumerable().Values().ToList();
-                    token.AddRange(temp);
-                }
-
-                using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
-                var source = context.CoinArticel.ToList();
-
-                List<Domain.Coin.CoinArticel.CoinArticel> list = new List<Domain.Coin.CoinArticel.CoinArticel>();
-
-                foreach (var item in token)
-                {
-                    var title = GetTitleByContent(item["content"].ToString());
-
-                    Console.WriteLine("---GetQuickNews---" + title);
-
-                    if (source.Any(x => x.Title.Equals(title)))
-                        continue;
-
-                    if (list.Any(x => x.Title.Equals(title)))
-                        continue;
-
-                    Domain.Coin.CoinArticel.CoinArticel model = new Domain.Coin.CoinArticel.CoinArticel
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Content = GetDetail(item["content"].ToString()),
-                        CreateTime = DateTimeConvert.ConvertDateTime(item["created_at"].ToString()),
-                        Title = title,
-                        Category = 2,
-                        Logo = ""
-                    };
-                    list.Add(model);
-                }
-
-                if (list.Any())
-                {
-                    context.CoinArticel.AddRange(list);
-                    context.SaveChanges();
-                    Console.WriteLine("---GetQuickNews  SaveChanges---");
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(new EventId(ex.HResult), ex, "---GetQuickNews Exception---");
-            }
-        }
-        #endregion
-
         #region 去除敏感信息
 
         /// <summary>
@@ -375,7 +381,7 @@ namespace SSS.Application.Coin.CoinArticel.Job
         }
 
         /// <summary>
-        /// 根据Title获取标题
+        ///     根据Title获取标题
         /// </summary>
         /// <param name="title"></param>
         /// <returns></returns>

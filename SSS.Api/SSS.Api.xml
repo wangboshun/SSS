@@ -273,270 +273,388 @@
             <param name="input">CoinTradeInputDto</param>
             <returns></returns> 
         </member>
-        <member name="T:SSS.Api.Controllers.Permission.MenuInfoController">
+        <member name="T:SSS.Api.Controllers.Permission.Group.PowerGroupController">
+            <summary>
+            PowerGroupController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Group.PowerGroupController.#ctor(SSS.Application.Permission.Group.PowerGroup.Service.IPowerGroupService)">
+            <summary>
+            权限组
+            </summary>
+            <param name="service">IPowerGroupService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Group.PowerGroupController.GetList(SSS.Domain.Permission.Group.PowerGroup.Dto.PowerGroupInputDto)">
+            <summary>
+            获取所有权限组
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Group.PowerGroupController.AddPowerGroup(SSS.Domain.Permission.Group.PowerGroup.Dto.PowerGroupInputDto)">
+            <summary>
+            增加权限组
+            </summary>
+            <param name="input">权限组名称</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Group.PowerGroupController.GetUserGroupByUser(SSS.Domain.Permission.Relation.PowerPowerGroupRelation.Dto.PowerPowerGroupRelationInputDto)">
+            <summary>
+            根据权限Id或名称，遍历关联权限组
+            </summary>
+            <param name="input">权限Id或名称</param>
+            <returns></returns> 
+        </member>
+        <member name="T:SSS.Api.Controllers.Permission.Group.RoleGroupController">
+            <summary>
+            RoleGroupController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Group.RoleGroupController.#ctor(SSS.Application.Permission.Group.RoleGroup.Service.IRoleGroupService)">
+            <summary>
+            角色组
+            </summary>
+            <param name="service">IRoleGroupService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Group.RoleGroupController.GetList(SSS.Domain.Permission.Group.RoleGroup.Dto.RoleGroupInputDto)">
+            <summary>
+            获取所有角色组
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Group.RoleGroupController.AddRoleGroup(SSS.Domain.Permission.Group.RoleGroup.Dto.RoleGroupInputDto)">
+            <summary>
+            增加角色组
+            </summary>
+            <param name="input">角色组名称</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Group.RoleGroupController.GetUserGroupByUser(SSS.Domain.Permission.Relation.RoleRoleGroupRelation.Dto.RoleRoleGroupRelationInputDto)">
+            <summary>
+            根据角色Id或名称，遍历关联角色组
+            </summary>
+            <param name="input">角色Id或名称</param>
+            <returns></returns> 
+        </member>
+        <member name="T:SSS.Api.Controllers.Permission.Group.UserGroupController">
+            <summary>
+            UserGroupController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Group.UserGroupController.#ctor(SSS.Application.Permission.Group.UserGroup.Service.IUserGroupService)">
+            <summary>
+            用户组
+            </summary>
+            <param name="service">IUserGroupService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Group.UserGroupController.GetList(SSS.Domain.Permission.Group.UserGroup.Dto.UserGroupInputDto)">
+            <summary>
+            获取所有用户组
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Group.UserGroupController.AddUserGroup(SSS.Domain.Permission.Group.UserGroup.Dto.UserGroupInputDto)">
+            <summary>
+            增加用户组
+            </summary>
+            <param name="input">用户组名称</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Group.UserGroupController.GetUserGroupByUser(SSS.Domain.Permission.Relation.UserUserGroupRelation.Dto.UserUserGroupRelationInputDto)">
+            <summary>
+            根据用户Id或名称，遍历关联用户组
+            </summary>
+            <param name="input">用户Id或名称</param>
+            <returns></returns> 
+        </member>
+        <member name="T:SSS.Api.Controllers.Permission.Info.MenuInfoController">
             <summary>
             菜单信息
             </summary> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.MenuInfoController.#ctor(SSS.Application.Permission.MenuInfo.Service.IMenuInfoService)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.MenuInfoController.#ctor(SSS.Application.Permission.Info.MenuInfo.Service.IMenuInfoService)">
             <summary>
-            MenuInfoController
+            菜单信息
             </summary>
             <param name="service">IMenuInfoService</param>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.MenuInfoController.GetList(SSS.Domain.Permission.MenuInfo.Dto.MenuInfoInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.MenuInfoController.GetList(SSS.Domain.Permission.Info.MenuInfo.Dto.MenuInfoInputDto)">
             <summary>
             获取所有菜单信息
             </summary>
             <param name="input">input</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.MenuInfoController.GetChildren(System.String)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.MenuInfoController.GetChildren(System.String)">
             <summary>
                 获取菜单下的所有下级
             </summary>
             <param name="menuid">菜单Id</param>
             <returns></returns>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.MenuInfoController.AddMenuInfo(SSS.Domain.Permission.MenuInfo.Dto.MenuInfoInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.MenuInfoController.AddMenuInfo(SSS.Domain.Permission.Info.MenuInfo.Dto.MenuInfoInputDto)">
             <summary>
             添加菜单
             </summary>
             <param name="input">菜单名称</param>
             <returns></returns> 
         </member>
-        <member name="T:SSS.Api.Controllers.Permission.OperateInfoController">
+        <member name="T:SSS.Api.Controllers.Permission.Info.OperateInfoController">
             <summary>
             操作信息
             </summary> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.OperateInfoController.#ctor(SSS.Application.Permission.OperateInfo.Service.IOperateInfoService)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.OperateInfoController.#ctor(SSS.Application.Permission.Info.OperateInfo.Service.IOperateInfoService)">
             <summary>
-            OperateInfoController
+            操作信息
             </summary>
             <param name="service">IOperateInfoService</param>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.OperateInfoController.GetList(SSS.Domain.Permission.OperateInfo.Dto.OperateInfoInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.OperateInfoController.GetList(SSS.Domain.Permission.Info.OperateInfo.Dto.OperateInfoInputDto)">
             <summary>
                 获取所有操作信息
             </summary>
             <param name="input">input</param>
             <returns></returns>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.OperateInfoController.AddOperateInfo(SSS.Domain.Permission.OperateInfo.Dto.OperateInfoInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.OperateInfoController.AddOperateInfo(SSS.Domain.Permission.Info.OperateInfo.Dto.OperateInfoInputDto)">
             <summary>
             添加操作
             </summary>
             <param name="input">操作名称</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.OperateInfoController.GetChildren(System.String)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.OperateInfoController.GetChildren(System.String)">
             <summary>
                 获取操作下的所有下级
             </summary>
             <param name="operateid">操作Id</param>
             <returns></returns>
         </member>
-        <member name="T:SSS.Api.Controllers.Permission.RoleInfoController">
+        <member name="T:SSS.Api.Controllers.Permission.Info.PowerInfoController">
+            <summary>
+            PowerInfoController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Info.PowerInfoController.#ctor(SSS.Application.Permission.Info.PowerInfo.Service.IPowerInfoService)">
+            <summary>
+            PowerInfoController
+            </summary>
+            <param name="service">IPowerInfoService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Info.PowerInfoController.GetList(SSS.Domain.Permission.Info.PowerInfo.Dto.PowerInfoInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Info.PowerInfoController.AddPowerInfo(SSS.Domain.Permission.Info.PowerInfo.Dto.PowerInfoInputDto)">
+            <summary>
+            AddPowerInfo
+            </summary>
+            <param name="input">PowerInfoInputDto</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Info.PowerInfoController.GetChildren(System.String)">
+            <summary>
+                获取权限的所有下级
+            </summary>
+            <param name="powerid">权限Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Info.PowerInfoController.GetPowerListByGroup(SSS.Domain.Permission.Relation.PowerPowerGroupRelation.Dto.PowerPowerGroupRelationInputDto)">
+            <summary>
+            根据权限组Id或名称，遍历关联权限
+            </summary>
+            <param name="input">权限组Id或名称</param>
+            <returns></returns> 
+        </member>
+        <member name="T:SSS.Api.Controllers.Permission.Info.RoleInfoController">
             <summary>
             角色信息
             </summary> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.RoleInfoController.#ctor(SSS.Application.Permission.RoleInfo.Service.IRoleInfoService)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.RoleInfoController.#ctor(SSS.Application.Permission.Info.RoleInfo.Service.IRoleInfoService)">
             <summary>
             RoleInfoController
             </summary>
             <param name="service">IRoleInfoService</param>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.RoleInfoController.GetList(SSS.Domain.Permission.RoleInfo.Dto.RoleInfoInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.RoleInfoController.GetList(SSS.Domain.Permission.RoleInfo.Dto.RoleInfoInputDto)">
             <summary>
                 获取所有角色信息
             </summary>
             <param name="input">input</param>
             <returns></returns>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.RoleInfoController.GetChildren(System.String)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.RoleInfoController.GetChildren(System.String)">
             <summary>
                 获取角色下的所有下级
             </summary>
             <param name="roleid">角色Id</param>
             <returns></returns>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.RoleInfoController.AddRoleInfo(SSS.Domain.Permission.RoleInfo.Dto.RoleInfoInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.RoleInfoController.AddRoleInfo(SSS.Domain.Permission.RoleInfo.Dto.RoleInfoInputDto)">
             <summary>
             添加角色信息
             </summary>
             <param name="input">角色名称</param>
             <returns></returns> 
         </member>
-        <member name="T:SSS.Api.Controllers.Permission.RoleMenuController">
+        <member name="M:SSS.Api.Controllers.Permission.Info.RoleInfoController.GetRoleListGroupByGroup(SSS.Domain.Permission.Relation.RoleRoleGroupRelation.Dto.RoleRoleGroupRelationInputDto)">
             <summary>
-            菜单角色映射
-            </summary> 
-        </member>
-        <member name="M:SSS.Api.Controllers.Permission.RoleMenuController.#ctor(SSS.Application.Permission.RoleMenu.Service.IRoleMenuService)">
-            <summary>
-            RoleMenuController
+            根据角色组Id或名称，遍历关联角色
             </summary>
-            <param name="service">IRoleMenuService</param>
-        </member>
-        <member name="M:SSS.Api.Controllers.Permission.RoleMenuController.GetList(SSS.Domain.Permission.RoleMenu.Dto.RoleMenuInputDto)">
-            <summary>
-                获取所有菜单角色映射信息
-            </summary>
-            <param name="input">input</param>
-            <returns></returns>
-        </member>
-        <member name="M:SSS.Api.Controllers.Permission.RoleMenuController.GetMenuByRole(System.String)">
-            <summary>
-            获取角色下所有菜单
-            </summary>
-            <param name="roleid">角色Id</param>
+            <param name="input">角色组Id或名称</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.RoleMenuController.DeleteRoleMenuByRole(System.String)">
-            <summary>
-            删除角色下的所有菜单
-            </summary>
-            <param name="roleid">角色Id</param>
-            <returns></returns> 
-        </member>
-        <member name="M:SSS.Api.Controllers.Permission.RoleMenuController.AddRoleMenu(SSS.Domain.Permission.RoleMenu.Dto.RoleMenuInputDto)">
-            <summary>
-            添加角色菜单关联关系
-            </summary>
-            <param name="input">角色Id、菜单Id</param>
-            <returns></returns> 
-        </member>
-        <member name="T:SSS.Api.Controllers.Permission.RoleOperateController">
-            <summary>
-            角色操作映射
-            </summary> 
-        </member>
-        <member name="M:SSS.Api.Controllers.Permission.RoleOperateController.#ctor(SSS.Application.Permission.RoleOperate.Service.IRoleOperateService)">
-            <summary>
-            RoleOperateController
-            </summary>
-            <param name="service">IRoleOperateService</param>
-        </member>
-        <member name="M:SSS.Api.Controllers.Permission.RoleOperateController.GetList(SSS.Domain.Permission.RoleOperate.Dto.RoleOperateInputDto)">
-            <summary>
-                获取所有角色操作映射信息
-            </summary>
-            <param name="input">input</param>
-            <returns></returns>
-        </member>
-        <member name="M:SSS.Api.Controllers.Permission.RoleOperateController.GetOperateByRole(System.String)">
-            <summary>
-            获取角色下的所有操作
-            </summary>
-            <param name="roleid">角色Id</param>
-            <returns></returns> 
-        </member>
-        <member name="M:SSS.Api.Controllers.Permission.RoleOperateController.DeleteRoleOperateByRole(System.String)">
-            <summary>
-            删除角色下的所有操作
-            </summary>
-            <param name="roleid">角色Id</param>
-            <returns></returns> 
-        </member>
-        <member name="M:SSS.Api.Controllers.Permission.RoleOperateController.AddRoleOperate(SSS.Domain.Permission.RoleOperate.Dto.RoleOperateInputDto)">
-            <summary>
-            添加角色操作关联关系
-            </summary>
-            <param name="input">角色Id、操作Id</param>
-            <returns></returns> 
-        </member>
-        <member name="T:SSS.Api.Controllers.Permission.UserInfoController">
+        <member name="T:SSS.Api.Controllers.Permission.Info.UserInfoController">
             <summary>
                 用户信息
             </summary>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.UserInfoController.#ctor(SSS.Application.Permission.UserInfo.Service.IUserInfoService)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.UserInfoController.#ctor(SSS.Application.Permission.Info.UserInfo.Service.IUserInfoService)">
             <summary>
                 UserInfoController
             </summary>
             <param name="service">IUserInfoService</param>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.UserInfoController.GetList(SSS.Domain.Permission.UserInfo.Dto.UserInfoInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.UserInfoController.GetList(SSS.Domain.Permission.UserInfo.Dto.UserInfoInputDto)">
             <summary>
                 获取所有用户信息
             </summary>
             <param name="input">input</param>
             <returns></returns>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.UserInfoController.GetChildrenById(System.String)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.UserInfoController.GetChildrenById(System.String)">
             <summary>
                 获取用户下的所有下级
             </summary>
             <param name="userid">用户Id</param>
             <returns></returns>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.UserInfoController.GetUserPermission(System.String)">
-            <summary>
-                获取用户所有权限：菜单、操作权限
-            </summary>
-            <param name="userid">用户Id</param>
-            <returns></returns>
-        </member>
-        <member name="M:SSS.Api.Controllers.Permission.UserInfoController.DeleteUserPermission(System.String)">
-            <summary>
-                删除用户所有权限：菜单、操作权限
-            </summary>
-            <param name="userid">用户Id</param>
-            <returns></returns>
-        </member>
-        <member name="M:SSS.Api.Controllers.Permission.UserInfoController.Login(SSS.Domain.Permission.UserInfo.Dto.UserInfoInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.UserInfoController.Login(SSS.Domain.Permission.UserInfo.Dto.UserInfoInputDto)">
             <summary>
             用户登录
             </summary>
             <param name="input">账号、密码</param>
             <returns></returns>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.UserInfoController.AddUserInfo(SSS.Domain.Permission.UserInfo.Dto.UserInfoInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.UserInfoController.AddUserInfo(SSS.Domain.Permission.UserInfo.Dto.UserInfoInputDto)">
             <summary>
              添加用户
             </summary>
             <param name="input">账号、密码</param>
             <returns></returns>
         </member>
-        <member name="T:SSS.Api.Controllers.Permission.UserRoleController">
+        <member name="M:SSS.Api.Controllers.Permission.Info.UserInfoController.GetUserListByGroup(SSS.Domain.Permission.Relation.UserUserGroupRelation.Dto.UserUserGroupRelationInputDto)">
             <summary>
-            用户角色映射
+            根据用户组Id或名称，遍历关联用户
+            </summary>
+            <param name="input">用户组Id或名称</param>
+            <returns></returns> 
+        </member>
+        <member name="T:SSS.Api.Controllers.Permission.Relation.PowerMenuRelationController">
+            <summary>
+            PowerMenuRelationController
             </summary> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.UserRoleController.#ctor(SSS.Application.Permission.UserRole.Service.IUserRoleService)">
+        <member name="M:SSS.Api.Controllers.Permission.Relation.PowerMenuRelationController.#ctor(SSS.Application.Permission.Relation.PowerMenuRelation.Service.IPowerMenuRelationService)">
             <summary>
-            UserRoleController
+            PowerMenuRelationController
             </summary>
-            <param name="service">IUserRoleService</param>
+            <param name="service">IPowerMenuRelationService</param>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.UserRoleController.GetList(SSS.Domain.Permission.UserRole.Dto.UserRoleInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Relation.PowerMenuRelationController.GetList(SSS.Domain.Permission.Relation.PowerMenuRelation.Dto.PowerMenuRelationInputDto)">
             <summary>
-                获取所有用户角色映射信息
+            GetList
             </summary>
             <param name="input">input</param>
-            <returns></returns>
-        </member>
-        <member name="M:SSS.Api.Controllers.Permission.UserRoleController.GetOperateByRole(System.String)">
-            <summary>
-            获取角色下所有用户信息
-            </summary>
-            <param name="roleid">角色Id</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.UserRoleController.DeleteUserRoleByRole(System.String)">
+        <member name="M:SSS.Api.Controllers.Permission.Relation.PowerMenuRelationController.AddPowerMenuRelation(SSS.Domain.Permission.Relation.PowerMenuRelation.Dto.PowerMenuRelationInputDto)">
             <summary>
-            删除角色下的所有用户
+            AddPowerMenuRelation
             </summary>
-            <param name="roleid">角色Id</param>
+            <param name="input">PowerMenuRelationInputDto</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.UserRoleController.AddUserRole(SSS.Domain.Permission.UserRole.Dto.UserRoleInputDto)">
+        <member name="T:SSS.Api.Controllers.Permission.Relation.PowerOperateRelationController">
             <summary>
-            添加用户角色关系
+            PowerOperateRelationController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Relation.PowerOperateRelationController.#ctor(SSS.Application.Permission.Relation.PowerOperateRelation.Service.IPowerOperateRelationService)">
+            <summary>
+            PowerOperateRelationController
             </summary>
-            <param name="input">用户Id、角色Id</param>
+            <param name="service">IPowerOperateRelationService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Relation.PowerOperateRelationController.GetList(SSS.Domain.Permission.Relation.PowerOperateRelation.Dto.PowerOperateRelationInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Relation.PowerOperateRelationController.AddPowerOperateRelation(SSS.Domain.Permission.Relation.PowerOperateRelation.Dto.PowerOperateRelationInputDto)">
+            <summary>
+            AddPowerOperateRelation
+            </summary>
+            <param name="input">PowerOperateRelationInputDto</param>
+            <returns></returns> 
+        </member>
+        <member name="T:SSS.Api.Controllers.Permission.Relation.RolePowerRelationController">
+            <summary>
+            RolePowerRelationController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Relation.RolePowerRelationController.#ctor(SSS.Application.Permission.Relation.RolePowerRelation.Service.IRolePowerRelationService)">
+            <summary>
+            RolePowerRelationController
+            </summary>
+            <param name="service">IRolePowerRelationService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Relation.RolePowerRelationController.GetList(SSS.Domain.Permission.Relation.RolePowerRelation.Dto.RolePowerRelationInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Relation.RolePowerRelationController.AddRolePowerRelation(SSS.Domain.Permission.Relation.RolePowerRelation.Dto.RolePowerRelationInputDto)">
+            <summary>
+            AddRolePowerRelation
+            </summary>
+            <param name="input">RolePowerRelationInputDto</param>
+            <returns></returns> 
+        </member>
+        <member name="T:SSS.Api.Controllers.Permission.Relation.RoleUserGroupRelationController">
+            <summary>
+            RoleUserGroupRelationController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Relation.RoleUserGroupRelationController.#ctor(SSS.Application.Permission.Relation.RoleUserGroupRelation.Service.IRoleUserGroupRelationService)">
+            <summary>
+            RoleUserGroupRelationController
+            </summary>
+            <param name="service">IRoleUserGroupRelationService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Relation.RoleUserGroupRelationController.GetList(SSS.Domain.Permission.Relation.RoleUserGroupRelation.Dto.RoleUserGroupRelationInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Relation.RoleUserGroupRelationController.AddRoleUserGroupRelation(SSS.Domain.Permission.Relation.RoleUserGroupRelation.Dto.RoleUserGroupRelationInputDto)">
+            <summary>
+            AddRoleUserGroupRelation
+            </summary>
+            <param name="input">RoleUserGroupRelationInputDto</param>
             <returns></returns> 
         </member>
         <member name="T:SSS.Api.Controllers.System.CodeController">

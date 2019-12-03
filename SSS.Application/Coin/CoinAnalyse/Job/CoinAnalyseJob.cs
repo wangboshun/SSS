@@ -16,30 +16,29 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-
-
 namespace SSS.Application.Coin.CoinAnalyse.Job
 {
     [DIService(ServiceLifetime.Transient, typeof(IHostedService))]
     public class CoinAnalyseJob : IHostedService, IDisposable
     {
+        private static int FastFlag;
+        private readonly HuobiUtils _huobi;
+
+        private readonly Indicator _indicator;
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _scopeFactory;
 
-        private readonly Indicator _indicator;
-        private readonly HuobiUtils _huobi;
+        private readonly List<Domain.Coin.CoinAnalyse.CoinAnalyse> FastListCoin =
+            new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
 
         private readonly List<Domain.Coin.CoinAnalyse.CoinAnalyse> ListCoin =
             new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
 
-        private readonly List<Domain.Coin.CoinAnalyse.CoinAnalyse> FastListCoin =
-          new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
-
-        private static int FastFlag = 0;
         private Timer _timer1;
         private Timer _timer2;
 
-        public CoinAnalyseJob(ILogger<CoinAnalyseJob> logger, IServiceScopeFactory scopeFactory, HuobiUtils huobi, Indicator indicator)
+        public CoinAnalyseJob(ILogger<CoinAnalyseJob> logger, IServiceScopeFactory scopeFactory, HuobiUtils huobi,
+            Indicator indicator)
         {
             _logger = logger;
             _scopeFactory = scopeFactory;
@@ -56,7 +55,7 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
         public Task StartAsync(CancellationToken stoppingToken)
         {
             _timer1 = new Timer(DoWorkForFast, null, TimeSpan.Zero,
-              TimeSpan.FromMinutes(2));
+                TimeSpan.FromMinutes(2));
 
             _timer2 = new Timer(DoWork, null, TimeSpan.Zero,
                 TimeSpan.FromMinutes(30));
@@ -96,7 +95,7 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
         }
 
         /// <summary>
-        /// 爆拉分析
+        ///     爆拉分析
         /// </summary>
         public void Fast(CoinTime type)
         {
@@ -109,7 +108,8 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
 
                 foreach (var coin in allcoin)
                 {
-                    var kline = _huobi.GetKLine(coin.base_currency, coin.quote_currency, type.ToString().Split('_')[1], 6);
+                    var kline = _huobi.GetKLine(coin.base_currency, coin.quote_currency, type.ToString().Split('_')[1],
+                        6);
 
                     if (kline == null || kline.Count < 1)
                         continue;
@@ -151,7 +151,7 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
         }
 
         /// <summary>
-        /// 综合分析
+        ///     综合分析
         /// </summary>
         /// <param name="type"></param>
         public void Analyse(CoinTime type)
@@ -166,7 +166,7 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
                 var Kdj = context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 3).ToList();
                 var Fast = context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 4).ToList();
 
-                List<SSS.Domain.Coin.CoinAnalyse.CoinAnalyse> list = new List<SSS.Domain.Coin.CoinAnalyse.CoinAnalyse>();
+                List<Domain.Coin.CoinAnalyse.CoinAnalyse> list = new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
                 list.AddRange(Average);
 
                 TotalDesc(list, Macd);
@@ -177,7 +177,6 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
                 list = list.GroupBy(c => c.Coin).Select(c => c.First()).ToList();
 
                 foreach (var item in list)
-                {
                     if (item.Desc.Contains("☆"))
                     {
                         removecoin.Add(item.Coin);
@@ -199,7 +198,6 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
                         };
                         ListCoin.Add(model);
                     }
-                }
 
                 if (ListCoin.Any())
                 {
@@ -219,7 +217,8 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
             }
         }
 
-        private void TotalDesc(List<SSS.Domain.Coin.CoinAnalyse.CoinAnalyse> list, List<SSS.Domain.Coin.CoinAnalyse.CoinAnalyse> source)
+        private void TotalDesc(List<Domain.Coin.CoinAnalyse.CoinAnalyse> list,
+            List<Domain.Coin.CoinAnalyse.CoinAnalyse> source)
         {
             foreach (var item in source)
             {
@@ -248,7 +247,8 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
 
                 foreach (var coin in allcoin)
                 {
-                    var kline = _huobi.GetKLine(coin.base_currency, coin.quote_currency, type.ToString().Split('_')[1], 2000);
+                    var kline = _huobi.GetKLine(coin.base_currency, coin.quote_currency, type.ToString().Split('_')[1],
+                        2000);
 
                     if (kline == null || kline.Count < 1)
                         continue;
@@ -282,19 +282,22 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
                         {
                             if (data5.Count > 0 && data60.Count > 0 && data5.First().Item2 > data60.First().Item2)
                             {
-                                Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() + $"【{typename}】突破60K压力位,金叉");
+                                Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() +
+                                                  $"【{typename}】突破60K压力位,金叉");
                                 model.Desc = $"【{typename}级别,均线突破60K压力位】";
                             }
                             else
                             {
-                                Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() + $"【{typename}】突破30K压力位,金叉");
+                                Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() +
+                                                  $"【{typename}】突破30K压力位,金叉");
                                 model.Desc = $"【{typename}级别,均线突破30K压力位】";
                             }
                         }
                         else
                         {
                             model.Desc = $"【{typename}级别,均线突破10K压力位】";
-                            Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() + $"【{typename}】突破10K压力位,金叉");
+                            Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() +
+                                              $"【{typename}】突破10K压力位,金叉");
                         }
 
                         model.HighRange = model.High / model.Low - 1;
@@ -302,6 +305,7 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
                         ListCoin.Add(model);
                     }
                 }
+
                 using var scope = _scopeFactory.CreateScope();
                 using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
 
@@ -334,7 +338,8 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
 
                 foreach (var coin in allcoin)
                 {
-                    var kline = _huobi.GetKLine(coin.base_currency, coin.quote_currency, type.ToString().Split('_')[1], 2000);
+                    var kline = _huobi.GetKLine(coin.base_currency, coin.quote_currency, type.ToString().Split('_')[1],
+                        2000);
 
                     if (kline == null || kline.Count < 1)
                         continue;
@@ -366,7 +371,8 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
                     model.HighRange = model.High / model.Low - 1;
                     model.CloseRange = model.Close / model.Open - 1;
 
-                    Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() + $"【{typename}】MACD,金叉");
+                    Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() +
+                                      $"【{typename}】MACD,金叉");
 
                     ListCoin.Add(model);
                 }
@@ -403,7 +409,8 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
 
                 foreach (var coin in allcoin)
                 {
-                    var kline = _huobi.GetKLine(coin.base_currency, coin.quote_currency, type.ToString().Split('_')[1], 2000);
+                    var kline = _huobi.GetKLine(coin.base_currency, coin.quote_currency, type.ToString().Split('_')[1],
+                        2000);
 
                     if (kline == null || kline.Count < 1)
                         continue;
@@ -418,14 +425,16 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
                     if (kdj.Count < 1 || kdj.FirstOrDefault()?.Item4 < kdj.FirstOrDefault()?.Item2)
                     {
                         //超卖状态
-                        if (kdj.FirstOrDefault()?.Item2 < 20 && kdj.FirstOrDefault()?.Item3 < 20 && kdj.FirstOrDefault()?.Item4 < 20)
+                        if (kdj.FirstOrDefault()?.Item2 < 20 && kdj.FirstOrDefault()?.Item3 < 20 &&
+                            kdj.FirstOrDefault()?.Item4 < 20)
                             desc = $"【{typename}级别,KDJ超卖状态，建议买入】";
                         else
                             continue;
                     }
 
                     //超买状态
-                    if (kdj.FirstOrDefault()?.Item2 > 80 && kdj.FirstOrDefault()?.Item3 > 80 && kdj.FirstOrDefault()?.Item4 > 80)
+                    if (kdj.FirstOrDefault()?.Item2 > 80 && kdj.FirstOrDefault()?.Item3 > 80 &&
+                        kdj.FirstOrDefault()?.Item4 > 80)
                         desc = $"【{typename}级别,KDJ超买状态，建议卖出】";
 
                     Domain.Coin.CoinAnalyse.CoinAnalyse model = new Domain.Coin.CoinAnalyse.CoinAnalyse
@@ -525,6 +534,7 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
 
             return "";
         }
+
         #endregion
     }
 }

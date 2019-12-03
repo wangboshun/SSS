@@ -4,11 +4,11 @@
     {
         public Pages(ListEntity data, int count)
         {
-            this.data = data;
+            this.items = data;
             this.count = count;
         }
 
-        public ListEntity data { set; get; }
+        public ListEntity items { set; get; }
 
         public int count { set; get; }
     }

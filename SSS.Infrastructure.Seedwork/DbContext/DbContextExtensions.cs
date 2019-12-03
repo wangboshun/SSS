@@ -11,6 +11,14 @@ namespace SSS.Infrastructure.Seedwork.DbContext
 {
     public static class DbContextExtensions
     {
+        public static int Count(this DatabaseFacade facade, string sql, params object[] parameters)
+        {
+            DbCommand cmd = CreateCommand(facade, sql, out DbConnection conn, parameters);
+            int count = Convert.ToInt32(cmd.ExecuteScalar());
+            conn.Close();
+            return count;
+        }
+
         private static void CombineParams(ref DbCommand command, params object[] parameters)
         {
             if (parameters != null)

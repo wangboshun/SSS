@@ -45,7 +45,7 @@ namespace SSS.Application.NameSpace.Template.Service
             return GetPage(input);
         }
 
-        public void DeleteTemplate(TemplateInfoInputDto input)
+        public void DeleteTemplate(TemplateInputDto input)
         {
             Delete(input.id);
         }

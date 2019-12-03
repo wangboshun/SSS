@@ -80,7 +80,14 @@ namespace SSS.Api.Controllers.System
             if (!string.IsNullOrWhiteSpace(namespace_str))
             {
                 namespace_name = namespace_str;
-                namespace_path = "\\" + namespace_str;
+
+                if (namespace_str.Contains("."))
+                {
+                    string[] array = namespace_str.Split(".");
+                    namespace_path = "\\" + array[0] + "\\" + array[1];
+                }
+                else
+                    namespace_path = "\\" + namespace_str;
             }
 
             Generator_Domain();

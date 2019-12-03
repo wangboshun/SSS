@@ -21,7 +21,7 @@ namespace SSS.Infrastructure.Repository.Coin.CoinMessage
         {
             count = DbSet.Count(x => x.CreateTime > DateTime.Now);
             var data = DbSet.Where(x => x.CreateTime > DateTime.Now && x.IsDelete == 0).OrderBy(x => x.CreateTime)
-                .Skip(input.pagesize * input.pageindex).Take(input.pagesize);
+                .Skip(input.pagesize * (input.pageindex > 1 ? input.pageindex - 1 : 0)).Take(input.pagesize);
 
             return data;
         }

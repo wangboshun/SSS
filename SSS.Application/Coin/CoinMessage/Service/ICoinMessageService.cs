@@ -6,7 +6,8 @@ using System.Collections.Generic;
 
 namespace SSS.Application.Coin.CoinMessage.Service
 {
-    public interface ICoinMessageService : IQueryService<Domain.Coin.CoinMessage.CoinMessage, CoinMessageInputDto, CoinMessageOutputDto>
+    public interface ICoinMessageService : IQueryService<Domain.Coin.CoinMessage.CoinMessage, CoinMessageInputDto,
+        CoinMessageOutputDto>
     {
         void AddCoinMessage(CoinMessageInputDto input);
 
