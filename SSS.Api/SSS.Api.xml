@@ -607,56 +607,6 @@
             <param name="input">PowerOperateRelationInputDto</param>
             <returns></returns> 
         </member>
-        <member name="T:SSS.Api.Controllers.Permission.Relation.RolePowerRelationController">
-            <summary>
-            RolePowerRelationController
-            </summary> 
-        </member>
-        <member name="M:SSS.Api.Controllers.Permission.Relation.RolePowerRelationController.#ctor(SSS.Application.Permission.Relation.RolePowerRelation.Service.IRolePowerRelationService)">
-            <summary>
-            RolePowerRelationController
-            </summary>
-            <param name="service">IRolePowerRelationService</param>
-        </member>
-        <member name="M:SSS.Api.Controllers.Permission.Relation.RolePowerRelationController.GetList(SSS.Domain.Permission.Relation.RolePowerRelation.Dto.RolePowerRelationInputDto)">
-            <summary>
-            GetList
-            </summary>
-            <param name="input">input</param>
-            <returns></returns> 
-        </member>
-        <member name="M:SSS.Api.Controllers.Permission.Relation.RolePowerRelationController.AddRolePowerRelation(SSS.Domain.Permission.Relation.RolePowerRelation.Dto.RolePowerRelationInputDto)">
-            <summary>
-            AddRolePowerRelation
-            </summary>
-            <param name="input">RolePowerRelationInputDto</param>
-            <returns></returns> 
-        </member>
-        <member name="T:SSS.Api.Controllers.Permission.Relation.RoleUserGroupRelationController">
-            <summary>
-            RoleUserGroupRelationController
-            </summary> 
-        </member>
-        <member name="M:SSS.Api.Controllers.Permission.Relation.RoleUserGroupRelationController.#ctor(SSS.Application.Permission.Relation.RoleUserGroupRelation.Service.IRoleUserGroupRelationService)">
-            <summary>
-            RoleUserGroupRelationController
-            </summary>
-            <param name="service">IRoleUserGroupRelationService</param>
-        </member>
-        <member name="M:SSS.Api.Controllers.Permission.Relation.RoleUserGroupRelationController.GetList(SSS.Domain.Permission.Relation.RoleUserGroupRelation.Dto.RoleUserGroupRelationInputDto)">
-            <summary>
-            GetList
-            </summary>
-            <param name="input">input</param>
-            <returns></returns> 
-        </member>
-        <member name="M:SSS.Api.Controllers.Permission.Relation.RoleUserGroupRelationController.AddRoleUserGroupRelation(SSS.Domain.Permission.Relation.RoleUserGroupRelation.Dto.RoleUserGroupRelationInputDto)">
-            <summary>
-            AddRoleUserGroupRelation
-            </summary>
-            <param name="input">RoleUserGroupRelationInputDto</param>
-            <returns></returns> 
-        </member>
         <member name="T:SSS.Api.Controllers.System.CodeController">
             <summary>	
             代码生成	

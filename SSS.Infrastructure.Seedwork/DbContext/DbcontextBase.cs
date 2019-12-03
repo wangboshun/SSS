@@ -9,25 +9,20 @@ using SSS.Domain.Coin.CoinArticel;
 using SSS.Domain.Coin.CoinInfo;
 using SSS.Domain.Coin.CoinMessage;
 using SSS.Domain.Coin.CoinTrade;
+using SSS.Domain.Permission.Group.PowerGroup;
+using SSS.Domain.Permission.Group.RoleGroup;
 using SSS.Domain.Permission.Group.UserGroup;
 using SSS.Domain.Permission.Info.MenuInfo;
 using SSS.Domain.Permission.Info.OperateInfo;
+using SSS.Domain.Permission.Info.PowerInfo;
 using SSS.Domain.Permission.Info.RoleInfo;
 using SSS.Domain.Permission.Info.UserInfo;
-using SSS.Domain.Permission.Relation.RoleMenuRelation;
-using SSS.Domain.Permission.Relation.RoleOperateRelation;
-using SSS.Domain.Permission.Relation.RoleUserRelation;
+using SSS.Domain.Permission.Relation.PowerMenuRelation;
+using SSS.Domain.Permission.Relation.PowerOperateRelation;
+using SSS.Domain.Permission.Relation.UserUserGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
-using SSS.Domain.Permission.Group.PowerGroup;
-using SSS.Domain.Permission.Group.RoleGroup;
-using SSS.Domain.Permission.Info.PowerInfo;
-using SSS.Domain.Permission.Relation.PowerMenuRelation;
-using SSS.Domain.Permission.Relation.PowerOperateRelation;
-using SSS.Domain.Permission.Relation.RolePowerRelation;
-using SSS.Domain.Permission.Relation.RoleUserGroupRelation;
-using SSS.Domain.Permission.Relation.UserUserGroupRelation;
 
 namespace SSS.Infrastructure.Seedwork.DbContext
 {
@@ -69,16 +64,9 @@ namespace SSS.Infrastructure.Seedwork.DbContext
 
 
 
-        public DbSet<RoleUserRelation> RoleUserRelation { get; set; }
-        public DbSet<RolePowerRelation> RolePowerRelation { get; set; }
-        public DbSet<RoleMenuRelation> RoleMenuRelation { get; set; }
-        public DbSet<RoleOperateRelation> RoleOperateRelation { get; set; }
-        public DbSet<RoleUserGroupRelation> RoleUserGroupRelation { get; set; }
         public DbSet<PowerOperateRelation> PowerOperateRelation { get; set; }
         public DbSet<PowerMenuRelation> PowerMenuRelation { get; set; }
         public DbSet<UserUserGroupRelation> UserUserGroupRelation { get; set; }
-
-
 
 
 
