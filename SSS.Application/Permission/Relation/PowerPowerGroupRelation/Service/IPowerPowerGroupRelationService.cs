@@ -1,7 +1,8 @@
+using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Relation.PowerPowerGroupRelation.Dto;
 using SSS.Domain.Seedwork.Model;
+
 using System.Collections.Generic;
-using SSS.Application.Seedwork.Service;
 
 namespace SSS.Application.Permission.Relation.PowerPowerGroupRelation.Service
 {
@@ -9,7 +10,7 @@ namespace SSS.Application.Permission.Relation.PowerPowerGroupRelation.Service
     {
         void AddPowerPowerGroupRelation(PowerPowerGroupRelationInputDto input);
 
-		Pages<List<PowerPowerGroupRelationOutputDto>> GetListPowerPowerGroupRelation(PowerPowerGroupRelationInputDto input);
+        Pages<List<PowerPowerGroupRelationOutputDto>> GetListPowerPowerGroupRelation(PowerPowerGroupRelationInputDto input);
 
         void DeletePowerPowerGroupRelation(PowerPowerGroupRelationInputDto input);
     }

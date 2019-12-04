@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.Permission.Info.UserInfo.Service;
+using SSS.Domain.Permission.Info.UserInfo.Dto;
 using SSS.Domain.Permission.Relation.UserUserGroupRelation.Dto;
-using SSS.Domain.Permission.UserInfo.Dto;
 
 namespace SSS.Api.Controllers.Permission.Info
 {
@@ -53,7 +53,7 @@ namespace SSS.Api.Controllers.Permission.Info
             var result = _service.GetChildrenById(userid);
             return ApiResponse(result);
         }
-         
+
         /// <summary>
         /// 用户登录
         /// </summary>

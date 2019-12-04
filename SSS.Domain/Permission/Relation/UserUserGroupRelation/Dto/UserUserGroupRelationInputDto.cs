@@ -11,4 +11,3 @@ namespace SSS.Domain.Permission.Relation.UserUserGroupRelation.Dto
         public string parentid { set; get; }
     }
 }
- 

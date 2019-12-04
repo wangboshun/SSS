@@ -101,7 +101,7 @@ namespace SqlSugar
                     }
                 }
             }
-            result = queryBuilder.GetSelectByItems(selectItems); 
+            result = queryBuilder.GetSelectByItems(selectItems);
             return result;
         }
     }

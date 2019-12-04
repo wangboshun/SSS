@@ -1,7 +1,7 @@
-using SSS.Domain.Permission.UserInfo.Dto;
 using SSS.Domain.Seedwork.Repository;
 
 using System.Collections.Generic;
+using SSS.Domain.Permission.Info.UserInfo.Dto;
 
 namespace SSS.Infrastructure.Repository.Permission.Info.UserInfo
 {

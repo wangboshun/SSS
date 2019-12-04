@@ -14,6 +14,7 @@ using SSS.Infrastructure.Util.Http;
 
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -239,7 +240,15 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// <param name="save">是否保存  默认否</param>
         public virtual void Remove(string id, bool save = false)
         {
-            DbSet.Remove(Get(id));
+            var model = Get(x => x.Id.Equals(id) && x.IsDelete == 0);
+            if (model == null)
+            {
+                _error.Execute("数据不存在,删除失败！");
+                return;
+            }
+
+            model.IsDelete = 1;
+            Update(model);
             if (save)
                 Db.SaveChanges();
         }
@@ -251,7 +260,15 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// <param name="save">是否保存  默认否</param>
         public virtual void Remove(Expression<Func<TEntity, bool>> predicate, bool save = false)
         {
-            DbSet.Remove(Get(predicate));
+            var model = Get(predicate);
+            if (model == null)
+            {
+                _error.Execute("数据不存在,删除失败！");
+                return;
+            }
+
+            model.IsDelete = 1;
+            Update(model);
             if (save)
                 Db.SaveChanges();
         }
@@ -288,9 +305,9 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// </summary>
         /// <param name="parameter">参数</param>
         /// <returns></returns>
-        protected SqlParameter[] GeneratorParameter(params object[] parameter)
+        protected DbParameter[] GeneratorParameter(params object[] parameter)
         {
-            List<SqlParameter> sqlparameter = new List<SqlParameter>();
+            List<DbParameter> sqlparameter = new List<DbParameter>();
             foreach (var item in parameter)
             {
                 JObject json = JObject.FromObject(item);

@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 namespace SqlSugar
-{ 
+{
     public abstract partial class AdoProvider : AdoAccessory, IAdo
     {
         #region Constructor

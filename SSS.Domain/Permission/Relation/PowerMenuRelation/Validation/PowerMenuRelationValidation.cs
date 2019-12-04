@@ -14,7 +14,7 @@ namespace SSS.Domain.Permission.Relation.PowerMenuRelation.Validation
         {
             RuleSet("Insert", () =>
             {
-
+                RuleFor(x => x.powerid).NotNull().WithMessage("权限Id不能为空");
             });
 
             RuleSet("Delete", () =>

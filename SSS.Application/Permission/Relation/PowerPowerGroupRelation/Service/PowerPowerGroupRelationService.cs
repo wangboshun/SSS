@@ -1,12 +1,16 @@
 using AutoMapper;
+
 using FluentValidation;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Relation.PowerPowerGroupRelation.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Relation.PowerPowerGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
+
 using System;
 using System.Collections.Generic;
 
@@ -35,7 +39,7 @@ namespace SSS.Application.Permission.Relation.PowerPowerGroupRelation.Service
 
             input.id = Guid.NewGuid().ToString();
             var model = Mapper.Map<SSS.Domain.Permission.Relation.PowerPowerGroupRelation.PowerPowerGroupRelation>(input);
-            model.CreateTime=DateTime.Now;
+            model.CreateTime = DateTime.Now;
             Repository.Add(model);
             Repository.SaveChanges();
         }
@@ -47,7 +51,7 @@ namespace SSS.Application.Permission.Relation.PowerPowerGroupRelation.Service
 
         public void DeletePowerPowerGroupRelation(PowerPowerGroupRelationInputDto input)
         {
-            Delete(input.id);
+            Repository.Remove(input.id);
         }
     }
 }

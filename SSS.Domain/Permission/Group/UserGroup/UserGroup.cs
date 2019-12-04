@@ -6,6 +6,6 @@ namespace SSS.Domain.Permission.Group.UserGroup
     {
         public string ParentId { set; get; }
 
-        public string UserGroupName { set; get; } 
+        public string UserGroupName { set; get; }
     }
 }

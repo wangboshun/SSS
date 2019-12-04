@@ -6,15 +6,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Group.UserGroup.Dto;
+using SSS.Domain.Permission.Relation.UserUserGroupRelation.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.UserGroup;
+using SSS.Infrastructure.Repository.Permission.Relation.UserUserGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
 using System.Collections.Generic;
-using SSS.Domain.Permission.Relation.UserUserGroupRelation.Dto;
-using SSS.Infrastructure.Repository.Permission.Relation.UserUserGroupRelation;
 
 namespace SSS.Application.Permission.Group.UserGroup.Service
 {
@@ -53,11 +53,11 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
         public Pages<List<UserGroupOutputDto>> GetListUserGroup(UserGroupInputDto input)
         {
             return GetPage(input);
-        } 
+        }
 
         public void DeleteUserGroup(UserGroupInputDto input)
         {
-            Delete(input.id);
+            Repository.Remove(input.id);
         }
 
         /// <summary>

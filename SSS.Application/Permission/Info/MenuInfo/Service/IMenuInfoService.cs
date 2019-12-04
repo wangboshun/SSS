@@ -1,8 +1,8 @@
 using SSS.Application.Seedwork.Service;
+using SSS.Domain.Permission.Info.MenuInfo.Dto;
 using SSS.Domain.Seedwork.Model;
 
 using System.Collections.Generic;
-using SSS.Domain.Permission.Info.MenuInfo.Dto;
 
 namespace SSS.Application.Permission.Info.MenuInfo.Service
 {

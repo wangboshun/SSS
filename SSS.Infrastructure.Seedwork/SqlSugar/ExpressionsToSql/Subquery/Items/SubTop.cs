@@ -34,7 +34,7 @@ namespace SqlSugar
                 if (this.Context is SqlServerExpressionContext)
                 {
                     return 150;
-                } 
+                }
                 else
                 {
                     return 490;
@@ -48,7 +48,7 @@ namespace SqlSugar
             if (this.Context is SqlServerExpressionContext)
             {
                 return "TOP 1";
-            } 
+            }
             else
             {
                 return "limit 0,1";

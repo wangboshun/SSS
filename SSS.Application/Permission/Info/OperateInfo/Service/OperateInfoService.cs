@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Info.OperateInfo;
+using SSS.Domain.Permission.Info.OperateInfo.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Info.OperateInfo;
@@ -13,7 +14,6 @@ using SSS.Infrastructure.Util.Attribute;
 
 using System;
 using System.Collections.Generic;
-using SSS.Domain.Permission.Info.OperateInfo.Dto;
 
 namespace SSS.Application.Permission.Info.OperateInfo.Service
 {

@@ -1,6 +1,6 @@
 using AutoMapper;
 
-using SSS.Domain.Permission.UserInfo.Dto;
+using SSS.Domain.Permission.Info.UserInfo.Dto;
 
 namespace SSS.Application.Permission.Info.UserInfo.Mapper
 {

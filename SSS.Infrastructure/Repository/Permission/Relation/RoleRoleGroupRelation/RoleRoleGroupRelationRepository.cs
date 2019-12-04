@@ -1,19 +1,20 @@
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
-using SSS.Domain.Permission.Relation.PowerPowerGroupRelation.Dto;
+
 using SSS.Domain.Permission.Relation.RoleRoleGroupRelation.Dto;
 using SSS.Domain.Seedwork.Model;
-using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Seedwork.Repository;
+using SSS.Infrastructure.Util.Attribute;
+
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SSS.Infrastructure.Repository.Permission.Relation.RoleRoleGroupRelation
 {
-    [DIService(ServiceLifetime.Scoped, typeof(IRoleUserGroupRelationRepository))]
-    public class RoleUserGroupRelationRepository : Repository<SSS.Domain.Permission.Relation.RoleRoleGroupRelation.RoleRoleGroupRelation>, IRoleUserGroupRelationRepository
+    [DIService(ServiceLifetime.Scoped, typeof(IRoleRoleGroupRelationRepository))]
+    public class RoleRoleGroupRelationRepository : Repository<SSS.Domain.Permission.Relation.RoleRoleGroupRelation.RoleRoleGroupRelation>, IRoleRoleGroupRelationRepository
     {
-        public RoleUserGroupRelationRepository(DbcontextBase context) : base(context)
+        public RoleRoleGroupRelationRepository(DbcontextBase context) : base(context)
         {
         }
 

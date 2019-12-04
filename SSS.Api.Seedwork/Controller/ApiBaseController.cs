@@ -3,13 +3,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
-
-using SSS.Domain.Permission.UserInfo.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Infrastructure.Util.Http;
 
 using System.Collections.Generic;
 using System.Linq;
+using SSS.Domain.Permission.Info.UserInfo.Dto;
 
 namespace SSS.Api.Seedwork.Controller
 {

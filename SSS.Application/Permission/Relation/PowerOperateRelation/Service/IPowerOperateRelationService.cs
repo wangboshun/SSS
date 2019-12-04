@@ -1,8 +1,8 @@
 using SSS.Application.Seedwork.Service;
+using SSS.Domain.Permission.Relation.PowerOperateRelation.Dto;
 using SSS.Domain.Seedwork.Model;
 
 using System.Collections.Generic;
-using SSS.Domain.Permission.Relation.PowerOperateRelation.Dto;
 
 namespace SSS.Application.Permission.Relation.PowerOperateRelation.Service
 {

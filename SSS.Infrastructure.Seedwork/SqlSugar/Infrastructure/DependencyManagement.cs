@@ -5,7 +5,7 @@ namespace SqlSugar
     {
         private static bool IsTryJsonNet = false;
         private static bool IsTryMySqlData = false;
-        private static bool IsTrySqlite = false; 
+        private static bool IsTrySqlite = false;
 
         public static void TryJsonNet()
         {

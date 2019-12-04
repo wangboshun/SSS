@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Linq.Expressions;
 
 namespace SqlSugar
@@ -35,7 +34,7 @@ namespace SqlSugar
         }
 
         public string GetValue(Expression expression)
-        { 
+        {
             var exp = expression as MethodCallExpression;
             var argExp = exp.Arguments[0];
             var result = "ORDER BY " + SubTools.GetMethodValue(this.Context, argExp, ResolveExpressType.FieldSingle);

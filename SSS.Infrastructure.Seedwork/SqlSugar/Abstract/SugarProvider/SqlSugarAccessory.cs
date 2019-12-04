@@ -331,7 +331,7 @@ namespace SqlSugar
                     break;
                 case DbType.Sqlite:
                     DependencyManagement.TrySqlite();
-                    break; 
+                    break;
                 default:
                     throw new Exception("ConnectionConfig.DbType is null");
             }

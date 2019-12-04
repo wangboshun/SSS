@@ -884,7 +884,7 @@ namespace SqlSugar
         private async Task<T> SaveQueuesProviderAsync<T>(bool isTran, Func<string, List<SugarParameter>, Task<T>> func)
         {
             try
-            { 
+            {
                 if (this.Queues == null || this.Queues.Count == 0) return default(T);
                 isTran = isTran && this.Ado.Transaction == null;
                 if (isTran) this.Ado.BeginTran();
@@ -930,7 +930,7 @@ namespace SqlSugar
         private T SaveQueuesProvider<T>(bool isTran, Func<string, List<SugarParameter>, T> func)
         {
             try
-            { 
+            {
                 if (this.Queues == null || this.Queues.Count == 0) return default(T);
                 isTran = isTran && this.Ado.Transaction == null;
                 if (isTran) this.Ado.BeginTran();

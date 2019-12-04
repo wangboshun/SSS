@@ -1,9 +1,9 @@
 using SSS.Application.Seedwork.Service;
+using SSS.Domain.Permission.Info.PowerInfo.Dto;
+using SSS.Domain.Permission.Relation.PowerPowerGroupRelation.Dto;
 using SSS.Domain.Seedwork.Model;
 
 using System.Collections.Generic;
-using SSS.Domain.Permission.Info.PowerInfo.Dto;
-using SSS.Domain.Permission.Relation.PowerPowerGroupRelation.Dto;
 
 namespace SSS.Application.Permission.Info.PowerInfo.Service
 {

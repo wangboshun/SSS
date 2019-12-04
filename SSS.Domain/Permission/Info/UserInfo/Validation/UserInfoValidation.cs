@@ -1,11 +1,9 @@
 ﻿using FluentValidation;
-
 using Microsoft.Extensions.DependencyInjection;
-
-using SSS.Domain.Permission.UserInfo.Dto;
+using SSS.Domain.Permission.Info.UserInfo.Dto;
 using SSS.Infrastructure.Util.Attribute;
 
-namespace SSS.Domain.Permission.UserInfo.Validation
+namespace SSS.Domain.Permission.Info.UserInfo.Validation
 {
     [DIService(ServiceLifetime.Scoped, typeof(IValidator<UserInfoInputDto>))]
     public class UserInfoValidation : AbstractValidator<UserInfoInputDto>

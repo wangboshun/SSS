@@ -1,11 +1,12 @@
-using System.Collections.Generic;
 using SSS.Domain.Permission.Relation.RoleRoleGroupRelation.Dto;
 using SSS.Domain.Seedwork.Model;
 using SSS.Domain.Seedwork.Repository;
 
+using System.Collections.Generic;
+
 namespace SSS.Infrastructure.Repository.Permission.Relation.RoleRoleGroupRelation
 {
-    public interface IRoleUserGroupRelationRepository : IRepository<SSS.Domain.Permission.Relation.RoleRoleGroupRelation.RoleRoleGroupRelation>
+    public interface IRoleRoleGroupRelationRepository : IRepository<SSS.Domain.Permission.Relation.RoleRoleGroupRelation.RoleRoleGroupRelation>
     {
         /// <summary>
         /// 根据角色Id或名称，遍历关联角色组

@@ -1,4 +1,5 @@
 using AutoMapper;
+
 using SSS.Domain.Permission.Info.MenuInfo.Dto;
 
 namespace SSS.Application.Permission.Info.MenuInfo.Mapper

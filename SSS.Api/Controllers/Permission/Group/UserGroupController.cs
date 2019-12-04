@@ -52,7 +52,7 @@ namespace SSS.Api.Controllers.Permission.Group
         {
             _service.AddUserGroup(input);
             return ApiResponse(input);
-        } 
+        }
 
         /// <summary>
         /// 根据用户Id或名称，遍历关联用户组

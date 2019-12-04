@@ -1,9 +1,9 @@
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Group.UserGroup.Dto;
+using SSS.Domain.Permission.Relation.UserUserGroupRelation.Dto;
 using SSS.Domain.Seedwork.Model;
 
 using System.Collections.Generic;
-using SSS.Domain.Permission.Relation.UserUserGroupRelation.Dto;
 
 namespace SSS.Application.Permission.Group.UserGroup.Service
 {
@@ -12,7 +12,7 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
     {
         void AddUserGroup(UserGroupInputDto input);
 
-        Pages<List<UserGroupOutputDto>> GetListUserGroup(UserGroupInputDto input); 
+        Pages<List<UserGroupOutputDto>> GetListUserGroup(UserGroupInputDto input);
 
         void DeleteUserGroup(UserGroupInputDto input);
 

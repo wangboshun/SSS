@@ -5,16 +5,16 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
+using SSS.Domain.Permission.Info.PowerInfo.Dto;
+using SSS.Domain.Permission.Relation.PowerPowerGroupRelation.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Info.PowerInfo;
+using SSS.Infrastructure.Repository.Permission.Relation.PowerPowerGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
 using System.Collections.Generic;
-using SSS.Domain.Permission.Info.PowerInfo.Dto;
-using SSS.Domain.Permission.Relation.PowerPowerGroupRelation.Dto;
-using SSS.Infrastructure.Repository.Permission.Relation.PowerPowerGroupRelation;
 
 namespace SSS.Application.Permission.Info.PowerInfo.Service
 {
@@ -61,7 +61,7 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
 
         public void DeletePowerInfo(PowerInfoInputDto input)
         {
-            Delete(input.id);
+            Repository.Remove(input.id);
         }
 
         /// <summary>

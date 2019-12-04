@@ -1,5 +1,4 @@
 using SSS.Domain.Permission.Relation.PowerPowerGroupRelation.Dto;
-using SSS.Domain.Permission.Relation.UserUserGroupRelation.Dto;
 using SSS.Domain.Seedwork.Model;
 using SSS.Domain.Seedwork.Repository;
 

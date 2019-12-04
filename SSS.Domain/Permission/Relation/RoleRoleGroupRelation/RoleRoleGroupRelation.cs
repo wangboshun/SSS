@@ -1,14 +1,11 @@
-using SSS.Domain.Seedwork.Model; 
+using SSS.Domain.Seedwork.Model;
 
 namespace SSS.Domain.Permission.Relation.RoleRoleGroupRelation
 {
     public class RoleRoleGroupRelation : Entity
-    { 
+    {
+        public string RoleId { set; get; }
 
-        public string Roleid { set; get; }
-
-        public string Rolegroupid { set; get; }
-
-        public string Parentid { set; get; }
+        public string RoleGroupId { set; get; }
     }
 }

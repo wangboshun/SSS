@@ -1,6 +1,7 @@
 using FluentValidation;
+
 using Microsoft.Extensions.DependencyInjection;
-using SSS.Domain.Permission.RoleInfo.Dto;
+using SSS.Domain.Permission.Info.RoleInfo.Dto;
 using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Domain.Permission.Info.RoleInfo.Validation

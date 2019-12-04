@@ -41,7 +41,7 @@ namespace SqlSugar
             var result = "AND " + SubTools.GetMethodValue(this.Context, argExp, ResolveExpressType.WhereMultiple);
 
             var regex = @"^AND  (\@Const\d+) $";
-            
+
             if (Regex.IsMatch(result, regex))
             {
                 result = "AND " + this.Context.Parameters.First(it => it.ParameterName == Regex.Match(result, regex).Groups[1].Value).Value;

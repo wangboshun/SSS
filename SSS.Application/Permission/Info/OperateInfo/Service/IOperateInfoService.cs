@@ -1,9 +1,9 @@
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Info.OperateInfo;
+using SSS.Domain.Permission.Info.OperateInfo.Dto;
 using SSS.Domain.Seedwork.Model;
 
 using System.Collections.Generic;
-using SSS.Domain.Permission.Info.OperateInfo.Dto;
 
 namespace SSS.Application.Permission.Info.OperateInfo.Service
 {

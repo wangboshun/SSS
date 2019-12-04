@@ -1,4 +1,5 @@
 using AutoMapper;
+
 using SSS.Domain.Permission.Relation.PowerOperateRelation.Dto;
 
 namespace SSS.Application.Permission.Relation.PowerOperateRelation.Mapper

@@ -1,12 +1,16 @@
 using AutoMapper;
+
 using FluentValidation;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Relation.UserUserGroupRelation.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Relation.UserUserGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
+
 using System;
 using System.Collections.Generic;
 
@@ -49,7 +53,7 @@ namespace SSS.Application.Permission.Relation.UserUserGroupRelation.Service
 
         public void DeleteUserUserGroupRelation(UserUserGroupRelationInputDto input)
         {
-            Delete(input.id);
-        } 
+            Repository.Remove(input.id);
+        }
     }
 }

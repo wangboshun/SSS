@@ -1,8 +1,9 @@
-using System;
-using System.Collections.Generic;
 using AutoMapper;
+
 using FluentValidation;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using SSS.Application.Permission.Relation.PowerMenuRelation.Service;
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Relation.PowerMenuRelation.Dto;
@@ -10,6 +11,9 @@ using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Relation.PowerMenuRelation;
 using SSS.Infrastructure.Util.Attribute;
+
+using System;
+using System.Collections.Generic;
 
 namespace SSS.Application.Permission.Relation.PowerMenu.Service
 {
@@ -49,7 +53,7 @@ namespace SSS.Application.Permission.Relation.PowerMenu.Service
 
         public void DeletePowerMenuRelation(PowerMenuRelationInputDto input)
         {
-            Delete(input.id);
+            Repository.Remove(input.id);
         }
     }
 }

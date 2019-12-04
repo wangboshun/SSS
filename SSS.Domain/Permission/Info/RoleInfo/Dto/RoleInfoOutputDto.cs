@@ -1,9 +1,8 @@
-using SSS.Domain.Seedwork.Model;
-
 using System;
 using System.Collections.Generic;
+using SSS.Domain.Seedwork.Model;
 
-namespace SSS.Domain.Permission.RoleInfo.Dto
+namespace SSS.Domain.Permission.Info.RoleInfo.Dto
 {
     public class RoleInfoOutputDto : OutputDtoBase
     {

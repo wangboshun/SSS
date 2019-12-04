@@ -483,7 +483,7 @@
             </summary>
             <param name="service">IRoleInfoService</param>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Info.RoleInfoController.GetList(SSS.Domain.Permission.RoleInfo.Dto.RoleInfoInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.RoleInfoController.GetList(SSS.Domain.Permission.Info.RoleInfo.Dto.RoleInfoInputDto)">
             <summary>
                 获取所有角色信息
             </summary>
@@ -497,7 +497,7 @@
             <param name="roleid">角色Id</param>
             <returns></returns>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Info.RoleInfoController.AddRoleInfo(SSS.Domain.Permission.RoleInfo.Dto.RoleInfoInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.RoleInfoController.AddRoleInfo(SSS.Domain.Permission.Info.RoleInfo.Dto.RoleInfoInputDto)">
             <summary>
             添加角色信息
             </summary>
@@ -522,7 +522,7 @@
             </summary>
             <param name="service">IUserInfoService</param>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Info.UserInfoController.GetList(SSS.Domain.Permission.UserInfo.Dto.UserInfoInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.UserInfoController.GetList(SSS.Domain.Permission.Info.UserInfo.Dto.UserInfoInputDto)">
             <summary>
                 获取所有用户信息
             </summary>
@@ -536,14 +536,14 @@
             <param name="userid">用户Id</param>
             <returns></returns>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Info.UserInfoController.Login(SSS.Domain.Permission.UserInfo.Dto.UserInfoInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.UserInfoController.Login(SSS.Domain.Permission.Info.UserInfo.Dto.UserInfoInputDto)">
             <summary>
             用户登录
             </summary>
             <param name="input">账号、密码</param>
             <returns></returns>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Info.UserInfoController.AddUserInfo(SSS.Domain.Permission.UserInfo.Dto.UserInfoInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.UserInfoController.AddUserInfo(SSS.Domain.Permission.Info.UserInfo.Dto.UserInfoInputDto)">
             <summary>
              添加用户
             </summary>

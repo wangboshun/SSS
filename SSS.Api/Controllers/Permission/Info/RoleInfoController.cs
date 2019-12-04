@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.Permission.Info.RoleInfo.Service;
+using SSS.Domain.Permission.Info.RoleInfo.Dto;
 using SSS.Domain.Permission.Relation.RoleRoleGroupRelation.Dto;
-using SSS.Domain.Permission.RoleInfo.Dto;
 
 namespace SSS.Api.Controllers.Permission.Info
 {

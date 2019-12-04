@@ -14,8 +14,6 @@ namespace SSS.Application.Seedwork.Service
         TOutput Get(string id);
         TOutput Get(Expression<Func<TEntity, bool>> predicate);
 
-        void Delete(string id);
-
         Pages<List<TOutput>> GetPageBySql(string sql, int pageindex = 0, int pagesize = 10);
 
         Pages<List<TOutput>> GetPageBySql(string sql, Expression<Func<TEntity, bool>> predicate, int pageindex = 0,

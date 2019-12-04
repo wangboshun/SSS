@@ -1,5 +1,7 @@
 using FluentValidation;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using SSS.Domain.Permission.Relation.RoleRoleGroupRelation.Dto;
 using SSS.Infrastructure.Util.Attribute;
 
@@ -12,22 +14,22 @@ namespace SSS.Domain.Permission.Relation.RoleRoleGroupRelation.Validation
         {
             RuleSet("Insert", () =>
             {
-                
+
             });
 
             RuleSet("Delete", () =>
             {
-                
+
             });
 
             RuleSet("Update", () =>
             {
-                
+
             });
 
             RuleSet("Select", () =>
             {
-                
+
             });
         }
     }

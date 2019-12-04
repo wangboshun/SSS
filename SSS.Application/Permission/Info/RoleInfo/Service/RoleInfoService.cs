@@ -5,15 +5,17 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
+using SSS.Domain.Permission.Info.RoleInfo.Dto;
 using SSS.Domain.Permission.Relation.RoleRoleGroupRelation.Dto;
-using SSS.Domain.Permission.RoleInfo.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
+using SSS.Infrastructure.Repository.Permission.Group.RoleGroup;
 using SSS.Infrastructure.Repository.Permission.Info.RoleInfo;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
 using System.Collections.Generic;
+using SSS.Domain.Permission.Relation.RoleRoleGroupRelation;
 using SSS.Infrastructure.Repository.Permission.Relation.RoleRoleGroupRelation;
 
 namespace SSS.Application.Permission.Info.RoleInfo.Service
@@ -23,17 +25,19 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
         QueryService<Domain.Permission.Info.RoleInfo.RoleInfo, RoleInfoInputDto, RoleInfoOutputDto>, IRoleInfoService
     {
         private readonly IRoleInfoRepository _repository;
-
-        private readonly IRoleUserGroupRelationRepository _roleRoleGroupRelationRepository;
+        private readonly IRoleGroupRepository _roleGroupRepository;
+        private readonly IRoleRoleGroupRelationRepository _roleRoleGroupRelationRepository;
 
         public RoleInfoService(IMapper mapper,
             IRoleInfoRepository repository,
             IErrorHandler error,
             IValidator<RoleInfoInputDto> validator,
-            IRoleUserGroupRelationRepository roleRoleGroupRelationRepository) :
+            IRoleRoleGroupRelationRepository roleRoleGroupRelationRepository,
+            IRoleGroupRepository roleGroupRepository) :
             base(mapper, repository, error, validator)
         {
             _repository = repository;
+            _roleGroupRepository = roleGroupRepository;
             _roleRoleGroupRelationRepository = roleRoleGroupRelationRepository;
         }
 
@@ -56,13 +60,24 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
             input.id = Guid.NewGuid().ToString();
             var model = Mapper.Map<Domain.Permission.Info.RoleInfo.RoleInfo>(input);
             model.CreateTime = DateTime.Now;
+
+            var group = _roleGroupRepository.Get(x => x.Id.Equals(input.rolegroupid));
+            _roleRoleGroupRelationRepository.Add(new RoleRoleGroupRelation()
+            {
+                CreateTime = DateTime.Now,
+                Id = Guid.NewGuid().ToString(),
+                RoleId = model.Id,
+                RoleGroupId = group.Id,
+                IsDelete = 0
+            });
+
             Repository.Add(model);
             Repository.SaveChanges();
         }
 
         public void DeleteRoleInfo(RoleInfoInputDto input)
         {
-            Delete(input.id);
+            Repository.Remove(input.id);
         }
 
         /// <summary>

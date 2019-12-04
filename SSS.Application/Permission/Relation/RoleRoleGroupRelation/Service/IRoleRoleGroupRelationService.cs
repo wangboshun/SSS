@@ -1,7 +1,8 @@
+using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Relation.RoleRoleGroupRelation.Dto;
 using SSS.Domain.Seedwork.Model;
+
 using System.Collections.Generic;
-using SSS.Application.Seedwork.Service;
 
 namespace SSS.Application.Permission.Relation.RoleRoleGroupRelation.Service
 {
@@ -9,7 +10,7 @@ namespace SSS.Application.Permission.Relation.RoleRoleGroupRelation.Service
     {
         void AddRoleRoleGroupRelation(RoleRoleGroupRelationInputDto input);
 
-		Pages<List<RoleRoleGroupRelationOutputDto>> GetListRoleRoleGroupRelation(RoleRoleGroupRelationInputDto input);
+        Pages<List<RoleRoleGroupRelationOutputDto>> GetListRoleRoleGroupRelation(RoleRoleGroupRelationInputDto input);
 
         void DeleteRoleRoleGroupRelation(RoleRoleGroupRelationInputDto input);
     }

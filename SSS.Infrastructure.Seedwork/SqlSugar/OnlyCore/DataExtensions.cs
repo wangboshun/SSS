@@ -1,10 +1,9 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.Data.Sqlite;
 
 using MySql.Data.MySqlClient;
 
-using System;
 using System.Data;
-using Microsoft.Data.SqlClient;
 
 namespace SqlSugar
 {
@@ -384,5 +383,5 @@ namespace SqlSugar
                 } while (dr.NextResult());
             }
         }
-    } 
+    }
 }

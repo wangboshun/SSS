@@ -1,4 +1,5 @@
 using AutoMapper;
+
 using SSS.Domain.Permission.Info.PowerInfo.Dto;
 
 namespace SSS.Application.Permission.Info.PowerInfo.Mapper

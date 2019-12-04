@@ -1,7 +1,7 @@
+using SSS.Domain.Permission.Info.MenuInfo.Dto;
 using SSS.Domain.Seedwork.Repository;
 
 using System.Collections.Generic;
-using SSS.Domain.Permission.Info.MenuInfo.Dto;
 
 namespace SSS.Infrastructure.Repository.Permission.Info.MenuInfo
 {

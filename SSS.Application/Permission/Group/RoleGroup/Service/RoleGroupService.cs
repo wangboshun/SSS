@@ -6,15 +6,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Group.RoleGroup.Dto;
+using SSS.Domain.Permission.Relation.RoleRoleGroupRelation.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.RoleGroup;
+using SSS.Infrastructure.Repository.Permission.Relation.RoleRoleGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
 using System.Collections.Generic;
-using SSS.Domain.Permission.Relation.RoleRoleGroupRelation.Dto;
-using SSS.Infrastructure.Repository.Permission.Relation.RoleRoleGroupRelation;
 
 namespace SSS.Application.Permission.Group.RoleGroup.Service
 {
@@ -23,13 +23,13 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
         QueryService<Domain.Permission.Group.RoleGroup.RoleGroup, RoleGroupInputDto, RoleGroupOutputDto>,
         IRoleGroupService
     {
-        private readonly IRoleUserGroupRelationRepository _roleRoleGroupRelationRepository;
+        private readonly IRoleRoleGroupRelationRepository _roleRoleGroupRelationRepository;
 
         public RoleGroupService(IMapper mapper,
             IRoleGroupRepository repository,
             IErrorHandler error,
             IValidator<RoleGroupInputDto> validator,
-            IRoleUserGroupRelationRepository roleRoleGroupRelationRepository) :
+            IRoleRoleGroupRelationRepository roleRoleGroupRelationRepository) :
             base(mapper, repository, error, validator)
         {
             _roleRoleGroupRelationRepository = roleRoleGroupRelationRepository;
@@ -58,7 +58,7 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
 
         public void DeleteRoleGroup(RoleGroupInputDto input)
         {
-            Delete(input.id);
+            Repository.Remove(input.id);
         }
 
         /// <summary>

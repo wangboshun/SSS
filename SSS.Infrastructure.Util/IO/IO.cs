@@ -142,11 +142,9 @@ namespace SSS.Infrastructure.Util.IO
 
                 lock (GetLockObj(fileName.Length))
                 {
-                    using (StreamWriter writer = new StreamWriter(fileName, isAppend, encode))
-                    {
-                        writer.Write(text);
-                        writer.Close();
-                    }
+                    using StreamWriter writer = new StreamWriter(fileName, isAppend, encode);
+                    writer.Write(text);
+                    writer.Close();
                 }
 
                 return true;

@@ -5,6 +5,7 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
+using SSS.Domain.Permission.Info.MenuInfo.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Info.MenuInfo;
@@ -12,7 +13,6 @@ using SSS.Infrastructure.Util.Attribute;
 
 using System;
 using System.Collections.Generic;
-using SSS.Domain.Permission.Info.MenuInfo.Dto;
 
 namespace SSS.Application.Permission.Info.MenuInfo.Service
 {
@@ -56,7 +56,7 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
 
         public void DeleteMenuInfo(MenuInfoInputDto input)
         {
-            Delete(input.id);
+            Repository.Remove(input.id);
         }
 
         /// <summary>

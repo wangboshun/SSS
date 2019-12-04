@@ -171,6 +171,6 @@ namespace SqlSugar
         DbResult<T> UseTran<T>(Func<T> action, Action<Exception> errorCallBack = null);
         Task<DbResult<bool>> UseTranAsync(Action action, Action<Exception> errorCallBack = null);
         Task<DbResult<T>> UseTranAsync<T>(Func<T> action, Action<Exception> errorCallBack = null);
-        IAdo UseStoredProcedure(); 
+        IAdo UseStoredProcedure();
     }
 }
