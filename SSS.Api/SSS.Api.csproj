@@ -15,8 +15,6 @@
     <None Remove="File\cert\sss.lifecwh.com.key" />
     <None Remove="File\cert\sss.lifecwh.com.pfx" />
     <None Remove="File\cert\密码.txt" />
-    <None Remove="File\image\thank.jpg" />
-    <None Remove="File\image\thank1.jpg" />
     <None Remove="SSS.Api.xml" />
     <Content Include="SSS.Api.xml" />
     <EmbeddedResource Include="codegenerator.html" />
@@ -57,16 +55,7 @@
   </ItemGroup>
  
   <ItemGroup>
-    <EmbeddedResource Include="File\image\thank.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="File\image\thank1.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
- 
-  <ItemGroup>
-    <Folder Include="File\image\activity\" />
+    <Folder Include="File\image\" />
     <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
  

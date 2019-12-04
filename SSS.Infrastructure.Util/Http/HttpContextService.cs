@@ -13,7 +13,10 @@ namespace SSS.Infrastructure.Util.Http
 
         private static IHostingEnvironment _hostingEnvironment;
 
-        public static HttpContext Current => _accessor.HttpContext;
+        public static HttpContext Current
+        {
+            get => _accessor.HttpContext;
+        }
 
         public static void Configure(IHttpContextAccessor accessor)
         {

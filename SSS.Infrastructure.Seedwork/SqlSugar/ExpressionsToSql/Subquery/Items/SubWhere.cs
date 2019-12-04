@@ -41,7 +41,8 @@ namespace SqlSugar
             var result = "WHERE " + SubTools.GetMethodValue(Context, argExp, ResolveExpressType.WhereMultiple);
 
 
-            var regex = @"^WHERE  (\@Const\d+) $"; 
+            var regex = @"^WHERE  (\@Const\d+) $";
+            
             if (Regex.IsMatch(result, regex))
             {
                 result = "WHERE " + this.Context.Parameters.First(it => it.ParameterName == Regex.Match(result, regex).Groups[1].Value).Value;

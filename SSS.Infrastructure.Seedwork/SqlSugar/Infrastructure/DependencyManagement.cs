@@ -45,7 +45,7 @@ namespace SqlSugar
                 }
             }
         }
-         
+
         public static void TrySqlite()
         {
             if (!IsTrySqlite)
