@@ -18,7 +18,7 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
         /// <param name="operateid"></param>
         /// <returns></returns>
         List<OperateInfoTreeOutputDto> GetChildrenById(string operateid);
-
+        void DeleteOperateInfo(OperateInfoInputDto input);
         Pages<List<OperateInfoOutputDto>> GetListOperateInfo(OperateInfoInputDto input);
     }
 }

@@ -17,8 +17,8 @@ using SSS.Domain.Permission.Info.OperateInfo;
 using SSS.Domain.Permission.Info.PowerInfo;
 using SSS.Domain.Permission.Info.RoleInfo;
 using SSS.Domain.Permission.Info.UserInfo;
-using SSS.Domain.Permission.Relation.PowerMenuRelation;
-using SSS.Domain.Permission.Relation.PowerOperateRelation;
+using SSS.Domain.Permission.Relation.PowerGroupMenuRelation;
+using SSS.Domain.Permission.Relation.PowerGroupOperateRelation;
 using SSS.Domain.Permission.Relation.UserGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
 
@@ -64,8 +64,8 @@ namespace SSS.Infrastructure.Seedwork.DbContext
 
 
 
-        public DbSet<PowerOperateRelation> PowerOperateRelation { get; set; }
-        public DbSet<PowerMenuRelation> PowerMenuRelation { get; set; }
+        public DbSet<PowerGroupOperateRelation> PowerGroupOperateRelation { get; set; }
+        public DbSet<PowerGroupMenuRelation> PowerGroupMenuRelation { get; set; }
         public DbSet<UserGroupRelation> UserGroupRelation { get; set; }
 
 

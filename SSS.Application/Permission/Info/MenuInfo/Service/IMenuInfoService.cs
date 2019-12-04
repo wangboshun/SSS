@@ -11,8 +11,7 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
     {
         void AddMenuInfo(MenuInfoInputDto input);
         void DeleteMenuInfo(MenuInfoInputDto input);
-        Pages<List<MenuInfoOutputDto>> GetListMenuInfo(MenuInfoInputDto input);
-
+        Pages<List<MenuInfoOutputDto>> GetListMenuInfo(MenuInfoInputDto input); 
         /// <summary>
         ///     获取菜单下的所有下级
         /// </summary>

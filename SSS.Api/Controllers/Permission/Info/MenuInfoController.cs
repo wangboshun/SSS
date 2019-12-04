@@ -65,5 +65,19 @@ namespace SSS.Api.Controllers.Permission.Info
             _service.AddMenuInfo(input);
             return ApiResponse(input);
         }
+
+        /// <summary>
+        /// 删除菜单信息
+        /// </summary>
+        /// <param name="input">MenuInfoInputDto</param>
+        /// <returns></returns> 
+        [HttpPost("delete")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult DeleteUserInfo([FromBody]MenuInfoInputDto input)
+        {
+            _service.DeleteMenuInfo(input);
+            return ApiResponse(input);
+        }
+
     }
 }

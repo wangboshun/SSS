@@ -54,6 +54,19 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
+        /// 删除操作信息
+        /// </summary>
+        /// <param name="input">OperateInfoInputDto</param>
+        /// <returns></returns> 
+        [HttpPost("delete")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult DeleteUserInfo([FromBody]OperateInfoInputDto input)
+        {
+            _service.DeleteOperateInfo(input);
+            return ApiResponse(input);
+        }
+
+        /// <summary>
         ///     获取操作下的所有下级
         /// </summary>
         /// <param name="operateid">操作Id</param>

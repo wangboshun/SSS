@@ -401,6 +401,13 @@
             <param name="input">菜单名称</param>
             <returns></returns> 
         </member>
+        <member name="M:SSS.Api.Controllers.Permission.Info.MenuInfoController.DeleteUserInfo(SSS.Domain.Permission.Info.MenuInfo.Dto.MenuInfoInputDto)">
+            <summary>
+            删除菜单信息
+            </summary>
+            <param name="input">MenuInfoInputDto</param>
+            <returns></returns> 
+        </member>
         <member name="T:SSS.Api.Controllers.Permission.Info.OperateInfoController">
             <summary>
             操作信息
@@ -424,6 +431,13 @@
             添加操作
             </summary>
             <param name="input">操作名称</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Info.OperateInfoController.DeleteUserInfo(SSS.Domain.Permission.Info.OperateInfo.Dto.OperateInfoInputDto)">
+            <summary>
+            删除操作信息
+            </summary>
+            <param name="input">OperateInfoInputDto</param>
             <returns></returns> 
         </member>
         <member name="M:SSS.Api.Controllers.Permission.Info.OperateInfoController.GetChildren(System.String)">
@@ -578,54 +592,54 @@
             <param name="input">用户组Id或名称</param>
             <returns></returns> 
         </member>
-        <member name="T:SSS.Api.Controllers.Permission.Relation.PowerMenuRelationController">
+        <member name="T:SSS.Api.Controllers.Permission.Relation.PowerGroupMenuRelationController">
             <summary>
-            PowerMenuRelationController
+            PowerGroupMenuRelationController
             </summary> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Relation.PowerMenuRelationController.#ctor(SSS.Application.Permission.Relation.PowerMenuRelation.Service.IPowerMenuRelationService)">
+        <member name="M:SSS.Api.Controllers.Permission.Relation.PowerGroupMenuRelationController.#ctor(SSS.Application.Permission.Relation.PowerGroupMenuRelation.Service.IPowerGroupMenuRelationService)">
             <summary>
-            PowerMenuRelationController
+            PowerGroupMenuRelationController
             </summary>
-            <param name="service">IPowerMenuRelationService</param>
+            <param name="service">IPowerGroupMenuRelationService</param>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Relation.PowerMenuRelationController.GetList(SSS.Domain.Permission.Relation.PowerMenuRelation.Dto.PowerMenuRelationInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Relation.PowerGroupMenuRelationController.GetList(SSS.Domain.Permission.Relation.PowerGroupMenuRelation.Dto.PowerGroupMenuRelationInputDto)">
             <summary>
             GetList
             </summary>
             <param name="input">input</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Relation.PowerMenuRelationController.AddPowerMenuRelation(SSS.Domain.Permission.Relation.PowerMenuRelation.Dto.PowerMenuRelationInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Relation.PowerGroupMenuRelationController.AddPowerGroupMenuRelation(SSS.Domain.Permission.Relation.PowerGroupMenuRelation.Dto.PowerGroupMenuRelationInputDto)">
             <summary>
-            AddPowerMenuRelation
+            AddPowerGroupMenuRelation
             </summary>
-            <param name="input">PowerMenuRelationInputDto</param>
+            <param name="input">PowerGroupMenuRelationInputDto</param>
             <returns></returns> 
         </member>
-        <member name="T:SSS.Api.Controllers.Permission.Relation.PowerOperateRelationController">
+        <member name="T:SSS.Api.Controllers.Permission.Relation.PowerGroupOperateRelationController">
             <summary>
-            PowerOperateRelationController
+            PowerGroupOperateRelationController
             </summary> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Relation.PowerOperateRelationController.#ctor(SSS.Application.Permission.Relation.PowerOperateRelation.Service.IPowerOperateRelationService)">
+        <member name="M:SSS.Api.Controllers.Permission.Relation.PowerGroupOperateRelationController.#ctor(SSS.Application.Permission.Relation.PowerGroupOperateRelation.Service.IPowerGroupOperateRelationService)">
             <summary>
-            PowerOperateRelationController
+            PowerGroupOperateRelationController
             </summary>
-            <param name="service">IPowerOperateRelationService</param>
+            <param name="service">IPowerGroupOperateRelationService</param>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Relation.PowerOperateRelationController.GetList(SSS.Domain.Permission.Relation.PowerOperateRelation.Dto.PowerOperateRelationInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Relation.PowerGroupOperateRelationController.GetList(SSS.Domain.Permission.Relation.PowerGroupOperateRelation.Dto.PowerGroupOperateRelationInputDto)">
             <summary>
             GetList
             </summary>
             <param name="input">input</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Relation.PowerOperateRelationController.AddPowerOperateRelation(SSS.Domain.Permission.Relation.PowerOperateRelation.Dto.PowerOperateRelationInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Relation.PowerGroupOperateRelationController.AddPowerGroupOperateRelation(SSS.Domain.Permission.Relation.PowerGroupOperateRelation.Dto.PowerGroupOperateRelationInputDto)">
             <summary>
-            AddPowerOperateRelation
+            AddPowerGroupOperateRelation
             </summary>
-            <param name="input">PowerOperateRelationInputDto</param>
+            <param name="input">PowerGroupOperateRelationInputDto</param>
             <returns></returns> 
         </member>
         <member name="T:SSS.Api.Controllers.System.CodeController">

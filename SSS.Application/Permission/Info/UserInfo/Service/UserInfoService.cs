@@ -110,7 +110,7 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
                 CreateTime = DateTime.Now,
                 Id = Guid.NewGuid().ToString(),
                 IsDelete = 0,
-                UserGroupId = group?.Id,
+                UserGroupId = group != null ? group.Id : "0",
                 UserId = model.Id
             });
 

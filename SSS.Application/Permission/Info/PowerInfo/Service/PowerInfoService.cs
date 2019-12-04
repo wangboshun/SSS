@@ -60,7 +60,7 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
                 CreateTime = DateTime.Now,
                 Id = Guid.NewGuid().ToString(),
                 PowerId = model.Id,
-                PowerGroupId = group?.Id,
+                PowerGroupId = group != null ? group.Id : "0",
                 IsDelete = 0
             });
 

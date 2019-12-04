@@ -7,9 +7,12 @@ using Microsoft.Extensions.DependencyInjection;
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Info.OperateInfo;
 using SSS.Domain.Permission.Info.OperateInfo.Dto;
+using SSS.Domain.Permission.Relation.PowerGroupOperateRelation;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
+using SSS.Infrastructure.Repository.Permission.Group.PowerGroup;
 using SSS.Infrastructure.Repository.Permission.Info.OperateInfo;
+using SSS.Infrastructure.Repository.Permission.Relation.PowerGroupOperateRelation;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
@@ -23,14 +26,20 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
         IOperateInfoService
     {
         private readonly IOperateInfoRepository _repository;
+        private readonly IPowerGroupRepository _powerGroupRepository;
+        private readonly IPowerGroupOperateRelationRepository _powerGroupOperateRelationRepository;
 
         public OperateInfoService(IMapper mapper,
             IOperateInfoRepository repository,
             IErrorHandler error,
-            IValidator<OperateInfoInputDto> validator) :
+            IValidator<OperateInfoInputDto> validator,
+            IPowerGroupRepository powerGroupRepository,
+            IPowerGroupOperateRelationRepository powerGroupOperateRelationRepository) :
             base(mapper, repository, error, validator)
         {
             _repository = repository;
+            _powerGroupRepository = powerGroupRepository;
+            _powerGroupOperateRelationRepository = powerGroupOperateRelationRepository;
         }
 
         public void AddOperateInfo(OperateInfoInputDto input)
@@ -52,7 +61,25 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
             input.id = Guid.NewGuid().ToString();
             var model = Mapper.Map<Domain.Permission.Info.OperateInfo.OperateInfo>(input);
             model.CreateTime = DateTime.Now;
+
+            var group = _powerGroupRepository.Get(x => x.Id.Equals(input.powergroupid));
+            _powerGroupOperateRelationRepository.Add(new PowerGroupOperateRelation()
+            {
+                CreateTime = DateTime.Now,
+                Id = Guid.NewGuid().ToString(),
+                OperateId = model.Id,
+                PowerGroupId = group != null ? group.Id : "0",
+                IsDelete = 0
+            });
+
             Repository.Add(model);
+            Repository.SaveChanges();
+        }
+
+        public void DeleteOperateInfo(OperateInfoInputDto input)
+        {
+            Repository.Remove(input.id, false);
+            _powerGroupOperateRelationRepository.Remove(x => x.OperateId.Equals(input.id));
             Repository.SaveChanges();
         }
 

@@ -6,17 +6,17 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Info.RoleInfo.Dto;
+using SSS.Domain.Permission.Relation.RoleGroupRelation;
 using SSS.Domain.Permission.Relation.RoleGroupRelation.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.RoleGroup;
 using SSS.Infrastructure.Repository.Permission.Info.RoleInfo;
+using SSS.Infrastructure.Repository.Permission.Relation.RoleGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
 using System.Collections.Generic;
-using SSS.Domain.Permission.Relation.RoleGroupRelation;
-using SSS.Infrastructure.Repository.Permission.Relation.RoleGroupRelation;
 
 namespace SSS.Application.Permission.Info.RoleInfo.Service
 {
@@ -67,7 +67,7 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
                 CreateTime = DateTime.Now,
                 Id = Guid.NewGuid().ToString(),
                 RoleId = model.Id,
-                RoleGroupId = group?.Id,
+                RoleGroupId = group != null ? group.Id : "0",
                 IsDelete = 0
             });
 
