@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.Permission.Info.RoleInfo.Service;
 using SSS.Domain.Permission.Info.RoleInfo.Dto;
-using SSS.Domain.Permission.Relation.RoleRoleGroupRelation.Dto;
+using SSS.Domain.Permission.Relation.RoleGroupRelation.Dto;
 
 namespace SSS.Api.Controllers.Permission.Info
 {
@@ -68,13 +68,26 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
+        /// 删除角色信息
+        /// </summary>
+        /// <param name="input">RoleInfoInputDto</param>
+        /// <returns></returns> 
+        [HttpPost("delete")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult DeletePowerInfo([FromBody]RoleInfoInputDto input)
+        {
+            _service.DeleteRoleInfo(input);
+            return ApiResponse(input);
+        }
+
+        /// <summary>
         /// 根据角色组Id或名称，遍历关联角色
         /// </summary>
         /// <param name="input">角色组Id或名称</param>
         /// <returns></returns> 
         [HttpGet("get_role_by_group")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetRoleListGroupByGroup([FromQuery]RoleRoleGroupRelationInputDto input)
+        public IActionResult GetRoleListGroupByGroup([FromQuery]RoleGroupRelationInputDto input)
         {
             var result = _service.GetRoleListGroupByGroup(input);
             return ApiResponse(result);

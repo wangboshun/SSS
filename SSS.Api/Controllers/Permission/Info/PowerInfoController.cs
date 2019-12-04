@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.Permission.Info.PowerInfo.Service;
 using SSS.Domain.Permission.Info.PowerInfo.Dto;
-using SSS.Domain.Permission.Relation.PowerPowerGroupRelation.Dto;
+using SSS.Domain.Permission.Relation.PowerGroupRelation.Dto;
 
 namespace SSS.Api.Controllers.Permission.Info
 {
@@ -42,7 +42,7 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
-        /// AddPowerInfo
+        /// 添加权限信息
         /// </summary>
         /// <param name="input">PowerInfoInputDto</param>
         /// <returns></returns> 
@@ -51,6 +51,19 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult AddPowerInfo([FromBody]PowerInfoInputDto input)
         {
             _service.AddPowerInfo(input);
+            return ApiResponse(input);
+        }
+
+        /// <summary>
+        /// 删除权限信息
+        /// </summary>
+        /// <param name="input">PowerInfoInputDto</param>
+        /// <returns></returns> 
+        [HttpPost("delete")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult DeletePowerInfo([FromBody]PowerInfoInputDto input)
+        {
+            _service.DeletePowerInfo(input);
             return ApiResponse(input);
         }
 
@@ -74,7 +87,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// <returns></returns> 
         [HttpGet("get_power_by_group")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetPowerListByGroup([FromQuery]PowerPowerGroupRelationInputDto input)
+        public IActionResult GetPowerListByGroup([FromQuery]PowerGroupRelationInputDto input)
         {
             var result = _service.GetPowerListByGroup(input);
             return ApiResponse(result);

@@ -6,11 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Group.RoleGroup.Dto;
-using SSS.Domain.Permission.Relation.RoleRoleGroupRelation.Dto;
+using SSS.Domain.Permission.Relation.RoleGroupRelation.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.RoleGroup;
-using SSS.Infrastructure.Repository.Permission.Relation.RoleRoleGroupRelation;
+using SSS.Infrastructure.Repository.Permission.Relation.RoleGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
@@ -23,16 +23,16 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
         QueryService<Domain.Permission.Group.RoleGroup.RoleGroup, RoleGroupInputDto, RoleGroupOutputDto>,
         IRoleGroupService
     {
-        private readonly IRoleRoleGroupRelationRepository _roleRoleGroupRelationRepository;
+        private readonly IRoleGroupRelationRepository _roleGroupRelationRepository;
 
         public RoleGroupService(IMapper mapper,
             IRoleGroupRepository repository,
             IErrorHandler error,
             IValidator<RoleGroupInputDto> validator,
-            IRoleRoleGroupRelationRepository roleRoleGroupRelationRepository) :
+            IRoleGroupRelationRepository roleGroupRelationRepository) :
             base(mapper, repository, error, validator)
         {
-            _roleRoleGroupRelationRepository = roleRoleGroupRelationRepository;
+            _roleGroupRelationRepository = roleGroupRelationRepository;
         }
 
         public void AddRoleGroup(RoleGroupInputDto input)
@@ -66,9 +66,9 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<RoleRoleGroupRelationOutputDto>> GetRoleGroupByRole(RoleRoleGroupRelationInputDto input)
+        public Pages<List<RoleGroupRelationOutputDto>> GetRoleGroupByRole(RoleGroupRelationInputDto input)
         {
-            return _roleRoleGroupRelationRepository.GetRoleGroupByRole(input);
+            return _roleGroupRelationRepository.GetRoleGroupByRole(input);
         }
     }
 }

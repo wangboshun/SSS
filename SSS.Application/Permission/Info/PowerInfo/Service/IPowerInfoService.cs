@@ -1,6 +1,6 @@
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Info.PowerInfo.Dto;
-using SSS.Domain.Permission.Relation.PowerPowerGroupRelation.Dto;
+using SSS.Domain.Permission.Relation.PowerGroupRelation.Dto;
 using SSS.Domain.Seedwork.Model;
 
 using System.Collections.Generic;
@@ -21,7 +21,7 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Pages<List<PowerPowerGroupRelationOutputDto>> GetPowerListByGroup(PowerPowerGroupRelationInputDto input);
+        Pages<List<PowerGroupRelationOutputDto>> GetPowerListByGroup(PowerGroupRelationInputDto input);
 
         /// <summary>
         ///     获取权限下的所有下级

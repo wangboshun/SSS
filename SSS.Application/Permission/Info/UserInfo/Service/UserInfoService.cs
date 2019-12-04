@@ -6,12 +6,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Info.UserInfo.Dto;
-using SSS.Domain.Permission.Relation.UserUserGroupRelation.Dto;
+using SSS.Domain.Permission.Relation.UserGroupRelation.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.UserGroup;
 using SSS.Infrastructure.Repository.Permission.Info.UserInfo;
-using SSS.Infrastructure.Repository.Permission.Relation.UserUserGroupRelation;
+using SSS.Infrastructure.Repository.Permission.Relation.UserGroupRelation;
 using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Util.Attribute;
 
@@ -27,7 +27,7 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
     {
         private readonly MemoryCacheEx _memorycache;
         private readonly IUserInfoRepository _userinfoRepository;
-        private readonly IUserUserGroupRelationRepository _userUserGroupRelationRepository;
+        private readonly IUserGroupRelationRepository _userGroupRelationRepository;
         private readonly IUserGroupRepository _userGroupRepository;
 
         public UserInfoService(IMapper mapper,
@@ -35,13 +35,13 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
             IErrorHandler error,
             IValidator<UserInfoInputDto> validator,
             MemoryCacheEx memorycache,
-            IUserUserGroupRelationRepository userUserGroupRelationRepository,
+            IUserGroupRelationRepository userGroupRelationRepository,
             IUserGroupRepository userGroupRepository
         ) : base(mapper, repository, error, validator)
         {
             _memorycache = memorycache;
             _userinfoRepository = repository;
-            _userUserGroupRelationRepository = userUserGroupRelationRepository;
+            _userGroupRelationRepository = userGroupRelationRepository;
             _userGroupRepository = userGroupRepository;
         }
 
@@ -105,7 +105,7 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
             var group = _userGroupRepository.Get(x => x.Id.Equals(input.usergroupid));
 
             //添加用户组关联
-            _userUserGroupRelationRepository.Add(new Domain.Permission.Relation.UserUserGroupRelation.UserUserGroupRelation()
+            _userGroupRelationRepository.Add(new Domain.Permission.Relation.UserGroupRelation.UserGroupRelation()
             {
                 CreateTime = DateTime.Now,
                 Id = Guid.NewGuid().ToString(),
@@ -121,7 +121,7 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         public void DeleteUserInfo(UserInfoInputDto input)
         {
             Repository.Remove(input.id, false);
-            _userUserGroupRelationRepository.Remove(x => x.UserId.Equals(input.id));
+            _userGroupRelationRepository.Remove(x => x.UserId.Equals(input.id));
             Repository.SaveChanges();
         }
 
@@ -154,9 +154,9 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<UserUserGroupRelationOutputDto>> GetUserListByGroup(UserUserGroupRelationInputDto input)
+        public Pages<List<UserGroupRelationOutputDto>> GetUserListByGroup(UserGroupRelationInputDto input)
         {
-            return _userUserGroupRelationRepository.GetUserListByGroup(input);
+            return _userGroupRelationRepository.GetUserListByGroup(input);
         }
     }
 }

@@ -1,6 +1,6 @@
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Info.UserInfo.Dto;
-using SSS.Domain.Permission.Relation.UserUserGroupRelation.Dto;
+using SSS.Domain.Permission.Relation.UserGroupRelation.Dto;
 using SSS.Domain.Seedwork.Model;
 
 using System.Collections.Generic;
@@ -42,6 +42,6 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Pages<List<UserUserGroupRelationOutputDto>> GetUserListByGroup(UserUserGroupRelationInputDto input);
+        Pages<List<UserGroupRelationOutputDto>> GetUserListByGroup(UserGroupRelationInputDto input);
     }
 }

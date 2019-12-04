@@ -8,6 +8,8 @@ namespace SSS.Domain.Permission.Info.PowerInfo.Dto
 
         public int powertype { set; get; }
 
+        public string powergroupid { set; get; }
+
         public string parentid { set; get; }
     }
 }

@@ -1,5 +1,5 @@
 using SSS.Application.Seedwork.Service;
-using SSS.Domain.Permission.Relation.RoleRoleGroupRelation.Dto;
+using SSS.Domain.Permission.Relation.RoleGroupRelation.Dto;
 using SSS.Domain.Seedwork.Model;
 
 using System.Collections.Generic;
@@ -26,6 +26,6 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
         /// 根据角色组Id或名称，遍历关联角色
         /// </summary>
         /// <param name="input"></param>
-        Pages<List<RoleRoleGroupRelationOutputDto>> GetRoleListGroupByGroup(RoleRoleGroupRelationInputDto input);
+        Pages<List<RoleGroupRelationOutputDto>> GetRoleListGroupByGroup(RoleGroupRelationInputDto input);
     }
 }

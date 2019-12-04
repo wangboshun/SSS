@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.Permission.Group.PowerGroup.Service;
 using SSS.Domain.Permission.Group.PowerGroup.Dto;
-using SSS.Domain.Permission.Relation.PowerPowerGroupRelation.Dto;
+using SSS.Domain.Permission.Relation.PowerGroupRelation.Dto;
 
 namespace SSS.Api.Controllers.Permission.Group
 {
@@ -61,7 +61,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// <returns></returns> 
         [HttpGet("get_powergroup_by_power")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetUserGroupByUser([FromQuery]PowerPowerGroupRelationInputDto input)
+        public IActionResult GetUserGroupByUser([FromQuery]PowerGroupRelationInputDto input)
         {
             var result = _service.GetPowerGroupByPower(input);
             return ApiResponse(result);

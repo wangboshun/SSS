@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Info.RoleInfo.Dto;
-using SSS.Domain.Permission.Relation.RoleRoleGroupRelation.Dto;
+using SSS.Domain.Permission.Relation.RoleGroupRelation.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.RoleGroup;
@@ -15,8 +15,8 @@ using SSS.Infrastructure.Util.Attribute;
 
 using System;
 using System.Collections.Generic;
-using SSS.Domain.Permission.Relation.RoleRoleGroupRelation;
-using SSS.Infrastructure.Repository.Permission.Relation.RoleRoleGroupRelation;
+using SSS.Domain.Permission.Relation.RoleGroupRelation;
+using SSS.Infrastructure.Repository.Permission.Relation.RoleGroupRelation;
 
 namespace SSS.Application.Permission.Info.RoleInfo.Service
 {
@@ -26,19 +26,19 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
     {
         private readonly IRoleInfoRepository _repository;
         private readonly IRoleGroupRepository _roleGroupRepository;
-        private readonly IRoleRoleGroupRelationRepository _roleRoleGroupRelationRepository;
+        private readonly IRoleGroupRelationRepository _roleGroupRelationRepository;
 
         public RoleInfoService(IMapper mapper,
             IRoleInfoRepository repository,
             IErrorHandler error,
             IValidator<RoleInfoInputDto> validator,
-            IRoleRoleGroupRelationRepository roleRoleGroupRelationRepository,
+            IRoleGroupRelationRepository roleGroupRelationRepository,
             IRoleGroupRepository roleGroupRepository) :
             base(mapper, repository, error, validator)
         {
             _repository = repository;
             _roleGroupRepository = roleGroupRepository;
-            _roleRoleGroupRelationRepository = roleRoleGroupRelationRepository;
+            _roleGroupRelationRepository = roleGroupRelationRepository;
         }
 
         public void AddRoleInfo(RoleInfoInputDto input)
@@ -62,12 +62,12 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
             model.CreateTime = DateTime.Now;
 
             var group = _roleGroupRepository.Get(x => x.Id.Equals(input.rolegroupid));
-            _roleRoleGroupRelationRepository.Add(new RoleRoleGroupRelation()
+            _roleGroupRelationRepository.Add(new RoleGroupRelation()
             {
                 CreateTime = DateTime.Now,
                 Id = Guid.NewGuid().ToString(),
                 RoleId = model.Id,
-                RoleGroupId = group.Id,
+                RoleGroupId = group?.Id,
                 IsDelete = 0
             });
 
@@ -77,7 +77,9 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
 
         public void DeleteRoleInfo(RoleInfoInputDto input)
         {
-            Repository.Remove(input.id);
+            Repository.Remove(input.id, false);
+            _roleGroupRelationRepository.Remove(x => x.RoleId.Equals(input.id));
+            Repository.SaveChanges();
         }
 
         /// <summary>
@@ -100,9 +102,9 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<RoleRoleGroupRelationOutputDto>> GetRoleListGroupByGroup(RoleRoleGroupRelationInputDto input)
+        public Pages<List<RoleGroupRelationOutputDto>> GetRoleListGroupByGroup(RoleGroupRelationInputDto input)
         {
-            return _roleRoleGroupRelationRepository.GetRoleListGroupByGroup(input);
+            return _roleGroupRelationRepository.GetRoleListGroupByGroup(input);
         }
     }
 }

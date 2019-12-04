@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.Permission.Info.UserInfo.Service;
 using SSS.Domain.Permission.Info.UserInfo.Dto;
-using SSS.Domain.Permission.Relation.UserUserGroupRelation.Dto;
+using SSS.Domain.Permission.Relation.UserGroupRelation.Dto;
 
 namespace SSS.Api.Controllers.Permission.Info
 {
@@ -81,13 +81,26 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
+        /// 删除用户信息
+        /// </summary>
+        /// <param name="input">UserInfoInputDto</param>
+        /// <returns></returns> 
+        [HttpPost("delete")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult DeleteUserInfo([FromBody]UserInfoInputDto input)
+        {
+            _service.DeleteUserInfo(input);
+            return ApiResponse(input);
+        }
+
+        /// <summary>
         /// 根据用户组Id或名称，遍历关联用户
         /// </summary>
         /// <param name="input">用户组Id或名称</param>
         /// <returns></returns> 
         [HttpGet("get_user_by_group")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetUserListByGroup([FromQuery]UserUserGroupRelationInputDto input)
+        public IActionResult GetUserListByGroup([FromQuery]UserGroupRelationInputDto input)
         {
             var result = _service.GetUserListByGroup(input);
             return ApiResponse(result);

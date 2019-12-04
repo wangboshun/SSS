@@ -6,11 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Group.PowerGroup.Dto;
-using SSS.Domain.Permission.Relation.PowerPowerGroupRelation.Dto;
+using SSS.Domain.Permission.Relation.PowerGroupRelation.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.PowerGroup;
-using SSS.Infrastructure.Repository.Permission.Relation.PowerPowerGroupRelation;
+using SSS.Infrastructure.Repository.Permission.Relation.PowerGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
@@ -23,16 +23,16 @@ namespace SSS.Application.Permission.Group.PowerGroup.Service
         QueryService<Domain.Permission.Group.PowerGroup.PowerGroup, PowerGroupInputDto, PowerGroupOutputDto>,
         IPowerGroupService
     {
-        private readonly IPowerPowerGroupRelationRepository _powerPowerGroupRelationRepository;
+        private readonly IPowerGroupRelationRepository _powerGroupRelationRepository;
 
         public PowerGroupService(IMapper mapper,
             IPowerGroupRepository repository,
             IErrorHandler error,
             IValidator<PowerGroupInputDto> validator,
-            IPowerPowerGroupRelationRepository powerPowerGroupRelationRepository) :
+            IPowerGroupRelationRepository powerGroupRelationRepository) :
             base(mapper, repository, error, validator)
         {
-            _powerPowerGroupRelationRepository = powerPowerGroupRelationRepository;
+            _powerGroupRelationRepository = powerGroupRelationRepository;
         }
 
         public void AddPowerGroup(PowerGroupInputDto input)
@@ -66,9 +66,9 @@ namespace SSS.Application.Permission.Group.PowerGroup.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<PowerPowerGroupRelationOutputDto>> GetPowerGroupByPower(PowerPowerGroupRelationInputDto input)
+        public Pages<List<PowerGroupRelationOutputDto>> GetPowerGroupByPower(PowerGroupRelationInputDto input)
         {
-            return _powerPowerGroupRelationRepository.GetPowerGroupByPower(input);
+            return _powerGroupRelationRepository.GetPowerGroupByPower(input);
         }
     }
 }

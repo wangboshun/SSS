@@ -6,11 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Group.UserGroup.Dto;
-using SSS.Domain.Permission.Relation.UserUserGroupRelation.Dto;
+using SSS.Domain.Permission.Relation.UserGroupRelation.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.UserGroup;
-using SSS.Infrastructure.Repository.Permission.Relation.UserUserGroupRelation;
+using SSS.Infrastructure.Repository.Permission.Relation.UserGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
@@ -23,15 +23,15 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
         QueryService<Domain.Permission.Group.UserGroup.UserGroup, UserGroupInputDto, UserGroupOutputDto>,
         IUserGroupService
     {
-        private readonly IUserUserGroupRelationRepository _userUserGroupRelationRepository;
+        private readonly IUserGroupRelationRepository _userGroupRelationRepository;
         public UserGroupService(IMapper mapper,
             IUserGroupRepository repository,
             IErrorHandler error,
             IValidator<UserGroupInputDto> validator,
-            IUserUserGroupRelationRepository userUserGroupRelationRepository) :
+            IUserGroupRelationRepository userGroupRelationRepository) :
             base(mapper, repository, error, validator)
         {
-            _userUserGroupRelationRepository = userUserGroupRelationRepository;
+            _userGroupRelationRepository = userGroupRelationRepository;
         }
 
         public void AddUserGroup(UserGroupInputDto input)
@@ -65,9 +65,9 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<UserUserGroupRelationOutputDto>> GetUserGroupByUser(UserUserGroupRelationInputDto input)
+        public Pages<List<UserGroupRelationOutputDto>> GetUserGroupByUser(UserGroupRelationInputDto input)
         {
-            return _userUserGroupRelationRepository.GetUserGroupByUser(input);
+            return _userGroupRelationRepository.GetUserGroupByUser(input);
         }
     }
 }

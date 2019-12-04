@@ -298,7 +298,7 @@
             <param name="input">权限组名称</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Group.PowerGroupController.GetUserGroupByUser(SSS.Domain.Permission.Relation.PowerPowerGroupRelation.Dto.PowerPowerGroupRelationInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Group.PowerGroupController.GetUserGroupByUser(SSS.Domain.Permission.Relation.PowerGroupRelation.Dto.PowerGroupRelationInputDto)">
             <summary>
             根据权限Id或名称，遍历关联权限组
             </summary>
@@ -330,7 +330,7 @@
             <param name="input">角色组名称</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Group.RoleGroupController.GetUserGroupByUser(SSS.Domain.Permission.Relation.RoleRoleGroupRelation.Dto.RoleRoleGroupRelationInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Group.RoleGroupController.GetUserGroupByUser(SSS.Domain.Permission.Relation.RoleGroupRelation.Dto.RoleGroupRelationInputDto)">
             <summary>
             根据角色Id或名称，遍历关联角色组
             </summary>
@@ -362,7 +362,7 @@
             <param name="input">用户组名称</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Group.UserGroupController.GetUserGroupByUser(SSS.Domain.Permission.Relation.UserUserGroupRelation.Dto.UserUserGroupRelationInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Group.UserGroupController.GetUserGroupByUser(SSS.Domain.Permission.Relation.UserGroupRelation.Dto.UserGroupRelationInputDto)">
             <summary>
             根据用户Id或名称，遍历关联用户组
             </summary>
@@ -453,7 +453,14 @@
         </member>
         <member name="M:SSS.Api.Controllers.Permission.Info.PowerInfoController.AddPowerInfo(SSS.Domain.Permission.Info.PowerInfo.Dto.PowerInfoInputDto)">
             <summary>
-            AddPowerInfo
+            添加权限信息
+            </summary>
+            <param name="input">PowerInfoInputDto</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Info.PowerInfoController.DeletePowerInfo(SSS.Domain.Permission.Info.PowerInfo.Dto.PowerInfoInputDto)">
+            <summary>
+            删除权限信息
             </summary>
             <param name="input">PowerInfoInputDto</param>
             <returns></returns> 
@@ -465,7 +472,7 @@
             <param name="powerid">权限Id</param>
             <returns></returns>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Info.PowerInfoController.GetPowerListByGroup(SSS.Domain.Permission.Relation.PowerPowerGroupRelation.Dto.PowerPowerGroupRelationInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.PowerInfoController.GetPowerListByGroup(SSS.Domain.Permission.Relation.PowerGroupRelation.Dto.PowerGroupRelationInputDto)">
             <summary>
             根据权限组Id或名称，遍历关联权限
             </summary>
@@ -504,7 +511,14 @@
             <param name="input">角色名称</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Info.RoleInfoController.GetRoleListGroupByGroup(SSS.Domain.Permission.Relation.RoleRoleGroupRelation.Dto.RoleRoleGroupRelationInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.RoleInfoController.DeletePowerInfo(SSS.Domain.Permission.Info.RoleInfo.Dto.RoleInfoInputDto)">
+            <summary>
+            删除角色信息
+            </summary>
+            <param name="input">RoleInfoInputDto</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Info.RoleInfoController.GetRoleListGroupByGroup(SSS.Domain.Permission.Relation.RoleGroupRelation.Dto.RoleGroupRelationInputDto)">
             <summary>
             根据角色组Id或名称，遍历关联角色
             </summary>
@@ -550,7 +564,14 @@
             <param name="input">账号、密码</param>
             <returns></returns>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Info.UserInfoController.GetUserListByGroup(SSS.Domain.Permission.Relation.UserUserGroupRelation.Dto.UserUserGroupRelationInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.UserInfoController.DeleteUserInfo(SSS.Domain.Permission.Info.UserInfo.Dto.UserInfoInputDto)">
+            <summary>
+            删除用户信息
+            </summary>
+            <param name="input">UserInfoInputDto</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Info.UserInfoController.GetUserListByGroup(SSS.Domain.Permission.Relation.UserGroupRelation.Dto.UserGroupRelationInputDto)">
             <summary>
             根据用户组Id或名称，遍历关联用户
             </summary>

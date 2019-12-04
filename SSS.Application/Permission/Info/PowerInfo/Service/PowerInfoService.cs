@@ -6,11 +6,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Info.PowerInfo.Dto;
-using SSS.Domain.Permission.Relation.PowerPowerGroupRelation.Dto;
+using SSS.Domain.Permission.Relation.PowerGroupRelation.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
+using SSS.Infrastructure.Repository.Permission.Group.PowerGroup;
 using SSS.Infrastructure.Repository.Permission.Info.PowerInfo;
-using SSS.Infrastructure.Repository.Permission.Relation.PowerPowerGroupRelation;
+using SSS.Infrastructure.Repository.Permission.Relation.PowerGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
@@ -24,18 +25,20 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
         IPowerInfoService
     {
         private readonly IPowerInfoRepository _repository;
-
-        private readonly IPowerPowerGroupRelationRepository _powerPowerGroupRelationRepository;
+        private readonly IPowerGroupRepository _powerGroupRepository;
+        private readonly IPowerGroupRelationRepository _powerGroupRelationRepository;
 
         public PowerInfoService(IMapper mapper,
             IPowerInfoRepository repository,
             IErrorHandler error,
             IValidator<PowerInfoInputDto> validator,
-            IPowerPowerGroupRelationRepository powerPowerGroupRelationRepository) :
+            IPowerGroupRelationRepository powerGroupRelationRepository,
+            IPowerGroupRepository powerGroupRepository) :
             base(mapper, repository, error, validator)
         {
             _repository = repository;
-            _powerPowerGroupRelationRepository = powerPowerGroupRelationRepository;
+            _powerGroupRepository = powerGroupRepository;
+            _powerGroupRelationRepository = powerGroupRelationRepository;
         }
 
         public void AddPowerInfo(PowerInfoInputDto input)
@@ -50,6 +53,17 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
             input.id = Guid.NewGuid().ToString();
             var model = Mapper.Map<Domain.Permission.Info.PowerInfo.PowerInfo>(input);
             model.CreateTime = DateTime.Now;
+
+            var group = _powerGroupRepository.Get(x => x.Id.Equals(input.powergroupid));
+            _powerGroupRelationRepository.Add(new Domain.Permission.Relation.PowerGroupRelation.PowerGroupRelation()
+            {
+                CreateTime = DateTime.Now,
+                Id = Guid.NewGuid().ToString(),
+                PowerId = model.Id,
+                PowerGroupId = group?.Id,
+                IsDelete = 0
+            });
+
             Repository.Add(model);
             Repository.SaveChanges();
         }
@@ -61,7 +75,9 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
 
         public void DeletePowerInfo(PowerInfoInputDto input)
         {
-            Repository.Remove(input.id);
+            Repository.Remove(input.id, false);
+            _powerGroupRelationRepository.Remove(x => x.PowerId.Equals(input.id));
+            Repository.SaveChanges();
         }
 
         /// <summary>
@@ -79,9 +95,9 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<PowerPowerGroupRelationOutputDto>> GetPowerListByGroup(PowerPowerGroupRelationInputDto input)
+        public Pages<List<PowerGroupRelationOutputDto>> GetPowerListByGroup(PowerGroupRelationInputDto input)
         {
-            return _powerPowerGroupRelationRepository.GetPowerListByGroup(input);
+            return _powerGroupRelationRepository.GetPowerListByGroup(input);
         }
     }
 }
