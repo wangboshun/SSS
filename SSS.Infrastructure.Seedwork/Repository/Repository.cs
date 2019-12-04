@@ -122,7 +122,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// <param name="sql">SQL</param>
         /// <param name="parameter">参数</param>
         /// <returns></returns>
-        public virtual IQueryable<TEntity> GetBySql(string sql, params object[] parameter)
+        public virtual IQueryable<TEntity> GetBySql(string sql, params DbParameter[] parameter)
         {
             return DbSet.FromSqlRaw(sql, GeneratorParameter(parameter));
         }
@@ -243,7 +243,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
             var model = Get(x => x.Id.Equals(id) && x.IsDelete == 0);
             if (model == null)
             {
-                _error.Execute("数据不存在,删除失败！");
+                _error.Execute("数据不存在或已删除,删除失败！");
                 return;
             }
 
@@ -263,7 +263,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
             var model = Get(predicate);
             if (model == null)
             {
-                _error.Execute("数据不存在,删除失败！");
+                _error.Execute("数据不存在或已删除,删除失败！");
                 return;
             }
 
@@ -305,9 +305,10 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// </summary>
         /// <param name="parameter">参数</param>
         /// <returns></returns>
-        protected DbParameter[] GeneratorParameter(params object[] parameter)
+        private object[] GeneratorParameter(params DbParameter[] parameter)
         {
-            List<DbParameter> sqlparameter = new List<DbParameter>();
+            List<object> sqlparameter = new List<object>();
+
             foreach (var item in parameter)
             {
                 JObject json = JObject.FromObject(item);
