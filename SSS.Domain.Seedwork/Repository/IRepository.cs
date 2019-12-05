@@ -27,6 +27,7 @@ namespace SSS.Domain.Seedwork.Repository
         IQueryable<TEntity> GetBySql(string sql);
         IQueryable<TEntity> GetBySql(string sql, params DbParameter[] parameter);
         IQueryable<TEntity> GetBySql(string sql, int index, int size, ref int count);
+        IQueryable<TEntity> GetBySql(string sql, Expression<Func<TEntity, bool>> predicate);
         IQueryable<TEntity> GetBySql(string sql, Expression<Func<TEntity, bool>> predicate, int index, int size, ref int count);
         IQueryable<TEntity> GetAll();
         IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate);

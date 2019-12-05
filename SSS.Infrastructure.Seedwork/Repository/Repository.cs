@@ -133,7 +133,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// <param name="sql">SQL</param>
         /// <param name="predicate">Lambda表达式</param>
         /// <returns></returns>
-        public IQueryable<TEntity> GetBySql(string sql, Expression<Func<TEntity, bool>> predicate)
+        public virtual IQueryable<TEntity> GetBySql(string sql, Expression<Func<TEntity, bool>> predicate)
         {
             return DbSet.FromSqlRaw(sql).Where(predicate);
         }

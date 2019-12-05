@@ -43,11 +43,6 @@ namespace SSS.Application.NameSpace.Template.Service
         public Pages<List<TemplateOutputDto>> GetListTemplate(TemplateInputDto input)
         {
             return GetPage(input);
-        }
-
-        public void DeleteTemplate(TemplateInputDto input)
-        {
-            Delete(input.id);
-        }
+        } 
     }
 }

@@ -6,10 +6,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Group.UserGroup.Dto;
+using SSS.Domain.Permission.Relation.UserGroupPowerGroupRelation.Dto;
 using SSS.Domain.Permission.Relation.UserGroupRelation.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.UserGroup;
+using SSS.Infrastructure.Repository.Permission.Relation.UserGroupPowerGroupRelation;
 using SSS.Infrastructure.Repository.Permission.Relation.UserGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
 
@@ -24,14 +26,18 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
         IUserGroupService
     {
         private readonly IUserGroupRelationRepository _userGroupRelationRepository;
+        private readonly IUserGroupPowerGroupRelationRepository _userGroupPowerGroupRelationRepository;
+
         public UserGroupService(IMapper mapper,
             IUserGroupRepository repository,
             IErrorHandler error,
             IValidator<UserGroupInputDto> validator,
-            IUserGroupRelationRepository userGroupRelationRepository) :
+            IUserGroupRelationRepository userGroupRelationRepository,
+            IUserGroupPowerGroupRelationRepository userGroupPowerGroupRelationRepository) :
             base(mapper, repository, error, validator)
         {
             _userGroupRelationRepository = userGroupRelationRepository;
+            _userGroupPowerGroupRelationRepository = userGroupPowerGroupRelationRepository;
         }
 
         public void AddUserGroup(UserGroupInputDto input)
@@ -68,6 +74,16 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
         public Pages<List<UserGroupRelationOutputDto>> GetUserGroupByUser(UserGroupRelationInputDto input)
         {
             return _userGroupRelationRepository.GetUserGroupByUser(input);
+        }
+
+        /// <summary>
+        /// 根据权限组Id或名称，遍历关联用户组
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Pages<List<UserGroupPowerGroupRelationOutputDto>> GetUserGroupByPowerGroup(UserGroupPowerGroupRelationInputDto input)
+        {
+            return _userGroupPowerGroupRelationRepository.GetUserGroupByPowerGroup(input);
         }
     }
 }

@@ -29,6 +29,7 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.PowerGroupRelation
 	                p.PowerName AS 'powername',
 	                pg.PowerGroupName AS 'powergroupname',
 	                pg.id AS 'powergroupid',
+                    ppr.CreateTime as createtime,
 	                ppr.id AS 'id'";
 
             string sql = @"SELECT {0}
@@ -70,6 +71,7 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.PowerGroupRelation
 	                p.PowerName AS 'powername',
 	                pg.PowerGroupName AS 'powergroupname',
 	                pg.id AS 'powergroupid',
+                    ppr.CreateTime as createtime,
 	                ppr.id AS 'id'";
 
             string sql = @"SELECT {0}

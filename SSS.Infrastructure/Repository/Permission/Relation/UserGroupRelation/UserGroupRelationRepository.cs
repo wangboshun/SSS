@@ -29,6 +29,7 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.UserGroupRelation
 	                u.UserName AS 'username',
 	                ur.UserGroupName AS 'usergroupname',
 	                ur.id AS 'usergroupid',
+                    uur.CreateTime as createtime,
 	                uur.id AS 'id'";
 
             string sql = @"SELECT {0}
@@ -70,6 +71,7 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.UserGroupRelation
 	                u.UserName AS 'username',
 	                ur.UserGroupName AS 'usergroupname',
 	                ur.id AS 'usergroupid',
+                    uur.CreateTime as createtime,
 	                uur.id AS 'id'";
 
             string sql = @"SELECT {0}

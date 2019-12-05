@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+
+using SSS.Domain.Permission.Info.UserInfo.Dto;
 using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Util.Json;
 
 using System.Threading.Tasks;
-using SSS.Domain.Permission.Info.UserInfo.Dto;
 
 namespace SSS.Api.Seedwork.Middleware
 {

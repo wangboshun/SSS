@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.Permission.Info.MenuInfo.Service;
 using SSS.Domain.Permission.Info.MenuInfo.Dto;
+using SSS.Domain.Permission.Relation.PowerGroupMenuRelation.Dto;
 
 namespace SSS.Api.Controllers.Permission.Info
 {
@@ -79,5 +80,17 @@ namespace SSS.Api.Controllers.Permission.Info
             return ApiResponse(input);
         }
 
+        /// <summary>
+        /// 根据权限组Id或名称，遍历关联菜单
+        /// </summary>
+        /// <param name="input">用户组Id或名称</param>
+        /// <returns></returns> 
+        [HttpGet("get_menu_by_powergroup")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult GetMenuListByPowerGroup([FromQuery]PowerGroupMenuRelationInputDto input)
+        {
+            var result = _service.GetMenuListByPowerGroup(input);
+            return ApiResponse(result);
+        }
     }
 }

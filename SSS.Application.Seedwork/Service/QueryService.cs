@@ -48,7 +48,7 @@ namespace SSS.Application.Seedwork.Service
         {
             return Mapper.Map<TOutput>(Repository.Get(predicate));
         }
-         
+
         public Pages<List<TOutput>> GetPage(TInput input)
         {
             List<TOutput> list;

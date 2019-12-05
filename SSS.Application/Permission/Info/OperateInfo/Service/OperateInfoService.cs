@@ -8,10 +8,12 @@ using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Info.OperateInfo;
 using SSS.Domain.Permission.Info.OperateInfo.Dto;
 using SSS.Domain.Permission.Relation.PowerGroupOperateRelation;
+using SSS.Domain.Permission.Relation.PowerGroupOperateRelation.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.PowerGroup;
 using SSS.Infrastructure.Repository.Permission.Info.OperateInfo;
+using SSS.Infrastructure.Repository.Permission.Info.PowerInfo;
 using SSS.Infrastructure.Repository.Permission.Relation.PowerGroupOperateRelation;
 using SSS.Infrastructure.Util.Attribute;
 
@@ -26,6 +28,7 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
         IOperateInfoService
     {
         private readonly IOperateInfoRepository _repository;
+        private readonly IPowerInfoRepository _powerInfoRepository;
         private readonly IPowerGroupRepository _powerGroupRepository;
         private readonly IPowerGroupOperateRelationRepository _powerGroupOperateRelationRepository;
 
@@ -33,11 +36,13 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
             IOperateInfoRepository repository,
             IErrorHandler error,
             IValidator<OperateInfoInputDto> validator,
+            IPowerInfoRepository powerInfoRepository,
             IPowerGroupRepository powerGroupRepository,
             IPowerGroupOperateRelationRepository powerGroupOperateRelationRepository) :
             base(mapper, repository, error, validator)
         {
             _repository = repository;
+            _powerInfoRepository = powerInfoRepository;
             _powerGroupRepository = powerGroupRepository;
             _powerGroupOperateRelationRepository = powerGroupOperateRelationRepository;
         }
@@ -62,6 +67,7 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
             var model = Mapper.Map<Domain.Permission.Info.OperateInfo.OperateInfo>(input);
             model.CreateTime = DateTime.Now;
 
+            //PowerGroupOperate
             var group = _powerGroupRepository.Get(x => x.Id.Equals(input.powergroupid));
             _powerGroupOperateRelationRepository.Add(new PowerGroupOperateRelation()
             {
@@ -96,6 +102,16 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
         public Pages<List<OperateInfoOutputDto>> GetListOperateInfo(OperateInfoInputDto input)
         {
             return GetPage(input);
+        }
+
+        /// <summary>
+        /// 根据权限组Id或名称，遍历关联操作
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Pages<List<PowerGroupOperateRelationOutputDto>> GetOperateListByPowerGroup(PowerGroupOperateRelationInputDto input)
+        {
+            return _powerGroupOperateRelationRepository.GetOperateListByPowerGroup(input);
         }
     }
 }

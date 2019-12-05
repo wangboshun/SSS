@@ -1,6 +1,7 @@
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Info.OperateInfo;
 using SSS.Domain.Permission.Info.OperateInfo.Dto;
+using SSS.Domain.Permission.Relation.PowerGroupOperateRelation.Dto;
 using SSS.Domain.Seedwork.Model;
 
 using System.Collections.Generic;
@@ -20,5 +21,12 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
         List<OperateInfoTreeOutputDto> GetChildrenById(string operateid);
         void DeleteOperateInfo(OperateInfoInputDto input);
         Pages<List<OperateInfoOutputDto>> GetListOperateInfo(OperateInfoInputDto input);
+
+        /// <summary>
+        /// 根据权限组Id或名称，遍历关联操作
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Pages<List<PowerGroupOperateRelationOutputDto>> GetOperateListByPowerGroup(PowerGroupOperateRelationInputDto input);
     }
 }

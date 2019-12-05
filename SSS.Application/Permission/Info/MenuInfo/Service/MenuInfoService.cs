@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Info.MenuInfo.Dto;
+using SSS.Domain.Permission.Relation.PowerGroupMenuRelation.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.PowerGroup;
@@ -59,15 +60,22 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
             var model = Mapper.Map<Domain.Permission.Info.MenuInfo.MenuInfo>(input);
             model.CreateTime = DateTime.Now;
 
-            var group = _powerGroupRepository.Get(x => x.Id.Equals(input.powergroupid));
-            _powerGroupMenuRelationRepository.Add(new Domain.Permission.Relation.PowerGroupMenuRelation.PowerGroupMenuRelation
+            //PowerGroupMenu
+            if (!string.IsNullOrWhiteSpace(input.powergroupid))
             {
-                CreateTime = DateTime.Now,
-                Id = Guid.NewGuid().ToString(),
-                MenuId = model.Id,
-                PowerGroupId = group != null ? group.Id : "0",
-                IsDelete = 0
-            });
+                //查出权限组
+                var powergroup = _powerGroupRepository.Get(input.powergroupid);
+
+                //添加权限组于菜单关联关系
+                _powerGroupMenuRelationRepository.Add(new Domain.Permission.Relation.PowerGroupMenuRelation.PowerGroupMenuRelation
+                {
+                    CreateTime = DateTime.Now,
+                    Id = Guid.NewGuid().ToString(),
+                    MenuId = model.Id,
+                    PowerGroupId = powergroup != null ? powergroup.Id : "0",
+                    IsDelete = 0
+                });
+            }
 
             Repository.Add(model);
             Repository.SaveChanges();
@@ -88,6 +96,16 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
         public List<MenuInfoTreeOutputDto> GetChildren(string menuid)
         {
             return _repository.GetChildren(menuid);
+        }
+
+        /// <summary>
+        /// 根据权限组Id或名称，遍历关联菜单
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Pages<List<PowerGroupMenuRelationOutputDto>> GetMenuListByPowerGroup(PowerGroupMenuRelationInputDto input)
+        {
+            return _powerGroupMenuRelationRepository.GetMenuListByPowerGroup(input);
         }
 
         public Pages<List<MenuInfoOutputDto>> GetListMenuInfo(MenuInfoInputDto input)

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.Permission.Info.OperateInfo.Service;
 using SSS.Domain.Permission.Info.OperateInfo.Dto;
+using SSS.Domain.Permission.Relation.PowerGroupOperateRelation.Dto;
 
 namespace SSS.Api.Controllers.Permission.Info
 {
@@ -76,6 +77,19 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetChildren(string operateid)
         {
             var result = _service.GetChildrenById(operateid);
+            return ApiResponse(result);
+        }
+
+        /// <summary>
+        /// 根据权限组Id或名称，遍历关联操作
+        /// </summary>
+        /// <param name="input">用户组Id或名称</param>
+        /// <returns></returns> 
+        [HttpGet("get_operate_by_powergroup")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult GetOperateListByPowerGroup([FromQuery]PowerGroupOperateRelationInputDto input)
+        {
+            var result = _service.GetOperateListByPowerGroup(input);
             return ApiResponse(result);
         }
     }

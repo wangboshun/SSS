@@ -2,19 +2,19 @@ using FluentValidation;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using SSS.Domain.Permission.Info.MenuInfo.Dto;
+using SSS.Domain.Permission.Relation.UserGroupPowerGroupRelation.Dto;
 using SSS.Infrastructure.Util.Attribute;
 
-namespace SSS.Domain.Permission.Info.MenuInfo.Validation
+namespace SSS.Domain.Permission.Relation.UserGroupPowerGroupRelation.Validation
 {
-    [DIService(ServiceLifetime.Scoped, typeof(IValidator<MenuInfoInputDto>))]
-    public class MenuInfoAddValidation : AbstractValidator<MenuInfoInputDto>
+    [DIService(ServiceLifetime.Scoped, typeof(IValidator<UserGroupPowerGroupRelationInputDto>))]
+    public class UserGroupPowerGroupRelationAddValidation : AbstractValidator<UserGroupPowerGroupRelationInputDto>
     {
-        public MenuInfoAddValidation()
+        public UserGroupPowerGroupRelationAddValidation()
         {
             RuleSet("Insert", () =>
             {
-                RuleFor(x => x.menuname).NotEmpty().WithMessage("菜单名称不能为空！");
+
             });
 
             RuleSet("Delete", () =>

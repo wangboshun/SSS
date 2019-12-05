@@ -1,11 +1,12 @@
 using Microsoft.Extensions.DependencyInjection;
+
+using SSS.Domain.Permission.Info.RoleInfo.Dto;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Seedwork.Repository;
 using SSS.Infrastructure.Util.Attribute;
 
 using System.Collections.Generic;
 using System.Linq;
-using SSS.Domain.Permission.Info.RoleInfo.Dto;
 
 namespace SSS.Infrastructure.Repository.Permission.Info.RoleInfo
 {

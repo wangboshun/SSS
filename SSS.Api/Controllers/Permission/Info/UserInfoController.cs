@@ -5,6 +5,7 @@ using SSS.Api.Seedwork.Controller;
 using SSS.Application.Permission.Info.UserInfo.Service;
 using SSS.Domain.Permission.Info.UserInfo.Dto;
 using SSS.Domain.Permission.Relation.UserGroupRelation.Dto;
+using SSS.Domain.Permission.Relation.UserPowerGroupRelation.Dto;
 
 namespace SSS.Api.Controllers.Permission.Info
 {
@@ -103,6 +104,19 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetUserListByGroup([FromQuery]UserGroupRelationInputDto input)
         {
             var result = _service.GetUserListByGroup(input);
+            return ApiResponse(result);
+        }
+
+        /// <summary>
+        /// 根据权限组Id或名称，遍历关联用户
+        /// </summary>
+        /// <param name="input">权限组Id或名称</param>
+        /// <returns></returns> 
+        [HttpGet("get_user_by_powergroup")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult GetUserListByPowerGroup([FromQuery]UserPowerGroupRelationInputDto input)
+        {
+            var result = _service.GetUserListByPowerGroup(input);
             return ApiResponse(result);
         }
     }

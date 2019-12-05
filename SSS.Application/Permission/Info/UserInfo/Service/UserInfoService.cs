@@ -7,11 +7,13 @@ using Microsoft.Extensions.DependencyInjection;
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Info.UserInfo.Dto;
 using SSS.Domain.Permission.Relation.UserGroupRelation.Dto;
+using SSS.Domain.Permission.Relation.UserPowerGroupRelation.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.UserGroup;
 using SSS.Infrastructure.Repository.Permission.Info.UserInfo;
 using SSS.Infrastructure.Repository.Permission.Relation.UserGroupRelation;
+using SSS.Infrastructure.Repository.Permission.Relation.UserPowerGroupRelation;
 using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Util.Attribute;
 
@@ -27,22 +29,25 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
     {
         private readonly MemoryCacheEx _memorycache;
         private readonly IUserInfoRepository _userinfoRepository;
-        private readonly IUserGroupRelationRepository _userGroupRelationRepository;
         private readonly IUserGroupRepository _userGroupRepository;
+        private readonly IUserGroupRelationRepository _userGroupRelationRepository;
+        private readonly IUserPowerGroupRelationRepository _userPowerGroupRelationRepository;
 
         public UserInfoService(IMapper mapper,
             IUserInfoRepository repository,
             IErrorHandler error,
             IValidator<UserInfoInputDto> validator,
             MemoryCacheEx memorycache,
+            IUserGroupRepository userGroupRepository,
             IUserGroupRelationRepository userGroupRelationRepository,
-            IUserGroupRepository userGroupRepository
+            IUserPowerGroupRelationRepository userPowerGroupRelationRepository
         ) : base(mapper, repository, error, validator)
         {
             _memorycache = memorycache;
             _userinfoRepository = repository;
-            _userGroupRelationRepository = userGroupRelationRepository;
             _userGroupRepository = userGroupRepository;
+            _userGroupRelationRepository = userGroupRelationRepository;
+            _userPowerGroupRelationRepository = userPowerGroupRelationRepository;
         }
 
         /// <summary>
@@ -157,6 +162,17 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         public Pages<List<UserGroupRelationOutputDto>> GetUserListByGroup(UserGroupRelationInputDto input)
         {
             return _userGroupRelationRepository.GetUserListByGroup(input);
+        }
+
+
+        /// <summary>
+        /// 根据权限组Id或名称，遍历关联用户
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Pages<List<UserPowerGroupRelationOutputDto>> GetUserListByPowerGroup(UserPowerGroupRelationInputDto input)
+        {
+            return _userPowerGroupRelationRepository.GetUserListByPowerGroup(input);
         }
     }
 }

@@ -29,6 +29,7 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.RoleGroupRelation
 	            r.RoleName AS 'rolename',
 	            rg.RoleGroupName AS 'rolegroupname',
 	            rg.id AS 'rolegroupid',
+                rrr.CreateTime as createtime,
 	            rrr.id AS 'id' ";
 
             string sql = @"SELECT {0}
@@ -70,6 +71,7 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.RoleGroupRelation
 	            r.RoleName AS 'rolename',
 	            rg.RoleGroupName AS 'rolegroupname',
 	            rg.id AS 'rolegroupid',
+                rrr.CreateTime as createtime,
 	            rrr.id AS 'id' ";
 
             string sql = @"SELECT {0}
