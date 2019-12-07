@@ -20,6 +20,6 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.PowerGroupOperateRel
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Pages<List<PowerGroupOperateRelationOutputDto>> GetOperateListByPowerGroup(PowerGroupOperateRelationInputDto input);
+        Pages<List<PowerGroupOperateRelationOutputDto>> GetOperateByPowerGroup(PowerGroupOperateRelationInputDto input);
     }
 }

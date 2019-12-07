@@ -65,7 +65,7 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.RoleGroupRelation
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<RoleGroupRelationOutputDto>> GetRoleListGroupByGroup(RoleGroupRelationInputDto input)
+        public Pages<List<RoleGroupRelationOutputDto>> GetRoleByRoleGroup(RoleGroupRelationInputDto input)
         {
             string field = @"r.id AS 'roleid',
 	            r.RoleName AS 'rolename',

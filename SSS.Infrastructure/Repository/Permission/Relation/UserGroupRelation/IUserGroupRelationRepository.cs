@@ -13,7 +13,7 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.UserGroupRelation
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Pages<List<UserGroupRelationOutputDto>> GetUserListByGroup(UserGroupRelationInputDto input);
+        Pages<List<UserGroupRelationOutputDto>> GetUserByUserGroup(UserGroupRelationInputDto input);
 
         /// <summary>
         /// 根据用户Id或名称，遍历关联用户组

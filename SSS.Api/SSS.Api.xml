@@ -443,11 +443,11 @@
             <param name="input">MenuInfoInputDto</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Info.MenuInfoController.GetMenuListByPowerGroup(SSS.Domain.Permission.Relation.PowerGroupMenuRelation.Dto.PowerGroupMenuRelationInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.MenuInfoController.GetMenuByPowerGroup(SSS.Domain.Permission.Relation.PowerGroupMenuRelation.Dto.PowerGroupMenuRelationInputDto)">
             <summary>
             根据权限组Id或名称，遍历关联菜单
             </summary>
-            <param name="input">用户组Id或名称</param>
+            <param name="input">权限组Id或名称</param>
             <returns></returns> 
         </member>
         <member name="T:SSS.Api.Controllers.Permission.Info.OperateInfoController">
@@ -489,11 +489,11 @@
             <param name="operateid">操作Id</param>
             <returns></returns>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Info.OperateInfoController.GetOperateListByPowerGroup(SSS.Domain.Permission.Relation.PowerGroupOperateRelation.Dto.PowerGroupOperateRelationInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.OperateInfoController.GetOperateByPowerGroup(SSS.Domain.Permission.Relation.PowerGroupOperateRelation.Dto.PowerGroupOperateRelationInputDto)">
             <summary>
             根据权限组Id或名称，遍历关联操作
             </summary>
-            <param name="input">用户组Id或名称</param>
+            <param name="input">权限组Id或名称</param>
             <returns></returns> 
         </member>
         <member name="T:SSS.Api.Controllers.Permission.Info.PowerInfoController">
@@ -535,7 +535,7 @@
             <param name="powerid">权限Id</param>
             <returns></returns>
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Info.PowerInfoController.GetPowerListByGroup(SSS.Domain.Permission.Relation.PowerGroupRelation.Dto.PowerGroupRelationInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.PowerInfoController.GetPowerByPowerGroup(SSS.Domain.Permission.Relation.PowerGroupRelation.Dto.PowerGroupRelationInputDto)">
             <summary>
             根据权限组Id或名称，遍历关联权限
             </summary>
@@ -581,7 +581,7 @@
             <param name="input">RoleInfoInputDto</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Info.RoleInfoController.GetRoleListGroupByGroup(SSS.Domain.Permission.Relation.RoleGroupRelation.Dto.RoleGroupRelationInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.RoleInfoController.GetRoleByRoleGroup(SSS.Domain.Permission.Relation.RoleGroupRelation.Dto.RoleGroupRelationInputDto)">
             <summary>
             根据角色组Id或名称，遍历关联角色
             </summary>
@@ -634,7 +634,7 @@
             <param name="input">UserInfoInputDto</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Info.UserInfoController.GetUserListByGroup(SSS.Domain.Permission.Relation.UserGroupRelation.Dto.UserGroupRelationInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.UserInfoController.GetUserByUserGroup(SSS.Domain.Permission.Relation.UserGroupRelation.Dto.UserGroupRelationInputDto)">
             <summary>
             根据用户组Id或名称，遍历关联用户
             </summary>

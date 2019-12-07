@@ -85,11 +85,11 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">权限组Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_power_by_group")]
+        [HttpGet("get_power_by_powergroup")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetPowerListByGroup([FromQuery]PowerGroupRelationInputDto input)
+        public IActionResult GetPowerByPowerGroup([FromQuery]PowerGroupRelationInputDto input)
         {
-            var result = _service.GetPowerListByGroup(input);
+            var result = _service.GetPowerByPowerGroup(input);
             return ApiResponse(result);
         }
     }

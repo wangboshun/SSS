@@ -65,7 +65,7 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.PowerGroupRelation
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<PowerGroupRelationOutputDto>> GetPowerListByGroup(PowerGroupRelationInputDto input)
+        public Pages<List<PowerGroupRelationOutputDto>> GetPowerByPowerGroup(PowerGroupRelationInputDto input)
         {
             string field = @"p.id AS 'powerid',
 	                p.PowerName AS 'powername',

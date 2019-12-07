@@ -20,6 +20,6 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.PowerGroupRelation
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Pages<List<PowerGroupRelationOutputDto>> GetPowerListByGroup(PowerGroupRelationInputDto input);
+        Pages<List<PowerGroupRelationOutputDto>> GetPowerByPowerGroup(PowerGroupRelationInputDto input);
     }
 }

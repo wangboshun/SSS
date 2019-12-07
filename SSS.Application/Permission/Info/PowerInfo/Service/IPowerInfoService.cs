@@ -21,7 +21,7 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Pages<List<PowerGroupRelationOutputDto>> GetPowerListByGroup(PowerGroupRelationInputDto input);
+        Pages<List<PowerGroupRelationOutputDto>> GetPowerByPowerGroup(PowerGroupRelationInputDto input);
 
         /// <summary>
         ///     获取权限下的所有下级

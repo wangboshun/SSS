@@ -99,11 +99,11 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">用户组Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_user_by_group")]
+        [HttpGet("get_user_by_usergroup")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetUserListByGroup([FromQuery]UserGroupRelationInputDto input)
+        public IActionResult GetUserByUserGroup([FromQuery]UserGroupRelationInputDto input)
         {
-            var result = _service.GetUserListByGroup(input);
+            var result = _service.GetUserByUserGroup(input);
             return ApiResponse(result);
         }
 
@@ -116,7 +116,7 @@ namespace SSS.Api.Controllers.Permission.Info
         [AllowAnonymous]  //匿名访问
         public IActionResult GetUserListByPowerGroup([FromQuery]UserPowerGroupRelationInputDto input)
         {
-            var result = _service.GetUserListByPowerGroup(input);
+            var result = _service.GetUserByPowerGroup(input);
             return ApiResponse(result);
         }
     }

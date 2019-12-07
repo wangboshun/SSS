@@ -66,7 +66,7 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.PowerGroupMenuRelati
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<PowerGroupMenuRelationOutputDto>> GetMenuListByPowerGroup(PowerGroupMenuRelationInputDto input)
+        public Pages<List<PowerGroupMenuRelationOutputDto>> GetMenuByPowerGroup(PowerGroupMenuRelationInputDto input)
         {
             string field = @"m.Id AS menuid,
 	            m.MenuUrl AS menuurl,

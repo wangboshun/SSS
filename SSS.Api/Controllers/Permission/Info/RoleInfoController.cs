@@ -85,11 +85,11 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">角色组Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_role_by_group")]
+        [HttpGet("get_role_by_rolegroup")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetRoleListGroupByGroup([FromQuery]RoleGroupRelationInputDto input)
+        public IActionResult GetRoleByRoleGroup([FromQuery]RoleGroupRelationInputDto input)
         {
-            var result = _service.GetRoleListGroupByGroup(input);
+            var result = _service.GetRoleByRoleGroup(input);
             return ApiResponse(result);
         }
     }

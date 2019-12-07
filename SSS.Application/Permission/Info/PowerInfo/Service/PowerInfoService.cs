@@ -95,9 +95,9 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<PowerGroupRelationOutputDto>> GetPowerListByGroup(PowerGroupRelationInputDto input)
+        public Pages<List<PowerGroupRelationOutputDto>> GetPowerByPowerGroup(PowerGroupRelationInputDto input)
         {
-            return _powerGroupRelationRepository.GetPowerListByGroup(input);
+            return _powerGroupRelationRepository.GetPowerByPowerGroup(input);
         }
     }
 }

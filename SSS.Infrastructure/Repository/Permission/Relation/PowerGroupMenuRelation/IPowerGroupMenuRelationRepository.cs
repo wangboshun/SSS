@@ -20,6 +20,6 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.PowerGroupMenuRelati
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Pages<List<PowerGroupMenuRelationOutputDto>> GetMenuListByPowerGroup(PowerGroupMenuRelationInputDto input);
+        Pages<List<PowerGroupMenuRelationOutputDto>> GetMenuByPowerGroup(PowerGroupMenuRelationInputDto input);
     }
 }

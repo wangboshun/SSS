@@ -103,9 +103,9 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<PowerGroupMenuRelationOutputDto>> GetMenuListByPowerGroup(PowerGroupMenuRelationInputDto input)
+        public Pages<List<PowerGroupMenuRelationOutputDto>> GetMenuByPowerGroup(PowerGroupMenuRelationInputDto input)
         {
-            return _powerGroupMenuRelationRepository.GetMenuListByPowerGroup(input);
+            return _powerGroupMenuRelationRepository.GetMenuByPowerGroup(input);
         }
 
         public Pages<List<MenuInfoOutputDto>> GetListMenuInfo(MenuInfoInputDto input)

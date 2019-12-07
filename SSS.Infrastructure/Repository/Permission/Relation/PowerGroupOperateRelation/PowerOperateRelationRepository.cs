@@ -65,7 +65,7 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.PowerGroupOperateRel
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<PowerGroupOperateRelationOutputDto>> GetOperateListByPowerGroup(PowerGroupOperateRelationInputDto input)
+        public Pages<List<PowerGroupOperateRelationOutputDto>> GetOperateByPowerGroup(PowerGroupOperateRelationInputDto input)
         {
             string field = @" o.Id AS operateid,
 	            o.operateName AS operatename,

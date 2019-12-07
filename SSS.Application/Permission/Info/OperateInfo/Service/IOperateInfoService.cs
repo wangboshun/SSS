@@ -27,6 +27,6 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Pages<List<PowerGroupOperateRelationOutputDto>> GetOperateListByPowerGroup(PowerGroupOperateRelationInputDto input);
+        Pages<List<PowerGroupOperateRelationOutputDto>> GetOperateByPowerGroup(PowerGroupOperateRelationInputDto input);
     }
 }

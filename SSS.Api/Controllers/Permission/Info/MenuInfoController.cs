@@ -83,13 +83,13 @@ namespace SSS.Api.Controllers.Permission.Info
         /// <summary>
         /// 根据权限组Id或名称，遍历关联菜单
         /// </summary>
-        /// <param name="input">用户组Id或名称</param>
+        /// <param name="input">权限组Id或名称</param>
         /// <returns></returns> 
         [HttpGet("get_menu_by_powergroup")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetMenuListByPowerGroup([FromQuery]PowerGroupMenuRelationInputDto input)
+        public IActionResult GetMenuByPowerGroup([FromQuery]PowerGroupMenuRelationInputDto input)
         {
-            var result = _service.GetMenuListByPowerGroup(input);
+            var result = _service.GetMenuByPowerGroup(input);
             return ApiResponse(result);
         }
     }

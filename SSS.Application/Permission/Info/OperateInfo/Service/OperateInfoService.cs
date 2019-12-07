@@ -109,9 +109,9 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<PowerGroupOperateRelationOutputDto>> GetOperateListByPowerGroup(PowerGroupOperateRelationInputDto input)
+        public Pages<List<PowerGroupOperateRelationOutputDto>> GetOperateByPowerGroup(PowerGroupOperateRelationInputDto input)
         {
-            return _powerGroupOperateRelationRepository.GetOperateListByPowerGroup(input);
+            return _powerGroupOperateRelationRepository.GetOperateByPowerGroup(input);
         }
     }
 }

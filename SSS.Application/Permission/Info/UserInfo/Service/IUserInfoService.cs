@@ -43,13 +43,13 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Pages<List<UserGroupRelationOutputDto>> GetUserListByGroup(UserGroupRelationInputDto input);
+        Pages<List<UserGroupRelationOutputDto>> GetUserByUserGroup(UserGroupRelationInputDto input);
 
         /// <summary>
         /// 根据权限组Id或名称，遍历关联用户
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Pages<List<UserPowerGroupRelationOutputDto>> GetUserListByPowerGroup(UserPowerGroupRelationInputDto input);
+        Pages<List<UserPowerGroupRelationOutputDto>> GetUserByPowerGroup(UserPowerGroupRelationInputDto input);
     }
 }

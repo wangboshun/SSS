@@ -102,9 +102,9 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<RoleGroupRelationOutputDto>> GetRoleListGroupByGroup(RoleGroupRelationInputDto input)
+        public Pages<List<RoleGroupRelationOutputDto>> GetRoleByRoleGroup(RoleGroupRelationInputDto input)
         {
-            return _roleGroupRelationRepository.GetRoleListGroupByGroup(input);
+            return _roleGroupRelationRepository.GetRoleByRoleGroup(input);
         }
     }
 }

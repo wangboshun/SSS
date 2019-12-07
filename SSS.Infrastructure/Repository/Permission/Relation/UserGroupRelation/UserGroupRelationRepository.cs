@@ -23,7 +23,7 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.UserGroupRelation
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<UserGroupRelationOutputDto>> GetUserListByGroup(UserGroupRelationInputDto input)
+        public Pages<List<UserGroupRelationOutputDto>> GetUserByUserGroup(UserGroupRelationInputDto input)
         {
             string field = @"u.id AS 'userid',
 	                u.UserName AS 'username',

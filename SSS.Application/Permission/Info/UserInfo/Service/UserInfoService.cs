@@ -107,17 +107,21 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
             var model = Mapper.Map<Domain.Permission.Info.UserInfo.UserInfo>(input);
             model.CreateTime = DateTime.Now;
 
-            var group = _userGroupRepository.Get(x => x.Id.Equals(input.usergroupid));
-
-            //添加用户组关联
-            _userGroupRelationRepository.Add(new Domain.Permission.Relation.UserGroupRelation.UserGroupRelation()
+            if (string.IsNullOrWhiteSpace(input.usergroupid))
             {
-                CreateTime = DateTime.Now,
-                Id = Guid.NewGuid().ToString(),
-                IsDelete = 0,
-                UserGroupId = group != null ? group.Id : "0",
-                UserId = model.Id
-            });
+                var group = _userGroupRepository.Get(x => x.Id.Equals(input.usergroupid));
+
+                if (group != null)
+                    //添加用户组关联
+                    _userGroupRelationRepository.Add(new Domain.Permission.Relation.UserGroupRelation.UserGroupRelation()
+                    {
+                        CreateTime = DateTime.Now,
+                        Id = Guid.NewGuid().ToString(),
+                        IsDelete = 0,
+                        UserGroupId = group.Id,
+                        UserId = model.Id
+                    });
+            }
 
             Repository.Add(model);
             Repository.SaveChanges();
@@ -159,9 +163,9 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<UserGroupRelationOutputDto>> GetUserListByGroup(UserGroupRelationInputDto input)
+        public Pages<List<UserGroupRelationOutputDto>> GetUserByUserGroup(UserGroupRelationInputDto input)
         {
-            return _userGroupRelationRepository.GetUserListByGroup(input);
+            return _userGroupRelationRepository.GetUserByUserGroup(input);
         }
 
 
@@ -170,9 +174,9 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<UserPowerGroupRelationOutputDto>> GetUserListByPowerGroup(UserPowerGroupRelationInputDto input)
+        public Pages<List<UserPowerGroupRelationOutputDto>> GetUserByPowerGroup(UserPowerGroupRelationInputDto input)
         {
-            return _userPowerGroupRelationRepository.GetUserListByPowerGroup(input);
+            return _userPowerGroupRelationRepository.GetUserByPowerGroup(input);
         }
     }
 }

@@ -26,6 +26,6 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
         /// 根据角色组Id或名称，遍历关联角色
         /// </summary>
         /// <param name="input"></param>
-        Pages<List<RoleGroupRelationOutputDto>> GetRoleListGroupByGroup(RoleGroupRelationInputDto input);
+        Pages<List<RoleGroupRelationOutputDto>> GetRoleByRoleGroup(RoleGroupRelationInputDto input);
     }
 }

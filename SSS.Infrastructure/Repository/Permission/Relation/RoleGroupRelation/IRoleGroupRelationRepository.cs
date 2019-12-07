@@ -20,6 +20,6 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.RoleGroupRelation
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Pages<List<RoleGroupRelationOutputDto>> GetRoleListGroupByGroup(RoleGroupRelationInputDto input);
+        Pages<List<RoleGroupRelationOutputDto>> GetRoleByRoleGroup(RoleGroupRelationInputDto input);
     }
 }

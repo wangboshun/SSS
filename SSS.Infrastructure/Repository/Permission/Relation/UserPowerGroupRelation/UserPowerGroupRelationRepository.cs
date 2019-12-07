@@ -23,7 +23,7 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.UserPowerGroupRelati
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<UserPowerGroupRelationOutputDto>> GetUserListByPowerGroup(UserPowerGroupRelationInputDto input)
+        public Pages<List<UserPowerGroupRelationOutputDto>> GetUserByPowerGroup(UserPowerGroupRelationInputDto input)
         {
             string field = @" u.UserName AS username,
 	            u.id AS userid,
