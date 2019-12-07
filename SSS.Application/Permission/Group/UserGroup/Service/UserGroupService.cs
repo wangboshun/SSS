@@ -73,7 +73,7 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
         /// <returns></returns>
         public Pages<List<UserGroupRelationOutputDto>> GetUserGroupByUser(UserGroupRelationInputDto input)
         {
-            return _userGroupRelationRepository.GetUserGroupByUser(input);
+            return _userGroupRelationRepository.GetUserGroupByUser(input.userid, input.username, input.parentid, input.pageindex, input.pagesize);
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
         /// <returns></returns>
         public Pages<List<UserGroupPowerGroupRelationOutputDto>> GetUserGroupByPowerGroup(UserGroupPowerGroupRelationInputDto input)
         {
-            return _userGroupPowerGroupRelationRepository.GetUserGroupByPowerGroup(input);
+            return _userGroupPowerGroupRelationRepository.GetUserGroupByPowerGroup(input.powergroupid, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
         }
     }
 }

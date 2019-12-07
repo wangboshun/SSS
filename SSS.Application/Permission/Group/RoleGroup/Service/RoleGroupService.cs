@@ -68,7 +68,7 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
         /// <returns></returns>
         public Pages<List<RoleGroupRelationOutputDto>> GetRoleGroupByRole(RoleGroupRelationInputDto input)
         {
-            return _roleGroupRelationRepository.GetRoleGroupByRole(input);
+            return _roleGroupRelationRepository.GetRoleGroupByRole(input.roleid, input.rolename, input.parentid, input.pageindex, input.pagesize);
         }
     }
 }

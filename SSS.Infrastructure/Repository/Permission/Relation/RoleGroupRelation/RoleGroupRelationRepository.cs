@@ -20,10 +20,9 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.RoleGroupRelation
 
         /// <summary>
         /// 根据角色Id或名称，遍历关联角色组
-        /// </summary>
-        /// <param name="input"></param>
+        /// </summary> 
         /// <returns></returns>
-        public Pages<List<RoleGroupRelationOutputDto>> GetRoleGroupByRole(RoleGroupRelationInputDto input)
+        public Pages<List<RoleGroupRelationOutputDto>> GetRoleGroupByRole(string roleid, string rolename, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
             string field = @"r.id AS 'roleid',
 	            r.RoleName AS 'rolename',
@@ -42,30 +41,35 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.RoleGroupRelation
 	                AND rg.IsDelete=0 
 	                AND rrr.IsDelete=0";
 
-            if (!string.IsNullOrWhiteSpace(input.roleid))
-                sql += $" AND r.Id='{input.roleid}'";
+            if (!string.IsNullOrWhiteSpace(roleid))
+                sql += $" AND r.Id='{roleid}'";
 
-            if (!string.IsNullOrWhiteSpace(input.rolename))
-                sql += $" AND r.RoleName='{input.rolename}'";
+            if (!string.IsNullOrWhiteSpace(rolename))
+                sql += $" AND r.RoleName='{rolename}'";
 
-            if (!string.IsNullOrWhiteSpace(input.parentid))
-                sql += $" AND r.ParentId='{input.parentid}'";
+            if (!string.IsNullOrWhiteSpace(parentid))
+                sql += $" AND r.ParentId='{parentid}'";
 
             int count = Db.Database.Count(string.Format(sql, " count(*) "));
 
-            var data = Db.Database.SqlQuery<RoleGroupRelationOutputDto>(string.Format(sql, field));
-
-            if (data != null && input.pagesize > 0)
-                return new Pages<List<RoleGroupRelationOutputDto>>(data.Skip(input.pagesize * (input.pageindex > 1 ? input.pageindex - 1 : 0)).Take(input.pagesize).ToList(), count);
-            return new Pages<List<RoleGroupRelationOutputDto>>(data?.ToList(), count);
+            if (pageindex > 0 && pagesize > 0)
+            {
+                string limit = " limit {1},{2} ";
+                var data = Db.Database.SqlQuery<RoleGroupRelationOutputDto>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
+                return new Pages<List<RoleGroupRelationOutputDto>>(data.ToList(), count);
+            }
+            else
+            {
+                var data = Db.Database.SqlQuery<RoleGroupRelationOutputDto>(string.Format(sql, field));
+                return new Pages<List<RoleGroupRelationOutputDto>>(data?.ToList(), count);
+            }
         }
 
         /// <summary>
         /// 根据角色组Id或名称，遍历关联角色
-        /// </summary>
-        /// <param name="input"></param>
+        /// </summary> 
         /// <returns></returns>
-        public Pages<List<RoleGroupRelationOutputDto>> GetRoleByRoleGroup(RoleGroupRelationInputDto input)
+        public Pages<List<RoleGroupRelationOutputDto>> GetRoleByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
             string field = @"r.id AS 'roleid',
 	            r.RoleName AS 'rolename',
@@ -84,22 +88,28 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.RoleGroupRelation
 	                AND rg.IsDelete=0 
 	                AND rrr.IsDelete=0 ";
 
-            if (!string.IsNullOrWhiteSpace(input.rolegroupid))
-                sql += $" AND rg.Id='{input.rolegroupid}'";
+            if (!string.IsNullOrWhiteSpace(rolegroupid))
+                sql += $" AND rg.Id='{rolegroupid}'";
 
-            if (!string.IsNullOrWhiteSpace(input.rolegroupname))
-                sql += $" AND rg.RoleGroupName='{input.rolegroupname}'";
+            if (!string.IsNullOrWhiteSpace(rolegroupname))
+                sql += $" AND rg.RoleGroupName='{rolegroupname}'";
 
-            if (!string.IsNullOrWhiteSpace(input.parentid))
-                sql += $" AND rg.ParentId='{input.parentid}'";
+            if (!string.IsNullOrWhiteSpace(parentid))
+                sql += $" AND rg.ParentId='{parentid}'";
 
             int count = Db.Database.Count(string.Format(sql, " count(*) "));
 
-            var data = Db.Database.SqlQuery<RoleGroupRelationOutputDto>(string.Format(sql, field));
-
-            if (data != null && input.pagesize > 0)
-                return new Pages<List<RoleGroupRelationOutputDto>>(data.Skip(input.pagesize * (input.pageindex > 1 ? input.pageindex - 1 : 0)).Take(input.pagesize).ToList(), count);
-            return new Pages<List<RoleGroupRelationOutputDto>>(data?.ToList(), count);
+            if (pageindex > 0 && pagesize > 0)
+            {
+                string limit = " limit {1},{2} ";
+                var data = Db.Database.SqlQuery<RoleGroupRelationOutputDto>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
+                return new Pages<List<RoleGroupRelationOutputDto>>(data.ToList(), count);
+            }
+            else
+            {
+                var data = Db.Database.SqlQuery<RoleGroupRelationOutputDto>(string.Format(sql, field));
+                return new Pages<List<RoleGroupRelationOutputDto>>(data?.ToList(), count);
+            }
         }
     }
 }

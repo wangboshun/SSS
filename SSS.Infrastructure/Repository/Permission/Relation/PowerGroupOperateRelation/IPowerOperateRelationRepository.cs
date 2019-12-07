@@ -10,16 +10,14 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.PowerGroupOperateRel
     {
         /// <summary>
         /// 根据操作Id或名称，遍历关联权限组
-        /// </summary>
-        /// <param name="input"></param>
+        /// </summary> 
         /// <returns></returns>
-        Pages<List<PowerGroupOperateRelationOutputDto>> GetPowerGroupByOperate(PowerGroupOperateRelationInputDto input);
+        Pages<List<PowerGroupOperateRelationOutputDto>> GetPowerGroupByOperate(string operateid, string operatename, string parentid = "", int pageindex = 0, int pagesize = 0);
 
         /// <summary>
         /// 根据权限组Id或名称，遍历关联操作
-        /// </summary>
-        /// <param name="input"></param>
+        /// </summary> 
         /// <returns></returns>
-        Pages<List<PowerGroupOperateRelationOutputDto>> GetOperateByPowerGroup(PowerGroupOperateRelationInputDto input);
+        Pages<List<PowerGroupOperateRelationOutputDto>> GetOperateByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
     }
 }

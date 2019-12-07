@@ -88,7 +88,7 @@ namespace SSS.Application.Permission.Group.PowerGroup.Service
         /// <returns></returns>
         public Pages<List<PowerGroupRelationOutputDto>> GetPowerGroupByPower(PowerGroupRelationInputDto input)
         {
-            return _powerGroupRelationRepository.GetPowerGroupByPower(input);
+            return _powerGroupRelationRepository.GetPowerGroupByPower(input.powerid, input.powername, input.parentid, input.pageindex, input.pagesize);
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace SSS.Application.Permission.Group.PowerGroup.Service
         /// <returns></returns>
         public Pages<List<PowerGroupMenuRelationOutputDto>> GetPowerGroupByMenu(PowerGroupMenuRelationInputDto input)
         {
-            return _powerGroupMenuRelationRepository.GetPowerGroupByMenu(input);
+            return _powerGroupMenuRelationRepository.GetPowerGroupByMenu(input.menuid, input.menuname, input.parentid, input.pageindex, input.pagesize);
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace SSS.Application.Permission.Group.PowerGroup.Service
         /// <returns></returns>
         public Pages<List<PowerGroupOperateRelationOutputDto>> GetPowerGroupByOperate(PowerGroupOperateRelationInputDto input)
         {
-            return _powerGroupOperateRelationRepository.GetPowerGroupByOperate(input);
+            return _powerGroupOperateRelationRepository.GetPowerGroupByOperate(input.operateid, input.operatename, input.parentid, input.pageindex, input.pagesize);
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace SSS.Application.Permission.Group.PowerGroup.Service
         /// <returns></returns>
         public Pages<List<UserPowerGroupRelationOutputDto>> GetPowerGroupByUser(UserPowerGroupRelationInputDto input)
         {
-            return _userPowerGroupRelation.GetPowerGroupByUser(input);
+            return _userPowerGroupRelation.GetPowerGroupByUser(input.userid, input.username, input.parentid, input.pageindex, input.pagesize);
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace SSS.Application.Permission.Group.PowerGroup.Service
         /// <returns></returns>
         public Pages<List<UserGroupPowerGroupRelationOutputDto>> GetPowerGroupByUserGroup(UserGroupPowerGroupRelationInputDto input)
         {
-            return _userGroupPowerGroupRelationRepository.GetPowerGroupByUserGroup(input);
+            return _userGroupPowerGroupRelationRepository.GetPowerGroupByUserGroup(input.usergroupid, input.usergroupname, input.parentid, input.pageindex, input.pagesize);
         }
     }
 }

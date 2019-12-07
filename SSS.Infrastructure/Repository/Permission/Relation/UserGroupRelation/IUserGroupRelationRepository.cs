@@ -10,16 +10,14 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.UserGroupRelation
     {
         /// <summary>
         /// 根据用户组Id或名称，遍历关联用户
-        /// </summary>
-        /// <param name="input"></param>
+        /// </summary> 
         /// <returns></returns>
-        Pages<List<UserGroupRelationOutputDto>> GetUserByUserGroup(UserGroupRelationInputDto input);
+        Pages<List<UserGroupRelationOutputDto>> GetUserByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
 
         /// <summary>
         /// 根据用户Id或名称，遍历关联用户组
-        /// </summary>
-        /// <param name="input"></param>
+        /// </summary> 
         /// <returns></returns>
-        Pages<List<UserGroupRelationOutputDto>> GetUserGroupByUser(UserGroupRelationInputDto input);
+        Pages<List<UserGroupRelationOutputDto>> GetUserGroupByUser(string userid, string username, string parentid = "", int pageindex = 0, int pagesize = 0);
     }
 }

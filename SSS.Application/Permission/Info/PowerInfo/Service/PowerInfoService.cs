@@ -54,15 +54,19 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
             var model = Mapper.Map<Domain.Permission.Info.PowerInfo.PowerInfo>(input);
             model.CreateTime = DateTime.Now;
 
-            var group = _powerGroupRepository.Get(x => x.Id.Equals(input.powergroupid));
-            _powerGroupRelationRepository.Add(new Domain.Permission.Relation.PowerGroupRelation.PowerGroupRelation()
+            if (!string.IsNullOrWhiteSpace(input.powergroupid))
             {
-                CreateTime = DateTime.Now,
-                Id = Guid.NewGuid().ToString(),
-                PowerId = model.Id,
-                PowerGroupId = group != null ? group.Id : "0",
-                IsDelete = 0
-            });
+                var powergroup = _powerGroupRepository.Get(x => x.Id.Equals(input.powergroupid));
+                if (powergroup != null)
+                    _powerGroupRelationRepository.Add(new Domain.Permission.Relation.PowerGroupRelation.PowerGroupRelation()
+                    {
+                        CreateTime = DateTime.Now,
+                        Id = Guid.NewGuid().ToString(),
+                        PowerId = model.Id,
+                        PowerGroupId = powergroup.Id,
+                        IsDelete = 0
+                    });
+            }
 
             Repository.Add(model);
             Repository.SaveChanges();
@@ -97,7 +101,7 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
         /// <returns></returns>
         public Pages<List<PowerGroupRelationOutputDto>> GetPowerByPowerGroup(PowerGroupRelationInputDto input)
         {
-            return _powerGroupRelationRepository.GetPowerByPowerGroup(input);
+            return _powerGroupRelationRepository.GetPowerByPowerGroup(input.powergroupid, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
         }
     }
 }

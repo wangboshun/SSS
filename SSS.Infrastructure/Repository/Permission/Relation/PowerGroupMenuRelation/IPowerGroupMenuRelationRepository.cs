@@ -10,16 +10,14 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.PowerGroupMenuRelati
     {
         /// <summary>
         /// 根据菜单Id或名称，遍历关联权限组
-        /// </summary>
-        /// <param name="input"></param>
+        /// </summary> 
         /// <returns></returns>
-        Pages<List<PowerGroupMenuRelationOutputDto>> GetPowerGroupByMenu(PowerGroupMenuRelationInputDto input);
+        Pages<List<PowerGroupMenuRelationOutputDto>> GetPowerGroupByMenu(string menuid, string menuname, string parentid = "", int pageindex = 0, int pagesize = 0);
 
         /// <summary>
         /// 根据权限组Id或名称，遍历关联菜单
-        /// </summary>
-        /// <param name="input"></param>
+        /// </summary> 
         /// <returns></returns>
-        Pages<List<PowerGroupMenuRelationOutputDto>> GetMenuByPowerGroup(PowerGroupMenuRelationInputDto input);
+        Pages<List<PowerGroupMenuRelationOutputDto>> GetMenuByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
     }
 }

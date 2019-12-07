@@ -606,6 +606,13 @@
             <param name="input">input</param>
             <returns></returns>
         </member>
+        <member name="M:SSS.Api.Controllers.Permission.Info.UserInfoController.GetPermission(System.String)">
+            <summary>
+                获取用户的所有权限
+            </summary>
+            <param name="userid">userid</param>
+            <returns></returns>
+        </member>
         <member name="M:SSS.Api.Controllers.Permission.Info.UserInfoController.GetChildrenById(System.String)">
             <summary>
                 获取用户下的所有下级

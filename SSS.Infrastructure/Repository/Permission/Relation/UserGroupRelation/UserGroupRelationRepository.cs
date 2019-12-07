@@ -20,10 +20,9 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.UserGroupRelation
 
         /// <summary>
         /// 根据用户组Id或名称，遍历关联用户
-        /// </summary>
-        /// <param name="input"></param>
+        /// </summary> 
         /// <returns></returns>
-        public Pages<List<UserGroupRelationOutputDto>> GetUserByUserGroup(UserGroupRelationInputDto input)
+        public Pages<List<UserGroupRelationOutputDto>> GetUserByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
             string field = @"u.id AS 'userid',
 	                u.UserName AS 'username',
@@ -42,30 +41,35 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.UserGroupRelation
 	                AND ur.IsDelete=0 
 	                AND uur.IsDelete=0 ";
 
-            if (!string.IsNullOrWhiteSpace(input.usergroupid))
-                sql += $" AND ur.Id='{input.usergroupid}'";
+            if (!string.IsNullOrWhiteSpace(usergroupid))
+                sql += $" AND ur.Id='{usergroupid}'";
 
-            if (!string.IsNullOrWhiteSpace(input.usergroupname))
-                sql += $" AND ur.UserGroupName='{input.usergroupname}'";
+            if (!string.IsNullOrWhiteSpace(usergroupname))
+                sql += $" AND ur.UserGroupName='{usergroupname}'";
 
-            if (!string.IsNullOrWhiteSpace(input.parentid))
-                sql += $" AND ur.ParentId='{input.parentid}'";
+            if (!string.IsNullOrWhiteSpace(parentid))
+                sql += $" AND ur.ParentId='{parentid}'";
 
             int count = Db.Database.Count(string.Format(sql, " count(*) "));
 
-            var data = Db.Database.SqlQuery<UserGroupRelationOutputDto>(string.Format(sql, field));
-
-            if (data != null && input.pagesize > 0)
-                return new Pages<List<UserGroupRelationOutputDto>>(data.Skip(input.pagesize * (input.pageindex > 1 ? input.pageindex - 1 : 0)).Take(input.pagesize).ToList(), count);
-            return new Pages<List<UserGroupRelationOutputDto>>(data?.ToList(), count);
+            if (pageindex > 0 && pagesize > 0)
+            {
+                string limit = " limit {1},{2} ";
+                var data = Db.Database.SqlQuery<UserGroupRelationOutputDto>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
+                return new Pages<List<UserGroupRelationOutputDto>>(data.ToList(), count);
+            }
+            else
+            {
+                var data = Db.Database.SqlQuery<UserGroupRelationOutputDto>(string.Format(sql, field));
+                return new Pages<List<UserGroupRelationOutputDto>>(data?.ToList(), count);
+            }
         }
 
         /// <summary>
         /// 根据用户Id或名称，遍历关联用户组
-        /// </summary>
-        /// <param name="input"></param>
+        /// </summary> 
         /// <returns></returns>
-        public Pages<List<UserGroupRelationOutputDto>> GetUserGroupByUser(UserGroupRelationInputDto input)
+        public Pages<List<UserGroupRelationOutputDto>> GetUserGroupByUser(string userid, string username, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
             string field = @"u.id AS 'userid',
 	                u.UserName AS 'username',
@@ -84,22 +88,28 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.UserGroupRelation
 	                AND ur.IsDelete=0 
 	                AND uur.IsDelete=0 ";
 
-            if (!string.IsNullOrWhiteSpace(input.userid))
-                sql += $" AND u.Id='{input.userid}'";
+            if (!string.IsNullOrWhiteSpace(userid))
+                sql += $" AND u.Id='{userid}'";
 
-            if (!string.IsNullOrWhiteSpace(input.username))
-                sql += $" AND u.UserName='{input.username}'";
+            if (!string.IsNullOrWhiteSpace(username))
+                sql += $" AND u.UserName='{username}'";
 
-            if (!string.IsNullOrWhiteSpace(input.parentid))
-                sql += $" AND u.ParentId='{input.parentid}'";
+            if (!string.IsNullOrWhiteSpace(parentid))
+                sql += $" AND u.ParentId='{parentid}'";
 
             int count = Db.Database.Count(string.Format(sql, " count(*) "));
 
-            var data = Db.Database.SqlQuery<UserGroupRelationOutputDto>(string.Format(sql, field));
-
-            if (data != null && input.pagesize > 0)
-                return new Pages<List<UserGroupRelationOutputDto>>(data.Skip(input.pagesize * (input.pageindex > 1 ? input.pageindex - 1 : 0)).Take(input.pagesize).ToList(), count);
-            return new Pages<List<UserGroupRelationOutputDto>>(data?.ToList(), count);
+            if (pageindex > 0 && pagesize > 0)
+            {
+                string limit = " limit {1},{2} ";
+                var data = Db.Database.SqlQuery<UserGroupRelationOutputDto>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
+                return new Pages<List<UserGroupRelationOutputDto>>(data.ToList(), count);
+            }
+            else
+            {
+                var data = Db.Database.SqlQuery<UserGroupRelationOutputDto>(string.Format(sql, field));
+                return new Pages<List<UserGroupRelationOutputDto>>(data?.ToList(), count);
+            }
         }
     }
 }

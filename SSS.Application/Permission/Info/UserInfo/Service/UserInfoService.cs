@@ -57,10 +57,21 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         /// <returns></returns>
         public object GetUserPermission(string userid)
         {
-            var menu = "";
-            var operate = "";
+            var user = _userinfoRepository.Get(userid);
+            var usergroup = _userGroupRelationRepository.GetUserGroupByUser(userid, "", "");
 
-            return new { menu, operate };
+            var usergroup_powergroup = "";
+
+            var menu = "";
+            var powermenu = "";
+
+            var operate = "";
+            var operategroup = "";
+
+            var role = "";
+            var rolegroup = "";
+
+            return new { menu, powermenu, operate, operategroup, role, rolegroup };
         }
 
         /// <summary>
@@ -109,16 +120,14 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
 
             if (string.IsNullOrWhiteSpace(input.usergroupid))
             {
-                var group = _userGroupRepository.Get(x => x.Id.Equals(input.usergroupid));
-
-                if (group != null)
-                    //添加用户组关联
+                var usergroup = _userGroupRepository.Get(x => x.Id.Equals(input.usergroupid));
+                if (usergroup != null)
                     _userGroupRelationRepository.Add(new Domain.Permission.Relation.UserGroupRelation.UserGroupRelation()
                     {
                         CreateTime = DateTime.Now,
                         Id = Guid.NewGuid().ToString(),
                         IsDelete = 0,
-                        UserGroupId = group.Id,
+                        UserGroupId = usergroup.Id,
                         UserId = model.Id
                     });
             }
@@ -165,7 +174,7 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         /// <returns></returns>
         public Pages<List<UserGroupRelationOutputDto>> GetUserByUserGroup(UserGroupRelationInputDto input)
         {
-            return _userGroupRelationRepository.GetUserByUserGroup(input);
+            return _userGroupRelationRepository.GetUserByUserGroup(input.usergroupid, input.usergroupname, input.parentid, input.pageindex, input.pagesize);
         }
 
 
@@ -176,7 +185,7 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         /// <returns></returns>
         public Pages<List<UserPowerGroupRelationOutputDto>> GetUserByPowerGroup(UserPowerGroupRelationInputDto input)
         {
-            return _userPowerGroupRelationRepository.GetUserByPowerGroup(input);
+            return _userPowerGroupRelationRepository.GetUserByPowerGroup(input.powergroupid, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
         }
     }
 }

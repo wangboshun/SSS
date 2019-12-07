@@ -20,10 +20,9 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.PowerGroupOperateRel
 
         /// <summary>
         ///  根据操作Id或名称，遍历关联权限组
-        /// </summary>
-        /// <param name="input"></param>
+        /// </summary> 
         /// <returns></returns>
-        public Pages<List<PowerGroupOperateRelationOutputDto>> GetPowerGroupByOperate(PowerGroupOperateRelationInputDto input)
+        public Pages<List<PowerGroupOperateRelationOutputDto>> GetPowerGroupByOperate(string operateid, string operatename, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
             string field = @" o.Id AS operateid,
 	            o.operateName AS operatename,
@@ -42,30 +41,35 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.PowerGroupOperateRel
 	            AND pg.IsDelete = 0 
 	            AND pgor.IsDelete = 0";
 
-            if (!string.IsNullOrWhiteSpace(input.operateid))
-                sql += $" AND m.Id='{input.operateid}'";
+            if (!string.IsNullOrWhiteSpace(operateid))
+                sql += $" AND m.Id='{operateid}'";
 
-            if (!string.IsNullOrWhiteSpace(input.operatename))
-                sql += $" AND m.MenuName='{input.operatename}'";
+            if (!string.IsNullOrWhiteSpace(operatename))
+                sql += $" AND m.MenuName='{operatename}'";
 
-            if (!string.IsNullOrWhiteSpace(input.parentid))
-                sql += $" AND m.ParentId='{input.parentid}'";
+            if (!string.IsNullOrWhiteSpace(parentid))
+                sql += $" AND m.ParentId='{parentid}'";
 
             int count = Db.Database.Count(string.Format(sql, " count(*) "));
 
-            var data = Db.Database.SqlQuery<PowerGroupOperateRelationOutputDto>(string.Format(sql, field));
-
-            if (data != null && input.pagesize > 0)
-                return new Pages<List<PowerGroupOperateRelationOutputDto>>(data.Skip(input.pagesize * (input.pageindex > 1 ? input.pageindex - 1 : 0)).Take(input.pagesize).ToList(), count);
-            return new Pages<List<PowerGroupOperateRelationOutputDto>>(data?.ToList(), count);
+            if (pageindex > 0 && pagesize > 0)
+            {
+                string limit = " limit {1},{2} ";
+                var data = Db.Database.SqlQuery<PowerGroupOperateRelationOutputDto>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
+                return new Pages<List<PowerGroupOperateRelationOutputDto>>(data.ToList(), count);
+            }
+            else
+            {
+                var data = Db.Database.SqlQuery<PowerGroupOperateRelationOutputDto>(string.Format(sql, field));
+                return new Pages<List<PowerGroupOperateRelationOutputDto>>(data?.ToList(), count);
+            }
         }
 
         /// <summary>
         /// 根据权限组Id或名称，遍历关联操作
-        /// </summary>
-        /// <param name="input"></param>
+        /// </summary> 
         /// <returns></returns>
-        public Pages<List<PowerGroupOperateRelationOutputDto>> GetOperateByPowerGroup(PowerGroupOperateRelationInputDto input)
+        public Pages<List<PowerGroupOperateRelationOutputDto>> GetOperateByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
             string field = @" o.Id AS operateid,
 	            o.operateName AS operatename,
@@ -84,22 +88,28 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.PowerGroupOperateRel
 	            AND pg.IsDelete = 0 
 	            AND pgor.IsDelete = 0";
 
-            if (!string.IsNullOrWhiteSpace(input.powergroupid))
-                sql += $" AND pg.Id='{input.powergroupid}'";
+            if (!string.IsNullOrWhiteSpace(powergroupid))
+                sql += $" AND pg.Id='{powergroupid}'";
 
-            if (!string.IsNullOrWhiteSpace(input.powergroupname))
-                sql += $" AND pg.PowerGroupName='{input.powergroupname}'";
+            if (!string.IsNullOrWhiteSpace(powergroupname))
+                sql += $" AND pg.PowerGroupName='{powergroupname}'";
 
-            if (!string.IsNullOrWhiteSpace(input.parentid))
-                sql += $" AND pg.ParentId='{input.parentid}'";
+            if (!string.IsNullOrWhiteSpace(parentid))
+                sql += $" AND pg.ParentId='{parentid}'";
 
             int count = Db.Database.Count(string.Format(sql, " count(*) "));
 
-            var data = Db.Database.SqlQuery<PowerGroupOperateRelationOutputDto>(string.Format(sql, field));
-
-            if (data != null && input.pagesize > 0)
-                return new Pages<List<PowerGroupOperateRelationOutputDto>>(data.Skip(input.pagesize * (input.pageindex > 1 ? input.pageindex - 1 : 0)).Take(input.pagesize).ToList(), count);
-            return new Pages<List<PowerGroupOperateRelationOutputDto>>(data?.ToList(), count);
+            if (pageindex > 0 && pagesize > 0)
+            {
+                string limit = " limit {1},{2} ";
+                var data = Db.Database.SqlQuery<PowerGroupOperateRelationOutputDto>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
+                return new Pages<List<PowerGroupOperateRelationOutputDto>>(data.ToList(), count);
+            }
+            else
+            {
+                var data = Db.Database.SqlQuery<PowerGroupOperateRelationOutputDto>(string.Format(sql, field));
+                return new Pages<List<PowerGroupOperateRelationOutputDto>>(data?.ToList(), count);
+            }
         }
     }
 }

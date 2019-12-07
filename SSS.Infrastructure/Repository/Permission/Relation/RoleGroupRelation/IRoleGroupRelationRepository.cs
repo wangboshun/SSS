@@ -10,16 +10,14 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.RoleGroupRelation
     {
         /// <summary>
         /// 根据角色Id或名称，遍历关联角色组
-        /// </summary>
-        /// <param name="input"></param>
+        /// </summary> 
         /// <returns></returns>
-        Pages<List<RoleGroupRelationOutputDto>> GetRoleGroupByRole(RoleGroupRelationInputDto input);
+        Pages<List<RoleGroupRelationOutputDto>> GetRoleGroupByRole(string roleid, string rolename, string parentid = "", int pageindex = 0, int pagesize = 0);
 
         /// <summary>
         /// 根据角色组Id或名称，遍历关联角色
-        /// </summary>
-        /// <param name="input"></param>
+        /// </summary> 
         /// <returns></returns>
-        Pages<List<RoleGroupRelationOutputDto>> GetRoleByRoleGroup(RoleGroupRelationInputDto input);
+        Pages<List<RoleGroupRelationOutputDto>> GetRoleByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
     }
 }

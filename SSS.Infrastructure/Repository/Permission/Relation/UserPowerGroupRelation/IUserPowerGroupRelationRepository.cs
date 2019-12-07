@@ -10,16 +10,14 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.UserPowerGroupRelati
     {
         /// <summary>
         /// 根据权限组Id或名称，遍历关联用户
-        /// </summary>
-        /// <param name="input"></param>
+        /// </summary> 
         /// <returns></returns>
-        Pages<List<UserPowerGroupRelationOutputDto>> GetUserByPowerGroup(UserPowerGroupRelationInputDto input);
+        Pages<List<UserPowerGroupRelationOutputDto>> GetUserByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
 
         /// <summary>
         /// 根据用户Id或名称，遍历关联权限组
-        /// </summary>
-        /// <param name="input"></param>
+        /// </summary> 
         /// <returns></returns>
-        Pages<List<UserPowerGroupRelationOutputDto>> GetPowerGroupByUser(UserPowerGroupRelationInputDto input);
+        Pages<List<UserPowerGroupRelationOutputDto>> GetPowerGroupByUser(string userid, string username, string parentid = "", int pageindex = 0, int pagesize = 0);
     }
 }

@@ -43,6 +43,19 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
+        ///     获取用户的所有权限
+        /// </summary>
+        /// <param name="userid">userid</param>
+        /// <returns></returns>
+        [HttpGet("getpermission")]
+        [AllowAnonymous] //匿名访问
+        public IActionResult GetPermission(string userid)
+        {
+            var result = _service.GetUserPermission(userid);
+            return ApiResponse(result);
+        }
+
+        /// <summary>
         ///     获取用户下的所有下级
         /// </summary>
         /// <param name="userid">用户Id</param>

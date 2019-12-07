@@ -67,16 +67,19 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
             var model = Mapper.Map<Domain.Permission.Info.OperateInfo.OperateInfo>(input);
             model.CreateTime = DateTime.Now;
 
-            //PowerGroupOperate
-            var group = _powerGroupRepository.Get(x => x.Id.Equals(input.powergroupid));
-            _powerGroupOperateRelationRepository.Add(new PowerGroupOperateRelation()
+            if (!string.IsNullOrWhiteSpace(input.powergroupid))
             {
-                CreateTime = DateTime.Now,
-                Id = Guid.NewGuid().ToString(),
-                OperateId = model.Id,
-                PowerGroupId = group != null ? group.Id : "0",
-                IsDelete = 0
-            });
+                var powergroup = _powerGroupRepository.Get(x => x.Id.Equals(input.powergroupid));
+                if (powergroup != null)
+                    _powerGroupOperateRelationRepository.Add(new PowerGroupOperateRelation()
+                    {
+                        CreateTime = DateTime.Now,
+                        Id = Guid.NewGuid().ToString(),
+                        OperateId = model.Id,
+                        PowerGroupId = powergroup.Id,
+                        IsDelete = 0
+                    });
+            }
 
             Repository.Add(model);
             Repository.SaveChanges();
@@ -111,7 +114,7 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
         /// <returns></returns>
         public Pages<List<PowerGroupOperateRelationOutputDto>> GetOperateByPowerGroup(PowerGroupOperateRelationInputDto input)
         {
-            return _powerGroupOperateRelationRepository.GetOperateByPowerGroup(input);
+            return _powerGroupOperateRelationRepository.GetOperateByPowerGroup(input.powergroupid, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
         }
     }
 }

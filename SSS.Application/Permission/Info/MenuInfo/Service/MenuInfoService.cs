@@ -60,21 +60,18 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
             var model = Mapper.Map<Domain.Permission.Info.MenuInfo.MenuInfo>(input);
             model.CreateTime = DateTime.Now;
 
-            //PowerGroupMenu
             if (!string.IsNullOrWhiteSpace(input.powergroupid))
             {
-                //查出权限组
                 var powergroup = _powerGroupRepository.Get(input.powergroupid);
-
-                //添加权限组于菜单关联关系
-                _powerGroupMenuRelationRepository.Add(new Domain.Permission.Relation.PowerGroupMenuRelation.PowerGroupMenuRelation
-                {
-                    CreateTime = DateTime.Now,
-                    Id = Guid.NewGuid().ToString(),
-                    MenuId = model.Id,
-                    PowerGroupId = powergroup != null ? powergroup.Id : "0",
-                    IsDelete = 0
-                });
+                if (powergroup != null)
+                    _powerGroupMenuRelationRepository.Add(new Domain.Permission.Relation.PowerGroupMenuRelation.PowerGroupMenuRelation
+                    {
+                        CreateTime = DateTime.Now,
+                        Id = Guid.NewGuid().ToString(),
+                        MenuId = model.Id,
+                        PowerGroupId = powergroup.Id,
+                        IsDelete = 0
+                    });
             }
 
             Repository.Add(model);
@@ -105,7 +102,7 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
         /// <returns></returns>
         public Pages<List<PowerGroupMenuRelationOutputDto>> GetMenuByPowerGroup(PowerGroupMenuRelationInputDto input)
         {
-            return _powerGroupMenuRelationRepository.GetMenuByPowerGroup(input);
+            return _powerGroupMenuRelationRepository.GetMenuByPowerGroup(input.powergroupid, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
         }
 
         public Pages<List<MenuInfoOutputDto>> GetListMenuInfo(MenuInfoInputDto input)

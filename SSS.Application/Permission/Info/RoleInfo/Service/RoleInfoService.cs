@@ -61,15 +61,19 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
             var model = Mapper.Map<Domain.Permission.Info.RoleInfo.RoleInfo>(input);
             model.CreateTime = DateTime.Now;
 
-            var group = _roleGroupRepository.Get(x => x.Id.Equals(input.rolegroupid));
-            _roleGroupRelationRepository.Add(new RoleGroupRelation()
+            if (!string.IsNullOrWhiteSpace(input.rolegroupid))
             {
-                CreateTime = DateTime.Now,
-                Id = Guid.NewGuid().ToString(),
-                RoleId = model.Id,
-                RoleGroupId = group != null ? group.Id : "0",
-                IsDelete = 0
-            });
+                var rolegroup = _roleGroupRepository.Get(x => x.Id.Equals(input.rolegroupid));
+                if (rolegroup != null)
+                    _roleGroupRelationRepository.Add(new RoleGroupRelation()
+                    {
+                        CreateTime = DateTime.Now,
+                        Id = Guid.NewGuid().ToString(),
+                        RoleId = model.Id,
+                        RoleGroupId = rolegroup.Id,
+                        IsDelete = 0
+                    });
+            }
 
             Repository.Add(model);
             Repository.SaveChanges();
@@ -104,7 +108,7 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
         /// <returns></returns>
         public Pages<List<RoleGroupRelationOutputDto>> GetRoleByRoleGroup(RoleGroupRelationInputDto input)
         {
-            return _roleGroupRelationRepository.GetRoleByRoleGroup(input);
+            return _roleGroupRelationRepository.GetRoleByRoleGroup(input.rolegroupid, input.rolegroupname, input.parentid, input.pageindex, input.pagesize);
         }
     }
 }
