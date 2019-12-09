@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Domain.Permission.Info.UserInfo.Dto;
+using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Seedwork.Repository;
 using SSS.Infrastructure.Util.Attribute;
@@ -108,6 +109,107 @@ namespace SSS.Infrastructure.Repository.Permission.Info.UserInfo
                 node.Item = GetAllLeaves(node, originalList);
             }
             return nodes;
+        }
+
+        /// <summary>
+        /// 根据用户组Id或名称，遍历关联用户
+        /// </summary> 
+        /// <returns></returns>
+        public Pages<IEnumerable<Domain.Permission.Info.UserInfo.UserInfo>> GetUserByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        {
+            string field = " u.* ";
+
+            string sql = @"SELECT {0}   FROM
+	                UserInfo AS u
+	                INNER JOIN UserGroupRelation AS uur ON u.id = uur.UserId
+	                INNER JOIN UserGroup AS ur ON uur.UserGroupId = ur.Id 
+                WHERE
+	                u.IsDelete=0 
+	                AND ur.IsDelete=0 
+	                AND uur.IsDelete=0 ";
+
+            if (!string.IsNullOrWhiteSpace(usergroupid))
+                sql += $" AND ur.Id='{usergroupid}'";
+
+            if (!string.IsNullOrWhiteSpace(usergroupname))
+                sql += $" AND ur.UserGroupName='{usergroupname}'";
+
+            if (!string.IsNullOrWhiteSpace(parentid))
+                sql += $" AND ur.ParentId='{parentid}'";
+
+            int count = Db.Database.Count(string.Format(sql, " count(*) "));
+
+            if (pageindex > 0 && pagesize > 0)
+            {
+                string limit = " limit {1},{2} ";
+                var data = Db.Database.SqlQuery<Domain.Permission.Info.UserInfo.UserInfo>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
+                return new Pages<IEnumerable<Domain.Permission.Info.UserInfo.UserInfo>>(data, count);
+            }
+            else
+            {
+                var data = Db.Database.SqlQuery<Domain.Permission.Info.UserInfo.UserInfo>(string.Format(sql, field));
+                return new Pages<IEnumerable<Domain.Permission.Info.UserInfo.UserInfo>>(data, count);
+            }
+        }
+
+        /// <summary>
+        ///  根据权限组Id或名称，遍历关联用户
+        /// </summary>
+        /// <param name="powergroupid"></param>
+        /// <param name="powergroupname"></param>
+        /// <param name="parentid"></param>
+        /// <param name="pageindex"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        public Pages<IEnumerable<Domain.Permission.Info.UserInfo.UserInfo>> GetUserByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0,
+            int pagesize = 0)
+        {
+            string field = " u.* ";
+
+            string sql = @"SELECT {0}   FROM
+	                	UserInfo AS u
+	                    INNER JOIN UserGroupRelation AS ugr ON u.id = ugr.UserId
+	                    INNER JOIN UserGroup AS ug ON ug.id = ugr.UserGroupId
+	                    INNER JOIN RoleGroupUserGroupRelation AS rgugr ON rgugr.UserGroupId = ug.Id
+	                    INNER JOIN RoleGroup AS rg ON rg.Id = rgugr.RoleGroupId
+	                    INNER JOIN RoleGroupRelation AS rgr ON rg.Id = rgr.RoleGroupId
+	                    INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rg.Id
+	                    INNER JOIN PowerGroup AS pg ON pg.Id = rgpgr.PowerGroupId
+	                    INNER JOIN PowerGroupRelation AS pgr ON pg.Id = pgr.PowerGroupId
+	                    INNER JOIN PowerInfo AS p ON p.Id = pgr.PowerId 
+                    WHERE
+	                    u.IsDelete = 0 
+	                    AND ugr.IsDelete = 0 
+	                    AND ug.IsDelete = 0 
+	                    AND rgugr.IsDelete = 0 
+	                    AND rgr.IsDelete = 0 
+	                    AND rg.IsDelete = 0 
+	                    AND rgpgr.IsDelete = 0 
+	                    AND pg.IsDelete = 0 
+	                    AND p.IsDelete =0 ";
+
+            if (!string.IsNullOrWhiteSpace(powergroupid))
+                sql += $" AND pg.Id='{powergroupid}'";
+
+            if (!string.IsNullOrWhiteSpace(powergroupname))
+                sql += $" AND pg.PowerGroupName='{powergroupname}'";
+
+            if (!string.IsNullOrWhiteSpace(parentid))
+                sql += $" AND pg.ParentId='{parentid}'";
+
+            int count = Db.Database.Count(string.Format(sql, " count(*) "));
+
+            if (pageindex > 0 && pagesize > 0)
+            {
+                string limit = " limit {1},{2} ";
+                var data = Db.Database.SqlQuery<Domain.Permission.Info.UserInfo.UserInfo>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
+                return new Pages<IEnumerable<Domain.Permission.Info.UserInfo.UserInfo>>(data, count);
+            }
+            else
+            {
+                var data = Db.Database.SqlQuery<Domain.Permission.Info.UserInfo.UserInfo>(string.Format(sql, field));
+                return new Pages<IEnumerable<Domain.Permission.Info.UserInfo.UserInfo>>(data, count);
+            }
         }
     }
 }

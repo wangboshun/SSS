@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.Permission.Info.OperateInfo.Service;
+using SSS.Domain.Permission.Group.PowerGroup.Dto;
 using SSS.Domain.Permission.Info.OperateInfo.Dto;
-using SSS.Domain.Permission.Relation.PowerGroupOperateRelation.Dto;
 
 namespace SSS.Api.Controllers.Permission.Info
 {
@@ -87,7 +87,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// <returns></returns> 
         [HttpGet("get_operate_by_powergroup")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetOperateByPowerGroup([FromQuery]PowerGroupOperateRelationInputDto input)
+        public IActionResult GetOperateByPowerGroup([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetOperateByPowerGroup(input);
             return ApiResponse(result);

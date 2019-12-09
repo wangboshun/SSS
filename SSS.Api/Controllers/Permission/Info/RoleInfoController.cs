@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.Permission.Info.RoleInfo.Service;
+using SSS.Domain.Permission.Group.RoleGroup.Dto;
 using SSS.Domain.Permission.Info.RoleInfo.Dto;
-using SSS.Domain.Permission.Relation.RoleGroupRelation.Dto;
 
 namespace SSS.Api.Controllers.Permission.Info
 {
@@ -87,7 +87,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// <returns></returns> 
         [HttpGet("get_role_by_rolegroup")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetRoleByRoleGroup([FromQuery]RoleGroupRelationInputDto input)
+        public IActionResult GetRoleByRoleGroup([FromQuery]RoleGroupInputDto input)
         {
             var result = _service.GetRoleByRoleGroup(input);
             return ApiResponse(result);

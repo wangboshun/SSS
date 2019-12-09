@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.Permission.Info.MenuInfo.Service;
+using SSS.Domain.Permission.Group.PowerGroup.Dto;
 using SSS.Domain.Permission.Info.MenuInfo.Dto;
-using SSS.Domain.Permission.Relation.PowerGroupMenuRelation.Dto;
 
 namespace SSS.Api.Controllers.Permission.Info
 {
@@ -87,7 +87,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// <returns></returns> 
         [HttpGet("get_menu_by_powergroup")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetMenuByPowerGroup([FromQuery]PowerGroupMenuRelationInputDto input)
+        public IActionResult GetMenuByPowerGroup([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetMenuByPowerGroup(input);
             return ApiResponse(result);

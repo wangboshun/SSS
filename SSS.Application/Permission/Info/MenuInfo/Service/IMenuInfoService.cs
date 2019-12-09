@@ -1,6 +1,6 @@
 using SSS.Application.Seedwork.Service;
+using SSS.Domain.Permission.Group.PowerGroup.Dto;
 using SSS.Domain.Permission.Info.MenuInfo.Dto;
-using SSS.Domain.Permission.Relation.PowerGroupMenuRelation.Dto;
 using SSS.Domain.Seedwork.Model;
 
 using System.Collections.Generic;
@@ -25,6 +25,6 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Pages<List<PowerGroupMenuRelationOutputDto>> GetMenuByPowerGroup(PowerGroupMenuRelationInputDto input);
+        Pages<List<MenuInfoOutputDto>> GetMenuByPowerGroup(PowerGroupInputDto input);
     }
 }

@@ -1,4 +1,5 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 using FluentValidation;
 
@@ -6,23 +7,19 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Group.PowerGroup.Dto;
-using SSS.Domain.Permission.Relation.PowerGroupMenuRelation.Dto;
-using SSS.Domain.Permission.Relation.PowerGroupOperateRelation.Dto;
-using SSS.Domain.Permission.Relation.PowerGroupRelation.Dto;
-using SSS.Domain.Permission.Relation.UserGroupPowerGroupRelation.Dto;
-using SSS.Domain.Permission.Relation.UserPowerGroupRelation.Dto;
+using SSS.Domain.Permission.Group.UserGroup.Dto;
+using SSS.Domain.Permission.Info.MenuInfo.Dto;
+using SSS.Domain.Permission.Info.OperateInfo.Dto;
+using SSS.Domain.Permission.Info.PowerInfo.Dto;
+using SSS.Domain.Permission.Info.UserInfo.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.PowerGroup;
-using SSS.Infrastructure.Repository.Permission.Relation.PowerGroupMenuRelation;
-using SSS.Infrastructure.Repository.Permission.Relation.PowerGroupOperateRelation;
-using SSS.Infrastructure.Repository.Permission.Relation.PowerGroupRelation;
-using SSS.Infrastructure.Repository.Permission.Relation.UserGroupPowerGroupRelation;
-using SSS.Infrastructure.Repository.Permission.Relation.UserPowerGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SSS.Application.Permission.Group.PowerGroup.Service
 {
@@ -31,28 +28,15 @@ namespace SSS.Application.Permission.Group.PowerGroup.Service
         QueryService<Domain.Permission.Group.PowerGroup.PowerGroup, PowerGroupInputDto, PowerGroupOutputDto>,
         IPowerGroupService
     {
-        private readonly IUserPowerGroupRelationRepository _userPowerGroupRelation;
-        private readonly IPowerGroupRelationRepository _powerGroupRelationRepository;
-        private readonly IPowerGroupMenuRelationRepository _powerGroupMenuRelationRepository;
-        private readonly IPowerGroupOperateRelationRepository _powerGroupOperateRelationRepository;
-        private readonly IUserGroupPowerGroupRelationRepository _userGroupPowerGroupRelationRepository;
+        private readonly IPowerGroupRepository _powerGroupRepository;
 
         public PowerGroupService(IMapper mapper,
             IPowerGroupRepository repository,
             IErrorHandler error,
-            IValidator<PowerGroupInputDto> validator,
-            IUserPowerGroupRelationRepository userPowerGroupRelation,
-            IPowerGroupRelationRepository powerGroupRelationRepository,
-            IPowerGroupMenuRelationRepository powerGroupMenuRelationRepository,
-            IPowerGroupOperateRelationRepository powerGroupOperateRelationRepository,
-            IUserGroupPowerGroupRelationRepository userGroupPowerGroupRelationRepository) :
+            IValidator<PowerGroupInputDto> validator) :
             base(mapper, repository, error, validator)
         {
-            _userPowerGroupRelation = userPowerGroupRelation;
-            _powerGroupRelationRepository = powerGroupRelationRepository;
-            _powerGroupMenuRelationRepository = powerGroupMenuRelationRepository;
-            _powerGroupOperateRelationRepository = powerGroupOperateRelationRepository;
-            _userGroupPowerGroupRelationRepository = userGroupPowerGroupRelationRepository;
+            _powerGroupRepository = repository;
         }
 
         public void AddPowerGroup(PowerGroupInputDto input)
@@ -86,9 +70,10 @@ namespace SSS.Application.Permission.Group.PowerGroup.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<PowerGroupRelationOutputDto>> GetPowerGroupByPower(PowerGroupRelationInputDto input)
+        public Pages<List<PowerGroupOutputDto>> GetPowerGroupByPower(PowerInfoInputDto input)
         {
-            return _powerGroupRelationRepository.GetPowerGroupByPower(input.powerid, input.powername, input.parentid, input.pageindex, input.pagesize);
+            var data = _powerGroupRepository.GetPowerGroupByPower(input.id, input.powername, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<PowerGroupOutputDto>>(data.items.AsQueryable().ProjectTo<PowerGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
 
         /// <summary>
@@ -96,9 +81,10 @@ namespace SSS.Application.Permission.Group.PowerGroup.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<PowerGroupMenuRelationOutputDto>> GetPowerGroupByMenu(PowerGroupMenuRelationInputDto input)
+        public Pages<List<PowerGroupOutputDto>> GetPowerGroupByMenu(MenuInfoInputDto input)
         {
-            return _powerGroupMenuRelationRepository.GetPowerGroupByMenu(input.menuid, input.menuname, input.parentid, input.pageindex, input.pagesize);
+            var data = _powerGroupRepository.GetPowerGroupByMenu(input.id, input.menuname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<PowerGroupOutputDto>>(data.items.AsQueryable().ProjectTo<PowerGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
 
         /// <summary>
@@ -106,19 +92,22 @@ namespace SSS.Application.Permission.Group.PowerGroup.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<PowerGroupOperateRelationOutputDto>> GetPowerGroupByOperate(PowerGroupOperateRelationInputDto input)
+        public Pages<List<PowerGroupOutputDto>> GetPowerGroupByOperate(OperateInfoInputDto input)
         {
-            return _powerGroupOperateRelationRepository.GetPowerGroupByOperate(input.operateid, input.operatename, input.parentid, input.pageindex, input.pagesize);
+            var data = _powerGroupRepository.GetPowerGroupByOperate(input.id, input.operatename, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<PowerGroupOutputDto>>(data.items.AsQueryable().ProjectTo<PowerGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
 
         /// <summary>
-        /// 根据用户Id或名称，遍历关联权限组
+        ///  根据用户Id或名称，遍历关联权限组
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<UserPowerGroupRelationOutputDto>> GetPowerGroupByUser(UserPowerGroupRelationInputDto input)
+        public Pages<List<PowerGroupOutputDto>> GetPowerGroupByUser(UserInfoInputDto input)
         {
-            return _userPowerGroupRelation.GetPowerGroupByUser(input.userid, input.username, input.parentid, input.pageindex, input.pagesize);
+            var data = _powerGroupRepository.GetPowerGroupByOperate(input.id, input.username, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<PowerGroupOutputDto>>(data.items.AsQueryable().ProjectTo<PowerGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+
         }
 
         /// <summary>
@@ -126,9 +115,11 @@ namespace SSS.Application.Permission.Group.PowerGroup.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<UserGroupPowerGroupRelationOutputDto>> GetPowerGroupByUserGroup(UserGroupPowerGroupRelationInputDto input)
+        public Pages<List<PowerGroupOutputDto>> GetPowerGroupByUserGroup(UserGroupInputDto input)
         {
-            return _userGroupPowerGroupRelationRepository.GetPowerGroupByUserGroup(input.usergroupid, input.usergroupname, input.parentid, input.pageindex, input.pagesize);
+            var data = _powerGroupRepository.GetPowerGroupByOperate(input.id, input.usergroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<PowerGroupOutputDto>>(data.items.AsQueryable().ProjectTo<PowerGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+
         }
     }
 }

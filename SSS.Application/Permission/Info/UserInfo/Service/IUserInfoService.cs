@@ -1,7 +1,7 @@
 using SSS.Application.Seedwork.Service;
+using SSS.Domain.Permission.Group.PowerGroup.Dto;
+using SSS.Domain.Permission.Group.UserGroup.Dto;
 using SSS.Domain.Permission.Info.UserInfo.Dto;
-using SSS.Domain.Permission.Relation.UserGroupRelation.Dto;
-using SSS.Domain.Permission.Relation.UserPowerGroupRelation.Dto;
 using SSS.Domain.Seedwork.Model;
 
 using System.Collections.Generic;
@@ -43,13 +43,13 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Pages<List<UserGroupRelationOutputDto>> GetUserByUserGroup(UserGroupRelationInputDto input);
+        Pages<List<UserInfoInputDto>> GetUserByUserGroup(UserGroupInputDto input);
 
         /// <summary>
         /// 根据权限组Id或名称，遍历关联用户
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Pages<List<UserPowerGroupRelationOutputDto>> GetUserByPowerGroup(UserPowerGroupRelationInputDto input);
+        Pages<List<UserInfoOutputDto>> GetUserByPowerGroup(PowerGroupInputDto input);
     }
 }

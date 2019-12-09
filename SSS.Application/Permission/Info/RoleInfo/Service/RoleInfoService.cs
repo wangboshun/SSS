@@ -1,13 +1,14 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 using FluentValidation;
 
 using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
+using SSS.Domain.Permission.Group.RoleGroup.Dto;
 using SSS.Domain.Permission.Info.RoleInfo.Dto;
 using SSS.Domain.Permission.Relation.RoleGroupRelation;
-using SSS.Domain.Permission.Relation.RoleGroupRelation.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.RoleGroup;
@@ -17,6 +18,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SSS.Application.Permission.Info.RoleInfo.Service
 {
@@ -24,7 +26,7 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
     public class RoleInfoService :
         QueryService<Domain.Permission.Info.RoleInfo.RoleInfo, RoleInfoInputDto, RoleInfoOutputDto>, IRoleInfoService
     {
-        private readonly IRoleInfoRepository _repository;
+        private readonly IRoleInfoRepository _roleInfoRepository;
         private readonly IRoleGroupRepository _roleGroupRepository;
         private readonly IRoleGroupRelationRepository _roleGroupRelationRepository;
 
@@ -36,7 +38,7 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
             IRoleGroupRepository roleGroupRepository) :
             base(mapper, repository, error, validator)
         {
-            _repository = repository;
+            _roleInfoRepository = repository;
             _roleGroupRepository = roleGroupRepository;
             _roleGroupRelationRepository = roleGroupRelationRepository;
         }
@@ -93,7 +95,7 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
         /// <returns></returns>
         public List<RoleInfoTreeOutputDto> GetChildren(string roleid)
         {
-            return _repository.GetChildren(roleid);
+            return _roleInfoRepository.GetChildren(roleid);
         }
 
         public Pages<List<RoleInfoOutputDto>> GetListRoleInfo(RoleInfoInputDto input)
@@ -106,9 +108,10 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<RoleGroupRelationOutputDto>> GetRoleByRoleGroup(RoleGroupRelationInputDto input)
+        public Pages<List<RoleInfoOutputDto>> GetRoleByRoleGroup(RoleGroupInputDto input)
         {
-            return _roleGroupRelationRepository.GetRoleByRoleGroup(input.rolegroupid, input.rolegroupname, input.parentid, input.pageindex, input.pagesize);
+            var data = _roleInfoRepository.GetRoleByRoleGroup(input.id, input.rolegroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<RoleInfoOutputDto>>(data.items.AsQueryable().ProjectTo<RoleInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
     }
 }

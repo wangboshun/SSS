@@ -1,22 +1,22 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 using FluentValidation;
 
 using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
+using SSS.Domain.Permission.Group.PowerGroup.Dto;
 using SSS.Domain.Permission.Group.UserGroup.Dto;
-using SSS.Domain.Permission.Relation.UserGroupPowerGroupRelation.Dto;
-using SSS.Domain.Permission.Relation.UserGroupRelation.Dto;
+using SSS.Domain.Permission.Info.UserInfo.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.UserGroup;
-using SSS.Infrastructure.Repository.Permission.Relation.UserGroupPowerGroupRelation;
-using SSS.Infrastructure.Repository.Permission.Relation.UserGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SSS.Application.Permission.Group.UserGroup.Service
 {
@@ -25,19 +25,15 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
         QueryService<Domain.Permission.Group.UserGroup.UserGroup, UserGroupInputDto, UserGroupOutputDto>,
         IUserGroupService
     {
-        private readonly IUserGroupRelationRepository _userGroupRelationRepository;
-        private readonly IUserGroupPowerGroupRelationRepository _userGroupPowerGroupRelationRepository;
+        private readonly IUserGroupRepository _userGroupRepository;
 
         public UserGroupService(IMapper mapper,
             IUserGroupRepository repository,
             IErrorHandler error,
-            IValidator<UserGroupInputDto> validator,
-            IUserGroupRelationRepository userGroupRelationRepository,
-            IUserGroupPowerGroupRelationRepository userGroupPowerGroupRelationRepository) :
+            IValidator<UserGroupInputDto> validator) :
             base(mapper, repository, error, validator)
         {
-            _userGroupRelationRepository = userGroupRelationRepository;
-            _userGroupPowerGroupRelationRepository = userGroupPowerGroupRelationRepository;
+            _userGroupRepository = repository;
         }
 
         public void AddUserGroup(UserGroupInputDto input)
@@ -71,19 +67,17 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<UserGroupRelationOutputDto>> GetUserGroupByUser(UserGroupRelationInputDto input)
+        public Pages<List<UserGroupOutputDto>> GetUserGroupByUser(UserInfoInputDto input)
         {
-            return _userGroupRelationRepository.GetUserGroupByUser(input.userid, input.username, input.parentid, input.pageindex, input.pagesize);
+            var data = _userGroupRepository.GetUserGroupByUser(input.id, input.username, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<UserGroupOutputDto>>(data.items.AsQueryable().ProjectTo<UserGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+
         }
 
-        /// <summary>
-        /// 根据权限组Id或名称，遍历关联用户组
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public Pages<List<UserGroupPowerGroupRelationOutputDto>> GetUserGroupByPowerGroup(UserGroupPowerGroupRelationInputDto input)
+        public Pages<List<UserGroupOutputDto>> GetUserGroupByPowerGroup(PowerGroupInputDto input)
         {
-            return _userGroupPowerGroupRelationRepository.GetUserGroupByPowerGroup(input.powergroupid, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
+            var data = _userGroupRepository.GetUserGroupByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<UserGroupOutputDto>>(data.items.AsQueryable().ProjectTo<UserGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
     }
 }

@@ -1,24 +1,25 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 using FluentValidation;
 
 using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
+using SSS.Domain.Permission.Group.PowerGroup.Dto;
+using SSS.Domain.Permission.Group.UserGroup.Dto;
 using SSS.Domain.Permission.Info.UserInfo.Dto;
-using SSS.Domain.Permission.Relation.UserGroupRelation.Dto;
-using SSS.Domain.Permission.Relation.UserPowerGroupRelation.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.UserGroup;
 using SSS.Infrastructure.Repository.Permission.Info.UserInfo;
 using SSS.Infrastructure.Repository.Permission.Relation.UserGroupRelation;
-using SSS.Infrastructure.Repository.Permission.Relation.UserPowerGroupRelation;
 using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SSS.Application.Permission.Info.UserInfo.Service
 {
@@ -31,7 +32,6 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         private readonly IUserInfoRepository _userinfoRepository;
         private readonly IUserGroupRepository _userGroupRepository;
         private readonly IUserGroupRelationRepository _userGroupRelationRepository;
-        private readonly IUserPowerGroupRelationRepository _userPowerGroupRelationRepository;
 
         public UserInfoService(IMapper mapper,
             IUserInfoRepository repository,
@@ -39,15 +39,13 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
             IValidator<UserInfoInputDto> validator,
             MemoryCacheEx memorycache,
             IUserGroupRepository userGroupRepository,
-            IUserGroupRelationRepository userGroupRelationRepository,
-            IUserPowerGroupRelationRepository userPowerGroupRelationRepository
+            IUserGroupRelationRepository userGroupRelationRepository
         ) : base(mapper, repository, error, validator)
         {
             _memorycache = memorycache;
             _userinfoRepository = repository;
             _userGroupRepository = userGroupRepository;
             _userGroupRelationRepository = userGroupRelationRepository;
-            _userPowerGroupRelationRepository = userPowerGroupRelationRepository;
         }
 
         /// <summary>
@@ -58,7 +56,7 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         public object GetUserPermission(string userid)
         {
             var user = _userinfoRepository.Get(userid);
-            var usergroup = _userGroupRelationRepository.GetUserGroupByUser(userid, "", "");
+            var usergroup = "";
 
             var usergroup_powergroup = "";
 
@@ -172,20 +170,22 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<UserGroupRelationOutputDto>> GetUserByUserGroup(UserGroupRelationInputDto input)
+        public Pages<List<UserInfoInputDto>> GetUserByUserGroup(UserGroupInputDto input)
         {
-            return _userGroupRelationRepository.GetUserByUserGroup(input.usergroupid, input.usergroupname, input.parentid, input.pageindex, input.pagesize);
+            var data = _userinfoRepository.GetUserByUserGroup(input.id, input.usergroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<UserInfoInputDto>>(data.items.AsQueryable().ProjectTo<UserInfoInputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
 
-
         /// <summary>
-        /// 根据权限组Id或名称，遍历关联用户
+        ///  根据权限组Id或名称，遍历关联用户
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<UserPowerGroupRelationOutputDto>> GetUserByPowerGroup(UserPowerGroupRelationInputDto input)
+        public Pages<List<UserInfoOutputDto>> GetUserByPowerGroup(PowerGroupInputDto input)
         {
-            return _userPowerGroupRelationRepository.GetUserByPowerGroup(input.powergroupid, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
+            var data = _userinfoRepository.GetUserByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<UserInfoOutputDto>>(data.items.AsQueryable().ProjectTo<UserInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+
         }
     }
 }

@@ -4,6 +4,7 @@ namespace SSS.Domain.Permission.Group.UserGroup.Dto
 {
     public class UserGroupInputDto : InputDtoBase
     {
-        public string name { set; get; }
+        public string parentid { set; get; }
+        public string usergroupname { set; get; }
     }
 }

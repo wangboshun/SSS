@@ -1,12 +1,13 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 using FluentValidation;
 
 using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
+using SSS.Domain.Permission.Group.PowerGroup.Dto;
 using SSS.Domain.Permission.Info.PowerInfo.Dto;
-using SSS.Domain.Permission.Relation.PowerGroupRelation.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.PowerGroup;
@@ -16,6 +17,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SSS.Application.Permission.Info.PowerInfo.Service
 {
@@ -24,7 +26,7 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
         QueryService<Domain.Permission.Info.PowerInfo.PowerInfo, PowerInfoInputDto, PowerInfoOutputDto>,
         IPowerInfoService
     {
-        private readonly IPowerInfoRepository _repository;
+        private readonly IPowerInfoRepository _powerInfoRepository;
         private readonly IPowerGroupRepository _powerGroupRepository;
         private readonly IPowerGroupRelationRepository _powerGroupRelationRepository;
 
@@ -36,7 +38,7 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
             IPowerGroupRepository powerGroupRepository) :
             base(mapper, repository, error, validator)
         {
-            _repository = repository;
+            _powerInfoRepository = repository;
             _powerGroupRepository = powerGroupRepository;
             _powerGroupRelationRepository = powerGroupRelationRepository;
         }
@@ -91,7 +93,7 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
         /// <returns></returns>
         public List<PowerInfoTreeOutputDto> GetChildren(string menuid)
         {
-            return _repository.GetChildren(menuid);
+            return _powerInfoRepository.GetChildren(menuid);
         }
 
         /// <summary>
@@ -99,9 +101,10 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<PowerGroupRelationOutputDto>> GetPowerByPowerGroup(PowerGroupRelationInputDto input)
+        public Pages<List<PowerInfoOutputDto>> GetPowerByPowerGroup(PowerGroupInputDto input)
         {
-            return _powerGroupRelationRepository.GetPowerByPowerGroup(input.powergroupid, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
+            var data = _powerInfoRepository.GetPowerByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<PowerInfoOutputDto>>(data.items.AsQueryable().ProjectTo<PowerInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
     }
 }

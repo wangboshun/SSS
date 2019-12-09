@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.Permission.Group.UserGroup.Service;
+using SSS.Domain.Permission.Group.PowerGroup.Dto;
 using SSS.Domain.Permission.Group.UserGroup.Dto;
-using SSS.Domain.Permission.Relation.UserGroupPowerGroupRelation.Dto;
-using SSS.Domain.Permission.Relation.UserGroupRelation.Dto;
+using SSS.Domain.Permission.Info.UserInfo.Dto;
 
 namespace SSS.Api.Controllers.Permission.Group
 {
@@ -62,7 +62,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// <returns></returns> 
         [HttpGet("get_usergroup_by_user")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetUserGroupByUser([FromQuery]UserGroupRelationInputDto input)
+        public IActionResult GetUserGroupByUser([FromQuery]UserInfoInputDto input)
         {
             var result = _service.GetUserGroupByUser(input);
             return ApiResponse(result);
@@ -75,10 +75,10 @@ namespace SSS.Api.Controllers.Permission.Group
         /// <returns></returns> 
         [HttpGet("get_usergroup_by_powergroup")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetUserGroupByPowerGroup([FromQuery]UserGroupPowerGroupRelationInputDto input)
+        public IActionResult GetUserGroupByPowerGroup([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetUserGroupByPowerGroup(input);
-            return ApiResponse(result);
+            return ApiResponse(null);
         }
     }
 }

@@ -1,7 +1,7 @@
 using SSS.Application.Seedwork.Service;
+using SSS.Domain.Permission.Group.PowerGroup.Dto;
 using SSS.Domain.Permission.Info.OperateInfo;
 using SSS.Domain.Permission.Info.OperateInfo.Dto;
-using SSS.Domain.Permission.Relation.PowerGroupOperateRelation.Dto;
 using SSS.Domain.Seedwork.Model;
 
 using System.Collections.Generic;
@@ -27,6 +27,6 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Pages<List<PowerGroupOperateRelationOutputDto>> GetOperateByPowerGroup(PowerGroupOperateRelationInputDto input);
+        Pages<List<OperateInfoOutputDto>> GetOperateByPowerGroup(PowerGroupInputDto input);
     }
 }

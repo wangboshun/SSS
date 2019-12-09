@@ -1,4 +1,5 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 using FluentValidation;
 
@@ -6,15 +7,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Group.RoleGroup.Dto;
-using SSS.Domain.Permission.Relation.RoleGroupRelation.Dto;
+using SSS.Domain.Permission.Info.RoleInfo.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.RoleGroup;
-using SSS.Infrastructure.Repository.Permission.Relation.RoleGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SSS.Application.Permission.Group.RoleGroup.Service
 {
@@ -23,16 +24,15 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
         QueryService<Domain.Permission.Group.RoleGroup.RoleGroup, RoleGroupInputDto, RoleGroupOutputDto>,
         IRoleGroupService
     {
-        private readonly IRoleGroupRelationRepository _roleGroupRelationRepository;
+        private readonly IRoleGroupRepository _roleGroupRepository;
 
         public RoleGroupService(IMapper mapper,
             IRoleGroupRepository repository,
             IErrorHandler error,
-            IValidator<RoleGroupInputDto> validator,
-            IRoleGroupRelationRepository roleGroupRelationRepository) :
+            IValidator<RoleGroupInputDto> validator) :
             base(mapper, repository, error, validator)
         {
-            _roleGroupRelationRepository = roleGroupRelationRepository;
+            _roleGroupRepository = repository;
         }
 
         public void AddRoleGroup(RoleGroupInputDto input)
@@ -66,9 +66,10 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<RoleGroupRelationOutputDto>> GetRoleGroupByRole(RoleGroupRelationInputDto input)
+        public Pages<List<RoleGroupOutputDto>> GetRoleGroupByRole(RoleInfoInputDto input)
         {
-            return _roleGroupRelationRepository.GetRoleGroupByRole(input.roleid, input.rolename, input.parentid, input.pageindex, input.pagesize);
+            var data = _roleGroupRepository.GetRoleGroupByRole(input.id, input.rolename, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<RoleGroupOutputDto>>(data.items.AsQueryable().ProjectTo<RoleGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
     }
 }

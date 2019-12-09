@@ -1,12 +1,13 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 using FluentValidation;
 
 using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
+using SSS.Domain.Permission.Group.PowerGroup.Dto;
 using SSS.Domain.Permission.Info.MenuInfo.Dto;
-using SSS.Domain.Permission.Relation.PowerGroupMenuRelation.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.PowerGroup;
@@ -16,6 +17,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SSS.Application.Permission.Info.MenuInfo.Service
 {
@@ -23,7 +25,7 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
     public class MenuInfoService :
         QueryService<Domain.Permission.Info.MenuInfo.MenuInfo, MenuInfoInputDto, MenuInfoOutputDto>, IMenuInfoService
     {
-        private readonly IMenuInfoRepository _repository;
+        private readonly IMenuInfoRepository _menuInfoRepository;
         private readonly IPowerGroupRepository _powerGroupRepository;
         private readonly IPowerGroupMenuRelationRepository _powerGroupMenuRelationRepository;
 
@@ -35,7 +37,7 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
             IPowerGroupMenuRelationRepository powerGroupMenuRelationRepository) :
             base(mapper, repository, error, validator)
         {
-            _repository = repository;
+            _menuInfoRepository = repository;
             _powerGroupRepository = powerGroupRepository;
             _powerGroupMenuRelationRepository = powerGroupMenuRelationRepository;
         }
@@ -92,7 +94,7 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
         /// <returns></returns>
         public List<MenuInfoTreeOutputDto> GetChildren(string menuid)
         {
-            return _repository.GetChildren(menuid);
+            return _menuInfoRepository.GetChildren(menuid);
         }
 
         /// <summary>
@@ -100,9 +102,10 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<PowerGroupMenuRelationOutputDto>> GetMenuByPowerGroup(PowerGroupMenuRelationInputDto input)
+        public Pages<List<MenuInfoOutputDto>> GetMenuByPowerGroup(PowerGroupInputDto input)
         {
-            return _powerGroupMenuRelationRepository.GetMenuByPowerGroup(input.powergroupid, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
+            var data = _menuInfoRepository.GetMenuByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<MenuInfoOutputDto>>(data.items.AsQueryable().ProjectTo<MenuInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
 
         public Pages<List<MenuInfoOutputDto>> GetListMenuInfo(MenuInfoInputDto input)

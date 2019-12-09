@@ -1,14 +1,15 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 using FluentValidation;
 
 using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
+using SSS.Domain.Permission.Group.PowerGroup.Dto;
 using SSS.Domain.Permission.Info.OperateInfo;
 using SSS.Domain.Permission.Info.OperateInfo.Dto;
 using SSS.Domain.Permission.Relation.PowerGroupOperateRelation;
-using SSS.Domain.Permission.Relation.PowerGroupOperateRelation.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.PowerGroup;
@@ -19,6 +20,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SSS.Application.Permission.Info.OperateInfo.Service
 {
@@ -27,7 +29,7 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
         QueryService<Domain.Permission.Info.OperateInfo.OperateInfo, OperateInfoInputDto, OperateInfoOutputDto>,
         IOperateInfoService
     {
-        private readonly IOperateInfoRepository _repository;
+        private readonly IOperateInfoRepository _operateInfoRepository;
         private readonly IPowerInfoRepository _powerInfoRepository;
         private readonly IPowerGroupRepository _powerGroupRepository;
         private readonly IPowerGroupOperateRelationRepository _powerGroupOperateRelationRepository;
@@ -41,7 +43,7 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
             IPowerGroupOperateRelationRepository powerGroupOperateRelationRepository) :
             base(mapper, repository, error, validator)
         {
-            _repository = repository;
+            _operateInfoRepository = repository;
             _powerInfoRepository = powerInfoRepository;
             _powerGroupRepository = powerGroupRepository;
             _powerGroupOperateRelationRepository = powerGroupOperateRelationRepository;
@@ -99,7 +101,7 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
         /// <returns></returns>
         public List<OperateInfoTreeOutputDto> GetChildrenById(string operateid)
         {
-            return _repository.GetChildrenById(operateid);
+            return _operateInfoRepository.GetChildrenById(operateid);
         }
 
         public Pages<List<OperateInfoOutputDto>> GetListOperateInfo(OperateInfoInputDto input)
@@ -112,9 +114,10 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<PowerGroupOperateRelationOutputDto>> GetOperateByPowerGroup(PowerGroupOperateRelationInputDto input)
+        public Pages<List<OperateInfoOutputDto>> GetOperateByPowerGroup(PowerGroupInputDto input)
         {
-            return _powerGroupOperateRelationRepository.GetOperateByPowerGroup(input.powergroupid, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
+            var data = _operateInfoRepository.GetOperateByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<OperateInfoOutputDto>>(data.items.AsQueryable().ProjectTo<OperateInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
     }
 }

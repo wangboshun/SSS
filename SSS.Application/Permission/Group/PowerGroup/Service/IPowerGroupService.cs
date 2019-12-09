@@ -1,10 +1,10 @@
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Group.PowerGroup.Dto;
-using SSS.Domain.Permission.Relation.PowerGroupMenuRelation.Dto;
-using SSS.Domain.Permission.Relation.PowerGroupOperateRelation.Dto;
-using SSS.Domain.Permission.Relation.PowerGroupRelation.Dto;
-using SSS.Domain.Permission.Relation.UserGroupPowerGroupRelation.Dto;
-using SSS.Domain.Permission.Relation.UserPowerGroupRelation.Dto;
+using SSS.Domain.Permission.Group.UserGroup.Dto;
+using SSS.Domain.Permission.Info.MenuInfo.Dto;
+using SSS.Domain.Permission.Info.OperateInfo.Dto;
+using SSS.Domain.Permission.Info.PowerInfo.Dto;
+using SSS.Domain.Permission.Info.UserInfo.Dto;
 using SSS.Domain.Seedwork.Model;
 
 using System.Collections.Generic;
@@ -24,35 +24,34 @@ namespace SSS.Application.Permission.Group.PowerGroup.Service
         /// 根据权限Id或名称，遍历关联权限组
         /// </summary>
         /// <param name="input"></param>
-        Pages<List<PowerGroupRelationOutputDto>> GetPowerGroupByPower(PowerGroupRelationInputDto input);
+        Pages<List<PowerGroupOutputDto>> GetPowerGroupByPower(PowerInfoInputDto input);
 
         /// <summary>
         /// 根据菜单Id或名称，遍历关联权限组
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Pages<List<PowerGroupMenuRelationOutputDto>> GetPowerGroupByMenu(PowerGroupMenuRelationInputDto input);
+        Pages<List<PowerGroupOutputDto>> GetPowerGroupByMenu(MenuInfoInputDto input);
 
         /// <summary>
         /// 根据操作Id或名称，遍历关联权限组
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Pages<List<PowerGroupOperateRelationOutputDto>> GetPowerGroupByOperate(PowerGroupOperateRelationInputDto input);
+        Pages<List<PowerGroupOutputDto>> GetPowerGroupByOperate(OperateInfoInputDto input);
 
         /// <summary>
         /// 根据用户Id或名称，遍历关联权限组
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Pages<List<UserPowerGroupRelationOutputDto>> GetPowerGroupByUser(UserPowerGroupRelationInputDto input);
+        Pages<List<PowerGroupOutputDto>> GetPowerGroupByUser(UserInfoInputDto input);
 
         /// <summary>
         /// 根据用户组Id或名称，遍历关联权限组
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Pages<List<UserGroupPowerGroupRelationOutputDto>> GetPowerGroupByUserGroup(UserGroupPowerGroupRelationInputDto input);
-
+        Pages<List<PowerGroupOutputDto>> GetPowerGroupByUserGroup(UserGroupInputDto input);
     }
 }

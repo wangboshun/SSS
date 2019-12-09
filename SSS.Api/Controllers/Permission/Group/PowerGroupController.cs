@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.Permission.Group.PowerGroup.Service;
 using SSS.Domain.Permission.Group.PowerGroup.Dto;
-using SSS.Domain.Permission.Relation.PowerGroupMenuRelation.Dto;
-using SSS.Domain.Permission.Relation.PowerGroupOperateRelation.Dto;
-using SSS.Domain.Permission.Relation.PowerGroupRelation.Dto;
-using SSS.Domain.Permission.Relation.UserGroupPowerGroupRelation.Dto;
-using SSS.Domain.Permission.Relation.UserPowerGroupRelation.Dto;
+using SSS.Domain.Permission.Group.UserGroup.Dto;
+using SSS.Domain.Permission.Info.MenuInfo.Dto;
+using SSS.Domain.Permission.Info.OperateInfo.Dto;
+using SSS.Domain.Permission.Info.PowerInfo.Dto;
+using SSS.Domain.Permission.Info.UserInfo.Dto;
 
 namespace SSS.Api.Controllers.Permission.Group
 {
@@ -65,7 +65,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// <returns></returns> 
         [HttpGet("get_powergroup_by_power")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetUserGroupByUser([FromQuery]PowerGroupRelationInputDto input)
+        public IActionResult GetPowerGroupByPower([FromQuery]PowerInfoInputDto input)
         {
             var result = _service.GetPowerGroupByPower(input);
             return ApiResponse(result);
@@ -78,7 +78,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// <returns></returns> 
         [HttpGet("get_powergroup_by_menu")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetPowerGroupByMenu([FromQuery]PowerGroupMenuRelationInputDto input)
+        public IActionResult GetPowerGroupByMenu([FromQuery]MenuInfoInputDto input)
         {
             var result = _service.GetPowerGroupByMenu(input);
             return ApiResponse(result);
@@ -91,7 +91,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// <returns></returns> 
         [HttpGet("get_powergroup_by_operate")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetPowerGroupByOperate([FromQuery]PowerGroupOperateRelationInputDto input)
+        public IActionResult GetPowerGroupByOperate([FromQuery]OperateInfoInputDto input)
         {
             var result = _service.GetPowerGroupByOperate(input);
             return ApiResponse(result);
@@ -104,7 +104,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// <returns></returns> 
         [HttpGet("get_powergroup_by_user")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetPowerGroupByUser([FromQuery]UserPowerGroupRelationInputDto input)
+        public IActionResult GetPowerGroupByUser([FromQuery]UserInfoInputDto input)
         {
             var result = _service.GetPowerGroupByUser(input);
             return ApiResponse(result);
@@ -117,7 +117,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// <returns></returns> 
         [HttpGet("get_powergroup_by_usergroup")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetPowerGroupByUserGroup([FromQuery]UserGroupPowerGroupRelationInputDto input)
+        public IActionResult GetPowerGroupByUserGroup([FromQuery]UserGroupInputDto input)
         {
             var result = _service.GetPowerGroupByUserGroup(input);
             return ApiResponse(result);
