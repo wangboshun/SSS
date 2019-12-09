@@ -56,6 +56,19 @@ namespace SSS.Api.Controllers.Permission.Group
         }
 
         /// <summary>
+        /// 删除用户组
+        /// </summary>
+        /// <param name="input">用户组名称</param>
+        /// <returns></returns> 
+        [HttpDelete("delete")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult DeletePowerGroup([FromBody]UserGroupInputDto input)
+        {
+            _service.DeleteUserGroup(input);
+            return ApiResponse(input);
+        }
+
+        /// <summary>
         /// 根据用户Id或名称，遍历关联用户组
         /// </summary>
         /// <param name="input">用户Id或名称</param>

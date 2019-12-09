@@ -72,7 +72,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">MenuInfoInputDto</param>
         /// <returns></returns> 
-        [HttpPost("delete")]
+        [HttpDelete("delete")]
         [AllowAnonymous]  //匿名访问
         public IActionResult DeleteUserInfo([FromBody]MenuInfoInputDto input)
         {
