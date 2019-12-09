@@ -4,6 +4,7 @@ using SSS.Domain.Permission.Info.PowerInfo.Dto;
 using SSS.Domain.Seedwork.Model;
 
 using System.Collections.Generic;
+using SSS.Domain.Permission.Group.RoleGroup.Dto;
 
 namespace SSS.Application.Permission.Info.PowerInfo.Service
 {
@@ -22,6 +23,13 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
         /// <param name="input"></param>
         /// <returns></returns>
         Pages<List<PowerInfoOutputDto>> GetPowerByPowerGroup(PowerGroupInputDto input);
+
+        /// <summary>
+        /// 根据角色组Id或名称，遍历关联权限
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Pages<List<PowerInfoOutputDto>> GetPowerByRoleGroup(RoleGroupInputDto input);
 
         /// <summary>
         ///     获取权限下的所有下级

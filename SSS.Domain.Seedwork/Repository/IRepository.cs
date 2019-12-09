@@ -18,6 +18,7 @@ namespace SSS.Domain.Seedwork.Repository
     public interface IRepository<TEntity> : IDisposable
         where TEntity : Entity
     {
+        int Execute(string sql, params DbParameter[] parameter);
         void Add(TEntity obj, bool save = false);
         void AddList(List<TEntity> list, bool save = false);
         void UpdateList(List<TEntity> list, bool save = false);
@@ -36,6 +37,6 @@ namespace SSS.Domain.Seedwork.Repository
         void Update(TEntity obj, bool save = false);
         void Remove(string id, bool save = false);
         void Remove(Expression<Func<TEntity, bool>> predicate, bool save = false);
-        int SaveChanges();
+        int SaveChanges(); 
     }
 }

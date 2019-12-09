@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
-
+using SSS.Domain.Permission.Group.RoleGroup;
+using SSS.Domain.Permission.Info.RoleInfo;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Seedwork.Repository;
 using SSS.Infrastructure.Util.Attribute;
@@ -11,6 +12,7 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.RoleGroupRelation
     {
         public RoleGroupRelationRepository(DbcontextBase context) : base(context)
         {
-        }
+
+        } 
     }
 }

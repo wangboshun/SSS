@@ -18,6 +18,7 @@ using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SSS.Domain.Permission.Group.RoleGroup.Dto;
 
 namespace SSS.Application.Permission.Info.PowerInfo.Service
 {
@@ -84,6 +85,17 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
             Repository.Remove(input.id, false);
             _powerGroupRelationRepository.Remove(x => x.PowerId.Equals(input.id));
             Repository.SaveChanges();
+        }
+
+        /// <summary>
+        /// 根据角色组Id或名称，遍历关联权限
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Pages<List<PowerInfoOutputDto>> GetPowerByRoleGroup(RoleGroupInputDto input)
+        {
+            var data = _powerInfoRepository.GetPowerByRoleGroup(input.id, input.rolegroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<PowerInfoOutputDto>>(data.items.AsQueryable().ProjectTo<PowerInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
 
         /// <summary>

@@ -23,6 +23,7 @@ using SSS.Domain.Permission.Relation.UserGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
+using SSS.Domain.Permission.Relation.UserGroupRoleGroupRelation;
 
 namespace SSS.Infrastructure.Seedwork.DbContext
 {
@@ -67,6 +68,7 @@ namespace SSS.Infrastructure.Seedwork.DbContext
         public DbSet<PowerGroupOperateRelation> PowerGroupOperateRelation { get; set; }
         public DbSet<PowerGroupMenuRelation> PowerGroupMenuRelation { get; set; }
         public DbSet<UserGroupRelation> UserGroupRelation { get; set; }
+        public DbSet<UserGroupRoleGroupRelation> UserGroupRoleGroupRelation { set; get; }
 
 
 

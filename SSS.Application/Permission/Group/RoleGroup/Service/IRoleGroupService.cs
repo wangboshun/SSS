@@ -4,6 +4,7 @@ using SSS.Domain.Permission.Info.RoleInfo.Dto;
 using SSS.Domain.Seedwork.Model;
 
 using System.Collections.Generic;
+using SSS.Domain.Permission.Group.PowerGroup.Dto;
 
 namespace SSS.Application.Permission.Group.RoleGroup.Service
 {
@@ -21,5 +22,12 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
         /// </summary>
         /// <param name="input"></param>
         Pages<List<RoleGroupOutputDto>> GetRoleGroupByRole(RoleInfoInputDto input);
+
+        /// <summary>
+        /// 根据权限组Id或名称，遍历关联角色组
+        /// </summary>
+        /// <param name="input"></param>
+        Pages<List<RoleGroupOutputDto>> GetRoleGroupByPowerGroup(PowerGroupInputDto input);
+        
     }
 }

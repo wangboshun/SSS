@@ -20,6 +20,7 @@ using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SSS.Domain.Permission.Group.RoleGroup.Dto;
 
 namespace SSS.Application.Permission.Info.UserInfo.Service
 {
@@ -184,6 +185,12 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         public Pages<List<UserInfoOutputDto>> GetUserByPowerGroup(PowerGroupInputDto input)
         {
             var data = _userinfoRepository.GetUserByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<UserInfoOutputDto>>(data.items.AsQueryable().ProjectTo<UserInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+        }
+
+        public Pages<List<UserInfoOutputDto>> GetUserByRoleGroup(RoleGroupInputDto input)
+        {
+            var data = _userinfoRepository.GetUserByRoleGroup(input.id, input.rolegroupname, input.parentid, input.pageindex, input.pagesize);
             return new Pages<List<UserInfoOutputDto>>(data.items.AsQueryable().ProjectTo<UserInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
 
         }

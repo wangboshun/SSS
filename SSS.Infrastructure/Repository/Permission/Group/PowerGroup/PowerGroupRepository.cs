@@ -6,6 +6,7 @@ using SSS.Infrastructure.Seedwork.Repository;
 using SSS.Infrastructure.Util.Attribute;
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
 {
@@ -170,8 +171,6 @@ namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
 	                INNER JOIN RoleGroupRelation AS rgr ON rg.Id = rgr.RoleGroupId
 	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rg.Id
 	                INNER JOIN PowerGroup AS pg ON pg.Id = rgpgr.PowerGroupId
-	                INNER JOIN PowerGroupRelation AS pgr ON pg.Id = pgr.PowerGroupId
-	                INNER JOIN PowerInfo AS p ON p.Id = pgr.PowerId 
                 WHERE
 	                u.IsDelete = 0 
 	                AND ugr.IsDelete = 0 
@@ -180,8 +179,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
 	                AND rgr.IsDelete = 0 
 	                AND rg.IsDelete = 0 
 	                AND rgpgr.IsDelete = 0 
-	                AND pg.IsDelete = 0 
-	                AND p.IsDelete =0";
+	                AND pg.IsDelete = 0 ";
 
             if (!string.IsNullOrWhiteSpace(userid))
                 sql += $" AND u.Id='{userid}'";
@@ -227,16 +225,13 @@ namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
 	                INNER JOIN RoleGroupRelation AS rgr ON rg.Id = rgr.RoleGroupId
 	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rg.Id
 	                INNER JOIN PowerGroup AS pg ON pg.Id = rgpgr.PowerGroupId
-	                INNER JOIN PowerGroupRelation AS pgr ON pg.Id = pgr.PowerGroupId
-	                INNER JOIN PowerInfo AS p ON p.Id = pgr.PowerId 
                 WHERE
 	                ug.IsDelete = 0 
 	                AND rgugr.IsDelete = 0 
 	                AND rgr.IsDelete = 0 
 	                AND rg.IsDelete = 0 
 	                AND rgpgr.IsDelete = 0 
-	                AND pg.IsDelete = 0 
-	                AND p.IsDelete =0";
+	                AND pg.IsDelete = 0";
 
             if (!string.IsNullOrWhiteSpace(usergroupid))
                 sql += $" AND ug.Id='{usergroupid}'";
@@ -260,6 +255,6 @@ namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
                 var data = Db.Database.SqlQuery<Domain.Permission.Group.PowerGroup.PowerGroup>(string.Format(sql, field));
                 return new Pages<IEnumerable<Domain.Permission.Group.PowerGroup.PowerGroup>>(data, count);
             }
-        }
+        } 
     }
 }

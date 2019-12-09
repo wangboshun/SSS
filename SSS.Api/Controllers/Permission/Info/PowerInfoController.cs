@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.Permission.Info.PowerInfo.Service;
 using SSS.Domain.Permission.Group.PowerGroup.Dto;
+using SSS.Domain.Permission.Group.RoleGroup.Dto;
 using SSS.Domain.Permission.Info.PowerInfo.Dto;
 
 namespace SSS.Api.Controllers.Permission.Info
@@ -90,6 +91,19 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetPowerByPowerGroup([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetPowerByPowerGroup(input);
+            return ApiResponse(result);
+        }
+
+        /// <summary>
+        /// 根据角色组Id或名称，遍历关联权限
+        /// </summary>
+        /// <param name="input">角色组Id或名称</param>
+        /// <returns></returns> 
+        [HttpGet("get_power_by_rolegroup")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult GetPowerByRoleGroup([FromQuery]RoleGroupInputDto input)
+        {
+            var result = _service.GetPowerByRoleGroup(input);
             return ApiResponse(result);
         }
     }

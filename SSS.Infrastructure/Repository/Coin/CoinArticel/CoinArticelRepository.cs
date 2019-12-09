@@ -1,14 +1,13 @@
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
-
 using SSS.Domain.Coin.CoinArticel.Dto;
+using SSS.Infrastructure.Repository.CoinArticel;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Seedwork.Repository;
 using SSS.Infrastructure.Util.Attribute;
 
-using System.Collections.Generic;
-using System.Linq;
-
-namespace SSS.Infrastructure.Repository.CoinArticel
+namespace SSS.Infrastructure.Repository.Coin.CoinArticel
 {
     [DIService(ServiceLifetime.Scoped, typeof(ICoinArticelRepository))]
     public class CoinArticelRepository : Repository<Domain.Coin.CoinArticel.CoinArticel>, ICoinArticelRepository

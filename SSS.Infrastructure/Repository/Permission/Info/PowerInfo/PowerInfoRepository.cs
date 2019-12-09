@@ -75,8 +75,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
 	                INNER JOIN UserGroupRelation AS ugr ON u.id = ugr.UserId
 	                INNER JOIN UserGroup AS ug ON ug.id = ugr.UserGroupId
 	                INNER JOIN RoleGroupUserGroupRelation AS rgugr ON rgugr.UserGroupId = ug.Id
-	                INNER JOIN RoleGroup AS rg ON rg.Id = rgugr.RoleGroupId
-	                INNER JOIN RoleGroupRelation AS rgr ON rg.Id = rgr.RoleGroupId
+	                INNER JOIN RoleGroup AS rg ON rg.Id = rgugr.RoleGroupId 
 	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rg.Id
 	                INNER JOIN PowerGroup AS pg ON pg.Id = rgpgr.PowerGroupId
 	                INNER JOIN PowerGroupRelation AS pgr ON pg.Id = pgr.PowerGroupId
@@ -85,8 +84,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
 	                u.IsDelete = 0 
 	                AND ugr.IsDelete = 0 
 	                AND ug.IsDelete = 0 
-	                AND rgugr.IsDelete = 0 
-	                AND rgr.IsDelete = 0 
+	                AND rgugr.IsDelete = 0  
 	                AND rg.IsDelete = 0 
 	                AND rgpgr.IsDelete = 0 
 	                AND pg.IsDelete = 0 
@@ -124,8 +122,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
         {
             string field = " p.* ";
 
-            string sql = @"SELECT {0}
-                                FROM
+            string sql = @"SELECT {0}  FROM
 	                PowerInfo AS p
 	                INNER JOIN PowerGroupRelation AS ppr ON p.id=ppr.PowerId
 	                INNER JOIN PowerGroup AS pg ON ppr.PowerGroupId=pg.Id 
@@ -142,6 +139,55 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
 
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND pg.ParentId='{parentid}'";
+
+            int count = Db.Database.Count(string.Format(sql, " count(*) "));
+
+            if (pageindex > 0 && pagesize > 0)
+            {
+                string limit = " limit {1},{2} ";
+                var data = Db.Database.SqlQuery<Domain.Permission.Info.PowerInfo.PowerInfo>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
+                return new Pages<IEnumerable<Domain.Permission.Info.PowerInfo.PowerInfo>>(data, count);
+            }
+            else
+            {
+                var data = Db.Database.SqlQuery<Domain.Permission.Info.PowerInfo.PowerInfo>(string.Format(sql, field));
+                return new Pages<IEnumerable<Domain.Permission.Info.PowerInfo.PowerInfo>>(data, count);
+            }
+        }
+
+        /// <summary>
+        /// 根据角色组Id或名称，遍历关联权限
+        /// </summary>
+        /// <param name="rolegroupid"></param>
+        /// <param name="rolegroupname"></param>
+        /// <param name="parentid"></param>
+        /// <param name="pageindex"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        public Pages<IEnumerable<Domain.Permission.Info.PowerInfo.PowerInfo>> GetPowerByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        {
+            string field = " p.* ";
+
+            string sql = @"SELECT {0} FROM RoleGroup AS rg
+	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rg.Id = rgpgr.RoleGroupId
+	                INNER JOIN PowerGroup AS pg ON pg.Id = rgpgr.PowerGroupId
+	                INNER JOIN PowerGroupRelation AS pgr ON pgr.PowerGroupId = pg.Id
+	                INNER JOIN PowerInfo AS p ON p.Id = pgr.PowerId 
+                WHERE
+	                rg.IsDelete = 0 
+	                AND rgpgr.IsDelete = 0 
+	                AND pg.IsDelete = 0 
+	                AND pgr.IsDelete 
+	                AND p.IsDelete ";
+
+            if (!string.IsNullOrWhiteSpace(rolegroupid))
+                sql += $" AND rg.Id='{rolegroupid}'";
+
+            if (!string.IsNullOrWhiteSpace(rolegroupname))
+                sql += $" AND rg.RoleGroupName='{rolegroupname}'";
+
+            if (!string.IsNullOrWhiteSpace(parentid))
+                sql += $" AND rg.ParentId='{parentid}'";
 
             int count = Db.Database.Count(string.Format(sql, " count(*) "));
 

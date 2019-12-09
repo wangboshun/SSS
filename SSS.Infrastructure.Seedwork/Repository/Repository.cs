@@ -35,13 +35,24 @@ namespace SSS.Infrastructure.Seedwork.Repository
             DbSet = Db.Set<TEntity>();
             _error = (IErrorHandler)HttpContextService.Current.RequestServices.GetService(typeof(IErrorHandler));
             _logger = (ILogger)HttpContextService.Current.RequestServices.GetService(typeof(ILogger<Repository<TEntity>>));
+        } 
+
+        /// <summary>
+        /// 执行sql
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        public virtual int Execute(string sql, params DbParameter[] parameter)
+        {
+            return Db.Database.ExecuteSqlRaw(sql);
         }
 
         public virtual void Add(TEntity obj, bool save = false)
         {
             DbSet.Add(obj);
             if (save)
-                Db.SaveChanges();
+                SaveChanges();
         }
 
         /// <summary>
@@ -53,7 +64,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         {
             DbSet.AddRange(list);
             if (save)
-                Db.SaveChanges();
+                SaveChanges();
         }
 
         /// <summary>
@@ -65,7 +76,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         {
             DbSet.UpdateRange(list);
             if (save)
-                Db.SaveChanges();
+                SaveChanges();
         }
 
         /// <summary>
@@ -82,7 +93,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
             }
             DbSet.UpdateRange(list);
             if (save)
-                return Db.SaveChanges() > 0;
+                return SaveChanges() > 0;
             return false;
         }
 
@@ -230,7 +241,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
             entry.Property(x => x.CreateTime).IsModified = false;
             entry.Property(x => x.Id).IsModified = false;
             if (save)
-                Db.SaveChanges();
+                SaveChanges();
         }
 
         /// <summary>
@@ -250,7 +261,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
             model.IsDelete = 1;
             Update(model);
             if (save)
-                Db.SaveChanges();
+                SaveChanges();
         }
 
         /// <summary>
@@ -270,7 +281,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
             model.IsDelete = 1;
             Update(model);
             if (save)
-                Db.SaveChanges();
+                SaveChanges();
         }
 
         /// <summary>
@@ -280,13 +291,13 @@ namespace SSS.Infrastructure.Seedwork.Repository
         public int SaveChanges()
         {
             try
-            {
+            { 
                 return Db.SaveChanges();
             }
             catch (Exception ex)
             {
                 _error.Execute(ex);
-                _logger.LogError(new EventId(ex.HResult), ex, "Repository Exception");
+                _logger.LogError(new EventId(ex.HResult), ex, "Repository Exception"); 
                 return 0;
             }
         }

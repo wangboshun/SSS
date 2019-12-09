@@ -26,5 +26,12 @@ namespace SSS.Infrastructure.Repository.Permission.Info.UserInfo
         /// </summary> 
         /// <returns></returns>
         Pages<IEnumerable<Domain.Permission.Info.UserInfo.UserInfo>> GetUserByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
+
+        /// <summary>
+        /// 根据角色组Id或名称，遍历关联用户
+        /// </summary> 
+        /// <returns></returns>
+        Pages<IEnumerable<Domain.Permission.Info.UserInfo.UserInfo>> GetUserByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
+
     }
 }

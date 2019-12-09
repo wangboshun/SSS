@@ -19,6 +19,7 @@ using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SSS.Domain.Permission.Group.PowerGroup.Dto;
 
 namespace SSS.Application.Permission.Info.RoleInfo.Service
 {
@@ -112,6 +113,13 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
         {
             var data = _roleInfoRepository.GetRoleByRoleGroup(input.id, input.rolegroupname, input.parentid, input.pageindex, input.pagesize);
             return new Pages<List<RoleInfoOutputDto>>(data.items.AsQueryable().ProjectTo<RoleInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+        }
+
+        public Pages<List<RoleInfoOutputDto>> GetRoleByPowerGroup(PowerGroupInputDto input)
+        {
+            var data = _roleInfoRepository.GetRoleByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<RoleInfoOutputDto>>(data.items.AsQueryable().ProjectTo<RoleInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+
         }
     }
 }

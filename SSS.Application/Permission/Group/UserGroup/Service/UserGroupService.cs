@@ -9,9 +9,12 @@ using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Group.PowerGroup.Dto;
 using SSS.Domain.Permission.Group.UserGroup.Dto;
 using SSS.Domain.Permission.Info.UserInfo.Dto;
+using SSS.Domain.Permission.Relation.UserGroupRoleGroupRelation;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
+using SSS.Infrastructure.Repository.Permission.Group.RoleGroup;
 using SSS.Infrastructure.Repository.Permission.Group.UserGroup;
+using SSS.Infrastructure.Repository.Permission.Relation.UserGroupRoleGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
@@ -26,14 +29,20 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
         IUserGroupService
     {
         private readonly IUserGroupRepository _userGroupRepository;
+        private readonly IRoleGroupRepository _roleGroupRepository;
+        private readonly IUserGroupRoleGroupRelationRepository _userGroupRoleGroupRelationRepository;
 
         public UserGroupService(IMapper mapper,
             IUserGroupRepository repository,
             IErrorHandler error,
-            IValidator<UserGroupInputDto> validator) :
+            IValidator<UserGroupInputDto> validator,
+            IRoleGroupRepository roleGroupRepository,
+            IUserGroupRoleGroupRelationRepository userGroupRoleGroupRelationRepository) :
             base(mapper, repository, error, validator)
         {
             _userGroupRepository = repository;
+            _roleGroupRepository = roleGroupRepository;
+            _userGroupRoleGroupRelationRepository = userGroupRoleGroupRelationRepository;
         }
 
         public void AddUserGroup(UserGroupInputDto input)
@@ -49,6 +58,24 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
             var model = Mapper.Map<Domain.Permission.Group.UserGroup.UserGroup>(input);
             model.CreateTime = DateTime.Now;
             Repository.Add(model);
+
+            if (!string.IsNullOrWhiteSpace(input.rolegroupid))
+            {
+                var rolegroup = _roleGroupRepository.Get(input.rolegroupid);
+
+                if (rolegroup != null)
+                {
+                    _userGroupRoleGroupRelationRepository.Add(new UserGroupRoleGroupRelation()
+                    {
+                        CreateTime = DateTime.Now,
+                        Id = Guid.NewGuid().ToString(),
+                        IsDelete = 0,
+                        RoleGroupId = rolegroup.Id,
+                        UserGroupId = model.Id
+                    });
+                }
+            }
+
             Repository.SaveChanges();
         }
 
