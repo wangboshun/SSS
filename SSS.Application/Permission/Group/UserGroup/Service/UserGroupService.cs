@@ -20,6 +20,7 @@ using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SSS.Domain.Permission.Group.RoleGroup.Dto;
 
 namespace SSS.Application.Permission.Group.UserGroup.Service
 {
@@ -104,6 +105,17 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
         public Pages<List<UserGroupOutputDto>> GetUserGroupByPowerGroup(PowerGroupInputDto input)
         {
             var data = _userGroupRepository.GetUserGroupByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<UserGroupOutputDto>>(data.items?.AsQueryable().ProjectTo<UserGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+        }
+
+        /// <summary>
+        /// 根据角色组Id或名称，遍历关联用户组
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Pages<List<UserGroupOutputDto>> GetUserGroupByRoleGroup(RoleGroupInputDto input)
+        {
+            var data = _userGroupRepository.GetUserGroupByRoleGroup(input.id, input.rolegroupname, input.parentid, input.pageindex, input.pagesize);
             return new Pages<List<UserGroupOutputDto>>(data.items?.AsQueryable().ProjectTo<UserGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
     }

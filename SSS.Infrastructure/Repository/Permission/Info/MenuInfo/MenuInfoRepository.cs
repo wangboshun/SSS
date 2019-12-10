@@ -73,7 +73,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.MenuInfo
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Info.MenuInfo.MenuInfo>> GetMenuByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = " m.* ";
+            string field = " DISTINCT m.* ";
 
             string sql = @"SELECT  {0}  FROM
 	            MenuInfo AS m
@@ -93,7 +93,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.MenuInfo
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND pg.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count(*) "));
+            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT m.Id ) "));
 
             if (pageindex > 0 && pagesize > 0)
             {

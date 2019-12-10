@@ -5,7 +5,9 @@ using SSS.Api.Seedwork.Controller;
 using SSS.Application.Permission.Info.RoleInfo.Service;
 using SSS.Domain.Permission.Group.PowerGroup.Dto;
 using SSS.Domain.Permission.Group.RoleGroup.Dto;
+using SSS.Domain.Permission.Group.UserGroup.Dto;
 using SSS.Domain.Permission.Info.RoleInfo.Dto;
+using SSS.Domain.Permission.Info.UserInfo.Dto;
 
 namespace SSS.Api.Controllers.Permission.Info
 {
@@ -105,6 +107,32 @@ namespace SSS.Api.Controllers.Permission.Info
         {
             var result = _service.GetRoleByPowerGroup(input);
             return ApiResponse(result);
-        } 
+        }
+
+        /// <summary>
+        /// 根据用户组Id或名称，遍历关联角色
+        /// </summary>
+        /// <param name="input">用户组Id或名称</param>
+        /// <returns></returns> 
+        [HttpGet("get_role_by_usergroup")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult GetRoleByUserGroup([FromQuery]UserGroupInputDto input)
+        {
+            var result = _service.GetRoleByUserGroup(input);
+            return ApiResponse(result);
+        }
+
+        /// <summary>
+        /// 根据用户Id或名称，遍历关联角色
+        /// </summary>
+        /// <param name="input">用户Id或名称</param>
+        /// <returns></returns> 
+        [HttpGet("get_role_by_user")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult GetRoleByUser([FromQuery]UserInfoInputDto input)
+        {
+            var result = _service.GetRoleByUser(input);
+            return ApiResponse(result);
+        }
     }
 }

@@ -5,7 +5,9 @@ using SSS.Api.Seedwork.Controller;
 using SSS.Application.Permission.Info.PowerInfo.Service;
 using SSS.Domain.Permission.Group.PowerGroup.Dto;
 using SSS.Domain.Permission.Group.RoleGroup.Dto;
+using SSS.Domain.Permission.Group.UserGroup.Dto;
 using SSS.Domain.Permission.Info.PowerInfo.Dto;
+using SSS.Domain.Permission.Info.UserInfo.Dto;
 
 namespace SSS.Api.Controllers.Permission.Info
 {
@@ -104,6 +106,32 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetPowerByRoleGroup([FromQuery]RoleGroupInputDto input)
         {
             var result = _service.GetPowerByRoleGroup(input);
+            return ApiResponse(result);
+        }
+
+        /// <summary>
+        /// 根据用户组Id或名称，遍历关联权限
+        /// </summary>
+        /// <param name="input">用户组Id或名称</param>
+        /// <returns></returns> 
+        [HttpGet("get_power_by_usergroup")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult GetPowerByUserGroup([FromQuery]UserGroupInputDto input)
+        {
+            var result = _service.GetPowerByUserGroup(input);
+            return ApiResponse(result);
+        }
+
+        /// <summary>
+        /// 根据用户Id或名称，遍历关联权限
+        /// </summary>
+        /// <param name="input">用户Id或名称</param>
+        /// <returns></returns> 
+        [HttpGet("get_power_by_user")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult GetPowerByUser([FromQuery]UserInfoInputDto input)
+        {
+            var result = _service.GetPowerByUser(input);
             return ApiResponse(result);
         }
     }

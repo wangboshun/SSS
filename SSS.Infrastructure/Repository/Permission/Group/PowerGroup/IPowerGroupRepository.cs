@@ -63,5 +63,16 @@ namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
         /// <returns></returns>
         Pages<IEnumerable<Domain.Permission.Group.PowerGroup.PowerGroup>> GetPowerGroupByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
 
+        /// <summary>
+        ///  根据角色组Id或名称，遍历关联权限组
+        /// </summary>
+        /// <param name="rolegroupid"></param>
+        /// <param name="rolegroupname"></param>
+        /// <param name="parentid"></param>
+        /// <param name="pageindex"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        Pages<IEnumerable<Domain.Permission.Group.PowerGroup.PowerGroup>> GetPowerGroupByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
+
     }
 }

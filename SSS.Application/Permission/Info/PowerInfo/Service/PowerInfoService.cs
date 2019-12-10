@@ -19,6 +19,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SSS.Domain.Permission.Group.RoleGroup.Dto;
+using SSS.Domain.Permission.Group.UserGroup.Dto;
+using SSS.Domain.Permission.Info.UserInfo.Dto;
 
 namespace SSS.Application.Permission.Info.PowerInfo.Service
 {
@@ -72,7 +74,7 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
             }
 
             Repository.Add(model);
-            return Repository.SaveChanges()>0;
+            return Repository.SaveChanges() > 0;
         }
 
         public Pages<List<PowerInfoOutputDto>> GetListPowerInfo(PowerInfoInputDto input)
@@ -84,7 +86,7 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
         {
             Repository.Remove(id, false);
             _powerGroupRelationRepository.Remove(x => x.PowerId.Equals(id));
-            return Repository.SaveChanges()>0;
+            return Repository.SaveChanges() > 0;
         }
 
         /// <summary>
@@ -95,6 +97,28 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
         public Pages<List<PowerInfoOutputDto>> GetPowerByRoleGroup(RoleGroupInputDto input)
         {
             var data = _powerInfoRepository.GetPowerByRoleGroup(input.id, input.rolegroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<PowerInfoOutputDto>>(data.items?.AsQueryable().ProjectTo<PowerInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+        }
+
+        /// <summary>
+        /// 根据用户组Id或名称，遍历关联权限
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Pages<List<PowerInfoOutputDto>> GetPowerByUserGroup(UserGroupInputDto input)
+        {
+            var data = _powerInfoRepository.GetPowerByUserGroup(input.id, input.usergroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<PowerInfoOutputDto>>(data.items?.AsQueryable().ProjectTo<PowerInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+        }
+
+        /// <summary>
+        /// 根据用户Id或名称，遍历关联权限
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Pages<List<PowerInfoOutputDto>> GetPowerByUser(UserInfoInputDto input)
+        {
+            var data = _powerInfoRepository.GetPowerByUser(input.id, input.username, input.parentid, input.pageindex, input.pagesize);
             return new Pages<List<PowerInfoOutputDto>>(data.items?.AsQueryable().ProjectTo<PowerInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
 

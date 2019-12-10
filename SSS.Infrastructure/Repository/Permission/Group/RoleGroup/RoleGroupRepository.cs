@@ -24,7 +24,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.RoleGroup
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Group.RoleGroup.RoleGroup>> GetRoleGroupByRole(string roleid, string rolename, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = " rg.* ";
+            string field = " DISTINCT rg.* ";
 
             string sql = @"SELECT {0}  FROM
 	                RoleInfo AS r
@@ -44,7 +44,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.RoleGroup
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND r.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count(*) "));
+            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT rg.Id ) "));
 
             if (pageindex > 0 && pagesize > 0)
             {
@@ -70,7 +70,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.RoleGroup
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Group.RoleGroup.RoleGroup>> GetRoleGroupByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = " rg.* ";
+            string field = " DISTINCT rg.* ";
 
             string sql = @"SELECT {0}  FROM
 	                RoleGroup AS rg 
@@ -90,7 +90,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.RoleGroup
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND pg.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count(*) "));
+            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT rg.Id ) "));
 
             if (pageindex > 0 && pagesize > 0)
             {
@@ -116,7 +116,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.RoleGroup
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Group.RoleGroup.RoleGroup>> GetRoleGroupByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = " rg.* ";
+            string field = " DISTINCT rg.* ";
 
             string sql = @"SELECT {0}  FROM
 	                UserGroup ug
@@ -136,7 +136,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.RoleGroup
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND ug.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count(*) "));
+            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT rg.Id ) "));
 
             if (pageindex > 0 && pagesize > 0)
             {
@@ -162,7 +162,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.RoleGroup
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Group.RoleGroup.RoleGroup>> GetRoleGroupByUser(string userid, string username, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = " rg.* ";
+            string field = " DISTINCT rg.* ";
 
             string sql = @"SELECT {0}  FROM
 	                UserInfo AS u
@@ -181,7 +181,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.RoleGroup
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND u.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count(*) "));
+            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT rg.Id ) "));
 
             if (pageindex > 0 && pagesize > 0)
             {

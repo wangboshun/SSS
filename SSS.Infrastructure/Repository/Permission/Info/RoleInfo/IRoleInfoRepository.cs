@@ -37,5 +37,27 @@ namespace SSS.Infrastructure.Repository.Permission.Info.RoleInfo
         /// <returns></returns>
         Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>> GetRoleByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
 
+        /// <summary>
+        /// 根据用户组Id或名称，遍历关联角色
+        /// </summary>
+        /// <param name="usergroupid"></param>
+        /// <param name="usergroupname"></param>
+        /// <param name="parentid"></param>
+        /// <param name="pageindex"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>> GetRoleByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
+
+        /// <summary>
+        /// 根据用户Id或名称，遍历关联角色
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="usename"></param>
+        /// <param name="parentid"></param>
+        /// <param name="pageindex"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>> GetRoleByUser(string userid, string usename, string parentid = "", int pageindex = 0, int pagesize = 0);
+
     }
 }

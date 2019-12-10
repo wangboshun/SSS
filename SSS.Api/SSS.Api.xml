@@ -340,6 +340,13 @@
             <param name="input">用户组Id或名称</param>
             <returns></returns> 
         </member>
+        <member name="M:SSS.Api.Controllers.Permission.Group.PowerGroupController.GetPowerGroupByRoleGroup(SSS.Domain.Permission.Group.RoleGroup.Dto.RoleGroupInputDto)">
+            <summary>
+            根据角色组Id或名称，遍历关联权限组
+            </summary>
+            <param name="input">角色组Id或名称</param>
+            <returns></returns> 
+        </member>
         <member name="T:SSS.Api.Controllers.Permission.Group.RoleGroupController">
             <summary>
             RoleGroupController
@@ -444,6 +451,13 @@
             根据权限组Id或名称，遍历关联用户组
             </summary>
             <param name="input">权限组Id或名称</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Group.UserGroupController.GetUserGroupByRoleGroup(SSS.Domain.Permission.Group.RoleGroup.Dto.RoleGroupInputDto)">
+            <summary>
+            根据角色组Id或名称，遍历关联用户组
+            </summary>
+            <param name="input">角色组Id或名称</param>
             <returns></returns> 
         </member>
         <member name="T:SSS.Api.Controllers.Permission.Info.MenuInfoController">
@@ -591,6 +605,20 @@
             <param name="input">角色组Id或名称</param>
             <returns></returns> 
         </member>
+        <member name="M:SSS.Api.Controllers.Permission.Info.PowerInfoController.GetPowerByUserGroup(SSS.Domain.Permission.Group.UserGroup.Dto.UserGroupInputDto)">
+            <summary>
+            根据用户组Id或名称，遍历关联权限
+            </summary>
+            <param name="input">用户组Id或名称</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Info.PowerInfoController.GetPowerByUser(SSS.Domain.Permission.Info.UserInfo.Dto.UserInfoInputDto)">
+            <summary>
+            根据用户Id或名称，遍历关联权限
+            </summary>
+            <param name="input">用户Id或名称</param>
+            <returns></returns> 
+        </member>
         <member name="T:SSS.Api.Controllers.Permission.Info.RoleInfoController">
             <summary>
             角色信息
@@ -642,6 +670,20 @@
             根据权限组Id或名称，遍历关联角色
             </summary>
             <param name="input">权限组Id或名称</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Info.RoleInfoController.GetRoleByUserGroup(SSS.Domain.Permission.Group.UserGroup.Dto.UserGroupInputDto)">
+            <summary>
+            根据用户组Id或名称，遍历关联角色
+            </summary>
+            <param name="input">用户组Id或名称</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Info.RoleInfoController.GetRoleByUser(SSS.Domain.Permission.Info.UserInfo.Dto.UserInfoInputDto)">
+            <summary>
+            根据用户Id或名称，遍历关联角色
+            </summary>
+            <param name="input">用户Id或名称</param>
             <returns></returns> 
         </member>
         <member name="T:SSS.Api.Controllers.Permission.Info.UserInfoController">

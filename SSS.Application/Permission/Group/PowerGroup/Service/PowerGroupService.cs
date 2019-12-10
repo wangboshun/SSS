@@ -20,6 +20,7 @@ using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SSS.Domain.Permission.Group.RoleGroup.Dto;
 
 namespace SSS.Application.Permission.Group.PowerGroup.Service
 {
@@ -107,7 +108,6 @@ namespace SSS.Application.Permission.Group.PowerGroup.Service
         {
             var data = _powerGroupRepository.GetPowerGroupByUser(input.id, input.username, input.parentid, input.pageindex, input.pagesize);
             return new Pages<List<PowerGroupOutputDto>>(data.items?.AsQueryable().ProjectTo<PowerGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
-
         }
 
         /// <summary>
@@ -119,7 +119,17 @@ namespace SSS.Application.Permission.Group.PowerGroup.Service
         {
             var data = _powerGroupRepository.GetPowerGroupByUserGroup(input.id, input.usergroupname, input.parentid, input.pageindex, input.pagesize);
             return new Pages<List<PowerGroupOutputDto>>(data.items?.AsQueryable().ProjectTo<PowerGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+        }
 
+        /// <summary>
+        /// 根据角色组Id或名称，遍历关联权限组
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Pages<List<PowerGroupOutputDto>> GetPowerGroupByRoleGroup(RoleGroupInputDto input)
+        {
+            var data = _powerGroupRepository.GetPowerGroupByRoleGroup(input.id, input.rolegroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<PowerGroupOutputDto>>(data.items?.AsQueryable().ProjectTo<PowerGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
     }
 }

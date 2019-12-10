@@ -24,7 +24,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Group.PowerGroup.PowerGroup>> GetPowerGroupByPower(string powerid, string powername, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = " pg.* ";
+            string field = " DISTINCT pg.* ";
 
             string sql = @"SELECT {0}  FROM
 	                PowerInfo AS p
@@ -44,7 +44,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND p.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count(*) "));
+            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT pg.Id ) "));
 
             if (pageindex > 0 && pagesize > 0)
             {
@@ -70,7 +70,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Group.PowerGroup.PowerGroup>> GetPowerGroupByMenu(string menuid, string menuname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = " pg.* ";
+            string field = " DISTINCT pg.* ";
 
             string sql = @"SELECT  {0}  FROM
 	            MenuInfo AS m
@@ -90,7 +90,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND m.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count(*) "));
+            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT pg.Id ) "));
 
             if (pageindex > 0 && pagesize > 0)
             {
@@ -111,7 +111,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Group.PowerGroup.PowerGroup>> GetPowerGroupByOperate(string operateid, string operatename, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = @" pg.* ";
+            string field = @" DISTINCT pg.* ";
 
             string sql = @"SELECT {0}  FROM
 	            OperateInfo AS o
@@ -131,7 +131,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND m.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count(*) "));
+            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT pg.Id ) "));
 
             if (pageindex > 0 && pagesize > 0)
             {
@@ -157,7 +157,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Group.PowerGroup.PowerGroup>> GetPowerGroupByUser(string userid, string username, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = @" pg.* ";
+            string field = @" DISTINCT pg.* ";
 
             string sql = @"SELECT {0} FROM
 	                UserInfo AS u
@@ -179,9 +179,9 @@ namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
                 sql += $" AND u.UserName='{username}'";
 
             if (!string.IsNullOrWhiteSpace(parentid))
-                sql += $" AND u.ParentId='{parentid}'";
+                sql += $" AND u.ParentId='{parentid}'"; 
 
-            int count = Db.Database.Count(string.Format(sql, " count(*) "));
+            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT pg.Id ) "));
 
             if (pageindex > 0 && pagesize > 0)
             {
@@ -207,7 +207,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Group.PowerGroup.PowerGroup>> GetPowerGroupByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = @" pg.* ";
+            string field = @" DISTINCT pg.* ";
 
             string sql = @"SELECT {0} FROM
 	               	UserGroup AS ug
@@ -229,7 +229,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND ug.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count(*) "));
+            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT pg.Id ) "));
 
             if (pageindex > 0 && pagesize > 0)
             {
@@ -242,6 +242,52 @@ namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
                 var data = Db.Database.SqlQuery<Domain.Permission.Group.PowerGroup.PowerGroup>(string.Format(sql, field));
                 return new Pages<IEnumerable<Domain.Permission.Group.PowerGroup.PowerGroup>>(data, count);
             }
-        } 
+        }
+
+        /// <summary>
+        /// 根据角色组Id或名称，遍历关联权限组
+        /// </summary>
+        /// <param name="rolegroupid"></param>
+        /// <param name="rolegroupname"></param>
+        /// <param name="parentid"></param>
+        /// <param name="pageindex"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        public Pages<IEnumerable<Domain.Permission.Group.PowerGroup.PowerGroup>> GetPowerGroupByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        {
+            string field = @" DISTINCT pg.* ";
+
+            string sql = @"SELECT {0} FROM
+	               	PowerGroup AS pg
+	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.PowerGroupId = pg.Id
+	                INNER JOIN RoleGroup AS rg ON rgpgr.RoleGroupId = rg.Id 
+                WHERE
+	                pg.IsDelete = 0 
+	                AND rgpgr.IsDelete = 0 
+	                AND pg.IsDelete = 0";
+
+            if (!string.IsNullOrWhiteSpace(rolegroupid))
+                sql += $" AND rg.Id='{rolegroupid}'";
+
+            if (!string.IsNullOrWhiteSpace(rolegroupname))
+                sql += $" AND rg.UserName='{rolegroupname}'";
+
+            if (!string.IsNullOrWhiteSpace(parentid))
+                sql += $" AND rg.ParentId='{parentid}'";
+
+            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT pg.Id ) "));
+
+            if (pageindex > 0 && pagesize > 0)
+            {
+                string limit = " limit {1},{2} ";
+                var data = Db.Database.SqlQuery<Domain.Permission.Group.PowerGroup.PowerGroup>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
+                return new Pages<IEnumerable<Domain.Permission.Group.PowerGroup.PowerGroup>>(data, count);
+            }
+            else
+            {
+                var data = Db.Database.SqlQuery<Domain.Permission.Group.PowerGroup.PowerGroup>(string.Format(sql, field));
+                return new Pages<IEnumerable<Domain.Permission.Group.PowerGroup.PowerGroup>>(data, count);
+            }
+        }
     }
 }

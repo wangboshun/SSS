@@ -1,10 +1,12 @@
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Group.PowerGroup.Dto;
+using SSS.Domain.Permission.Group.RoleGroup.Dto;
+using SSS.Domain.Permission.Group.UserGroup.Dto;
 using SSS.Domain.Permission.Info.PowerInfo.Dto;
+using SSS.Domain.Permission.Info.UserInfo.Dto;
 using SSS.Domain.Seedwork.Model;
 
 using System.Collections.Generic;
-using SSS.Domain.Permission.Group.RoleGroup.Dto;
 
 namespace SSS.Application.Permission.Info.PowerInfo.Service
 {
@@ -30,6 +32,20 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
         /// <param name="input"></param>
         /// <returns></returns>
         Pages<List<PowerInfoOutputDto>> GetPowerByRoleGroup(RoleGroupInputDto input);
+
+        /// <summary>
+        /// 根据用户组Id或名称，遍历关联权限
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Pages<List<PowerInfoOutputDto>> GetPowerByUserGroup(UserGroupInputDto input);
+
+        /// <summary>
+        /// 根据用户Id或名称，遍历关联权限
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Pages<List<PowerInfoOutputDto>> GetPowerByUser(UserInfoInputDto input);
 
         /// <summary>
         ///     获取权限下的所有下级
