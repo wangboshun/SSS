@@ -74,7 +74,7 @@ namespace SSS.Application.Coin.CoinTrade.Job
                 string coin = "btc";
 
                 //K线
-                var kline = _huobi.GetKLine(coin, "usdt", CoinTime.Time_60min.ToString().Split('_')[1], 2000);
+                var kline = _huobi.GetKLine(coin, "usdt", CoinTime.Time_4hour.ToString().Split('_')[1], 2000);
 
                 if (kline == null || kline.Count < 1)
                 {

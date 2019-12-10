@@ -70,14 +70,14 @@ namespace SSS.Api.Controllers.Permission.Info
         /// <summary>
         /// 删除菜单信息
         /// </summary>
-        /// <param name="input">MenuInfoInputDto</param>
+        /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpDelete("delete")]
+        [HttpDelete("{id}")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult DeleteUserInfo([FromBody]MenuInfoInputDto input)
+        public IActionResult DeleteUserInfo(string id)
         {
-            _service.DeleteMenuInfo(input);
-            return ApiResponse(input);
+            _service.DeleteMenuInfo(id);
+            return ApiResponse(null);
         }
 
         /// <summary>

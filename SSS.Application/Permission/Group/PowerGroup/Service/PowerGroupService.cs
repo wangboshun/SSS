@@ -39,20 +39,20 @@ namespace SSS.Application.Permission.Group.PowerGroup.Service
             _powerGroupRepository = repository;
         }
 
-        public void AddPowerGroup(PowerGroupInputDto input)
+        public bool AddPowerGroup(PowerGroupInputDto input)
         {
             var result = Validator.Validate(input, ruleSet: "Insert");
             if (!result.IsValid)
             {
                 Error.Execute(result);
-                return;
+                return false;
             }
 
             input.id = Guid.NewGuid().ToString();
             var model = Mapper.Map<Domain.Permission.Group.PowerGroup.PowerGroup>(input);
             model.CreateTime = DateTime.Now;
             Repository.Add(model);
-            Repository.SaveChanges();
+            return Repository.SaveChanges() > 0;
         }
 
         public Pages<List<PowerGroupOutputDto>> GetListPowerGroup(PowerGroupInputDto input)
@@ -60,9 +60,9 @@ namespace SSS.Application.Permission.Group.PowerGroup.Service
             return GetPage(input);
         }
 
-        public void DeletePowerGroup(PowerGroupInputDto input)
+        public bool DeletePowerGroup(string id)
         {
-            Repository.Remove(input.id);
+            return Repository.Remove(id);
         }
 
         /// <summary>

@@ -9,7 +9,7 @@ namespace SSS.Application.Coin.CoinArticel.Service
     public interface ICoinArticelService : IQueryService<Domain.Coin.CoinArticel.CoinArticel, CoinArticelInputDto,
         CoinArticelOutputDto>
     {
-        void AddCoinArticel(CoinArticelInputDto input);
+        bool AddCoinArticel(CoinArticelInputDto input);
 
         Pages<List<CoinArticelOutputDto>> GetListCoinArticel(CoinArticelInputDto input);
 

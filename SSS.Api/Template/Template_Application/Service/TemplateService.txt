@@ -24,20 +24,20 @@ namespace SSS.Application.NameSpace.Template.Service
 
         }
 
-        public void AddTemplate(TemplateInputDto input)
+        public bool AddTemplate(TemplateInputDto input)
         {
             var result = Validator.Validate(input, ruleSet: "Insert");
             if (!result.IsValid)
             {
                 Error.Execute(result);
-                return;
+                return false;
             }
 
             input.id = Guid.NewGuid().ToString();
             var model = Mapper.Map<SSS.Domain.NameSpace.Template.Template>(input);
             model.CreateTime=DateTime.Now;
             Repository.Add(model);
-            Repository.SaveChanges();
+            return Repository.SaveChanges()>0;
         }
 
         public Pages<List<TemplateOutputDto>> GetListTemplate(TemplateInputDto input)

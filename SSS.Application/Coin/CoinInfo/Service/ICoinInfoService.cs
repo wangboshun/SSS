@@ -9,7 +9,7 @@ namespace SSS.Application.Coin.CoinInfo.Service
     public interface
         ICoinInfoService : IQueryService<Domain.Coin.CoinInfo.CoinInfo, CoinInfoInputDto, CoinInfoOutputDto>
     {
-        void AddCoinInfo(CoinInfoInputDto input);
+        bool AddCoinInfo(CoinInfoInputDto input);
 
         Pages<List<CoinInfoOutputDto>> GetListCoinInfo(CoinInfoInputDto input);
     }

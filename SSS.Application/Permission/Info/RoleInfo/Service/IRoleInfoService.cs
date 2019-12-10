@@ -11,7 +11,7 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
     public interface IRoleInfoService : IQueryService<Domain.Permission.Info.RoleInfo.RoleInfo, RoleInfoInputDto,
         RoleInfoOutputDto>
     {
-        void AddRoleInfo(RoleInfoInputDto input);
+        bool AddRoleInfo(RoleInfoInputDto input);
         Pages<List<RoleInfoOutputDto>> GetListRoleInfo(RoleInfoInputDto input);
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
         /// <returns></returns>
         List<RoleInfoTreeOutputDto> GetChildren(string roleid);
 
-        void DeleteRoleInfo(RoleInfoInputDto input);
+        bool DeleteRoleInfo(string id);
 
         /// <summary>
         /// 根据角色组Id或名称，遍历关联角色

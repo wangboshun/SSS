@@ -12,7 +12,7 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
     public interface IUserInfoService : IQueryService<Domain.Permission.Info.UserInfo.UserInfo, UserInfoInputDto,
         UserInfoOutputDto>
     {
-        void AddUserInfo(UserInfoInputDto input);
+        bool AddUserInfo(UserInfoInputDto input);
         UserInfoOutputDto GetByUserName(UserInfoInputDto input);
         Pages<List<UserInfoOutputDto>> GetListUserInfo(UserInfoInputDto input);
 
@@ -37,7 +37,7 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         /// <returns></returns>
         bool DeleteUserPermission(string userid);
 
-        void DeleteUserInfo(UserInfoInputDto input);
+        bool DeleteUserInfo(string id);
 
         /// <summary>
         /// 根据用户组Id或名称，遍历关联用户

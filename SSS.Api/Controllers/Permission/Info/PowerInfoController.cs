@@ -51,21 +51,21 @@ namespace SSS.Api.Controllers.Permission.Info
         [AllowAnonymous]  //匿名访问
         public IActionResult AddPowerInfo([FromBody]PowerInfoInputDto input)
         {
-            _service.AddPowerInfo(input);
-            return ApiResponse(input);
+            var result = _service.AddPowerInfo(input);
+            return ApiResponse(result, result, result ? "增加成功" : "增加失败");
         }
 
         /// <summary>
         /// 删除权限信息
         /// </summary>
-        /// <param name="input">PowerInfoInputDto</param>
+        /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpDelete("delete")]
+        [HttpDelete("{id}")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult DeletePowerInfo([FromBody]PowerInfoInputDto input)
+        public IActionResult DeletePowerInfo(string id)
         {
-            _service.DeletePowerInfo(input);
-            return ApiResponse(input);
+            var result = _service.DeletePowerInfo(id);
+            return ApiResponse(result, result, result ? "删除成功" : "删除失败");
         }
 
         /// <summary>

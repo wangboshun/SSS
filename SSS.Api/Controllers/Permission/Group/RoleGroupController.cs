@@ -51,21 +51,21 @@ namespace SSS.Api.Controllers.Permission.Group
         [AllowAnonymous]  //匿名访问
         public IActionResult AddRoleGroup([FromBody]RoleGroupInputDto input)
         {
-            _service.AddRoleGroup(input);
-            return ApiResponse(input);
+            var result = _service.AddRoleGroup(input);
+            return ApiResponse(result, result, result ? "增加成功" : "增加失败");
         }
 
         /// <summary>
         /// 删除角色组
         /// </summary>
-        /// <param name="input">角色组名称</param>
+        /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpDelete("delete")]
+        [HttpDelete("{id}")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult DeletePowerGroup([FromBody]RoleGroupInputDto input)
+        public IActionResult DeletePowerGroup(string id)
         {
-            _service.DeleteRoleGroup(input);
-            return ApiResponse(input);
+            var result = _service.DeleteRoleGroup(id);
+            return ApiResponse(result, result, result ? "删除成功" : "删除失败");
         }
 
         /// <summary>

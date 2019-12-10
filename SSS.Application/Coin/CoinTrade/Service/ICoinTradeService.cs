@@ -9,7 +9,7 @@ namespace SSS.Application.Coin.CoinTrade.Service
     public interface
         ICoinTradeService : IQueryService<Domain.Coin.CoinTrade.CoinTrade, CoinTradeInputDto, CoinTradeOutputDto>
     {
-        void AddCoinTrade(CoinTradeInputDto input);
+        bool AddCoinTrade(CoinTradeInputDto input);
 
         Pages<List<CoinTradeOutputDto>> GetListCoinTrade(CoinTradeInputDto input);
     }

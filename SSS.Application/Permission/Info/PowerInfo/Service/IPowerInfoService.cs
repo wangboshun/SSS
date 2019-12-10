@@ -11,11 +11,11 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
     public interface IPowerInfoService : IQueryService<Domain.Permission.Info.PowerInfo.PowerInfo, PowerInfoInputDto,
         PowerInfoOutputDto>
     {
-        void AddPowerInfo(PowerInfoInputDto input);
+        bool AddPowerInfo(PowerInfoInputDto input);
 
         Pages<List<PowerInfoOutputDto>> GetListPowerInfo(PowerInfoInputDto input);
 
-        void DeletePowerInfo(PowerInfoInputDto input);
+        bool DeletePowerInfo(string id);
 
         /// <summary>
         /// 根据权限组Id或名称，遍历关联权限

@@ -19,9 +19,9 @@ namespace SSS.Domain.Seedwork.Repository
         where TEntity : Entity
     {
         int Execute(string sql, params DbParameter[] parameter);
-        void Add(TEntity obj, bool save = false);
-        void AddList(List<TEntity> list, bool save = false);
-        void UpdateList(List<TEntity> list, bool save = false);
+        bool Add(TEntity obj, bool save = false);
+        bool AddList(List<TEntity> list, bool save = false);
+        bool UpdateList(List<TEntity> list, bool save = false);
         bool DeleteList(Expression<Func<TEntity, bool>> predicate, bool save = false);
         TEntity Get(string id);
         TEntity Get(Expression<Func<TEntity, bool>> predicate);
@@ -34,9 +34,9 @@ namespace SSS.Domain.Seedwork.Repository
         IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate);
         IQueryable<TEntity> GetPage(int index, int size, ref int count);
         IQueryable<TEntity> GetPage(int index, int size, Expression<Func<TEntity, bool>> predicate, ref int count);
-        void Update(TEntity obj, bool save = false);
-        void Remove(string id, bool save = false);
-        void Remove(Expression<Func<TEntity, bool>> predicate, bool save = false);
+        bool Update(TEntity obj, bool save = false);
+        bool Remove(string id, bool save = false);
+        bool Remove(Expression<Func<TEntity, bool>> predicate, bool save = false);
         int SaveChanges(); 
     }
 }

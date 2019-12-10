@@ -11,11 +11,11 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
     public interface IRoleGroupService : IQueryService<Domain.Permission.Group.RoleGroup.RoleGroup, RoleGroupInputDto,
         RoleGroupOutputDto>
     {
-        void AddRoleGroup(RoleGroupInputDto input);
+        bool AddRoleGroup(RoleGroupInputDto input);
 
         Pages<List<RoleGroupOutputDto>> GetListRoleGroup(RoleGroupInputDto input);
 
-        void DeleteRoleGroup(RoleGroupInputDto input);
+        bool DeleteRoleGroup(string id);
 
         /// <summary>
         /// 根据角色Id或名称，遍历关联角色组

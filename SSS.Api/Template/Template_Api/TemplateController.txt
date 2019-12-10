@@ -48,8 +48,8 @@ namespace SSS.Api.Controllers.NameSpace
         [AllowAnonymous]  //匿名访问
         public IActionResult AddTemplate([FromBody]TemplateInputDto input)
         {
-            _service.AddTemplate(input);
-            return ApiResponse(input);
+            var result = _service.AddTemplate(input);
+            return ApiResponse(result, result, result ? "增加成功" : "增加失败");
         }
     }
 }

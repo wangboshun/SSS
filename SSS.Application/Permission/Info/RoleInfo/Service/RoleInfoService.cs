@@ -44,20 +44,20 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
             _roleGroupRelationRepository = roleGroupRelationRepository;
         }
 
-        public void AddRoleInfo(RoleInfoInputDto input)
+        public bool AddRoleInfo(RoleInfoInputDto input)
         {
             var result = Validator.Validate(input, ruleSet: "Insert");
             if (!result.IsValid)
             {
                 Error.Execute(result);
-                return;
+                return false;
             }
 
             var role = Get(x => x.RoleName.Equals(input.rolename));
             if (role != null)
             {
                 Error.Execute("角色名已存在！");
-                return;
+                return false;
             }
 
             input.id = Guid.NewGuid().ToString();
@@ -79,14 +79,14 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
             }
 
             Repository.Add(model);
-            Repository.SaveChanges();
+            return Repository.SaveChanges()>0;
         }
 
-        public void DeleteRoleInfo(RoleInfoInputDto input)
+        public bool DeleteRoleInfo(string id)
         {
-            Repository.Remove(input.id, false);
-            _roleGroupRelationRepository.Remove(x => x.RoleId.Equals(input.id));
-            Repository.SaveChanges();
+            Repository.Remove(id, false);
+            _roleGroupRelationRepository.Remove(x => x.RoleId.Equals(id));
+            return Repository.SaveChanges()>0;
         }
 
         /// <summary>

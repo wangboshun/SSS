@@ -44,13 +44,13 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
             _powerGroupRelationRepository = powerGroupRelationRepository;
         }
 
-        public void AddPowerInfo(PowerInfoInputDto input)
+        public bool AddPowerInfo(PowerInfoInputDto input)
         {
             var result = Validator.Validate(input, ruleSet: "Insert");
             if (!result.IsValid)
             {
                 Error.Execute(result);
-                return;
+                return false;
             }
 
             input.id = Guid.NewGuid().ToString();
@@ -72,7 +72,7 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
             }
 
             Repository.Add(model);
-            Repository.SaveChanges();
+            return Repository.SaveChanges()>0;
         }
 
         public Pages<List<PowerInfoOutputDto>> GetListPowerInfo(PowerInfoInputDto input)
@@ -80,11 +80,11 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
             return GetPage(input);
         }
 
-        public void DeletePowerInfo(PowerInfoInputDto input)
+        public bool DeletePowerInfo(string id)
         {
-            Repository.Remove(input.id, false);
-            _powerGroupRelationRepository.Remove(x => x.PowerId.Equals(input.id));
-            Repository.SaveChanges();
+            Repository.Remove(id, false);
+            _powerGroupRelationRepository.Remove(x => x.PowerId.Equals(id));
+            return Repository.SaveChanges()>0;
         }
 
         /// <summary>

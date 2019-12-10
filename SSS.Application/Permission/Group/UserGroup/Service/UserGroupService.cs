@@ -45,13 +45,13 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
             _userGroupRoleGroupRelationRepository = userGroupRoleGroupRelationRepository;
         }
 
-        public void AddUserGroup(UserGroupInputDto input)
+        public bool AddUserGroup(UserGroupInputDto input)
         {
             var result = Validator.Validate(input, ruleSet: "Insert");
             if (!result.IsValid)
             {
                 Error.Execute(result);
-                return;
+                return false;
             }
 
             input.id = Guid.NewGuid().ToString();
@@ -76,7 +76,7 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
                 }
             }
 
-            Repository.SaveChanges();
+            return Repository.SaveChanges()>0;
         }
 
         public Pages<List<UserGroupOutputDto>> GetListUserGroup(UserGroupInputDto input)
@@ -84,9 +84,9 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
             return GetPage(input);
         }
 
-        public void DeleteUserGroup(UserGroupInputDto input)
+        public bool DeleteUserGroup(string id)
         {
-            Repository.Remove(input.id);
+            return Repository.Remove(id,true);
         }
 
         /// <summary>

@@ -28,20 +28,20 @@ namespace SSS.Application.Coin.CoinTrade.Service
         {
         }
 
-        public void AddCoinTrade(CoinTradeInputDto input)
+        public bool AddCoinTrade(CoinTradeInputDto input)
         {
             var result = Validator.Validate(input, ruleSet: "Insert");
             if (!result.IsValid)
             {
                 Error.Execute(result);
-                return;
+                return false;
             }
 
             input.id = Guid.NewGuid().ToString();
             var model = Mapper.Map<Domain.Coin.CoinTrade.CoinTrade>(input);
             model.CreateTime = DateTime.Now;
             Repository.Add(model);
-            Repository.SaveChanges();
+            return Repository.SaveChanges()>0;
         }
 
         public Pages<List<CoinTradeOutputDto>> GetListCoinTrade(CoinTradeInputDto input)

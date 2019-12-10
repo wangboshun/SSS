@@ -11,7 +11,7 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
     public interface IOperateInfoService : IQueryService<Domain.Permission.Info.OperateInfo.OperateInfo,
         OperateInfoInputDto, OperateInfoOutputDto>
     {
-        void AddOperateInfo(OperateInfoInputDto input);
+        bool AddOperateInfo(OperateInfoInputDto input);
 
         /// <summary>
         ///     获取操作下的所有下级
@@ -19,7 +19,7 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
         /// <param name="operateid"></param>
         /// <returns></returns>
         List<OperateInfoTreeOutputDto> GetChildrenById(string operateid);
-        void DeleteOperateInfo(OperateInfoInputDto input);
+        bool DeleteOperateInfo(string id);
         Pages<List<OperateInfoOutputDto>> GetListOperateInfo(OperateInfoInputDto input);
 
         /// <summary>

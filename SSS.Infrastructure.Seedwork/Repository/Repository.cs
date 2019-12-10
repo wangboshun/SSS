@@ -35,7 +35,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
             DbSet = Db.Set<TEntity>();
             _error = (IErrorHandler)HttpContextService.Current.RequestServices.GetService(typeof(IErrorHandler));
             _logger = (ILogger)HttpContextService.Current.RequestServices.GetService(typeof(ILogger<Repository<TEntity>>));
-        } 
+        }
 
         /// <summary>
         /// 执行sql
@@ -48,11 +48,12 @@ namespace SSS.Infrastructure.Seedwork.Repository
             return Db.Database.ExecuteSqlRaw(sql);
         }
 
-        public virtual void Add(TEntity obj, bool save = false)
+        public virtual bool Add(TEntity obj, bool save = false)
         {
             DbSet.Add(obj);
             if (save)
-                SaveChanges();
+                return SaveChanges() > 0;
+            return false;
         }
 
         /// <summary>
@@ -60,11 +61,12 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// </summary>
         /// <param name="list"></param>
         /// <param name="save"></param>
-        public virtual void AddList(List<TEntity> list, bool save = false)
+        public virtual bool AddList(List<TEntity> list, bool save = false)
         {
             DbSet.AddRange(list);
             if (save)
-                SaveChanges();
+                return SaveChanges() > 0;
+            return false;
         }
 
         /// <summary>
@@ -72,11 +74,12 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// </summary>
         /// <param name="list"></param>
         /// <param name="save"></param>
-        public virtual void UpdateList(List<TEntity> list, bool save = false)
+        public virtual bool UpdateList(List<TEntity> list, bool save = false)
         {
             DbSet.UpdateRange(list);
             if (save)
-                SaveChanges();
+                return SaveChanges() > 0;
+            return false;
         }
 
         /// <summary>
@@ -233,7 +236,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// </summary>
         /// <param name="obj">实体</param>
         /// <param name="save">是否保存  默认否</param>
-        public virtual void Update(TEntity obj, bool save = false)
+        public virtual bool Update(TEntity obj, bool save = false)
         {
             DbSet.Attach(obj);
             var entry = Db.Entry(obj);
@@ -241,7 +244,8 @@ namespace SSS.Infrastructure.Seedwork.Repository
             entry.Property(x => x.CreateTime).IsModified = false;
             entry.Property(x => x.Id).IsModified = false;
             if (save)
-                SaveChanges();
+                return SaveChanges() > 0;
+            return false;
         }
 
         /// <summary>
@@ -249,19 +253,20 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// </summary>
         /// <param name="id">Id</param>
         /// <param name="save">是否保存  默认否</param>
-        public virtual void Remove(string id, bool save = false)
+        public virtual bool Remove(string id, bool save = false)
         {
             var model = Get(x => x.Id.Equals(id) && x.IsDelete == 0);
             if (model == null)
             {
                 _error.Execute("数据不存在或已删除,删除失败！");
-                return;
+                return false;
             }
 
             model.IsDelete = 1;
             Update(model);
             if (save)
-                SaveChanges();
+                return SaveChanges() > 0;
+            return false;
         }
 
         /// <summary>
@@ -269,19 +274,20 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// </summary>
         /// <param name="predicate">Lambda表达式</param>
         /// <param name="save">是否保存  默认否</param>
-        public virtual void Remove(Expression<Func<TEntity, bool>> predicate, bool save = false)
+        public virtual bool Remove(Expression<Func<TEntity, bool>> predicate, bool save = false)
         {
             var model = Get(predicate);
             if (model == null)
             {
                 _error.Execute("数据不存在或已删除,删除失败！");
-                return;
+                return false;
             }
 
             model.IsDelete = 1;
             Update(model);
             if (save)
-                SaveChanges();
+                return SaveChanges() > 0;
+            return false;
         }
 
         /// <summary>
@@ -291,13 +297,13 @@ namespace SSS.Infrastructure.Seedwork.Repository
         public int SaveChanges()
         {
             try
-            { 
+            {
                 return Db.SaveChanges();
             }
             catch (Exception ex)
             {
                 _error.Execute(ex);
-                _logger.LogError(new EventId(ex.HResult), ex, "Repository Exception"); 
+                _logger.LogError(new EventId(ex.HResult), ex, "Repository Exception");
                 return 0;
             }
         }

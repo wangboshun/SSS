@@ -64,21 +64,21 @@ namespace SSS.Api.Controllers.Permission.Info
         [AllowAnonymous]  //匿名访问
         public IActionResult AddRoleInfo([FromBody]RoleInfoInputDto input)
         {
-            _service.AddRoleInfo(input);
-            return ApiResponse(input);
+            var result = _service.AddRoleInfo(input);
+            return ApiResponse(result, result, result ? "增加成功" : "增加失败");
         }
 
         /// <summary>
         /// 删除角色信息
         /// </summary>
-        /// <param name="input">RoleInfoInputDto</param>
+        /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpDelete("delete")]
+        [HttpDelete("{id}")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult DeletePowerInfo([FromBody]RoleInfoInputDto input)
+        public IActionResult DeletePowerInfo(string id)
         {
-            _service.DeleteRoleInfo(input);
-            return ApiResponse(input);
+            var result = _service.DeleteRoleInfo(id);
+            return ApiResponse(result, result, result ? "删除成功" : "删除失败");
         }
 
         /// <summary>

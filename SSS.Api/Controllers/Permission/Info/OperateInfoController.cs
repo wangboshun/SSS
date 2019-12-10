@@ -57,14 +57,14 @@ namespace SSS.Api.Controllers.Permission.Info
         /// <summary>
         /// 删除操作信息
         /// </summary>
-        /// <param name="input">OperateInfoInputDto</param>
+        /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpDelete("delete")]
+        [HttpDelete("{id}")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult DeleteUserInfo([FromBody]OperateInfoInputDto input)
+        public IActionResult DeleteUserInfo(string id)
         {
-            _service.DeleteOperateInfo(input);
-            return ApiResponse(input);
+            _service.DeleteOperateInfo(id);
+            return ApiResponse(null);
         }
 
         /// <summary>

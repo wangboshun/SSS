@@ -7,7 +7,7 @@ namespace SSS.Application.NameSpace.Template.Service
 {
     public interface ITemplateService : IQueryService<SSS.Domain.NameSpace.Template.Template, TemplateInputDto, TemplateOutputDto>
     {
-        void AddTemplate(TemplateInputDto input);
+        bool AddTemplate(TemplateInputDto input);
 
 		Pages<List<TemplateOutputDto>> GetListTemplate(TemplateInputDto input); 
     }

@@ -42,20 +42,20 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
             _powerGroupMenuRelationRepository = powerGroupMenuRelationRepository;
         }
 
-        public void AddMenuInfo(MenuInfoInputDto input)
+        public bool AddMenuInfo(MenuInfoInputDto input)
         {
             var result = Validator.Validate(input, ruleSet: "Insert");
             if (!result.IsValid)
             {
                 Error.Execute(result);
-                return;
+                return false;
             }
 
             var menu = Get(x => x.MenuName.Equals(input.menuname));
             if (menu != null)
             {
                 Error.Execute("菜单名已存在！");
-                return;
+                return false;
             }
 
             input.id = Guid.NewGuid().ToString();
@@ -77,14 +77,14 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
             }
 
             Repository.Add(model);
-            Repository.SaveChanges();
+            return Repository.SaveChanges()>0;
         }
 
-        public void DeleteMenuInfo(MenuInfoInputDto input)
+        public bool DeleteMenuInfo(string id)
         {
-            Repository.Remove(input.id, false);
-            _powerGroupMenuRelationRepository.Remove(x => x.MenuId.Equals(input.id));
-            Repository.SaveChanges();
+            Repository.Remove(id, false);
+            _powerGroupMenuRelationRepository.Remove(x => x.MenuId.Equals(id));
+            return Repository.SaveChanges()>0;
         }
 
         /// <summary>

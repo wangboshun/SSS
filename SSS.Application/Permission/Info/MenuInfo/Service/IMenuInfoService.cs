@@ -10,8 +10,8 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
     public interface IMenuInfoService : IQueryService<Domain.Permission.Info.MenuInfo.MenuInfo, MenuInfoInputDto,
         MenuInfoOutputDto>
     {
-        void AddMenuInfo(MenuInfoInputDto input);
-        void DeleteMenuInfo(MenuInfoInputDto input);
+        bool AddMenuInfo(MenuInfoInputDto input);
+        bool DeleteMenuInfo(string id);
         Pages<List<MenuInfoOutputDto>> GetListMenuInfo(MenuInfoInputDto input);
         /// <summary>
         ///     获取菜单下的所有下级
