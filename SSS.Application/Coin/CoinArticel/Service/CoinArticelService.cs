@@ -34,20 +34,20 @@ namespace SSS.Application.Coin.CoinArticel.Service
             _repository = repository;
         }
 
-        public bool AddCoinArticel(CoinArticelInputDto input)
+        public CoinArticelOutputDto AddCoinArticel(CoinArticelInputDto input)
         {
             var result = Validator.Validate(input, ruleSet: "Insert");
             if (!result.IsValid)
             {
                 Error.Execute(result);
-                return false;
+                return null;
             }
 
             input.id = Guid.NewGuid().ToString();
             var model = Mapper.Map<Domain.Coin.CoinArticel.CoinArticel>(input);
             model.CreateTime = DateTime.Now;
             Repository.Add(model);
-            return Repository.SaveChanges()>0;
+            return Repository.SaveChanges() > 0 ? Mapper.Map<CoinArticelOutputDto>(model) : null;
         }
 
         public Pages<List<CoinArticelOutputDto>> GetListCoinArticel(CoinArticelInputDto input)

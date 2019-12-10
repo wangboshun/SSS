@@ -10,10 +10,9 @@ using System.Collections.Generic;
 
 namespace SSS.Application.Permission.Info.RoleInfo.Service
 {
-    public interface IRoleInfoService : IQueryService<Domain.Permission.Info.RoleInfo.RoleInfo, RoleInfoInputDto,
-        RoleInfoOutputDto>
+    public interface IRoleInfoService : IQueryService<Domain.Permission.Info.RoleInfo.RoleInfo, RoleInfoInputDto, RoleInfoOutputDto>
     {
-        bool AddRoleInfo(RoleInfoInputDto input);
+        RoleInfoOutputDto AddRoleInfo(RoleInfoInputDto input);
         Pages<List<RoleInfoOutputDto>> GetListRoleInfo(RoleInfoInputDto input);
 
         /// <summary>

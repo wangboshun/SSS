@@ -6,8 +6,11 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
+using SSS.Domain.Permission.Group.PowerGroup.Dto;
 using SSS.Domain.Permission.Group.RoleGroup.Dto;
+using SSS.Domain.Permission.Group.UserGroup.Dto;
 using SSS.Domain.Permission.Info.RoleInfo.Dto;
+using SSS.Domain.Permission.Info.UserInfo.Dto;
 using SSS.Domain.Permission.Relation.RoleGroupRelation;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
@@ -19,9 +22,6 @@ using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SSS.Domain.Permission.Group.PowerGroup.Dto;
-using SSS.Domain.Permission.Group.UserGroup.Dto;
-using SSS.Domain.Permission.Info.UserInfo.Dto;
 
 namespace SSS.Application.Permission.Info.RoleInfo.Service
 {
@@ -46,20 +46,20 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
             _roleGroupRelationRepository = roleGroupRelationRepository;
         }
 
-        public bool AddRoleInfo(RoleInfoInputDto input)
+        public RoleInfoOutputDto AddRoleInfo(RoleInfoInputDto input)
         {
             var result = Validator.Validate(input, ruleSet: "Insert");
             if (!result.IsValid)
             {
                 Error.Execute(result);
-                return false;
+                return null;
             }
 
             var role = Get(x => x.RoleName.Equals(input.rolename));
             if (role != null)
             {
                 Error.Execute("角色名已存在！");
-                return false;
+                return null;
             }
 
             input.id = Guid.NewGuid().ToString();
@@ -81,14 +81,14 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
             }
 
             Repository.Add(model);
-            return Repository.SaveChanges()>0;
+            return Repository.SaveChanges() > 0 ? Mapper.Map<RoleInfoOutputDto>(model) : null;
         }
 
         public bool DeleteRoleInfo(string id)
         {
             Repository.Remove(id, false);
             _roleGroupRelationRepository.Remove(x => x.RoleId.Equals(id));
-            return Repository.SaveChanges()>0;
+            return Repository.SaveChanges() > 0;
         }
 
         /// <summary>

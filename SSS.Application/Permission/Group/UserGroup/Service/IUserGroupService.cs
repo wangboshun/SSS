@@ -1,18 +1,18 @@
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Group.PowerGroup.Dto;
+using SSS.Domain.Permission.Group.RoleGroup.Dto;
 using SSS.Domain.Permission.Group.UserGroup.Dto;
 using SSS.Domain.Permission.Info.UserInfo.Dto;
 using SSS.Domain.Seedwork.Model;
 
 using System.Collections.Generic;
-using SSS.Domain.Permission.Group.RoleGroup.Dto;
 
 namespace SSS.Application.Permission.Group.UserGroup.Service
 {
     public interface IUserGroupService : IQueryService<Domain.Permission.Group.UserGroup.UserGroup, UserGroupInputDto,
         UserGroupOutputDto>
     {
-        bool AddUserGroup(UserGroupInputDto input);
+        UserGroupOutputDto AddUserGroup(UserGroupInputDto input);
 
         Pages<List<UserGroupOutputDto>> GetListUserGroup(UserGroupInputDto input);
 

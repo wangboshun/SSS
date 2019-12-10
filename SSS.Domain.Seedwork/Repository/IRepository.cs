@@ -37,6 +37,6 @@ namespace SSS.Domain.Seedwork.Repository
         bool Update(TEntity obj, bool save = false);
         bool Remove(string id, bool save = false);
         bool Remove(Expression<Func<TEntity, bool>> predicate, bool save = false);
-        int SaveChanges(); 
+        int SaveChanges();
     }
 }

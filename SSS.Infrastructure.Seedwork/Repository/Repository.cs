@@ -224,8 +224,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// <param name="predicate">Lambda表达式</param>
         /// <param name="count">总数量</param>
         /// <returns></returns>
-        public IQueryable<TEntity> GetPage(int index, int size, Expression<Func<TEntity, bool>> predicate,
-            ref int count)
+        public IQueryable<TEntity> GetPage(int index, int size, Expression<Func<TEntity, bool>> predicate, ref int count)
         {
             count = DbSet.Where(predicate).Count();
             return DbSet.OrderByDescending(x => x.CreateTime).Where(predicate).Skip(size * index).Take(size);
@@ -258,7 +257,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
             var model = Get(x => x.Id.Equals(id) && x.IsDelete == 0);
             if (model == null)
             {
-                _error.Execute("数据不存在或已删除,删除失败！");
+                //_error.Execute("数据不存在或已删除,删除失败！");
                 return false;
             }
 
@@ -279,7 +278,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
             var model = Get(predicate);
             if (model == null)
             {
-                _error.Execute("数据不存在或已删除,删除失败！");
+                //_error.Execute("数据不存在或已删除,删除失败！");
                 return false;
             }
 

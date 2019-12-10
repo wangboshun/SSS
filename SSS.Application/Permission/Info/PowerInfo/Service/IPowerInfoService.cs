@@ -10,10 +10,9 @@ using System.Collections.Generic;
 
 namespace SSS.Application.Permission.Info.PowerInfo.Service
 {
-    public interface IPowerInfoService : IQueryService<Domain.Permission.Info.PowerInfo.PowerInfo, PowerInfoInputDto,
-        PowerInfoOutputDto>
+    public interface IPowerInfoService : IQueryService<Domain.Permission.Info.PowerInfo.PowerInfo, PowerInfoInputDto, PowerInfoOutputDto>
     {
-        bool AddPowerInfo(PowerInfoInputDto input);
+        PowerInfoOutputDto AddPowerInfo(PowerInfoInputDto input);
 
         Pages<List<PowerInfoOutputDto>> GetListPowerInfo(PowerInfoInputDto input);
 

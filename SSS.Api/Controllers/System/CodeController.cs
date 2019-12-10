@@ -74,7 +74,7 @@ namespace SSS.Api.Controllers.System
         {
             class_name = HttpContext.Request.Form["class_name"];
             if (string.IsNullOrWhiteSpace(class_name))
-                return ApiResponse(null);
+                return ApiResponse(false);
 
             string namespace_str = HttpContext.Request.Form["namespace_name"];
             if (!string.IsNullOrWhiteSpace(namespace_str))
@@ -100,7 +100,7 @@ namespace SSS.Api.Controllers.System
             list = list.Where(x => !string.IsNullOrWhiteSpace(x.field_name)).ToList();
             AppDomainContext(list);
 
-            return ApiResponse(null);
+            return ApiResponse(false);
         }
 
         /// <summary>	

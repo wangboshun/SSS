@@ -70,59 +70,61 @@ namespace SSS.Application.Coin.CoinTrade.Job
         {
             try
             {
-                //币种
-                string coin = "btc";
+                string[] coin_array = { "btc", "eth", "eos", "xrp", "bch" };
 
-                //K线
-                var kline = _huobi.GetKLine(coin, "usdt", CoinTime.Time_4hour.ToString().Split('_')[1], 2000);
-
-                if (kline == null || kline.Count < 1)
+                foreach (var coin in coin_array)
                 {
-                    _logger.LogError("---K线获取失败---");
-                    return;
+                    //K线
+                    var kline = _huobi.GetKLine(coin, "usdt", CoinTime.Time_4hour.ToString().Split('_')[1], 2000);
+
+                    if (kline == null || kline.Count < 1)
+                    {
+                        _logger.LogError("---K线获取失败---");
+                        return;
+                    }
+
+                    //目前收盘价
+                    double current_price = kline[0].close;
+
+                    //均线
+                    var data5 = _indicator.SMA(kline, 5);
+                    var data10 = _indicator.SMA(kline, 10);
+
+                    //macd
+                    var macd = _indicator.MACD(kline);
+
+                    //kdj
+                    var kdj = _indicator.KDJ(kline);
+
+                    //均线是否金叉    5日线>10日线
+                    bool avg_status = data5.First()?.Item2 > data10.First()?.Item2;
+
+                    _logger.LogInformation(
+                        $"均线指标    时间：{data5.First()?.Item1} ，5日线{data5.First()?.Item2}，10日线{data10.First()?.Item2}   状态：{avg_status}");
+
+                    //macd是否金叉   macd>0 && dif>dea
+                    bool macd_status = /* macd.FirstOrDefault().Item4 > 0 &&*/
+                        macd.FirstOrDefault()?.Item2 > macd.FirstOrDefault()?.Item3;
+
+                    _logger.LogInformation(
+                        $"macd指标   时间：{macd.FirstOrDefault()?.Item1} , macd:{macd.FirstOrDefault()?.Item4} , dif:{macd.FirstOrDefault()?.Item2}， dea:{macd.FirstOrDefault()?.Item3}   状态：{macd_status}");
+
+                    //kdj是否金叉    j<20  && k>d
+                    bool kdj_status = /* kdj.FirstOrDefault()?.Item4 < 20 &&*/
+                        kdj.FirstOrDefault()?.Item2 > kdj.FirstOrDefault()?.Item3;
+
+                    _logger.LogInformation(
+                        $"kdj指标    时间：{kdj.FirstOrDefault()?.Item1} ，j:{kdj.FirstOrDefault()?.Item4} , k:{kdj.FirstOrDefault()?.Item2}， d:{kdj.FirstOrDefault()?.Item3}   状态：{kdj_status}");
+
+                    //三线金叉
+                    if (avg_status && macd_status && kdj_status)
+                        //做多
+                        DoBuy(coin, current_price);
+                    //三线死叉
+                    else if (!avg_status && !macd_status && !kdj_status)
+                        //做空
+                        DoSell(coin, current_price);
                 }
-
-                //目前收盘价
-                double current_price = kline[0].close;
-
-                //均线
-                var data5 = _indicator.SMA(kline, 5);
-                var data10 = _indicator.SMA(kline, 10);
-
-                //macd
-                var macd = _indicator.MACD(kline);
-
-                //kdj
-                var kdj = _indicator.KDJ(kline);
-
-                //均线是否金叉    5日线>10日线
-                bool avg_status = data5.First()?.Item2 > data10.First()?.Item2;
-
-                _logger.LogInformation(
-                    $"均线指标    时间：{data5.First()?.Item1} ，5日线{data5.First()?.Item2}，10日线{data10.First()?.Item2}   状态：{avg_status}");
-
-                //macd是否金叉   macd>0 && dif>dea
-                bool macd_status = /* macd.FirstOrDefault().Item4 > 0 &&*/
-                    macd.FirstOrDefault()?.Item2 > macd.FirstOrDefault()?.Item3;
-
-                _logger.LogInformation(
-                    $"macd指标   时间：{macd.FirstOrDefault()?.Item1} , macd:{macd.FirstOrDefault()?.Item4} , dif:{macd.FirstOrDefault()?.Item2}， dea:{macd.FirstOrDefault()?.Item3}   状态：{macd_status}");
-
-                //kdj是否金叉    j<20  && k>d
-                bool kdj_status = /* kdj.FirstOrDefault()?.Item4 < 20 &&*/
-                    kdj.FirstOrDefault()?.Item2 > kdj.FirstOrDefault()?.Item3;
-
-                _logger.LogInformation(
-                    $"kdj指标    时间：{kdj.FirstOrDefault()?.Item1} ，j:{kdj.FirstOrDefault()?.Item4} , k:{kdj.FirstOrDefault()?.Item2}， d:{kdj.FirstOrDefault()?.Item3}   状态：{kdj_status}");
-
-                //三线金叉
-                if (avg_status && macd_status && kdj_status)
-                    //做多
-                    DoBuy(coin, current_price);
-                //三线死叉
-                else if (!avg_status && !macd_status && !kdj_status)
-                    //做空
-                    DoSell(coin, current_price);
             }
             catch (Exception ex)
             {

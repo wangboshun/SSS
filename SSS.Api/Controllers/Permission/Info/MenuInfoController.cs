@@ -38,7 +38,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetList([FromQuery]MenuInfoInputDto input)
         {
             var result = _service.GetListMenuInfo(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult AddMenuInfo([FromBody]MenuInfoInputDto input)
         {
             var result = _service.AddMenuInfo(input);
-            return ApiResponse(result, result, result ? "增加成功" : "增加失败");
+            return AddResponse(result);
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult DeleteUserInfo(string id)
         {
             var result = _service.DeleteMenuInfo(id);
-            return ApiResponse(result, result, result ? "删除成功" : "删除失败");
+            return DeleteResponse(id, result);
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetMenuByPowerGroup([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetMenuByPowerGroup(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
     }
 }

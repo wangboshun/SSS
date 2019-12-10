@@ -1,18 +1,18 @@
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Group.PowerGroup.Dto;
+using SSS.Domain.Permission.Group.RoleGroup.Dto;
 using SSS.Domain.Permission.Group.UserGroup.Dto;
 using SSS.Domain.Permission.Info.UserInfo.Dto;
 using SSS.Domain.Seedwork.Model;
 
 using System.Collections.Generic;
-using SSS.Domain.Permission.Group.RoleGroup.Dto;
 
 namespace SSS.Application.Permission.Info.UserInfo.Service
 {
     public interface IUserInfoService : IQueryService<Domain.Permission.Info.UserInfo.UserInfo, UserInfoInputDto,
         UserInfoOutputDto>
     {
-        bool AddUserInfo(UserInfoInputDto input);
+        UserInfoOutputDto AddUserInfo(UserInfoInputDto input);
         UserInfoOutputDto GetByUserName(UserInfoInputDto input);
         Pages<List<UserInfoOutputDto>> GetListUserInfo(UserInfoInputDto input);
 

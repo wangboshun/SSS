@@ -1,5 +1,6 @@
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Group.PowerGroup.Dto;
+using SSS.Domain.Permission.Group.RoleGroup.Dto;
 using SSS.Domain.Permission.Group.UserGroup.Dto;
 using SSS.Domain.Permission.Info.MenuInfo.Dto;
 using SSS.Domain.Permission.Info.OperateInfo.Dto;
@@ -8,14 +9,13 @@ using SSS.Domain.Permission.Info.UserInfo.Dto;
 using SSS.Domain.Seedwork.Model;
 
 using System.Collections.Generic;
-using SSS.Domain.Permission.Group.RoleGroup.Dto;
 
 namespace SSS.Application.Permission.Group.PowerGroup.Service
 {
     public interface IPowerGroupService : IQueryService<Domain.Permission.Group.PowerGroup.PowerGroup,
         PowerGroupInputDto, PowerGroupOutputDto>
     {
-        bool AddPowerGroup(PowerGroupInputDto input);
+        PowerGroupOutputDto AddPowerGroup(PowerGroupInputDto input);
 
         Pages<List<PowerGroupOutputDto>> GetListPowerGroup(PowerGroupInputDto input);
 

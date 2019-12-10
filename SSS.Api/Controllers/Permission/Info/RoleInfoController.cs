@@ -41,7 +41,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetList([FromQuery] RoleInfoInputDto input)
         {
             var result = _service.GetListRoleInfo(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult AddRoleInfo([FromBody]RoleInfoInputDto input)
         {
             var result = _service.AddRoleInfo(input);
-            return ApiResponse(result, result, result ? "增加成功" : "增加失败");
+            return AddResponse(result);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult DeletePowerInfo(string id)
         {
             var result = _service.DeleteRoleInfo(id);
-            return ApiResponse(result, result, result ? "删除成功" : "删除失败");
+            return DeleteResponse(id, result);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetRoleByRoleGroup([FromQuery]RoleGroupInputDto input)
         {
             var result = _service.GetRoleByRoleGroup(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetRoleByPowerGroup([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetRoleByPowerGroup(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetRoleByUserGroup([FromQuery]UserGroupInputDto input)
         {
             var result = _service.GetRoleByUserGroup(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetRoleByUser([FromQuery]UserInfoInputDto input)
         {
             var result = _service.GetRoleByUser(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
     }
 }

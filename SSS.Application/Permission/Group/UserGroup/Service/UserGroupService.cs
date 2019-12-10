@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Group.PowerGroup.Dto;
+using SSS.Domain.Permission.Group.RoleGroup.Dto;
 using SSS.Domain.Permission.Group.UserGroup.Dto;
 using SSS.Domain.Permission.Info.UserInfo.Dto;
 using SSS.Domain.Permission.Relation.UserGroupRoleGroupRelation;
@@ -20,7 +21,6 @@ using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SSS.Domain.Permission.Group.RoleGroup.Dto;
 
 namespace SSS.Application.Permission.Group.UserGroup.Service
 {
@@ -46,13 +46,13 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
             _userGroupRoleGroupRelationRepository = userGroupRoleGroupRelationRepository;
         }
 
-        public bool AddUserGroup(UserGroupInputDto input)
+        public UserGroupOutputDto AddUserGroup(UserGroupInputDto input)
         {
             var result = Validator.Validate(input, ruleSet: "Insert");
             if (!result.IsValid)
             {
                 Error.Execute(result);
-                return false;
+                return null;
             }
 
             input.id = Guid.NewGuid().ToString();
@@ -77,7 +77,7 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
                 }
             }
 
-            return Repository.SaveChanges()>0;
+            return Repository.SaveChanges() > 0 ? Mapper.Map<UserGroupOutputDto>(model) : null;
         }
 
         public Pages<List<UserGroupOutputDto>> GetListUserGroup(UserGroupInputDto input)
@@ -87,7 +87,7 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
 
         public bool DeleteUserGroup(string id)
         {
-            return Repository.Remove(id,true);
+            return Repository.Remove(id, true);
         }
 
         /// <summary>

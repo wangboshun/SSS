@@ -40,7 +40,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult GetList([FromQuery]UserGroupInputDto input)
         {
             var result = _service.GetListUserGroup(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult AddUserGroup([FromBody]UserGroupInputDto input)
         {
             var result = _service.AddUserGroup(input);
-            return ApiResponse(result, result, result ? "增加成功" : "增加失败");
+            return AddResponse(result);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult DeletePowerGroup(string id)
         {
             var result = _service.DeleteUserGroup(id);
-            return ApiResponse(result, result, result ? "删除成功" : "删除失败");
+            return DeleteResponse(id, result);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult GetUserGroupByUser([FromQuery]UserInfoInputDto input)
         {
             var result = _service.GetUserGroupByUser(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult GetUserGroupByPowerGroup([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetUserGroupByPowerGroup(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult GetUserGroupByRoleGroup([FromQuery]RoleGroupInputDto input)
         {
             var result = _service.GetUserGroupByRoleGroup(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
     }
 }

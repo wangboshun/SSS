@@ -10,7 +10,7 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
     public interface IMenuInfoService : IQueryService<Domain.Permission.Info.MenuInfo.MenuInfo, MenuInfoInputDto,
         MenuInfoOutputDto>
     {
-        bool AddMenuInfo(MenuInfoInputDto input);
+        MenuInfoOutputDto AddMenuInfo(MenuInfoInputDto input);
         bool DeleteMenuInfo(string id);
         Pages<List<MenuInfoOutputDto>> GetListMenuInfo(MenuInfoInputDto input);
         /// <summary>

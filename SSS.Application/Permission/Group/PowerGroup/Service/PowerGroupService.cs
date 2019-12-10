@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Group.PowerGroup.Dto;
+using SSS.Domain.Permission.Group.RoleGroup.Dto;
 using SSS.Domain.Permission.Group.UserGroup.Dto;
 using SSS.Domain.Permission.Info.MenuInfo.Dto;
 using SSS.Domain.Permission.Info.OperateInfo.Dto;
@@ -20,7 +21,6 @@ using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SSS.Domain.Permission.Group.RoleGroup.Dto;
 
 namespace SSS.Application.Permission.Group.PowerGroup.Service
 {
@@ -40,20 +40,20 @@ namespace SSS.Application.Permission.Group.PowerGroup.Service
             _powerGroupRepository = repository;
         }
 
-        public bool AddPowerGroup(PowerGroupInputDto input)
+        public PowerGroupOutputDto AddPowerGroup(PowerGroupInputDto input)
         {
             var result = Validator.Validate(input, ruleSet: "Insert");
             if (!result.IsValid)
             {
                 Error.Execute(result);
-                return false;
+                return null;
             }
 
             input.id = Guid.NewGuid().ToString();
             var model = Mapper.Map<Domain.Permission.Group.PowerGroup.PowerGroup>(input);
             model.CreateTime = DateTime.Now;
             Repository.Add(model);
-            return Repository.SaveChanges() > 0;
+            return Repository.SaveChanges() > 0 ? Mapper.Map<PowerGroupOutputDto>(model) : null;
         }
 
         public Pages<List<PowerGroupOutputDto>> GetListPowerGroup(PowerGroupInputDto input)

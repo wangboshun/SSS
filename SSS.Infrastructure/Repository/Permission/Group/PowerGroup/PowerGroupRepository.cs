@@ -123,13 +123,13 @@ namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
 	            AND pgor.IsDelete = 0";
 
             if (!string.IsNullOrWhiteSpace(operateid))
-                sql += $" AND m.Id='{operateid}'";
+                sql += $" AND o.Id='{operateid}'";
 
             if (!string.IsNullOrWhiteSpace(operatename))
-                sql += $" AND m.MenuName='{operatename}'";
+                sql += $" AND o.OperateName='{operatename}'";
 
             if (!string.IsNullOrWhiteSpace(parentid))
-                sql += $" AND m.ParentId='{parentid}'";
+                sql += $" AND o.ParentId='{parentid}'";
 
             int count = Db.Database.Count(string.Format(sql, " count( DISTINCT pg.Id ) "));
 
@@ -179,7 +179,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
                 sql += $" AND u.UserName='{username}'";
 
             if (!string.IsNullOrWhiteSpace(parentid))
-                sql += $" AND u.ParentId='{parentid}'"; 
+                sql += $" AND u.ParentId='{parentid}'";
 
             int count = Db.Database.Count(string.Format(sql, " count( DISTINCT pg.Id ) "));
 
@@ -224,7 +224,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
                 sql += $" AND ug.Id='{usergroupid}'";
 
             if (!string.IsNullOrWhiteSpace(usergroupname))
-                sql += $" AND ug.UserName='{usergroupname}'";
+                sql += $" AND ug.UserGroupName='{usergroupname}'";
 
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND ug.ParentId='{parentid}'";
@@ -270,7 +270,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
                 sql += $" AND rg.Id='{rolegroupid}'";
 
             if (!string.IsNullOrWhiteSpace(rolegroupname))
-                sql += $" AND rg.UserName='{rolegroupname}'";
+                sql += $" AND rg.RoleGroupName='{rolegroupname}'";
 
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND rg.ParentId='{parentid}'";

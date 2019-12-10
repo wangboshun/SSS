@@ -7,7 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Group.PowerGroup.Dto;
+using SSS.Domain.Permission.Group.RoleGroup.Dto;
+using SSS.Domain.Permission.Group.UserGroup.Dto;
 using SSS.Domain.Permission.Info.PowerInfo.Dto;
+using SSS.Domain.Permission.Info.UserInfo.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.PowerGroup;
@@ -18,9 +21,6 @@ using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SSS.Domain.Permission.Group.RoleGroup.Dto;
-using SSS.Domain.Permission.Group.UserGroup.Dto;
-using SSS.Domain.Permission.Info.UserInfo.Dto;
 
 namespace SSS.Application.Permission.Info.PowerInfo.Service
 {
@@ -46,13 +46,13 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
             _powerGroupRelationRepository = powerGroupRelationRepository;
         }
 
-        public bool AddPowerInfo(PowerInfoInputDto input)
+        public PowerInfoOutputDto AddPowerInfo(PowerInfoInputDto input)
         {
             var result = Validator.Validate(input, ruleSet: "Insert");
             if (!result.IsValid)
             {
                 Error.Execute(result);
-                return false;
+                return null;
             }
 
             input.id = Guid.NewGuid().ToString();
@@ -74,7 +74,7 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
             }
 
             Repository.Add(model);
-            return Repository.SaveChanges() > 0;
+            return Repository.SaveChanges() > 0 ? Mapper.Map<PowerInfoOutputDto>(model) : null;
         }
 
         public Pages<List<PowerInfoOutputDto>> GetListPowerInfo(PowerInfoInputDto input)

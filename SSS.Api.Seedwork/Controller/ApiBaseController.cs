@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 
 using SSS.Domain.Permission.Info.UserInfo.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
+using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Util.Http;
 
 using System.Collections.Generic;
@@ -56,15 +57,84 @@ namespace SSS.Api.Seedwork.Controller
             return !_error.HasNotice();
         }
 
-        protected IActionResult ApiResponse(object data, bool status = true, string message = "", int code = 200)
+        /// <summary>
+        /// 增加
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        protected IActionResult AddResponse<T>(T data) where T : class
+        {
+            if (data != null)
+                return ApiResponse(data, true, "新增成功", 200);
+            return ApiResponse(data, false, "新增失败", 402);
+        }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        protected IActionResult DeleteResponse(object data, bool status)
+        {
+            if (data != null & status)
+                return ApiResponse(data, true, "删除成功", 200);
+            return ApiResponse(data, false, "删除失败", 402);
+        }
+
+        /// <summary>
+        ///分页 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        protected IActionResult PageResponse<T>(Pages<List<T>> data) where T : OutputDtoBase
+        {
+            if (data != null)
+            {
+                if (data.count > 0)
+                    return ApiResponse(data, true, "获取分页成功", 200);
+                else
+                    return ApiResponse(null, true, "分页数据为空", 200);
+            }
+            return ApiResponse(null, false, "获取分页失败", 402);
+        }
+
+        /// <summary>
+        /// 基础
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        protected IActionResult ApiResponse<T>(T data) where T : class
+        {
+            if (data != null)
+                return ApiResponse(data, true, "操作成功", 200);
+            return ApiResponse(null, false, "操作失败", 402);
+        }
+
+        /// <summary>
+        /// 其他
+        /// </summary>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        protected IActionResult ApiResponse(bool status)
+        {
+            if (status)
+                return ApiResponse(true, true, "操作成功", 200);
+            return ApiResponse(true, false, "操作失败", 402);
+        }
+
+        protected IActionResult ApiResponse(object data, bool status, string message, int code)
         {
             if (!status)
-                return Accepted(new { status, data = "", message = "处理失败", code = 202 });
+                return Accepted(new { status, data, message, code });
 
             if (IsValidOperation())
             {
                 if (data == null)
-                    return Accepted(new { status = false, data = "", message = "数据为空", code = 200 });
+                    return Accepted(new { status = false, data = "", message = message, code = code });
                 return Ok(new { status, data, message, code });
             }
 

@@ -6,6 +6,6 @@ namespace SSS.Domain.Permission.Group.RoleGroup
     {
         public string ParentId { set; get; }
 
-        public string RoleGroupName { set; get; } 
+        public string RoleGroupName { set; get; }
     }
 }

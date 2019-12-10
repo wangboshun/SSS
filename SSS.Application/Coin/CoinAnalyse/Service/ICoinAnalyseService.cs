@@ -9,7 +9,7 @@ namespace SSS.Application.Coin.CoinAnalyse.Service
     public interface ICoinAnalyseService : IQueryService<Domain.Coin.CoinAnalyse.CoinAnalyse,
         CoinAnalyseInputDto, CoinAnalyseOutputDto>
     {
-        bool AddCoinAnalyse(CoinAnalyseInputDto input);
+        CoinAnalyseOutputDto AddCoinAnalyse(CoinAnalyseInputDto input);
 
         Pages<List<CoinAnalyseOutputDto>> GetListCoinAnalyse(CoinAnalyseInputDto input);
     }

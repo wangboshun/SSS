@@ -9,7 +9,7 @@ namespace SSS.Application.Coin.CoinMessage.Service
     public interface ICoinMessageService : IQueryService<Domain.Coin.CoinMessage.CoinMessage, CoinMessageInputDto,
         CoinMessageOutputDto>
     {
-        bool AddCoinMessage(CoinMessageInputDto input);
+        CoinMessageOutputDto AddCoinMessage(CoinMessageInputDto input);
 
         Pages<List<CoinMessageOutputDto>> GetListCoinMessage(CoinMessageInputDto input);
     }

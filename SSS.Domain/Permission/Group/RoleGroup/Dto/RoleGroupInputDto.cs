@@ -6,6 +6,6 @@ namespace SSS.Domain.Permission.Group.RoleGroup.Dto
     {
         public string powergroupid { set; get; }
         public string parentid { set; get; }
-        public string rolegroupname { set; get; } 
+        public string rolegroupname { set; get; }
     }
 }

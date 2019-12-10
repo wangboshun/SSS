@@ -38,20 +38,20 @@ namespace SSS.Application.Coin.CoinMessage.Service
             _coinmessagerepository = repository;
         }
 
-        public bool AddCoinMessage(CoinMessageInputDto input)
+        public CoinMessageOutputDto AddCoinMessage(CoinMessageInputDto input)
         {
             var result = Validator.Validate(input, ruleSet: "Insert");
             if (!result.IsValid)
             {
                 Error.Execute(result);
-                return false;
+                return null;
             }
 
             input.id = Guid.NewGuid().ToString();
             var model = Mapper.Map<Domain.Coin.CoinMessage.CoinMessage>(input);
             model.CreateTime = DateTime.Now;
             Repository.Add(model);
-            return Repository.SaveChanges()>0;
+            return Repository.SaveChanges() > 0 ? Mapper.Map<CoinMessageOutputDto>(model) : null;
         }
 
         public Pages<List<CoinMessageOutputDto>> GetListCoinMessage(CoinMessageInputDto input)

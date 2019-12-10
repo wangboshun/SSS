@@ -41,7 +41,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetList([FromQuery]PowerInfoInputDto input)
         {
             var result = _service.GetListPowerInfo(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult AddPowerInfo([FromBody]PowerInfoInputDto input)
         {
             var result = _service.AddPowerInfo(input);
-            return ApiResponse(result, result, result ? "增加成功" : "增加失败");
+            return AddResponse(result);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult DeletePowerInfo(string id)
         {
             var result = _service.DeletePowerInfo(id);
-            return ApiResponse(result, result, result ? "删除成功" : "删除失败");
+            return DeleteResponse(id, result);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetPowerByPowerGroup([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetPowerByPowerGroup(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetPowerByRoleGroup([FromQuery]RoleGroupInputDto input)
         {
             var result = _service.GetPowerByRoleGroup(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetPowerByUserGroup([FromQuery]UserGroupInputDto input)
         {
             var result = _service.GetPowerByUserGroup(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetPowerByUser([FromQuery]UserInfoInputDto input)
         {
             var result = _service.GetPowerByUser(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
     }
 }

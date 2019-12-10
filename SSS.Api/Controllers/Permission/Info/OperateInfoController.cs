@@ -38,7 +38,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetList([FromQuery] OperateInfoInputDto input)
         {
             var result = _service.GetListOperateInfo(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult AddOperateInfo([FromBody]OperateInfoInputDto input)
         {
             var result = _service.AddOperateInfo(input);
-            return ApiResponse(result, result, result ? "增加成功" : "增加失败");
+            return AddResponse(result);
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult DeleteUserInfo(string id)
         {
             var result = _service.DeleteOperateInfo(id);
-            return ApiResponse(result, result, result ? "删除成功" : "删除失败");
+            return DeleteResponse(id, result);
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetOperateByPowerGroup([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetOperateByPowerGroup(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
     }
 }

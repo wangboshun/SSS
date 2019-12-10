@@ -11,7 +11,7 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
     public interface IOperateInfoService : IQueryService<Domain.Permission.Info.OperateInfo.OperateInfo,
         OperateInfoInputDto, OperateInfoOutputDto>
     {
-        bool AddOperateInfo(OperateInfoInputDto input);
+        OperateInfoOutputDto AddOperateInfo(OperateInfoInputDto input);
 
         /// <summary>
         ///     获取操作下的所有下级

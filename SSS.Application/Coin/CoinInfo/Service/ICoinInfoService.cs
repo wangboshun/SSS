@@ -6,10 +6,9 @@ using System.Collections.Generic;
 
 namespace SSS.Application.Coin.CoinInfo.Service
 {
-    public interface
-        ICoinInfoService : IQueryService<Domain.Coin.CoinInfo.CoinInfo, CoinInfoInputDto, CoinInfoOutputDto>
+    public interface ICoinInfoService : IQueryService<Domain.Coin.CoinInfo.CoinInfo, CoinInfoInputDto, CoinInfoOutputDto>
     {
-        bool AddCoinInfo(CoinInfoInputDto input);
+        CoinInfoOutputDto AddCoinInfo(CoinInfoInputDto input);
 
         Pages<List<CoinInfoOutputDto>> GetListCoinInfo(CoinInfoInputDto input);
     }

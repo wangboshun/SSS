@@ -10,10 +10,9 @@ using System.Collections.Generic;
 
 namespace SSS.Application.Permission.Group.RoleGroup.Service
 {
-    public interface IRoleGroupService : IQueryService<Domain.Permission.Group.RoleGroup.RoleGroup, RoleGroupInputDto,
-        RoleGroupOutputDto>
+    public interface IRoleGroupService : IQueryService<Domain.Permission.Group.RoleGroup.RoleGroup, RoleGroupInputDto, RoleGroupOutputDto>
     {
-        bool AddRoleGroup(RoleGroupInputDto input);
+        RoleGroupOutputDto AddRoleGroup(RoleGroupInputDto input);
 
         Pages<List<RoleGroupOutputDto>> GetListRoleGroup(RoleGroupInputDto input);
 
@@ -41,6 +40,6 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
         /// 根据用户Id或名称，遍历关联角色组
         /// </summary>
         /// <param name="input"></param>
-        Pages<List<RoleGroupOutputDto>> GetRoleGroupByUser(UserInfoInputDto input); 
+        Pages<List<RoleGroupOutputDto>> GetRoleGroupByUser(UserInfoInputDto input);
     }
 }

@@ -43,7 +43,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult GetList([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetListPowerGroup(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult AddPowerGroup([FromBody]PowerGroupInputDto input)
         {
             var result = _service.AddPowerGroup(input);
-            return ApiResponse(result, result, result ? "增加成功" : "增加失败");
+            return AddResponse(result);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult DeletePowerGroup(string id)
         {
             var result = _service.DeletePowerGroup(id);
-            return ApiResponse(result, result, result ? "删除成功" : "删除失败");
+            return DeleteResponse(id, result);
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult GetPowerGroupByPower([FromQuery]PowerInfoInputDto input)
         {
             var result = _service.GetPowerGroupByPower(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult GetPowerGroupByMenu([FromQuery]MenuInfoInputDto input)
         {
             var result = _service.GetPowerGroupByMenu(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult GetPowerGroupByOperate([FromQuery]OperateInfoInputDto input)
         {
             var result = _service.GetPowerGroupByOperate(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult GetPowerGroupByUser([FromQuery]UserInfoInputDto input)
         {
             var result = _service.GetPowerGroupByUser(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult GetPowerGroupByUserGroup([FromQuery]UserGroupInputDto input)
         {
             var result = _service.GetPowerGroupByUserGroup(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult GetPowerGroupByRoleGroup([FromQuery]RoleGroupInputDto input)
         {
             var result = _service.GetPowerGroupByRoleGroup(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
     }
 }

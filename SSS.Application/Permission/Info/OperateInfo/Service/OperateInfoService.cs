@@ -49,20 +49,20 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
             _powerGroupOperateRelationRepository = powerGroupOperateRelationRepository;
         }
 
-        public bool AddOperateInfo(OperateInfoInputDto input)
+        public OperateInfoOutputDto AddOperateInfo(OperateInfoInputDto input)
         {
             var result = Validator.Validate(input, ruleSet: "Insert");
             if (!result.IsValid)
             {
                 Error.Execute(result);
-                return false;
+                return null;
             }
 
             var operate = Get(x => x.OperateName.Equals(input.operatename));
             if (operate != null)
             {
                 Error.Execute("操作权限名已存在！");
-                return false;
+                return null;
             }
 
             input.id = Guid.NewGuid().ToString();
@@ -84,14 +84,14 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
             }
 
             Repository.Add(model);
-            return Repository.SaveChanges()>0;
+            return Repository.SaveChanges() > 0 ? Mapper.Map<OperateInfoOutputDto>(model) : null;
         }
 
         public bool DeleteOperateInfo(string id)
         {
             Repository.Remove(id, false);
             _powerGroupOperateRelationRepository.Remove(x => x.OperateId.Equals(id));
-            return Repository.SaveChanges()>0;
+            return Repository.SaveChanges() > 0;
         }
 
         /// <summary>

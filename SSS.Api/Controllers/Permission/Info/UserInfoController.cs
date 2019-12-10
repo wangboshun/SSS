@@ -40,7 +40,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetList([FromQuery] UserInfoInputDto input)
         {
             var result = _service.GetListUserInfo(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult AddUserInfo([FromBody] UserInfoInputDto input)
         {
             var result = _service.AddUserInfo(input);
-            return ApiResponse(result, result, result ? "增加成功" : "增加失败");
+            return AddResponse(result);
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult DeleteUserInfo(string id)
         {
             var result = _service.DeleteUserInfo(id);
-            return ApiResponse(result, result, result ? "删除成功" : "删除失败");
+            return DeleteResponse(id, result);
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetUserByUserGroup([FromQuery]UserGroupInputDto input)
         {
             var result = _service.GetUserByUserGroup(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetUserByPowerGroup([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetUserByPowerGroup(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetUserByRoleGroup([FromQuery]RoleGroupInputDto input)
         {
             var result = _service.GetUserByRoleGroup(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
     }
 }

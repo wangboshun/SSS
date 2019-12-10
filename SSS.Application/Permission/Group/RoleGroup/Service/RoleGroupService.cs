@@ -8,7 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Group.PowerGroup.Dto;
 using SSS.Domain.Permission.Group.RoleGroup.Dto;
+using SSS.Domain.Permission.Group.UserGroup.Dto;
 using SSS.Domain.Permission.Info.RoleInfo.Dto;
+using SSS.Domain.Permission.Info.UserInfo.Dto;
 using SSS.Domain.Permission.Relation.RoleGroupPowerGroupRelation;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
@@ -20,8 +22,6 @@ using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SSS.Domain.Permission.Group.UserGroup.Dto;
-using SSS.Domain.Permission.Info.UserInfo.Dto;
 
 namespace SSS.Application.Permission.Group.RoleGroup.Service
 {
@@ -47,13 +47,13 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
             _roleGroupPowerGroupRelationRepository = roleGroupPowerGroupRelationRepository;
         }
 
-        public bool AddRoleGroup(RoleGroupInputDto input)
+        public RoleGroupOutputDto AddRoleGroup(RoleGroupInputDto input)
         {
             var result = Validator.Validate(input, ruleSet: "Insert");
             if (!result.IsValid)
             {
                 Error.Execute(result);
-                return false;
+                return null;
             }
 
             input.id = Guid.NewGuid().ToString();
@@ -77,7 +77,7 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
                 }
             }
 
-            return Repository.SaveChanges()>0;
+            return Repository.SaveChanges() > 0 ? Mapper.Map<RoleGroupOutputDto>(model) : null;
         }
 
         public Pages<List<RoleGroupOutputDto>> GetListRoleGroup(RoleGroupInputDto input)

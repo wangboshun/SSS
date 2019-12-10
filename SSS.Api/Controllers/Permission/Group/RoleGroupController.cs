@@ -41,7 +41,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult GetList([FromQuery]RoleGroupInputDto input)
         {
             var result = _service.GetListRoleGroup(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult AddRoleGroup([FromBody]RoleGroupInputDto input)
         {
             var result = _service.AddRoleGroup(input);
-            return ApiResponse(result, result, result ? "增加成功" : "增加失败");
+            return AddResponse(result);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult DeletePowerGroup(string id)
         {
             var result = _service.DeleteRoleGroup(id);
-            return ApiResponse(result, result, result ? "删除成功" : "删除失败");
+            return DeleteResponse(id, result);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult GetRoleGroupByRole([FromQuery]RoleInfoInputDto input)
         {
             var result = _service.GetRoleGroupByRole(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult GetRoleGroupByPowerGroup([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetRoleGroupByPowerGroup(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult GetRoleGroupByUserGroup([FromQuery]UserGroupInputDto input)
         {
             var result = _service.GetRoleGroupByUserGroup(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult GetRoleGroupByUser([FromQuery]UserInfoInputDto input)
         {
             var result = _service.GetRoleGroupByUser(input);
-            return ApiResponse(result);
+            return PageResponse(result);
         }
     }
 }

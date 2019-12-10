@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Group.PowerGroup.Dto;
+using SSS.Domain.Permission.Group.RoleGroup.Dto;
 using SSS.Domain.Permission.Group.UserGroup.Dto;
 using SSS.Domain.Permission.Info.UserInfo.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
@@ -20,7 +21,6 @@ using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SSS.Domain.Permission.Group.RoleGroup.Dto;
 
 namespace SSS.Application.Permission.Info.UserInfo.Service
 {
@@ -97,20 +97,20 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         ///     添加用户
         /// </summary>
         /// <param name="input"></param>
-        public bool AddUserInfo(UserInfoInputDto input)
+        public UserInfoOutputDto AddUserInfo(UserInfoInputDto input)
         {
             var result = Validator.Validate(input, ruleSet: "Insert");
             if (!result.IsValid)
             {
                 Error.Execute(result);
-                return false;
+                return null;
             }
 
             var user = Get(x => x.UserName.Equals(input.username));
             if (user != null)
             {
                 Error.Execute("用户已存在！");
-                return false;
+                return null;
             }
 
             input.id = Guid.NewGuid().ToString();
@@ -132,7 +132,7 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
             }
 
             Repository.Add(model);
-            return Repository.SaveChanges()>0;
+            return Repository.SaveChanges() > 0 ? Mapper.Map<UserInfoOutputDto>(model) : null;
         }
 
         public bool DeleteUserInfo(string id)
