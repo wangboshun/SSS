@@ -75,8 +75,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.OperateInfo
         {
             string field = " o.* ";
 
-            string sql = @"SELECT  {0}
-            FROM
+            string sql = @"SELECT  {0}  FROM
 	            OperateInfo AS o
 	            INNER JOIN PowerGroupMenuRelation AS pgmr ON o.Id = pgmr.MenuId
 	            INNER JOIN PowerGroup AS pg ON pgmr.PowerGroupId = pg.Id 

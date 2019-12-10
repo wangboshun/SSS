@@ -24,8 +24,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.UserGroup
         {
             string field = " ur.* ";
 
-            string sql = @"SELECT {0}
-                FROM
+            string sql = @"SELECT {0}  FROM
 	                UserInfo AS u
 	                INNER JOIN UserGroupRelation AS uur ON u.id=uur.UserId
 	                INNER JOIN UserGroup AS ur ON uur.UserGroupId=ur.Id 
@@ -73,21 +72,14 @@ namespace SSS.Infrastructure.Repository.Permission.Group.UserGroup
 
             string sql = @"SELECT {0} FROM
 	               	UserGroup AS ug
-	                INNER JOIN RoleGroupUserGroupRelation AS rgugr ON rgugr.UserGroupId = ug.Id
-	                INNER JOIN RoleGroup AS rg ON rg.Id = rgugr.RoleGroupId
-	                INNER JOIN RoleGroupRelation AS rgr ON rg.Id = rgr.RoleGroupId
-	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rg.Id
+	                INNER JOIN UserGroupRoleGroupRelation AS rgugr ON rgugr.UserGroupId = ug.Id
+	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rgugr.RoleGroupId
 	                INNER JOIN PowerGroup AS pg ON pg.Id = rgpgr.PowerGroupId
-	                INNER JOIN PowerGroupRelation AS pgr ON pg.Id = pgr.PowerGroupId
-	                INNER JOIN PowerInfo AS p ON p.Id = pgr.PowerId 
                 WHERE
 	                ug.IsDelete = 0 
-	                AND rgugr.IsDelete = 0 
-	                AND rgr.IsDelete = 0 
-	                AND rg.IsDelete = 0 
+	                AND rgugr.IsDelete = 0  
 	                AND rgpgr.IsDelete = 0 
-	                AND pg.IsDelete = 0 
-	                AND p.IsDelete =0";
+	                AND pg.IsDelete = 0";
 
             if (!string.IsNullOrWhiteSpace(powergroupid))
                 sql += $" AND pg.Id='{powergroupid}'";

@@ -105,6 +105,6 @@ namespace SSS.Api.Controllers.Permission.Info
         {
             var result = _service.GetRoleByPowerGroup(input);
             return ApiResponse(result);
-        }
+        } 
     }
 }

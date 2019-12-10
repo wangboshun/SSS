@@ -8,9 +8,7 @@ namespace SSS.Application.Permission.Info.OperateInfo.Mapper
     {
         public OperateInfoProfile()
         {
-            CreateMap<Domain.Permission.Info.OperateInfo.OperateInfo, OperateInfoOutputDto>()
-                .ForMember(x => x.name, y => y.MapFrom(z => z.OperateName));
-
+            CreateMap<Domain.Permission.Info.OperateInfo.OperateInfo, OperateInfoOutputDto>();
             CreateMap<OperateInfoInputDto, Domain.Permission.Info.OperateInfo.OperateInfo>();
         }
     }

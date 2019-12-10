@@ -44,7 +44,7 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Pages<List<UserInfoInputDto>> GetUserByUserGroup(UserGroupInputDto input);
+        Pages<List<UserInfoOutputDto>> GetUserByUserGroup(UserGroupInputDto input);
 
         /// <summary>
         /// 根据权限组Id或名称，遍历关联用户

@@ -95,7 +95,7 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
         public Pages<List<PowerInfoOutputDto>> GetPowerByRoleGroup(RoleGroupInputDto input)
         {
             var data = _powerInfoRepository.GetPowerByRoleGroup(input.id, input.rolegroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<PowerInfoOutputDto>>(data.items.AsQueryable().ProjectTo<PowerInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+            return new Pages<List<PowerInfoOutputDto>>(data.items?.AsQueryable().ProjectTo<PowerInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
         public Pages<List<PowerInfoOutputDto>> GetPowerByPowerGroup(PowerGroupInputDto input)
         {
             var data = _powerInfoRepository.GetPowerByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<PowerInfoOutputDto>>(data.items.AsQueryable().ProjectTo<PowerInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+            return new Pages<List<PowerInfoOutputDto>>(data.items?.AsQueryable().ProjectTo<PowerInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
     }
 }

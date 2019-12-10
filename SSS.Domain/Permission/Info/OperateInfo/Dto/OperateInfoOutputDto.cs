@@ -4,6 +4,6 @@ namespace SSS.Domain.Permission.Info.OperateInfo.Dto
 {
     public class OperateInfoOutputDto : OutputDtoBase
     {
-        public string name { set; get; }
+        public string operatename { set; get; }
     }
 }

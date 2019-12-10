@@ -68,22 +68,18 @@ namespace SSS.Infrastructure.Repository.Permission.Group.RoleGroup
         /// <param name="pageindex"></param>
         /// <param name="pagesize"></param>
         /// <returns></returns>
-        public Pages<IEnumerable<Domain.Permission.Group.RoleGroup.RoleGroup>> GetMenuByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        public Pages<IEnumerable<Domain.Permission.Group.RoleGroup.RoleGroup>> GetRoleGroupByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
             string field = " rg.* ";
 
             string sql = @"SELECT {0}  FROM
-	                RoleGroup AS rg
-	                INNER JOIN RoleGroupRelation AS rgr ON rg.Id = rgr.RoleGroupId
+	                RoleGroup AS rg 
 	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rg.Id
 	                INNER JOIN PowerGroup AS pg ON pg.Id = rgpgr.PowerGroupId
-	                INNER JOIN PowerGroupRelation AS pgr ON pg.Id = pgr.PowerGroupId
-	                INNER JOIN PowerInfo AS p ON p.Id = pgr.PowerId 
                 WHERE
-	                rg.IsDelete = 0 
+	                rg.IsDelete = 0  
 	                AND rgpgr.IsDelete = 0 
-	                AND pg.IsDelete = 0 
-	                AND p.IsDelete =0 ";
+	                AND pg.IsDelete = 0";
 
             if (!string.IsNullOrWhiteSpace(powergroupid))
                 sql += $" AND pg.Id='{powergroupid}'";
@@ -107,6 +103,97 @@ namespace SSS.Infrastructure.Repository.Permission.Group.RoleGroup
                 var data = Db.Database.SqlQuery<Domain.Permission.Group.RoleGroup.RoleGroup>(string.Format(sql, field));
                 return new Pages<IEnumerable<Domain.Permission.Group.RoleGroup.RoleGroup>>(data, count);
             }
-        } 
+        }
+
+        /// <summary>
+        /// 根据用户组Id或名称，遍历关联角色组
+        /// </summary>
+        /// <param name="usergroupid"></param>
+        /// <param name="usergroupname"></param>
+        /// <param name="parentid"></param>
+        /// <param name="pageindex"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        public Pages<IEnumerable<Domain.Permission.Group.RoleGroup.RoleGroup>> GetRoleGroupByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        {
+            string field = " rg.* ";
+
+            string sql = @"SELECT {0}  FROM
+	                UserGroup ug
+	                INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ug.Id = ugrgr.UserGroupId
+	                INNER JOIN RoleGroup AS rg ON rg.Id = ugrgr.RoleGroupId 
+                WHERE
+	                ug.IsDelete = 0 
+	                AND ugrgr.IsDelete = 0 
+	                AND rg.IsDelete =0 ";
+
+            if (!string.IsNullOrWhiteSpace(usergroupid))
+                sql += $" AND ug.Id='{usergroupid}'";
+
+            if (!string.IsNullOrWhiteSpace(usergroupname))
+                sql += $" AND ug.UserGroupName='{usergroupname}'";
+
+            if (!string.IsNullOrWhiteSpace(parentid))
+                sql += $" AND ug.ParentId='{parentid}'";
+
+            int count = Db.Database.Count(string.Format(sql, " count(*) "));
+
+            if (pageindex > 0 && pagesize > 0)
+            {
+                string limit = " limit {1},{2} ";
+                var data = Db.Database.SqlQuery<Domain.Permission.Group.RoleGroup.RoleGroup>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
+                return new Pages<IEnumerable<Domain.Permission.Group.RoleGroup.RoleGroup>>(data, count);
+            }
+            else
+            {
+                var data = Db.Database.SqlQuery<Domain.Permission.Group.RoleGroup.RoleGroup>(string.Format(sql, field));
+                return new Pages<IEnumerable<Domain.Permission.Group.RoleGroup.RoleGroup>>(data, count);
+            }
+        }
+
+        /// <summary>
+        /// 根据用户Id或名称，遍历关联角色组
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="username"></param>
+        /// <param name="parentid"></param>
+        /// <param name="pageindex"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        public Pages<IEnumerable<Domain.Permission.Group.RoleGroup.RoleGroup>> GetRoleGroupByUser(string userid, string username, string parentid = "", int pageindex = 0, int pagesize = 0)
+        {
+            string field = " rg.* ";
+
+            string sql = @"SELECT {0}  FROM
+	                UserInfo AS u
+	                INNER JOIN UserGroupRelation ugr ON u.Id = ugr.UserId 
+	                INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ugr.UserGroupId = ugrgr.UserGroupId
+	                INNER JOIN RoleGroup AS rg ON rg.Id = ugrgr.RoleGroupId 
+                WHERE  ugrgr.IsDelete = 0 
+	                AND rg.IsDelete =0 ";
+
+            if (!string.IsNullOrWhiteSpace(userid))
+                sql += $" AND u.Id='{userid}'";
+
+            if (!string.IsNullOrWhiteSpace(username))
+                sql += $" AND u.UserName='{username}'";
+
+            if (!string.IsNullOrWhiteSpace(parentid))
+                sql += $" AND u.ParentId='{parentid}'";
+
+            int count = Db.Database.Count(string.Format(sql, " count(*) "));
+
+            if (pageindex > 0 && pagesize > 0)
+            {
+                string limit = " limit {1},{2} ";
+                var data = Db.Database.SqlQuery<Domain.Permission.Group.RoleGroup.RoleGroup>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
+                return new Pages<IEnumerable<Domain.Permission.Group.RoleGroup.RoleGroup>>(data, count);
+            }
+            else
+            {
+                var data = Db.Database.SqlQuery<Domain.Permission.Group.RoleGroup.RoleGroup>(string.Format(sql, field));
+                return new Pages<IEnumerable<Domain.Permission.Group.RoleGroup.RoleGroup>>(data, count);
+            }
+        }
     }
 }

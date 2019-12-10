@@ -27,7 +27,28 @@ namespace SSS.Infrastructure.Repository.Permission.Group.RoleGroup
         /// <param name="pageindex"></param>
         /// <param name="pagesize"></param>
         /// <returns></returns>
-        Pages<IEnumerable<Domain.Permission.Group.RoleGroup.RoleGroup>> GetMenuByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
-         
+        Pages<IEnumerable<Domain.Permission.Group.RoleGroup.RoleGroup>> GetRoleGroupByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
+
+        /// <summary>
+        ///  根据用户组Id或名称，遍历关联角色组
+        /// </summary>
+        /// <param name="usergroupid"></param>
+        /// <param name="usergroupname"></param>
+        /// <param name="parentid"></param>
+        /// <param name="pageindex"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        Pages<IEnumerable<Domain.Permission.Group.RoleGroup.RoleGroup>> GetRoleGroupByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
+
+        /// <summary>
+        ///  根据用户Id或名称，遍历关联角色组
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="username"></param>
+        /// <param name="parentid"></param>
+        /// <param name="pageindex"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        Pages<IEnumerable<Domain.Permission.Group.RoleGroup.RoleGroup>> GetRoleGroupByUser(string userid, string username, string parentid = "", int pageindex = 0, int pagesize = 0);
     }
 }

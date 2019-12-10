@@ -73,21 +73,15 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
             string sql = @" SELECT {0} FROM
 	                UserInfo AS u
 	                INNER JOIN UserGroupRelation AS ugr ON u.id = ugr.UserId
-	                INNER JOIN UserGroup AS ug ON ug.id = ugr.UserGroupId
-	                INNER JOIN RoleGroupUserGroupRelation AS rgugr ON rgugr.UserGroupId = ug.Id
-	                INNER JOIN RoleGroup AS rg ON rg.Id = rgugr.RoleGroupId 
-	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rg.Id
-	                INNER JOIN PowerGroup AS pg ON pg.Id = rgpgr.PowerGroupId
-	                INNER JOIN PowerGroupRelation AS pgr ON pg.Id = pgr.PowerGroupId
+	                INNER JOIN UserGroupRoleGroupRelation AS rgugr ON rgugr.UserGroupId = ugr.UserGroupId
+	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rgugr.RoleGroupId
+	                INNER JOIN PowerGroupRelation AS pgr ON rgpgr.PowerGroupId = pgr.PowerGroupId
 	                INNER JOIN PowerInfo AS p ON p.Id = pgr.PowerId 
                 WHERE
 	                u.IsDelete = 0 
 	                AND ugr.IsDelete = 0 
-	                AND ug.IsDelete = 0 
-	                AND rgugr.IsDelete = 0  
-	                AND rg.IsDelete = 0 
+	                AND rgugr.IsDelete = 0 
 	                AND rgpgr.IsDelete = 0 
-	                AND pg.IsDelete = 0 
 	                AND p.IsDelete =0 ";
 
             if (!string.IsNullOrWhiteSpace(userid))
@@ -168,17 +162,16 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
         {
             string field = " p.* ";
 
-            string sql = @"SELECT {0} FROM RoleGroup AS rg
-	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rg.Id = rgpgr.RoleGroupId
-	                INNER JOIN PowerGroup AS pg ON pg.Id = rgpgr.PowerGroupId
-	                INNER JOIN PowerGroupRelation AS pgr ON pgr.PowerGroupId = pg.Id
+            string sql = @"SELECT {0} FROM 
+                    RoleGroup AS rg
+	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rg.Id = rgpgr.RoleGroupId 
+	                INNER JOIN PowerGroupRelation AS pgr ON pgr.PowerGroupId = rgpgr.PowerGroupId
 	                INNER JOIN PowerInfo AS p ON p.Id = pgr.PowerId 
                 WHERE
 	                rg.IsDelete = 0 
-	                AND rgpgr.IsDelete = 0 
-	                AND pg.IsDelete = 0 
-	                AND pgr.IsDelete 
-	                AND p.IsDelete ";
+	                AND rgpgr.IsDelete = 0  
+	                AND pgr.IsDelete=0 
+	                AND p.IsDelete=0 ";
 
             if (!string.IsNullOrWhiteSpace(rolegroupid))
                 sql += $" AND rg.Id='{rolegroupid}'";

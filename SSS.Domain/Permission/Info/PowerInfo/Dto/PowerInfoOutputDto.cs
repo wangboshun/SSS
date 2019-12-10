@@ -7,6 +7,7 @@ namespace SSS.Domain.Permission.Info.PowerInfo.Dto
 {
     public class PowerInfoOutputDto : OutputDtoBase
     {
+        public string powername { get; set; }
     }
 
     public class PowerInfoTreeOutputDto

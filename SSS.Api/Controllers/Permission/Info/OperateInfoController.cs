@@ -50,8 +50,8 @@ namespace SSS.Api.Controllers.Permission.Info
         [AllowAnonymous]  //匿名访问
         public IActionResult AddOperateInfo([FromBody]OperateInfoInputDto input)
         {
-            _service.AddOperateInfo(input);
-            return ApiResponse(input);
+            var result = _service.AddOperateInfo(input);
+            return ApiResponse(result, result, result ? "增加成功" : "增加失败");
         }
 
         /// <summary>
@@ -63,8 +63,8 @@ namespace SSS.Api.Controllers.Permission.Info
         [AllowAnonymous]  //匿名访问
         public IActionResult DeleteUserInfo(string id)
         {
-            _service.DeleteOperateInfo(id);
-            return ApiResponse(null);
+            var result = _service.DeleteOperateInfo(id);
+            return ApiResponse(result, result, result ? "删除成功" : "删除失败");
         }
 
         /// <summary>

@@ -7,7 +7,7 @@ namespace SSS.Domain.Permission.Info.UserInfo.Dto
 {
     public class UserInfoOutputDto : OutputDtoBase
     {
-
+        public string username { set; get; }
     }
 
     public class UserInfoTreeOutputDto

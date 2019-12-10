@@ -20,6 +20,8 @@ using SSS.Infrastructure.Util.Attribute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SSS.Domain.Permission.Group.UserGroup.Dto;
+using SSS.Domain.Permission.Info.UserInfo.Dto;
 
 namespace SSS.Application.Permission.Group.RoleGroup.Service
 {
@@ -96,14 +98,40 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
         public Pages<List<RoleGroupOutputDto>> GetRoleGroupByRole(RoleInfoInputDto input)
         {
             var data = _roleGroupRepository.GetRoleGroupByRole(input.id, input.rolename, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<RoleGroupOutputDto>>(data.items.AsQueryable().ProjectTo<RoleGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+            return new Pages<List<RoleGroupOutputDto>>(data.items?.AsQueryable().ProjectTo<RoleGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
 
+        /// <summary>
+        /// 根据权限组Id或名称，遍历关联角色组
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public Pages<List<RoleGroupOutputDto>> GetRoleGroupByPowerGroup(PowerGroupInputDto input)
         {
-            var data = _roleGroupRepository.GetMenuByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<RoleGroupOutputDto>>(data.items.AsQueryable().ProjectTo<RoleGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+            var data = _roleGroupRepository.GetRoleGroupByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<RoleGroupOutputDto>>(data.items?.AsQueryable().ProjectTo<RoleGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+        }
 
+        /// <summary>
+        /// 根据用户组Id或名称，遍历关联角色组
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Pages<List<RoleGroupOutputDto>> GetRoleGroupByUserGroup(UserGroupInputDto input)
+        {
+            var data = _roleGroupRepository.GetRoleGroupByUserGroup(input.id, input.usergroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<RoleGroupOutputDto>>(data.items?.AsQueryable().ProjectTo<RoleGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+        }
+
+        /// <summary>
+        /// 根据用户Id或名称，遍历关联角色组
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Pages<List<RoleGroupOutputDto>> GetRoleGroupByUser(UserInfoInputDto input)
+        {
+            var data = _roleGroupRepository.GetRoleGroupByUser(input.id, input.username, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<RoleGroupOutputDto>>(data.items?.AsQueryable().ProjectTo<RoleGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
     }
 }

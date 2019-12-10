@@ -112,13 +112,13 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
         public Pages<List<RoleInfoOutputDto>> GetRoleByRoleGroup(RoleGroupInputDto input)
         {
             var data = _roleInfoRepository.GetRoleByRoleGroup(input.id, input.rolegroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<RoleInfoOutputDto>>(data.items.AsQueryable().ProjectTo<RoleInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+            return new Pages<List<RoleInfoOutputDto>>(data.items?.AsQueryable().ProjectTo<RoleInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
 
         public Pages<List<RoleInfoOutputDto>> GetRoleByPowerGroup(PowerGroupInputDto input)
         {
             var data = _roleInfoRepository.GetRoleByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<RoleInfoOutputDto>>(data.items.AsQueryable().ProjectTo<RoleInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+            return new Pages<List<RoleInfoOutputDto>>(data.items?.AsQueryable().ProjectTo<RoleInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
 
         }
     }

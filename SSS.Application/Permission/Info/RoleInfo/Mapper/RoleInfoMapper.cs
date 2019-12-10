@@ -8,9 +8,7 @@ namespace SSS.Application.Permission.Info.RoleInfo.Mapper
     {
         public RoleInfoProfile()
         {
-            CreateMap<Domain.Permission.Info.RoleInfo.RoleInfo, RoleInfoOutputDto>()
-                .ForMember(x => x.name, y => y.MapFrom(z => z.RoleName));
-
+            CreateMap<Domain.Permission.Info.RoleInfo.RoleInfo, RoleInfoOutputDto>();
             CreateMap<RoleInfoInputDto, Domain.Permission.Info.RoleInfo.RoleInfo>();
         }
     }

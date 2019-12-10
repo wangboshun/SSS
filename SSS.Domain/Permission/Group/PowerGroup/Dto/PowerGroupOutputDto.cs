@@ -4,5 +4,6 @@ namespace SSS.Domain.Permission.Group.PowerGroup.Dto
 {
     public class PowerGroupOutputDto : OutputDtoBase
     {
+        public string powergroupname { set; get; }
     }
 }

@@ -97,14 +97,14 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
         public Pages<List<UserGroupOutputDto>> GetUserGroupByUser(UserInfoInputDto input)
         {
             var data = _userGroupRepository.GetUserGroupByUser(input.id, input.username, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<UserGroupOutputDto>>(data.items.AsQueryable().ProjectTo<UserGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+            return new Pages<List<UserGroupOutputDto>>(data.items?.AsQueryable().ProjectTo<UserGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
 
         }
 
         public Pages<List<UserGroupOutputDto>> GetUserGroupByPowerGroup(PowerGroupInputDto input)
         {
             var data = _userGroupRepository.GetUserGroupByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<UserGroupOutputDto>>(data.items.AsQueryable().ProjectTo<UserGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+            return new Pages<List<UserGroupOutputDto>>(data.items?.AsQueryable().ProjectTo<UserGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
     }
 }

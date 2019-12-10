@@ -91,7 +91,7 @@ namespace SSS.Api.Controllers.Permission.Group
         public IActionResult GetUserGroupByPowerGroup([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetUserGroupByPowerGroup(input);
-            return ApiResponse(null);
+            return ApiResponse(result);
         }
     }
 }

@@ -118,14 +118,12 @@ namespace SSS.Infrastructure.Repository.Permission.Info.RoleInfo
 
             string sql = @"SELECT {0}   FROM
 	                RoleInfo AS r
-	                INNER JOIN RoleGroupRelation AS rgr ON r.Id = rgr.RoleId
-	                INNER JOIN RoleGroup AS rg ON rg.Id = rgr.RoleGroupId
-	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rg.Id
+	                INNER JOIN RoleGroupRelation AS rgr ON r.Id = rgr.RoleId 
+	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rgr.RoleGroupId
 	                INNER JOIN PowerGroup AS pg ON pg.Id = rgpgr.PowerGroupId
                 WHERE
 	                r.IsDelete = 0 
-	                AND rgr.IsDelete = 0 
-	                AND rg.IsDelete = 0 
+	                AND rgr.IsDelete = 0  
 	                AND rgpgr.IsDelete = 0 ";
 
             if (!string.IsNullOrWhiteSpace(powergroupid))

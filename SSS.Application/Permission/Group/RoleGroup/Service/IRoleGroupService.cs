@@ -1,10 +1,12 @@
 using SSS.Application.Seedwork.Service;
+using SSS.Domain.Permission.Group.PowerGroup.Dto;
 using SSS.Domain.Permission.Group.RoleGroup.Dto;
+using SSS.Domain.Permission.Group.UserGroup.Dto;
 using SSS.Domain.Permission.Info.RoleInfo.Dto;
+using SSS.Domain.Permission.Info.UserInfo.Dto;
 using SSS.Domain.Seedwork.Model;
 
 using System.Collections.Generic;
-using SSS.Domain.Permission.Group.PowerGroup.Dto;
 
 namespace SSS.Application.Permission.Group.RoleGroup.Service
 {
@@ -28,6 +30,17 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
         /// </summary>
         /// <param name="input"></param>
         Pages<List<RoleGroupOutputDto>> GetRoleGroupByPowerGroup(PowerGroupInputDto input);
-        
+
+        /// <summary>
+        /// 根据用户组Id或名称，遍历关联角色组
+        /// </summary>
+        /// <param name="input"></param>
+        Pages<List<RoleGroupOutputDto>> GetRoleGroupByUserGroup(UserGroupInputDto input);
+
+        /// <summary>
+        /// 根据用户Id或名称，遍历关联角色组
+        /// </summary>
+        /// <param name="input"></param>
+        Pages<List<RoleGroupOutputDto>> GetRoleGroupByUser(UserInfoInputDto input); 
     }
 }

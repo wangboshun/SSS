@@ -19,11 +19,14 @@ using SSS.Domain.Permission.Info.RoleInfo;
 using SSS.Domain.Permission.Info.UserInfo;
 using SSS.Domain.Permission.Relation.PowerGroupMenuRelation;
 using SSS.Domain.Permission.Relation.PowerGroupOperateRelation;
+using SSS.Domain.Permission.Relation.PowerGroupRelation;
+using SSS.Domain.Permission.Relation.RoleGroupPowerGroupRelation;
+using SSS.Domain.Permission.Relation.RoleGroupRelation;
 using SSS.Domain.Permission.Relation.UserGroupRelation;
+using SSS.Domain.Permission.Relation.UserGroupRoleGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
-using SSS.Domain.Permission.Relation.UserGroupRoleGroupRelation;
 
 namespace SSS.Infrastructure.Seedwork.DbContext
 {
@@ -68,6 +71,9 @@ namespace SSS.Infrastructure.Seedwork.DbContext
         public DbSet<PowerGroupOperateRelation> PowerGroupOperateRelation { get; set; }
         public DbSet<PowerGroupMenuRelation> PowerGroupMenuRelation { get; set; }
         public DbSet<UserGroupRelation> UserGroupRelation { get; set; }
+        public DbSet<RoleGroupRelation> RoleGroupRelation { set; get; }
+        public DbSet<PowerGroupRelation> PowerGroupRelation { set; get; }
+        public DbSet<RoleGroupPowerGroupRelation> RoleGroupPowerGroupRelation { set; get; }
         public DbSet<UserGroupRoleGroupRelation> UserGroupRoleGroupRelation { set; get; }
 
 

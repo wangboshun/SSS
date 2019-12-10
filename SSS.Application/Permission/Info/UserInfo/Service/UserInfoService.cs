@@ -117,7 +117,7 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
             var model = Mapper.Map<Domain.Permission.Info.UserInfo.UserInfo>(input);
             model.CreateTime = DateTime.Now;
 
-            if (string.IsNullOrWhiteSpace(input.usergroupid))
+            if (!string.IsNullOrWhiteSpace(input.usergroupid))
             {
                 var usergroup = _userGroupRepository.Get(x => x.Id.Equals(input.usergroupid));
                 if (usergroup != null)
@@ -171,10 +171,10 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<UserInfoInputDto>> GetUserByUserGroup(UserGroupInputDto input)
+        public Pages<List<UserInfoOutputDto>> GetUserByUserGroup(UserGroupInputDto input)
         {
             var data = _userinfoRepository.GetUserByUserGroup(input.id, input.usergroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<UserInfoInputDto>>(data.items.AsQueryable().ProjectTo<UserInfoInputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+            return new Pages<List<UserInfoOutputDto>>(data.items?.AsQueryable().ProjectTo<UserInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
 
         /// <summary>
@@ -185,13 +185,13 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         public Pages<List<UserInfoOutputDto>> GetUserByPowerGroup(PowerGroupInputDto input)
         {
             var data = _userinfoRepository.GetUserByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<UserInfoOutputDto>>(data.items.AsQueryable().ProjectTo<UserInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+            return new Pages<List<UserInfoOutputDto>>(data.items?.AsQueryable().ProjectTo<UserInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
         }
 
         public Pages<List<UserInfoOutputDto>> GetUserByRoleGroup(RoleGroupInputDto input)
         {
             var data = _userinfoRepository.GetUserByRoleGroup(input.id, input.rolegroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<UserInfoOutputDto>>(data.items.AsQueryable().ProjectTo<UserInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+            return new Pages<List<UserInfoOutputDto>>(data.items?.AsQueryable().ProjectTo<UserInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
 
         }
     }

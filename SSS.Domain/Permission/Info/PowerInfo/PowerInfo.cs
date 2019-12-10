@@ -6,8 +6,6 @@ namespace SSS.Domain.Permission.Info.PowerInfo
     {
         public string ParentId { set; get; }
 
-        public string PowerName { set; get; }
-
-        public string PowerType { set; get; }
+        public string PowerName { set; get; } 
     }
 }

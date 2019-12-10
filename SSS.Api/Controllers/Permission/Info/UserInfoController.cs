@@ -91,8 +91,8 @@ namespace SSS.Api.Controllers.Permission.Info
         [AllowAnonymous] //匿名访问
         public IActionResult AddUserInfo([FromBody] UserInfoInputDto input)
         {
-            _service.AddUserInfo(input);
-            return ApiResponse(input);
+            var result = _service.AddUserInfo(input);
+            return ApiResponse(result, result, result ? "增加成功" : "增加失败");
         }
 
         /// <summary>
@@ -104,8 +104,8 @@ namespace SSS.Api.Controllers.Permission.Info
         [AllowAnonymous]  //匿名访问
         public IActionResult DeleteUserInfo(string id)
         {
-            _service.DeleteUserInfo(id);
-            return ApiResponse(null);
+            var result = _service.DeleteUserInfo(id);
+            return ApiResponse(result, result, result ? "删除成功" : "删除失败");
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetUserByPowerGroup([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetUserByPowerGroup(input);
-            return ApiResponse(null);
+            return ApiResponse(result);
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetUserByRoleGroup([FromQuery]RoleGroupInputDto input)
         {
             var result = _service.GetUserByRoleGroup(input);
-            return ApiResponse(null);
+            return ApiResponse(result);
         }
     }
 }

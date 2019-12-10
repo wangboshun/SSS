@@ -379,11 +379,25 @@
             <param name="input">角色Id或名称</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Group.RoleGroupController.GetUserGroupByPowerGroup(SSS.Domain.Permission.Group.PowerGroup.Dto.PowerGroupInputDto)">
+        <member name="M:SSS.Api.Controllers.Permission.Group.RoleGroupController.GetRoleGroupByPowerGroup(SSS.Domain.Permission.Group.PowerGroup.Dto.PowerGroupInputDto)">
             <summary>
             根据权限组Id或名称，遍历关联角色组
             </summary>
             <param name="input">权限组Id或名称</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Group.RoleGroupController.GetRoleGroupByUserGroup(SSS.Domain.Permission.Group.UserGroup.Dto.UserGroupInputDto)">
+            <summary>
+            根据用户组Id或名称，遍历关联角色组
+            </summary>
+            <param name="input">用户组Id或名称</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Group.RoleGroupController.GetRoleGroupByUser(SSS.Domain.Permission.Info.UserInfo.Dto.UserInfoInputDto)">
+            <summary>
+            根据用户Id或名称，遍历关联角色组
+            </summary>
+            <param name="input">用户Id或名称</param>
             <returns></returns> 
         </member>
         <member name="T:SSS.Api.Controllers.Permission.Group.UserGroupController">

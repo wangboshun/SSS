@@ -75,8 +75,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.MenuInfo
         {
             string field = " m.* ";
 
-            string sql = @"SELECT  {0}
-            FROM
+            string sql = @"SELECT  {0}  FROM
 	            MenuInfo AS m
 	            INNER JOIN PowerGroupMenuRelation AS pgmr ON m.Id = pgmr.MenuId
 	            INNER JOIN PowerGroup AS pg ON pgmr.PowerGroupId = pg.Id 
