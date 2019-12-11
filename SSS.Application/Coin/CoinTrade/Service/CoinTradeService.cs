@@ -46,6 +46,8 @@ namespace SSS.Application.Coin.CoinTrade.Service
 
         public Pages<List<CoinTradeOutputDto>> GetListCoinTrade(CoinTradeInputDto input)
         {
+            if (!string.IsNullOrWhiteSpace(input.coin?.Trim()))
+                return GetPage(input, x => x.Coin.Equals(input.coin.ToLower().Trim()));
             return GetPage(input);
         }
     }
