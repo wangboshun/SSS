@@ -156,15 +156,15 @@ namespace SSS.Infrastructure.Seedwork.Repository
         ///     SQL查询 分页
         /// </summary>
         /// <param name="sql">SQL</param>
-        /// <param name="index">页码</param>
-        /// <param name="size">大小</param>
+        /// <param name="pageindex">页码</param>
+        /// <param name="pagesize">大小</param>
         /// <param name="count">总数量</param>
         /// <returns></returns>
-        public IQueryable<TEntity> GetBySql(string sql, int index, int size, ref int count)
+        public IQueryable<TEntity> GetBySql(string sql, int pageindex, int pagesize, ref int count)
         {
             var data = GetBySql(sql);
             count = data.Count();
-            return data.OrderByDescending(x => x.CreateTime).Skip(size * index).Take(size);
+            return data.OrderByDescending(x => x.CreateTime).Skip(pagesize * pageindex).Take(pagesize);
         }
 
         /// <summary>
@@ -172,16 +172,16 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// </summary>
         /// <param name="sql">SQL</param>
         /// <param name="predicate">Lambda表达式</param>
-        /// <param name="index">页码</param>
-        /// <param name="size">大小</param>
+        /// <param name="pageindex">页码</param>
+        /// <param name="pagesize">大小</param>
         /// <param name="count">总数量</param>
         /// <returns></returns>
-        public IQueryable<TEntity> GetBySql(string sql, Expression<Func<TEntity, bool>> predicate, int index, int size,
+        public IQueryable<TEntity> GetBySql(string sql, Expression<Func<TEntity, bool>> predicate, int pageindex, int pagesize,
             ref int count)
         {
             var data = GetBySql(sql, predicate);
             count = data.Count();
-            return data.OrderByDescending(x => x.CreateTime).Skip(size * index).Take(size);
+            return data.OrderByDescending(x => x.CreateTime).Skip(pagesize * pageindex).Take(pagesize);
         }
 
         /// <summary>
@@ -206,28 +206,28 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// <summary>
         ///     分页查询
         /// </summary>
-        /// <param name="index">页码</param>
-        /// <param name="size">大小</param>
+        /// <param name="pageindex">页码</param>
+        /// <param name="pagesize">大小</param>
         /// <param name="count">总数量</param>
         /// <returns></returns>
-        public IQueryable<TEntity> GetPage(int index, int size, ref int count)
+        public IQueryable<TEntity> GetPage(int pageindex, int pagesize, ref int count)
         {
             count = DbSet.Count();
-            return DbSet.OrderByDescending(x => x.CreateTime).Skip(size * index).Take(size);
+            return DbSet.OrderByDescending(x => x.CreateTime).Skip(pagesize * pageindex).Take(pagesize);
         }
 
         /// <summary>
         ///     分页查询 Lambda查询
         /// </summary>
-        /// <param name="index">页码</param>
-        /// <param name="size">大小</param>
+        /// <param name="pageindex">页码</param>
+        /// <param name="pagesize">大小</param>
         /// <param name="predicate">Lambda表达式</param>
         /// <param name="count">总数量</param>
         /// <returns></returns>
-        public IQueryable<TEntity> GetPage(int index, int size, Expression<Func<TEntity, bool>> predicate, ref int count)
+        public IQueryable<TEntity> GetPage(int pageindex, int pagesize, Expression<Func<TEntity, bool>> predicate, ref int count)
         {
             count = DbSet.Where(predicate).Count();
-            return DbSet.OrderByDescending(x => x.CreateTime).Where(predicate).Skip(size * index).Take(size);
+            return DbSet.OrderByDescending(x => x.CreateTime).Where(predicate).Skip(pagesize * pageindex).Take(pagesize);
         }
 
         /// <summary>
@@ -236,17 +236,17 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// <typeparam name="TEntity">返回类型</typeparam>
         /// <param name="sql">sql</param>
         /// <param name="field">返回的字段</param>
-        /// <param name="index">页码</param>
-        /// <param name="size">大小</param>
+        /// <param name="pageindex">页码</param>
+        /// <param name="pagesize">大小</param>
         /// <returns></returns>
-        public Pages<IEnumerable<TEntity>> GetPage(string sql, string field, int index, int size)
+        public Pages<IEnumerable<TEntity>> GetPage(string sql, string field, int pageindex, int pagesize)
         {
             int count = Db.Database.Count(string.Format(sql, $" count( DISTINCT {field}.Id ) "));
 
-            if (index > 0 && size > 0)
+            if (pageindex > 0 && pagesize > 0)
             {
                 string limit = " limit {1},{2} ";
-                var data = Db.Database.SqlQuery<TEntity>(string.Format(sql + limit, $" DISTINCT {field}.* ", index == 1 ? 0 : index * size + 1, size));
+                var data = Db.Database.SqlQuery<TEntity>(string.Format(sql + limit, $" DISTINCT {field}.* ", pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
                 return new Pages<IEnumerable<TEntity>>(data, count);
             }
             {
