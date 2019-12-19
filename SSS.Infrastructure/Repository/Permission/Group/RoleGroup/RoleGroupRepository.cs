@@ -27,12 +27,12 @@ namespace SSS.Infrastructure.Repository.Permission.Group.RoleGroup
         {
             string sql = @"SELECT {0}  FROM
 	                RoleInfo AS r
-	                INNER JOIN RoleGroupRelation AS rrr ON r.id = rrr.RoleId
-	                INNER JOIN RoleGroup AS rg ON rrr.RoleGroupId = rg.Id 
+	                INNER JOIN RoleGroupRelation AS rgr ON r.id = rgr.RoleId
+	                INNER JOIN RoleGroup AS rg ON rgr.RoleGroupId = rg.Id 
                 WHERE
 	   	            r.IsDelete=0 
 	                AND rg.IsDelete=0 
-	                AND rrr.IsDelete=0 ";
+	                AND rgr.IsDelete=0 ";
 
             if (!string.IsNullOrWhiteSpace(roleid))
                 sql += $" AND r.Id='{roleid}'";

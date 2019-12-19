@@ -53,12 +53,12 @@ namespace SSS.Infrastructure.Repository.Permission.Group.UserGroup
         {
             string sql = @"SELECT {0} FROM
 	               	UserGroup AS ug
-	                INNER JOIN UserGroupRoleGroupRelation AS rgugr ON rgugr.UserGroupId = ug.Id
-	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rgugr.RoleGroupId
+	                INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ugrgr.UserGroupId = ug.Id
+	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = ugrgr.RoleGroupId
 	                INNER JOIN PowerGroup AS pg ON pg.Id = rgpgr.PowerGroupId
                 WHERE
 	                ug.IsDelete = 0 
-	                AND rgugr.IsDelete = 0  
+	                AND ugrgr.IsDelete = 0  
 	                AND rgpgr.IsDelete = 0 
 	                AND pg.IsDelete = 0";
 
@@ -82,11 +82,11 @@ namespace SSS.Infrastructure.Repository.Permission.Group.UserGroup
         {
             string sql = @"SELECT {0} FROM
 	               	UserGroup AS ug
-	                INNER JOIN UserGroupRoleGroupRelation AS rgugr ON rgugr.UserGroupId = ug.Id
-	                INNER JOIN RoleGroup AS rg ON rgugr.RoleGroupId = rg.Id 
+	                INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ugrgr.UserGroupId = ug.Id
+	                INNER JOIN RoleGroup AS rg ON ugrgr.RoleGroupId = rg.Id 
                 WHERE
 	                ug.IsDelete = 0 
-	                AND rgugr.IsDelete = 0 
+	                AND ugrgr.IsDelete = 0 
 	                AND rg.IsDelete = 0";
 
             if (!string.IsNullOrWhiteSpace(rolegroupid))

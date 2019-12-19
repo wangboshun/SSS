@@ -100,14 +100,14 @@ namespace SSS.Infrastructure.Repository.Permission.Info.OperateInfo
             string sql = @"SELECT  {0}  FROM
 	           		UserInfo AS u
 	                INNER JOIN UserGroupRelation AS ugr ON u.id = ugr.UserId
-	                INNER JOIN UserGroupRoleGroupRelation AS rgugr ON rgugr.UserGroupId = ugr.UserGroupId
-	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rgugr.RoleGroupId
+	                INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ugrgr.UserGroupId = ugr.UserGroupId
+	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = ugrgr.RoleGroupId
 	                INNER JOIN PowerGroupOperateRelation AS pgopr ON pgopr.PowerGroupId = rgpgr.PowerGroupId
 	                INNER JOIN OperateInfo AS o ON pgopr.OperateId = o.Id 
                 WHERE
 	                u.IsDelete = 0 
 	                AND ugr.IsDelete = 0 
-	                AND rgugr.IsDelete = 0 
+	                AND ugrgr.IsDelete = 0 
 	                AND rgpgr.IsDelete = 0 
 	                AND pgopr.IsDelete = 0 
 	                AND o.IsDelete = 0";
@@ -133,14 +133,14 @@ namespace SSS.Infrastructure.Repository.Permission.Info.OperateInfo
             string sql = @"SELECT  {0}  FROM
 	                UserGroup AS ug
 	                INNER JOIN UserGroupRelation AS ugr ON ug.id = ugr.UserGroupId
-	                INNER JOIN UserGroupRoleGroupRelation AS rgugr ON rgugr.UserGroupId = ugr.UserGroupId
-	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rgugr.RoleGroupId
+	                INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ugrgr.UserGroupId = ugr.UserGroupId
+	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = ugrgr.RoleGroupId
 	                INNER JOIN PowerGroupOperateRelation AS pgopr ON pgopr.PowerGroupId = rgpgr.PowerGroupId
 	                INNER JOIN OperateInfo AS o ON pgopr.OperateId = o.Id 
                 WHERE
 	                ug.IsDelete = 0 
 	                AND ugr.IsDelete = 0 
-	                AND rgugr.IsDelete = 0 
+	                AND ugrgr.IsDelete = 0 
 	                AND rgpgr.IsDelete = 0 
 	                AND pgopr.IsDelete = 0 
 	                AND o.IsDelete = 0";

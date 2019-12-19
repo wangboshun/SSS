@@ -73,15 +73,15 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
             string sql = @" SELECT {0} FROM
 	                UserInfo AS u
 	                INNER JOIN UserGroupRelation AS ugr ON u.id = ugr.UserId
-	                INNER JOIN UserGroupRoleGroupRelation AS rgugr ON rgugr.UserGroupId = ugr.UserGroupId
-	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rgugr.RoleGroupId
+	                INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ugrgr.UserGroupId = ugr.UserGroupId
+	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = ugrgr.RoleGroupId
 	                INNER JOIN PowerGroupRelation AS pgr ON rgpgr.PowerGroupId = pgr.PowerGroupId
 	                INNER JOIN PowerInfo AS p ON p.Id = pgr.PowerId 
                 WHERE
 	                u.IsDelete = 0 
                     AND pgr.IsDelete=0
 	                AND ugr.IsDelete = 0 
-	                AND rgugr.IsDelete = 0 
+	                AND ugrgr.IsDelete = 0 
 	                AND rgpgr.IsDelete = 0 
 	                AND p.IsDelete =0 ";
 
@@ -107,12 +107,12 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
 	                PowerInfo AS p
 	                INNER JOIN PowerGroupRelation AS pgr ON p.Id = pgr.PowerId
 	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.PowerGroupId = pgr.PowerGroupId
-	                INNER JOIN UserGroupRoleGroupRelation AS rgugr ON rgpgr.RoleGroupId = rgugr.RoleGroupId
-	                INNER JOIN UserGroup AS ug ON rgugr.UserGroupId = ug.Id 
+	                INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON rgpgr.RoleGroupId = ugrgr.RoleGroupId
+	                INNER JOIN UserGroup AS ug ON ugrgr.UserGroupId = ug.Id 
                 WHERE
 	                p.IsDelete = 0 
 	                AND pgr.IsDelete = 0 
-	                AND rgugr.IsDelete = 0 
+	                AND ugrgr.IsDelete = 0 
 	                AND rgpgr.IsDelete = 0 
 	                AND ug.IsDelete =0 ";
 
@@ -136,12 +136,12 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
         {
             string sql = @"SELECT {0}  FROM
 	                PowerInfo AS p
-	                INNER JOIN PowerGroupRelation AS ppr ON p.id=ppr.PowerId
-	                INNER JOIN PowerGroup AS pg ON ppr.PowerGroupId=pg.Id 
+	                INNER JOIN PowerGroupRelation AS pgr ON p.id=pgr.PowerId
+	                INNER JOIN PowerGroup AS pg ON pgr.PowerGroupId=pg.Id 
                 WHERE
 	                p.IsDelete = 0 
 	                AND pg.IsDelete = 0 
-	                AND ppr.IsDelete =0 ";
+	                AND pgr.IsDelete =0 ";
 
             if (!string.IsNullOrWhiteSpace(powergroupid))
                 sql += $" AND pg.Id='{powergroupid}'";

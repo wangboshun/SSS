@@ -149,13 +149,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.UserInfo
             string sql = @"SELECT {0}   FROM
 	                	UserInfo AS u
 	                    INNER JOIN UserGroupRelation AS ugr ON u.id = ugr.UserId
-	                    INNER JOIN UserGroupRoleGroupRelation AS rgugr ON rgugr.UserGroupId = ugr.UserGroupId
-	                    INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rgugr.RoleGroupId
+	                    INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ugrgr.UserGroupId = ugr.UserGroupId
+	                    INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = ugrgr.RoleGroupId
                         INNER JOIN PowerGroup AS pg ON pg.Id = rgpgr.PowerGroupId
                     WHERE
 	                    u.IsDelete = 0 
 	                    AND ugr.IsDelete = 0  
-	                    AND rgugr.IsDelete = 0  
+	                    AND ugrgr.IsDelete = 0  
 	                    AND rgpgr.IsDelete = 0  
                         AND pg.IsDelete = 0 ";
 
@@ -180,12 +180,12 @@ namespace SSS.Infrastructure.Repository.Permission.Info.UserInfo
             string sql = @"SELECT {0}   FROM
 	                UserInfo AS u
 	                INNER JOIN UserGroupRelation AS ugr ON u.id = ugr.UserId 
-	                INNER JOIN UserGroupRoleGroupRelation AS rgugr ON rgugr.UserGroupId = ugr.UserGroupId
-	                INNER JOIN RoleGroup AS rg ON rg.Id = rgugr.RoleGroupId 
+	                INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ugrgr.UserGroupId = ugr.UserGroupId
+	                INNER JOIN RoleGroup AS rg ON rg.Id = ugrgr.RoleGroupId 
                 WHERE
 	                u.IsDelete = 0 
 	                AND ugr.IsDelete = 0  
-	                AND rgugr.IsDelete = 0 
+	                AND ugrgr.IsDelete = 0 
 	                AND rg.IsDelete = 0";
 
             if (!string.IsNullOrWhiteSpace(rolegroupid))
@@ -209,13 +209,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.UserInfo
             string sql = @"SELECT {0}   FROM
 	                UserInfo AS u
 	                INNER JOIN UserGroupRelation AS ugr ON u.id = ugr.UserId 
-	                INNER JOIN UserGroupRoleGroupRelation AS rgugr ON rgugr.UserGroupId = ugr.UserGroupId 
-	                INNER JOIN RoleGroupRelation AS rgr ON rgr.RoleGroupId = rgugr.RoleGroupId
+	                INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ugrgr.UserGroupId = ugr.UserGroupId 
+	                INNER JOIN RoleGroupRelation AS rgr ON rgr.RoleGroupId = ugrgr.RoleGroupId
 	                INNER JOIN RoleInfo AS r ON r.Id = rgr.RoleId 
                 WHERE
 	                u.IsDelete = 0 
 	                AND ugr.IsDelete = 0  
-	                AND rgugr.IsDelete = 0  
+	                AND ugrgr.IsDelete = 0  
 	                AND r.IsDelete = 0 
 	                AND rgr.IsDelete =0 ";
 
