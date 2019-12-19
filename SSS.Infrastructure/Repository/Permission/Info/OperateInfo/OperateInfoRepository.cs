@@ -14,6 +14,8 @@ namespace SSS.Infrastructure.Repository.Permission.Info.OperateInfo
     [DIService(ServiceLifetime.Scoped, typeof(IOperateInfoRepository))]
     public class OperateInfoRepository : Repository<Domain.Permission.Info.OperateInfo.OperateInfo>, IOperateInfoRepository
     {
+        private static string field = "o";
+
         public readonly List<OperateInfoTreeOutputDto> Tree;
 
         public OperateInfoRepository(DbcontextBase context) : base(context)
@@ -64,17 +66,10 @@ namespace SSS.Infrastructure.Repository.Permission.Info.OperateInfo
 
         /// <summary>
         ///根据权限组Id或名称，遍历关联操作
-        /// </summary>
-        /// <param name="powergroupid"></param>
-        /// <param name="powergroupname"></param>
-        /// <param name="parentid"></param>
-        /// <param name="pageindex"></param>
-        /// <param name="pagesize"></param>
+        /// </summary> 
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Info.OperateInfo.OperateInfo>> GetOperateByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = " DISTINCT o.* ";
-
             string sql = @"SELECT  {0}  FROM
 	           	OperateInfo AS o
 	            INNER JOIN PowerGroupOperateRelation AS pgor ON o.Id = pgor.OperateId
@@ -93,19 +88,102 @@ namespace SSS.Infrastructure.Repository.Permission.Info.OperateInfo
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND pg.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT o.Id ) "));
+            return GetPage(sql, field, pageindex, pagesize);
+        }
 
-            if (pageindex > 0 && pagesize > 0)
-            {
-                string limit = " limit {1},{2} ";
-                var data = Db.Database.SqlQuery<Domain.Permission.Info.OperateInfo.OperateInfo>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
-                return new Pages<IEnumerable<Domain.Permission.Info.OperateInfo.OperateInfo>>(data, count);
-            }
-            else
-            {
-                var data = Db.Database.SqlQuery<Domain.Permission.Info.OperateInfo.OperateInfo>(string.Format(sql, field));
-                return new Pages<IEnumerable<Domain.Permission.Info.OperateInfo.OperateInfo>>(data, count);
-            }
+        /// <summary>
+        ///根据用户Id或名称，遍历关联操作
+        /// </summary> 
+        /// <returns></returns>
+        public Pages<IEnumerable<Domain.Permission.Info.OperateInfo.OperateInfo>> GetOperateByUser(string userid, string username, string parentid = "", int pageindex = 0, int pagesize = 0)
+        {
+            string sql = @"SELECT  {0}  FROM
+	           		UserInfo AS u
+	                INNER JOIN UserGroupRelation AS ugr ON u.id = ugr.UserId
+	                INNER JOIN UserGroupRoleGroupRelation AS rgugr ON rgugr.UserGroupId = ugr.UserGroupId
+	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rgugr.RoleGroupId
+	                INNER JOIN PowerGroupOperateRelation AS pgopr ON pgopr.PowerGroupId = rgpgr.PowerGroupId
+	                INNER JOIN OperateInfo AS o ON pgopr.OperateId = o.Id 
+                WHERE
+	                u.IsDelete = 0 
+	                AND ugr.IsDelete = 0 
+	                AND rgugr.IsDelete = 0 
+	                AND rgpgr.IsDelete = 0 
+	                AND pgopr.IsDelete = 0 
+	                AND o.IsDelete = 0";
+
+            if (!string.IsNullOrWhiteSpace(userid))
+                sql += $" AND u.Id='{userid}'";
+
+            if (!string.IsNullOrWhiteSpace(username))
+                sql += $" AND u.UserName='{username}'";
+
+            if (!string.IsNullOrWhiteSpace(parentid))
+                sql += $" AND u.ParentId='{parentid}'";
+
+            return GetPage(sql, field, pageindex, pagesize);
+        }
+
+        /// <summary>
+        /// 根据用户组Id或名称，遍历关联操作
+        /// </summary> 
+        /// <returns></returns>
+        public Pages<IEnumerable<Domain.Permission.Info.OperateInfo.OperateInfo>> GetOperateByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        {
+            string sql = @"SELECT  {0}  FROM
+	                UserGroup AS ug
+	                INNER JOIN UserGroupRelation AS ugr ON ug.id = ugr.UserGroupId
+	                INNER JOIN UserGroupRoleGroupRelation AS rgugr ON rgugr.UserGroupId = ugr.UserGroupId
+	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rgugr.RoleGroupId
+	                INNER JOIN PowerGroupOperateRelation AS pgopr ON pgopr.PowerGroupId = rgpgr.PowerGroupId
+	                INNER JOIN OperateInfo AS o ON pgopr.OperateId = o.Id 
+                WHERE
+	                ug.IsDelete = 0 
+	                AND ugr.IsDelete = 0 
+	                AND rgugr.IsDelete = 0 
+	                AND rgpgr.IsDelete = 0 
+	                AND pgopr.IsDelete = 0 
+	                AND o.IsDelete = 0";
+
+            if (!string.IsNullOrWhiteSpace(usergroupid))
+                sql += $" AND ug.Id='{usergroupid}'";
+
+            if (!string.IsNullOrWhiteSpace(usergroupname))
+                sql += $" AND ug.UserGroupName='{usergroupname}'";
+
+            if (!string.IsNullOrWhiteSpace(parentid))
+                sql += $" AND ug.ParentId='{parentid}'";
+
+            return GetPage(sql, field, pageindex, pagesize);
+        }
+
+        /// <summary>
+        /// 根据角色组Id或名称，遍历关联操作
+        /// </summary> 
+        /// <returns></returns>
+        public Pages<IEnumerable<Domain.Permission.Info.OperateInfo.OperateInfo>> GetOperateByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        {
+            string sql = @"SELECT  {0}  FROM
+	                RoleGroup AS rg
+	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rg.Id
+	                INNER JOIN PowerGroupOperateRelation AS pgopr ON pgopr.PowerGroupId = rgpgr.PowerGroupId
+	                INNER JOIN OperateInfo AS o ON pgopr.OperateId = o.Id 
+                WHERE
+	                rg.IsDelete = 0 
+	                AND rgpgr.IsDelete = 0 
+	                AND pgopr.IsDelete = 0 
+	                AND o.IsDelete = 0";
+
+            if (!string.IsNullOrWhiteSpace(rolegroupid))
+                sql += $" AND rg.Id='{rolegroupid}'";
+
+            if (!string.IsNullOrWhiteSpace(rolegroupname))
+                sql += $" AND rg.RoleGroupName='{rolegroupname}'";
+
+            if (!string.IsNullOrWhiteSpace(parentid))
+                sql += $" AND rg.ParentId='{parentid}'";
+
+            return GetPage(sql, field, pageindex, pagesize);
         }
     }
 }

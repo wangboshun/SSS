@@ -14,6 +14,8 @@ namespace SSS.Infrastructure.Repository.Permission.Info.RoleInfo
     [DIService(ServiceLifetime.Scoped, typeof(IRoleInfoRepository))]
     public class RoleInfoRepository : Repository<Domain.Permission.Info.RoleInfo.RoleInfo>, IRoleInfoRepository
     {
+        private static string field = "r";
+
         public readonly List<RoleInfoTreeOutputDto> Tree;
 
         public RoleInfoRepository(DbcontextBase context) : base(context)
@@ -68,8 +70,6 @@ namespace SSS.Infrastructure.Repository.Permission.Info.RoleInfo
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>> GetRoleByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = " DISTINCT r.* ";
-
             string sql = @"SELECT {0}   FROM
 	                RoleInfo AS r
 	                INNER JOIN RoleGroupRelation AS rrr ON r.id = rrr.RoleId
@@ -88,34 +88,15 @@ namespace SSS.Infrastructure.Repository.Permission.Info.RoleInfo
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND rg.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT r.Id ) "));
-
-            if (pageindex > 0 && pagesize > 0)
-            {
-                string limit = " limit {1},{2} ";
-                var data = Db.Database.SqlQuery<Domain.Permission.Info.RoleInfo.RoleInfo>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
-                return new Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>>(data, count);
-            }
-            else
-            {
-                var data = Db.Database.SqlQuery<Domain.Permission.Info.RoleInfo.RoleInfo>(string.Format(sql, field));
-                return new Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>>(data, count);
-            }
+            return GetPage(sql, field, pageindex, pagesize);
         }
 
         /// <summary>
         /// 根据权限组Id或名称，遍历关联角色
-        /// </summary>
-        /// <param name="powergroupid"></param>
-        /// <param name="powergroupname"></param>
-        /// <param name="parentid"></param>
-        /// <param name="pageindex"></param>
-        /// <param name="pagesize"></param>
+        /// </summary> 
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>> GetRoleByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = " DISTINCT r.* ";
-
             string sql = @"SELECT {0}   FROM
 	                RoleInfo AS r
 	                INNER JOIN RoleGroupRelation AS rgr ON r.Id = rgr.RoleId 
@@ -136,34 +117,15 @@ namespace SSS.Infrastructure.Repository.Permission.Info.RoleInfo
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND pg.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT r.Id ) "));
-
-            if (pageindex > 0 && pagesize > 0)
-            {
-                string limit = " limit {1},{2} ";
-                var data = Db.Database.SqlQuery<Domain.Permission.Info.RoleInfo.RoleInfo>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
-                return new Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>>(data, count);
-            }
-            else
-            {
-                var data = Db.Database.SqlQuery<Domain.Permission.Info.RoleInfo.RoleInfo>(string.Format(sql, field));
-                return new Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>>(data, count);
-            }
+            return GetPage(sql, field, pageindex, pagesize);
         }
 
         /// <summary>
         /// 根据用户组Id或名称，遍历关联角色
-        /// </summary>
-        /// <param name="usergroupid"></param>
-        /// <param name="usergroupname"></param>
-        /// <param name="parentid"></param>
-        /// <param name="pageindex"></param>
-        /// <param name="pagesize"></param>
+        /// </summary> 
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>> GetRoleByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = " DISTINCT r.* ";
-
             string sql = @"SELECT {0}   FROM
 	                RoleInfo AS r
 	                INNER JOIN RoleGroupRelation AS rgr ON r.Id = rgr.RoleId
@@ -184,34 +146,15 @@ namespace SSS.Infrastructure.Repository.Permission.Info.RoleInfo
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND ug.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT r.Id ) "));
-
-            if (pageindex > 0 && pagesize > 0)
-            {
-                string limit = " limit {1},{2} ";
-                var data = Db.Database.SqlQuery<Domain.Permission.Info.RoleInfo.RoleInfo>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
-                return new Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>>(data, count);
-            }
-            else
-            {
-                var data = Db.Database.SqlQuery<Domain.Permission.Info.RoleInfo.RoleInfo>(string.Format(sql, field));
-                return new Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>>(data, count);
-            }
+            return GetPage(sql, field, pageindex, pagesize);
         }
 
         /// <summary>
         ///  根据用户Id或名称，遍历关联角色
-        /// </summary>
-        /// <param name="userid"></param>
-        /// <param name="usename"></param>
-        /// <param name="parentid"></param>
-        /// <param name="pageindex"></param>
-        /// <param name="pagesize"></param>
+        /// </summary> 
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>> GetRoleByUser(string userid, string usename, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = " DISTINCT r.* ";
-
             string sql = @"SELECT {0}   FROM
 	                RoleInfo AS r
 	                INNER JOIN RoleGroupRelation AS rgr ON r.Id = rgr.RoleId
@@ -235,19 +178,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.RoleInfo
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND u.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT r.Id ) "));
-
-            if (pageindex > 0 && pagesize > 0)
-            {
-                string limit = " limit {1},{2} ";
-                var data = Db.Database.SqlQuery<Domain.Permission.Info.RoleInfo.RoleInfo>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
-                return new Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>>(data, count);
-            }
-            else
-            {
-                var data = Db.Database.SqlQuery<Domain.Permission.Info.RoleInfo.RoleInfo>(string.Format(sql, field));
-                return new Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>>(data, count);
-            }
+            return GetPage(sql, field, pageindex, pagesize);
         }
     }
 }

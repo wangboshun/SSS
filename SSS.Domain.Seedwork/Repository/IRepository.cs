@@ -34,6 +34,7 @@ namespace SSS.Domain.Seedwork.Repository
         IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate);
         IQueryable<TEntity> GetPage(int index, int size, ref int count);
         IQueryable<TEntity> GetPage(int index, int size, Expression<Func<TEntity, bool>> predicate, ref int count);
+        Pages<IEnumerable<TEntity>> GetPage(string sql, string field, int index, int size);
         bool Update(TEntity obj, bool save = false);
         bool Remove(string id, bool save = false);
         bool Remove(Expression<Func<TEntity, bool>> predicate, bool save = false);

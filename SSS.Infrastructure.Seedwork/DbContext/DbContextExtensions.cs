@@ -59,6 +59,12 @@ namespace SSS.Infrastructure.Seedwork.DbContext
             return dt.ToEnumerable<T>();
         }
 
+        /// <summary>
+        /// DataTable转List
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dt"></param>
+        /// <returns></returns>
         public static IEnumerable<T> ToEnumerable<T>(this DataTable dt) where T : class, new()
         {
             try
@@ -66,7 +72,6 @@ namespace SSS.Infrastructure.Seedwork.DbContext
                 if (dt == null || dt.Rows.Count == 0)
                     return null;
                 List<T> ts = new List<T>();
-                Type type = typeof(T);
                 string tempName;
                 foreach (DataRow dr in dt.Rows)
                 {

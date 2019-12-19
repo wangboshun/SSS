@@ -14,6 +14,8 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
     [DIService(ServiceLifetime.Scoped, typeof(IPowerInfoRepository))]
     public class PowerInfoRepository : Repository<Domain.Permission.Info.PowerInfo.PowerInfo>, IPowerInfoRepository
     {
+        private static string field = "p";
+
         public readonly List<PowerInfoTreeOutputDto> Tree;
 
         public PowerInfoRepository(DbcontextBase context) : base(context)
@@ -66,10 +68,8 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
         /// 根据用户Id或名称，遍历关联权限
         /// </summary> 
         /// <returns></returns>
-        public Pages<List<Domain.Permission.Info.PowerInfo.PowerInfo>> GetPowerByUser(string userid, string username, string parentid = "", int pageindex = 0, int pagesize = 0)
+        public Pages<IEnumerable<Domain.Permission.Info.PowerInfo.PowerInfo>> GetPowerByUser(string userid, string username, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = @" DISTINCT p.* ";
-
             string sql = @" SELECT {0} FROM
 	                UserInfo AS u
 	                INNER JOIN UserGroupRelation AS ugr ON u.id = ugr.UserId
@@ -94,34 +94,15 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND u.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT p.Id ) "));
-
-            if (pageindex > 0 && pagesize > 0)
-            {
-                string limit = " limit {1},{2} ";
-                var data = Db.Database.SqlQuery<Domain.Permission.Info.PowerInfo.PowerInfo>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
-                return new Pages<List<Domain.Permission.Info.PowerInfo.PowerInfo>>(data.ToList(), count);
-            }
-            else
-            {
-                var data = Db.Database.SqlQuery<Domain.Permission.Info.PowerInfo.PowerInfo>(string.Format(sql, field));
-                return new Pages<List<Domain.Permission.Info.PowerInfo.PowerInfo>>(data?.ToList(), count);
-            }
+            return GetPage(sql, field, pageindex, pagesize);
         }
 
         /// <summary>
         /// 根据用户组Id或名称，遍历关联权限
-        /// </summary>
-        /// <param name="usergroupid"></param>
-        /// <param name="usergroupname"></param>
-        /// <param name="parentid"></param>
-        /// <param name="pageindex"></param>
-        /// <param name="pagesize"></param>
+        /// </summary> 
         /// <returns></returns>
-        public Pages<List<Domain.Permission.Info.PowerInfo.PowerInfo>> GetPowerByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        public Pages<IEnumerable<Domain.Permission.Info.PowerInfo.PowerInfo>> GetPowerByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = @" DISTINCT p.* ";
-
             string sql = @" SELECT {0} FROM
 	                PowerInfo AS p
 	                INNER JOIN PowerGroupRelation AS pgr ON p.Id = pgr.PowerId
@@ -144,19 +125,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND ug.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT p.Id ) "));
-
-            if (pageindex > 0 && pagesize > 0)
-            {
-                string limit = " limit {1},{2} ";
-                var data = Db.Database.SqlQuery<Domain.Permission.Info.PowerInfo.PowerInfo>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
-                return new Pages<List<Domain.Permission.Info.PowerInfo.PowerInfo>>(data.ToList(), count);
-            }
-            else
-            {
-                var data = Db.Database.SqlQuery<Domain.Permission.Info.PowerInfo.PowerInfo>(string.Format(sql, field));
-                return new Pages<List<Domain.Permission.Info.PowerInfo.PowerInfo>>(data?.ToList(), count);
-            }
+            return GetPage(sql, field, pageindex, pagesize);
         }
 
         /// <summary>
@@ -165,8 +134,6 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Info.PowerInfo.PowerInfo>> GetPowerByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = " DISTINCT p.* ";
-
             string sql = @"SELECT {0}  FROM
 	                PowerInfo AS p
 	                INNER JOIN PowerGroupRelation AS ppr ON p.id=ppr.PowerId
@@ -185,34 +152,15 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND pg.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT p.Id ) "));
-
-            if (pageindex > 0 && pagesize > 0)
-            {
-                string limit = " limit {1},{2} ";
-                var data = Db.Database.SqlQuery<Domain.Permission.Info.PowerInfo.PowerInfo>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
-                return new Pages<IEnumerable<Domain.Permission.Info.PowerInfo.PowerInfo>>(data, count);
-            }
-            else
-            {
-                var data = Db.Database.SqlQuery<Domain.Permission.Info.PowerInfo.PowerInfo>(string.Format(sql, field));
-                return new Pages<IEnumerable<Domain.Permission.Info.PowerInfo.PowerInfo>>(data, count);
-            }
+            return GetPage(sql, field, pageindex, pagesize);
         }
 
         /// <summary>
         /// 根据角色组Id或名称，遍历关联权限
-        /// </summary>
-        /// <param name="rolegroupid"></param>
-        /// <param name="rolegroupname"></param>
-        /// <param name="parentid"></param>
-        /// <param name="pageindex"></param>
-        /// <param name="pagesize"></param>
+        /// </summary> 
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Info.PowerInfo.PowerInfo>> GetPowerByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = " DISTINCT p.* ";
-
             string sql = @"SELECT {0} FROM 
                     RoleGroup AS rg
 	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rg.Id = rgpgr.RoleGroupId 
@@ -233,19 +181,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND rg.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT p.Id ) "));
-
-            if (pageindex > 0 && pagesize > 0)
-            {
-                string limit = " limit {1},{2} ";
-                var data = Db.Database.SqlQuery<Domain.Permission.Info.PowerInfo.PowerInfo>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
-                return new Pages<IEnumerable<Domain.Permission.Info.PowerInfo.PowerInfo>>(data, count);
-            }
-            else
-            {
-                var data = Db.Database.SqlQuery<Domain.Permission.Info.PowerInfo.PowerInfo>(string.Format(sql, field));
-                return new Pages<IEnumerable<Domain.Permission.Info.PowerInfo.PowerInfo>>(data, count);
-            }
+            return GetPage(sql, field, pageindex, pagesize);
         }
     }
 }

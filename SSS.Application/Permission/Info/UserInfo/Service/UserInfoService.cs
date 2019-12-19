@@ -85,57 +85,34 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         /// <returns></returns>
         public object GetUserPermission(string userid)
         {
-            List<UserGroupOutputDto> usergroup_list;
-            List<RoleGroupOutputDto> rolegroup_list = new List<RoleGroupOutputDto>();
-            List<PowerGroupOutputDto> powergroup_list = new List<PowerGroupOutputDto>();
-
-            List<RoleInfoOutputDto> role_list = new List<RoleInfoOutputDto>();
-            List<PowerInfoOutputDto> power_list = new List<PowerInfoOutputDto>();
-            List<MenuInfoOutputDto> menu_list = new List<MenuInfoOutputDto>();
-            List<OperateInfoOutputDto> operate_list = new List<OperateInfoOutputDto>();
-
             var user = _userinfoRepository.Get(userid);
             if (user == null)
                 return new { error = "用户不存在" };
 
-            usergroup_list = _userGroupRepository.GetUserGroupByUser(user.Id, user.UserName).items.MapperToOutPut<UserGroupOutputDto>().ToList();
+            var usergroup = _userGroupRepository.GetUserGroupByUser(user.Id, user.UserName).items.MapperToOutPut<UserGroupOutputDto>();
 
-            foreach (var usergroup in usergroup_list)
+            var rolegroup = _roleGroupRepository.GetRoleGroupByUser(user.Id, user.UserName).items.MapperToOutPut<RoleGroupOutputDto>();
+
+            var powergroup = _powerGroupRepository.GetPowerGroupByUser(user.Id, user.UserName).items.MapperToOutPut<PowerGroupOutputDto>();
+
+            var role = _roleInfoRepository.GetRoleByUser(user.Id, user.UserName).items.MapperToOutPut<RoleInfoOutputDto>();
+
+            var power = _powerInfoRepository.GetPowerByUser(user.Id, user.UserName).items.MapperToOutPut<PowerInfoOutputDto>();
+
+            var menu = _menuInfoRepository.GetMenuByUser(user.Id, user.UserName).items.MapperToOutPut<MenuInfoOutputDto>();
+
+            var operate = _operateInfoRepository.GetOperateByUser(user.Id, user.UserName).items.MapperToOutPut<OperateInfoOutputDto>();
+
+            return new
             {
-                var ug_data = _roleGroupRepository.GetRoleGroupByUserGroup(usergroup?.id, usergroup?.usergroupname).items.MapperToOutPut<RoleGroupOutputDto>();
-                if (ug_data != null)
-                    rolegroup_list.AddRange(ug_data);
-
-                var pg_data = _powerGroupRepository
-                    .GetPowerGroupByUserGroup(usergroup?.id, usergroup?.usergroupname).items.MapperToOutPut<PowerGroupOutputDto>();
-                if (pg_data != null)
-                    powergroup_list.AddRange(pg_data);
-            }
-
-            foreach (var rolegroup in rolegroup_list)
-            {
-                var r_data = _roleInfoRepository.GetRoleByRoleGroup(rolegroup?.id, rolegroup?.rolegroupname).items.MapperToOutPut<RoleInfoOutputDto>();
-                if (r_data != null)
-                    role_list.AddRange(r_data.ToList());
-            }
-
-            foreach (var powergroup in powergroup_list)
-            {
-                var p_data = _powerInfoRepository.GetPowerByPowerGroup(powergroup?.id, powergroup?.powergroupname).items.MapperToOutPut<PowerInfoOutputDto>();
-                if (p_data != null)
-                    power_list.AddRange(p_data.ToList());
-
-                var m_data = _menuInfoRepository.GetMenuByPowerGroup(powergroup?.id, powergroup?.powergroupname).items.MapperToOutPut<MenuInfoOutputDto>();
-                if (m_data != null)
-                    menu_list.AddRange(m_data.ToList());
-
-                var o_data = _operateInfoRepository
-                    .GetOperateByPowerGroup(powergroup?.id, powergroup?.powergroupname).items.MapperToOutPut<OperateInfoOutputDto>();
-                if (o_data != null)
-                    operate_list.AddRange(o_data);
-            }
-
-            return new { usergroup_list, role_list, power_list, menu_list, operate_list };
+                usergroup,
+                rolegroup,
+                powergroup,
+                role,
+                power,
+                menu,
+                operate
+            };
         }
 
         /// <summary>

@@ -14,6 +14,8 @@ namespace SSS.Infrastructure.Repository.Permission.Info.MenuInfo
     [DIService(ServiceLifetime.Scoped, typeof(IMenuInfoRepository))]
     public class MenuInfoRepository : Repository<Domain.Permission.Info.MenuInfo.MenuInfo>, IMenuInfoRepository
     {
+        private static string field = "m";
+
         public readonly List<MenuInfoTreeOutputDto> Tree;
 
         public MenuInfoRepository(DbcontextBase context) : base(context)
@@ -64,17 +66,10 @@ namespace SSS.Infrastructure.Repository.Permission.Info.MenuInfo
 
         /// <summary>
         ///根据权限组Id或名称，遍历关联菜单
-        /// </summary>
-        /// <param name="powergroupid"></param>
-        /// <param name="powergroupname"></param>
-        /// <param name="parentid"></param>
-        /// <param name="pageindex"></param>
-        /// <param name="pagesize"></param>
+        /// </summary> 
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Info.MenuInfo.MenuInfo>> GetMenuByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = " DISTINCT m.* ";
-
             string sql = @"SELECT  {0}  FROM
 	            MenuInfo AS m
 	            INNER JOIN PowerGroupMenuRelation AS pgmr ON m.Id = pgmr.MenuId
@@ -93,19 +88,102 @@ namespace SSS.Infrastructure.Repository.Permission.Info.MenuInfo
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND pg.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT m.Id ) "));
+            return GetPage(sql, field, pageindex, pagesize);
+        }
 
-            if (pageindex > 0 && pagesize > 0)
-            {
-                string limit = " limit {1},{2} ";
-                var data = Db.Database.SqlQuery<Domain.Permission.Info.MenuInfo.MenuInfo>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
-                return new Pages<IEnumerable<Domain.Permission.Info.MenuInfo.MenuInfo>>(data, count);
-            }
-            else
-            {
-                var data = Db.Database.SqlQuery<Domain.Permission.Info.MenuInfo.MenuInfo>(string.Format(sql, field));
-                return new Pages<IEnumerable<Domain.Permission.Info.MenuInfo.MenuInfo>>(data, count);
-            }
+        /// <summary>
+        /// 根据用户Id或名称，遍历关联菜单
+        /// </summary> 
+        /// <returns></returns>
+        public Pages<IEnumerable<Domain.Permission.Info.MenuInfo.MenuInfo>> GetMenuByUser(string userid, string username, string parentid = "", int pageindex = 0, int pagesize = 0)
+        {
+            string sql = @"SELECT  {0}  FROM
+	           		UserInfo AS u
+	                INNER JOIN UserGroupRelation AS ugr ON u.id = ugr.UserId
+	                INNER JOIN UserGroupRoleGroupRelation AS rgugr ON rgugr.UserGroupId = ugr.UserGroupId
+	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rgugr.RoleGroupId
+	                INNER JOIN PowerGroupMenuRelation AS pgomr ON pgomr.PowerGroupId = rgpgr.PowerGroupId
+	                INNER JOIN MenuInfo AS m ON pgomr.MenuId = m.Id 
+                WHERE
+	                u.IsDelete = 0 
+	                AND ugr.IsDelete = 0 
+	                AND rgugr.IsDelete = 0 
+	                AND rgpgr.IsDelete = 0 
+	                AND pgomr.IsDelete = 0 
+	                AND m.IsDelete = 0";
+
+            if (!string.IsNullOrWhiteSpace(userid))
+                sql += $" AND u.Id='{userid}'";
+
+            if (!string.IsNullOrWhiteSpace(username))
+                sql += $" AND u.UserName='{username}'";
+
+            if (!string.IsNullOrWhiteSpace(parentid))
+                sql += $" AND u.ParentId='{parentid}'";
+
+            return GetPage(sql, field, pageindex, pagesize);
+        }
+
+        /// <summary>
+        /// 根据用户组Id或名称，遍历关联菜单
+        /// </summary> 
+        /// <returns></returns>
+        public Pages<IEnumerable<Domain.Permission.Info.MenuInfo.MenuInfo>> GetMenuByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        {
+            string sql = @"SELECT  {0}  FROM
+	                UserGroup AS ug
+	                INNER JOIN UserGroupRelation AS ugr ON ugr.UserGroupId = ug.id
+	                INNER JOIN UserGroupRoleGroupRelation AS rgugr ON rgugr.UserGroupId = ugr.UserGroupId
+	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rgugr.RoleGroupId
+	                INNER JOIN PowerGroupMenuRelation AS pgomr ON pgomr.PowerGroupId = rgpgr.PowerGroupId
+	                INNER JOIN MenuInfo AS m ON pgomr.MenuId = m.Id 
+                WHERE
+	                ug.IsDelete = 0 
+	                AND ugr.IsDelete = 0 
+	                AND rgugr.IsDelete = 0 
+	                AND rgpgr.IsDelete = 0 
+	                AND pgomr.IsDelete = 0 
+	                AND m.IsDelete = 0";
+
+            if (!string.IsNullOrWhiteSpace(usergroupid))
+                sql += $" AND ug.Id='{usergroupid}'";
+
+            if (!string.IsNullOrWhiteSpace(usergroupname))
+                sql += $" AND ug.UserGroupName='{usergroupname}'";
+
+            if (!string.IsNullOrWhiteSpace(parentid))
+                sql += $" AND ug.ParentId='{parentid}'";
+
+            return GetPage(sql, field, pageindex, pagesize);
+        }
+
+        /// <summary>
+        /// 根据角色组Id或名称，遍历关联菜单
+        /// </summary> 
+        /// <returns></returns>
+        public Pages<IEnumerable<Domain.Permission.Info.MenuInfo.MenuInfo>> GetMenuByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        {
+            string sql = @"SELECT  {0}  FROM
+	                RoleGroup AS rg
+	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rg.Id
+	                INNER JOIN PowerGroupMenuRelation AS pgomr ON pgomr.PowerGroupId = rgpgr.PowerGroupId
+	                INNER JOIN MenuInfo AS m ON pgomr.MenuId = m.Id 
+                WHERE
+	                rg.IsDelete = 0 
+	                AND rgpgr.IsDelete = 0 
+	                AND pgomr.IsDelete = 0 
+	                AND m.IsDelete = 0";
+
+            if (!string.IsNullOrWhiteSpace(rolegroupid))
+                sql += $" AND rg.Id='{rolegroupid}'";
+
+            if (!string.IsNullOrWhiteSpace(rolegroupname))
+                sql += $" AND rg.RoleGroupName='{rolegroupname}'";
+
+            if (!string.IsNullOrWhiteSpace(parentid))
+                sql += $" AND rg.ParentId='{parentid}'";
+
+            return GetPage(sql, field, pageindex, pagesize);
         }
     }
 }

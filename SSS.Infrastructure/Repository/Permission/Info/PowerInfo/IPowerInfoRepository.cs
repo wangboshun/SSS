@@ -19,13 +19,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
         /// 根据用户Id或名称，遍历关联权限
         /// </summary>
         /// <returns></returns>
-        Pages<List<Domain.Permission.Info.PowerInfo.PowerInfo>> GetPowerByUser(string userid, string username, string parentid = "", int pageindex = 0, int pagesize = 0);
+        Pages<IEnumerable<Domain.Permission.Info.PowerInfo.PowerInfo>> GetPowerByUser(string userid, string username, string parentid = "", int pageindex = 0, int pagesize = 0);
 
         /// <summary>
         /// 根据用户组Id或名称，遍历关联权限
         /// </summary>
         /// <returns></returns>
-        Pages<List<Domain.Permission.Info.PowerInfo.PowerInfo>> GetPowerByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
+        Pages<IEnumerable<Domain.Permission.Info.PowerInfo.PowerInfo>> GetPowerByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
 
         /// <summary>
         /// 根据权限组Id或名称，遍历关联权限

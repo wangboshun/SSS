@@ -22,7 +22,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
 {
     [DIService(ServiceLifetime.Scoped, typeof(IRepository<>))]
     public abstract class Repository<TEntity> : IRepository<TEntity>
-        where TEntity : Entity
+        where TEntity : Entity, new()
     {
         private readonly IErrorHandler _error;
         private readonly ILogger _logger;
@@ -231,6 +231,31 @@ namespace SSS.Infrastructure.Seedwork.Repository
         }
 
         /// <summary>
+        /// sql分页查询，用于联表查询
+        /// </summary>
+        /// <typeparam name="TEntity">返回类型</typeparam>
+        /// <param name="sql">sql</param>
+        /// <param name="field">返回的字段</param>
+        /// <param name="index">页码</param>
+        /// <param name="size">大小</param>
+        /// <returns></returns>
+        public Pages<IEnumerable<TEntity>> GetPage(string sql, string field, int index, int size)
+        {
+            int count = Db.Database.Count(string.Format(sql, $" count( DISTINCT {field}.Id ) "));
+
+            if (index > 0 && size > 0)
+            {
+                string limit = " limit {1},{2} ";
+                var data = Db.Database.SqlQuery<TEntity>(string.Format(sql + limit, $" DISTINCT {field}.* ", index == 1 ? 0 : index * size + 1, size));
+                return new Pages<IEnumerable<TEntity>>(data, count);
+            }
+            {
+                var data = Db.Database.SqlQuery<TEntity>(string.Format(sql, $" DISTINCT {field}.* "));
+                return new Pages<IEnumerable<TEntity>>(data, count);
+            }
+        }
+
+        /// <summary>
         ///     更新
         /// </summary>
         /// <param name="obj">实体</param>
@@ -353,7 +378,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
     [DIService(ServiceLifetime.Scoped, typeof(IRepository<,,>))]
     public abstract class Repository<TEntity, TInput, TOutput> : Repository<TEntity>,
         IRepository<TEntity, TInput, TOutput>
-        where TEntity : Entity
+        where TEntity : Entity, new()
         where TInput : InputDtoBase
         where TOutput : OutputDtoBase
     {

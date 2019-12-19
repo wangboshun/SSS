@@ -12,6 +12,8 @@ namespace SSS.Infrastructure.Repository.Permission.Group.UserGroup
     [DIService(ServiceLifetime.Scoped, typeof(IUserGroupRepository))]
     public class UserGroupRepository : Repository<SSS.Domain.Permission.Group.UserGroup.UserGroup>, IUserGroupRepository
     {
+        private static string field = "ug";
+
         public UserGroupRepository(DbcontextBase context) : base(context)
         {
         }
@@ -22,16 +24,14 @@ namespace SSS.Infrastructure.Repository.Permission.Group.UserGroup
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Group.UserGroup.UserGroup>> GetUserGroupByUser(string userid, string username, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = " DISTINCT ur.* ";
-
             string sql = @"SELECT {0}  FROM
-	                UserInfo AS u
-	                INNER JOIN UserGroupRelation AS uur ON u.id=uur.UserId
-	                INNER JOIN UserGroup AS ur ON uur.UserGroupId=ur.Id 
+	               	UserInfo AS u
+	                INNER JOIN UserGroupRelation AS ugr ON u.id = ugr.UserId
+	                INNER JOIN UserGroup AS ug ON ugr.UserGroupId = ug.Id 
                 WHERE
-	                u.IsDelete=0 
-	                AND ur.IsDelete=0 
-	                AND uur.IsDelete=0 ";
+	                u.IsDelete = 0 
+	                AND ug.IsDelete = 0 
+	                AND ugr.IsDelete = 0  ";
 
             if (!string.IsNullOrWhiteSpace(userid))
                 sql += $" AND u.Id='{userid}'";
@@ -42,34 +42,15 @@ namespace SSS.Infrastructure.Repository.Permission.Group.UserGroup
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND u.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT ur.Id ) "));
-
-            if (pageindex > 0 && pagesize > 0)
-            {
-                string limit = " limit {1},{2} ";
-                var data = Db.Database.SqlQuery<Domain.Permission.Group.UserGroup.UserGroup>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
-                return new Pages<IEnumerable<Domain.Permission.Group.UserGroup.UserGroup>>(data, count);
-            }
-            else
-            {
-                var data = Db.Database.SqlQuery<Domain.Permission.Group.UserGroup.UserGroup>(string.Format(sql, field));
-                return new Pages<IEnumerable<Domain.Permission.Group.UserGroup.UserGroup>>(data, count);
-            }
+            return GetPage(sql, field, pageindex, pagesize);
         }
 
         /// <summary>
         /// 根据权限组Id或名称，遍历关联用户组
-        /// </summary>
-        /// <param name="powergroupid"></param>
-        /// <param name="powergroupname"></param>
-        /// <param name="parentid"></param>
-        /// <param name="pageindex"></param>
-        /// <param name="pagesize"></param>
+        /// </summary> 
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Group.UserGroup.UserGroup>> GetUserGroupByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = @" DISTINCT ug.* ";
-
             string sql = @"SELECT {0} FROM
 	               	UserGroup AS ug
 	                INNER JOIN UserGroupRoleGroupRelation AS rgugr ON rgugr.UserGroupId = ug.Id
@@ -90,34 +71,15 @@ namespace SSS.Infrastructure.Repository.Permission.Group.UserGroup
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND pg.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT ur.Id ) "));
-
-            if (pageindex > 0 && pagesize > 0)
-            {
-                string limit = " limit {1},{2} ";
-                var data = Db.Database.SqlQuery<Domain.Permission.Group.UserGroup.UserGroup>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
-                return new Pages<IEnumerable<Domain.Permission.Group.UserGroup.UserGroup>>(data, count);
-            }
-            else
-            {
-                var data = Db.Database.SqlQuery<Domain.Permission.Group.UserGroup.UserGroup>(string.Format(sql, field));
-                return new Pages<IEnumerable<Domain.Permission.Group.UserGroup.UserGroup>>(data, count);
-            }
+            return GetPage(sql, field, pageindex, pagesize);
         }
 
         /// <summary>
         /// 根据角色组Id或名称，遍历关联用户组
-        /// </summary>
-        /// <param name="rolegroupid"></param>
-        /// <param name="rolegroupname"></param>
-        /// <param name="parentid"></param>
-        /// <param name="pageindex"></param>
-        /// <param name="pagesize"></param>
+        /// </summary> 
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Group.UserGroup.UserGroup>> GetUserGroupByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string field = @" DISTINCT ug.* ";
-
             string sql = @"SELECT {0} FROM
 	               	UserGroup AS ug
 	                INNER JOIN UserGroupRoleGroupRelation AS rgugr ON rgugr.UserGroupId = ug.Id
@@ -136,19 +98,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.UserGroup
             if (!string.IsNullOrWhiteSpace(parentid))
                 sql += $" AND rg.ParentId='{parentid}'";
 
-            int count = Db.Database.Count(string.Format(sql, " count( DISTINCT ur.Id ) "));
-
-            if (pageindex > 0 && pagesize > 0)
-            {
-                string limit = " limit {1},{2} ";
-                var data = Db.Database.SqlQuery<Domain.Permission.Group.UserGroup.UserGroup>(string.Format(sql + limit, field, pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
-                return new Pages<IEnumerable<Domain.Permission.Group.UserGroup.UserGroup>>(data, count);
-            }
-            else
-            {
-                var data = Db.Database.SqlQuery<Domain.Permission.Group.UserGroup.UserGroup>(string.Format(sql, field));
-                return new Pages<IEnumerable<Domain.Permission.Group.UserGroup.UserGroup>>(data, count);
-            }
+            return GetPage(sql, field, pageindex, pagesize);
         }
     }
 }
