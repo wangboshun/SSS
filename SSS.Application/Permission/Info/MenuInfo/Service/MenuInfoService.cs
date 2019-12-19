@@ -1,5 +1,4 @@
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 
 using FluentValidation;
 
@@ -14,6 +13,7 @@ using SSS.Infrastructure.Repository.Permission.Group.PowerGroup;
 using SSS.Infrastructure.Repository.Permission.Info.MenuInfo;
 using SSS.Infrastructure.Repository.Permission.Relation.PowerGroupMenuRelation;
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Mapper;
 
 using System;
 using System.Collections.Generic;
@@ -105,7 +105,7 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
         public Pages<List<MenuInfoOutputDto>> GetMenuByPowerGroup(PowerGroupInputDto input)
         {
             var data = _menuInfoRepository.GetMenuByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<MenuInfoOutputDto>>(data.items?.AsQueryable().ProjectTo<MenuInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+            return new Pages<List<MenuInfoOutputDto>>(data.items.MapperToOutPut<MenuInfoOutputDto>().ToList(), data.count);
         }
 
         public Pages<List<MenuInfoOutputDto>> GetListMenuInfo(MenuInfoInputDto input)

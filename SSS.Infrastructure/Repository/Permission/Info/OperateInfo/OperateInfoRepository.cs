@@ -76,13 +76,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.OperateInfo
             string field = " DISTINCT o.* ";
 
             string sql = @"SELECT  {0}  FROM
-	            OperateInfo AS o
-	            INNER JOIN PowerGroupMenuRelation AS pgmr ON o.Id = pgmr.MenuId
-	            INNER JOIN PowerGroup AS pg ON pgmr.PowerGroupId = pg.Id 
+	           	OperateInfo AS o
+	            INNER JOIN PowerGroupOperateRelation AS pgor ON o.Id = pgor.OperateId
+	            INNER JOIN PowerGroup AS pg ON pgor.PowerGroupId = pg.Id 
             WHERE
-	            m.IsDelete = 0 
+	            o.IsDelete = 0 
 	            AND pg.IsDelete = 0 
-	            AND pgmr.IsDelete = 0";
+	            AND pgor.IsDelete = 0";
 
             if (!string.IsNullOrWhiteSpace(powergroupid))
                 sql += $" AND pg.Id='{powergroupid}'";

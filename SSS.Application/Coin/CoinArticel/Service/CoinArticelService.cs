@@ -1,5 +1,4 @@
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 
 using FluentValidation;
 
@@ -11,6 +10,7 @@ using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.CoinArticel;
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Mapper;
 
 using System;
 using System.Collections.Generic;
@@ -58,7 +58,7 @@ namespace SSS.Application.Coin.CoinArticel.Service
         public List<CoinArticelOutputDto> GetNews(CoinArticelInputDto input)
         {
             var data = _repository.GetNews(input);
-            return data?.AsQueryable().ProjectTo<CoinArticelOutputDto>(Mapper.ConfigurationProvider).ToList();
+            return data.MapperToOutPut<CoinArticelOutputDto>().ToList();
         }
     }
 }

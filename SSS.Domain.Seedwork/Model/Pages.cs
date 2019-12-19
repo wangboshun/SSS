@@ -1,6 +1,6 @@
 ﻿namespace SSS.Domain.Seedwork.Model
 {
-    public class Pages<ListEntity> where ListEntity : class 
+    public class Pages<ListEntity> where ListEntity : class
     {
         public Pages(ListEntity data, int count)
         {
@@ -11,5 +11,5 @@
         public ListEntity items { set; get; }
 
         public int count { set; get; }
-    } 
+    }
 }

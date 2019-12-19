@@ -1,5 +1,4 @@
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 
 using FluentValidation;
 
@@ -17,6 +16,7 @@ using SSS.Infrastructure.Repository.Permission.Group.RoleGroup;
 using SSS.Infrastructure.Repository.Permission.Group.UserGroup;
 using SSS.Infrastructure.Repository.Permission.Relation.UserGroupRoleGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Mapper;
 
 using System;
 using System.Collections.Generic;
@@ -98,14 +98,14 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
         public Pages<List<UserGroupOutputDto>> GetUserGroupByUser(UserInfoInputDto input)
         {
             var data = _userGroupRepository.GetUserGroupByUser(input.id, input.username, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<UserGroupOutputDto>>(data.items?.AsQueryable().ProjectTo<UserGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+            return new Pages<List<UserGroupOutputDto>>(data.items.MapperToOutPut<UserGroupOutputDto>().ToList(), data.count);
 
         }
 
         public Pages<List<UserGroupOutputDto>> GetUserGroupByPowerGroup(PowerGroupInputDto input)
         {
             var data = _userGroupRepository.GetUserGroupByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<UserGroupOutputDto>>(data.items?.AsQueryable().ProjectTo<UserGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+            return new Pages<List<UserGroupOutputDto>>(data.items.MapperToOutPut<UserGroupOutputDto>().ToList(), data.count);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
         public Pages<List<UserGroupOutputDto>> GetUserGroupByRoleGroup(RoleGroupInputDto input)
         {
             var data = _userGroupRepository.GetUserGroupByRoleGroup(input.id, input.rolegroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<UserGroupOutputDto>>(data.items?.AsQueryable().ProjectTo<UserGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+            return new Pages<List<UserGroupOutputDto>>(data.items.MapperToOutPut<UserGroupOutputDto>().ToList(), data.count);
         }
     }
 }

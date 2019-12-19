@@ -1,5 +1,4 @@
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 
 using FluentValidation;
 
@@ -12,6 +11,7 @@ using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Coin.CoinAnalyse;
 using SSS.Infrastructure.Repository.Coin.CoinInfo;
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Mapper;
 
 using System;
 using System.Collections.Generic;
@@ -58,7 +58,7 @@ namespace SSS.Application.Coin.CoinAnalyse.Service
         {
             int count = 0;
             var data = _repository.GetPageOrderByAsc(input, ref count);
-            var list = data.ProjectTo<CoinAnalyseOutputDto>(Mapper.ConfigurationProvider).ToList();
+            var list = data.MapperToOutPut<CoinAnalyseOutputDto>().ToList();
 
             foreach (var item in list)
                 item.Logo = _coininforepository.Get(x => x.Coin.Equals(item.Coin.Replace("-USDT", "")))?.RomteLogo;

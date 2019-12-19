@@ -14,7 +14,7 @@
     <None Remove="SSS.Api.Seedwork.xml" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc4" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc5" />
     <ProjectReference Include="..\SSS.Application.Seedwork\SSS.Application.Seedwork.csproj" />
     <ProjectReference Include="..\SSS.Application\SSS.Application.csproj" />
     <ProjectReference Include="..\SSS.Domain.Seedwork\SSS.Domain.Seedwork.csproj" />

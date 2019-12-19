@@ -1,5 +1,4 @@
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 
 using FluentValidation;
 
@@ -18,6 +17,7 @@ using SSS.Infrastructure.Repository.Permission.Group.PowerGroup;
 using SSS.Infrastructure.Repository.Permission.Group.RoleGroup;
 using SSS.Infrastructure.Repository.Permission.Relation.RoleGroupPowerGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Mapper;
 
 using System;
 using System.Collections.Generic;
@@ -98,7 +98,7 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
         public Pages<List<RoleGroupOutputDto>> GetRoleGroupByRole(RoleInfoInputDto input)
         {
             var data = _roleGroupRepository.GetRoleGroupByRole(input.id, input.rolename, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<RoleGroupOutputDto>>(data.items?.AsQueryable().ProjectTo<RoleGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+            return new Pages<List<RoleGroupOutputDto>>(data.items.MapperToOutPut<RoleGroupOutputDto>().ToList(), data.count);
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
         public Pages<List<RoleGroupOutputDto>> GetRoleGroupByPowerGroup(PowerGroupInputDto input)
         {
             var data = _roleGroupRepository.GetRoleGroupByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<RoleGroupOutputDto>>(data.items?.AsQueryable().ProjectTo<RoleGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+            return new Pages<List<RoleGroupOutputDto>>(data.items.MapperToOutPut<RoleGroupOutputDto>().ToList(), data.count);
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
         public Pages<List<RoleGroupOutputDto>> GetRoleGroupByUserGroup(UserGroupInputDto input)
         {
             var data = _roleGroupRepository.GetRoleGroupByUserGroup(input.id, input.usergroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<RoleGroupOutputDto>>(data.items?.AsQueryable().ProjectTo<RoleGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+            return new Pages<List<RoleGroupOutputDto>>(data.items.MapperToOutPut<RoleGroupOutputDto>().ToList(), data.count);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
         public Pages<List<RoleGroupOutputDto>> GetRoleGroupByUser(UserInfoInputDto input)
         {
             var data = _roleGroupRepository.GetRoleGroupByUser(input.id, input.username, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<RoleGroupOutputDto>>(data.items?.AsQueryable().ProjectTo<RoleGroupOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+            return new Pages<List<RoleGroupOutputDto>>(data.items.MapperToOutPut<RoleGroupOutputDto>().ToList(), data.count);
         }
     }
 }

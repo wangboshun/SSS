@@ -1,5 +1,4 @@
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 
 using FluentValidation;
 
@@ -17,6 +16,7 @@ using SSS.Infrastructure.Repository.Permission.Info.OperateInfo;
 using SSS.Infrastructure.Repository.Permission.Info.PowerInfo;
 using SSS.Infrastructure.Repository.Permission.Relation.PowerGroupOperateRelation;
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Mapper;
 
 using System;
 using System.Collections.Generic;
@@ -117,7 +117,7 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
         public Pages<List<OperateInfoOutputDto>> GetOperateByPowerGroup(PowerGroupInputDto input)
         {
             var data = _operateInfoRepository.GetOperateByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<OperateInfoOutputDto>>(data.items?.AsQueryable().ProjectTo<OperateInfoOutputDto>(Mapper.ConfigurationProvider).ToList(), data.count);
+            return new Pages<List<OperateInfoOutputDto>>(data.items.MapperToOutPut<OperateInfoOutputDto>().ToList(), data.count);
         }
     }
 }

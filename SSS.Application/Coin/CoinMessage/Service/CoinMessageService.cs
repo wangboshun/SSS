@@ -1,5 +1,4 @@
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 
 using FluentValidation;
 
@@ -12,6 +11,7 @@ using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Coin.CoinInfo;
 using SSS.Infrastructure.Repository.Coin.CoinMessage;
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Mapper;
 
 using System;
 using System.Collections.Generic;
@@ -58,7 +58,7 @@ namespace SSS.Application.Coin.CoinMessage.Service
         {
             int count = 0;
             var data = _coinmessagerepository.GetPageOrderByAsc(input, ref count);
-            var list = data.ProjectTo<CoinMessageOutputDto>(Mapper.ConfigurationProvider).ToList();
+            var list = data.MapperToOutPut<CoinMessageOutputDto>().ToList();
             foreach (var item in list) item.Logo = _coininforepository.Get(x => x.Coin.Equals(item.Coin))?.RomteLogo;
 
             return new Pages<List<CoinMessageOutputDto>>(list, count);
