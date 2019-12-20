@@ -52,6 +52,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.MenuInfo
                     id = item.Id,
                     createtime = item.CreateTime,
                     menuname = item.MenuName,
+                    menuurl = item.MenuUrl,
                     parentid = item.ParentId
                 };
 

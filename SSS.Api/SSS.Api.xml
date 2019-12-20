@@ -372,7 +372,7 @@
             <param name="input">角色组名称</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Group.RoleGroupController.DeletePowerGroup(System.String)">
+        <member name="M:SSS.Api.Controllers.Permission.Group.RoleGroupController.DeleteRoleGroup(System.String)">
             <summary>
             删除角色组
             </summary>
@@ -432,7 +432,7 @@
             <param name="input">用户组名称</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Group.UserGroupController.DeletePowerGroup(System.String)">
+        <member name="M:SSS.Api.Controllers.Permission.Group.UserGroupController.DeleteUserGroup(System.String)">
             <summary>
             删除用户组
             </summary>
@@ -492,7 +492,14 @@
             <param name="input">菜单名称</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Info.MenuInfoController.DeleteUserInfo(System.String)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.MenuInfoController.GetMenuInfo(System.String)">
+            <summary>
+            获取菜单信息
+            </summary>
+            <param name="id">id</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Permission.Info.MenuInfoController.DeleteMenuInfo(System.String)">
             <summary>
             删除菜单信息
             </summary>
@@ -538,7 +545,7 @@
             <param name="input">操作名称</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.Permission.Info.OperateInfoController.DeleteUserInfo(System.String)">
+        <member name="M:SSS.Api.Controllers.Permission.Info.OperateInfoController.DeleteOperateInfo(System.String)">
             <summary>
             删除操作信息
             </summary>

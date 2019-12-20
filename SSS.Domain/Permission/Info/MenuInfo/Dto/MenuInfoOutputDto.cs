@@ -7,6 +7,7 @@ namespace SSS.Domain.Permission.Info.MenuInfo.Dto
 {
     public class MenuInfoOutputDto : OutputDtoBase
     {
+        public string menuurl { set; get; }
         public string menuname { get; set; }
     }
     public class MenuInfoTreeOutputDto
@@ -14,6 +15,7 @@ namespace SSS.Domain.Permission.Info.MenuInfo.Dto
         public string id { get; set; }
 
         public string menuname { get; set; }
+        public string menuurl { set; get; }
 
         public string parentid { get; set; }
 

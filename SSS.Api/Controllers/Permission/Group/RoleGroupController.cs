@@ -64,7 +64,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// <returns></returns> 
         [HttpDelete("{id}")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult DeletePowerGroup(string id)
+        public IActionResult DeleteRoleGroup(string id)
         {
             var result = _service.DeleteRoleGroup(id);
             return DeleteResponse(id, result);

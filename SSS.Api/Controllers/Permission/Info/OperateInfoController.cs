@@ -61,7 +61,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// <returns></returns> 
         [HttpDelete("{id}")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult DeleteUserInfo(string id)
+        public IActionResult DeleteOperateInfo(string id)
         {
             var result = _service.DeleteOperateInfo(id);
             return DeleteResponse(id, result);

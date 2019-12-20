@@ -12,15 +12,18 @@ namespace SSS.Application.Seedwork.Service
         where TOutput : OutputDtoBase
     {
         TOutput Get(string id);
+
         TOutput Get(Expression<Func<TEntity, bool>> predicate);
 
         Pages<List<TOutput>> GetPageBySql(string sql, int pageindex = 0, int pagesize = 10);
 
-        Pages<List<TOutput>> GetPageBySql(string sql, Expression<Func<TEntity, bool>> predicate, int pageindex = 0,
-            int pagesize = 10);
+        Pages<List<TOutput>> GetPageBySql(string sql, Expression<Func<TEntity, bool>> predicate, int pageindex = 0, int pagesize = 10);
 
         Pages<List<TOutput>> GetPage(TInput input);
+
         Pages<List<TOutput>> GetPage(TInput input, Expression<Func<TEntity, bool>> predicate);
+
+        bool Delete(string id);
 
         /// <summary>
         /// 获取父级

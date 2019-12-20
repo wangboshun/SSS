@@ -39,6 +39,11 @@ namespace SSS.Application.Seedwork.Service
             Validator = validator;
         }
 
+        public bool Delete(string id)
+        {
+            return Repository.Remove(id,true);
+        }
+
         public TOutput Get(string id)
         {
             return Mapper.Map<TOutput>(Repository.Get(id));
@@ -98,8 +103,7 @@ namespace SSS.Application.Seedwork.Service
             return new Pages<List<TOutput>>(list, count);
         }
 
-        public Pages<List<TOutput>> GetPageBySql(string sql, Expression<Func<TEntity, bool>> predicate,
-            int pageindex = 0, int pagesize = 10)
+        public Pages<List<TOutput>> GetPageBySql(string sql, Expression<Func<TEntity, bool>> predicate, int pageindex = 0, int pagesize = 10)
         {
             List<TOutput> list;
 

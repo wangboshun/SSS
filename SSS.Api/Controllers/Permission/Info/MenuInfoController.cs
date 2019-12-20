@@ -68,13 +68,26 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
+        /// 获取菜单信息
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <returns></returns> 
+        [HttpGet("{id}")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult GetMenuInfo(string id)
+        {
+            var result = _service.Get(id);
+            return ApiResponse(result);
+        }
+
+        /// <summary>
         /// 删除菜单信息
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
         [HttpDelete("{id}")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult DeleteUserInfo(string id)
+        public IActionResult DeleteMenuInfo(string id)
         {
             var result = _service.DeleteMenuInfo(id);
             return DeleteResponse(id, result);

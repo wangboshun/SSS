@@ -40,6 +40,32 @@ namespace SSS.Api.Controllers.NameSpace
         }
 
         /// <summary>
+        /// 获取数据
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <returns></returns> 
+        [HttpGet("{id}")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult GetTemplate(string id)
+        {
+            var result = _service.Get(id);
+            return ApiResponse(result);
+        }
+
+          /// <summary>
+        /// 删除数据
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <returns></returns> 
+        [HttpDelete("{id}")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult DeleteTemplate(string id)
+        {
+            var result = _service.Delete(id);
+            return DeleteResponse(id, result);
+        }
+
+        /// <summary>
         /// AddTemplate
         /// </summary>
         /// <param name="input">TemplateInputDto</param>
