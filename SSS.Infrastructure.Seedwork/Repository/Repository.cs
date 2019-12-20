@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
+using SSS.Infrastructure.Util.Lambda;
 
 namespace SSS.Infrastructure.Seedwork.Repository
 {
@@ -87,8 +88,11 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// </summary>
         /// <param name="predicate"></param>
         /// <param name="save"></param>
-        public virtual bool DeleteList(Expression<Func<TEntity, bool>> predicate, bool save = false)
+        public virtual bool DeleteList(Expression<Func<TEntity, bool>> predicate, bool save = false, bool have_delete = false)
         {
+            if (!have_delete)
+                predicate = predicate.And(x => x.IsDelete == 0);
+
             var list = DbSet.Where(predicate);
             foreach (TEntity item in list)
             {
@@ -101,13 +105,16 @@ namespace SSS.Infrastructure.Seedwork.Repository
         }
 
         /// <summary>
-        ///     Id查询
+        ///     Id查询 
         /// </summary>
         /// <param name="id">Id</param>
         /// <returns></returns>
-        public virtual TEntity Get(string id)
+        public virtual TEntity Get(string id, bool have_delete = false)
         {
-            return DbSet.Find(id);
+            if (have_delete)
+                return DbSet.Find(id);
+
+            return DbSet.FirstOrDefault(x => x.Id.Equals(id) && x.IsDelete == 0);
         }
 
         /// <summary>
@@ -115,8 +122,11 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// </summary>
         /// <param name="predicate">Lambda表达式</param>
         /// <returns></returns>
-        public virtual TEntity Get(Expression<Func<TEntity, bool>> predicate)
+        public virtual TEntity Get(Expression<Func<TEntity, bool>> predicate, bool have_delete = false)
         {
+            if (!have_delete)
+                predicate = predicate.And(x => x.IsDelete == 0);
+
             return DbSet.FirstOrDefault(predicate);
         }
 
@@ -147,8 +157,11 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// <param name="sql">SQL</param>
         /// <param name="predicate">Lambda表达式</param>
         /// <returns></returns>
-        public virtual IQueryable<TEntity> GetBySql(string sql, Expression<Func<TEntity, bool>> predicate)
+        public virtual IQueryable<TEntity> GetBySql(string sql, Expression<Func<TEntity, bool>> predicate, bool have_delete = false)
         {
+            if (!have_delete)
+                predicate = predicate.And(x => x.IsDelete == 0);
+
             return DbSet.FromSqlRaw(sql).Where(predicate);
         }
 
@@ -176,9 +189,11 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// <param name="pagesize">大小</param>
         /// <param name="count">总数量</param>
         /// <returns></returns>
-        public IQueryable<TEntity> GetBySql(string sql, Expression<Func<TEntity, bool>> predicate, int pageindex, int pagesize,
-            ref int count)
+        public IQueryable<TEntity> GetBySql(string sql, Expression<Func<TEntity, bool>> predicate, int pageindex, int pagesize, ref int count, bool have_delete = false)
         {
+            if (!have_delete)
+                predicate = predicate.And(x => x.IsDelete == 0);
+
             var data = GetBySql(sql, predicate);
             count = data.Count();
             return data.OrderByDescending(x => x.CreateTime).Skip(pagesize * pageindex).Take(pagesize);
@@ -198,8 +213,11 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public virtual IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate)
+        public virtual IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate, bool have_delete = false)
         {
+            if (!have_delete)
+                predicate = predicate.And(x => x.IsDelete == 0);
+
             return DbSet.Where(predicate).OrderByDescending(x => x.CreateTime);
         }
 
@@ -224,8 +242,11 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// <param name="predicate">Lambda表达式</param>
         /// <param name="count">总数量</param>
         /// <returns></returns>
-        public IQueryable<TEntity> GetPage(int pageindex, int pagesize, Expression<Func<TEntity, bool>> predicate, ref int count)
+        public IQueryable<TEntity> GetPage(int pageindex, int pagesize, Expression<Func<TEntity, bool>> predicate, ref int count, bool have_delete = false)
         {
+            if (!have_delete)
+                predicate = predicate.And(x => x.IsDelete == 0);
+
             count = DbSet.Where(predicate).Count();
             return DbSet.OrderByDescending(x => x.CreateTime).Where(predicate).Skip(pagesize * pageindex).Take(pagesize);
         }
@@ -279,7 +300,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// <param name="save">是否保存  默认否</param>
         public virtual bool Remove(string id, bool save = false)
         {
-            var model = Get(x => x.Id.Equals(id) && x.IsDelete == 0);
+            var model = Get(id);
             if (model == null)
             {
                 //_error.Execute("数据不存在或已删除,删除失败！");
@@ -298,8 +319,11 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// </summary>
         /// <param name="predicate">Lambda表达式</param>
         /// <param name="save">是否保存  默认否</param>
-        public virtual bool Remove(Expression<Func<TEntity, bool>> predicate, bool save = false)
+        public virtual bool Remove(Expression<Func<TEntity, bool>> predicate, bool save = false, bool have_delete = false)
         {
+            if (!have_delete)
+                predicate = predicate.And(x => x.IsDelete == 0);
+
             var model = Get(predicate);
             if (model == null)
             {

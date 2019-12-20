@@ -115,5 +115,63 @@ namespace SSS.Application.Seedwork.Service
 
             return new Pages<List<TOutput>>(list, count);
         }
+
+        #region Permission
+
+        /// <summary>
+        /// 获取父级
+        /// </summary>
+        /// <param name="parentid"></param>
+        /// <returns></returns>
+        public bool GetParent(string parentid)
+        {
+            var parent = Repository.Get(parentid);
+            if (parent != null)
+                return true;
+            Error.Execute("父级不存在！");
+            return false;
+        }
+        
+        /// <summary>
+        /// 父级Id赋值
+        /// </summary>
+        /// <returns></returns>
+        public bool AddParentId(string parentid, string input_parentid, out string out_parentid)
+        {
+            out_parentid = "";
+
+            //如果现有ParentId不为空
+            if (!string.IsNullOrWhiteSpace(parentid))
+            {
+                //如果Dto的ParentId不为空
+                if (!string.IsNullOrWhiteSpace(input_parentid))
+                {
+                    //检查父级时候存在
+                    if (!GetParent(input_parentid))
+                        return false;
+
+                    //添加ParentId
+                    out_parentid = input_parentid;
+                }
+                else  //删除现有ParentId
+                    out_parentid = null;
+            }
+            else      //如果现有ParentId为空
+            {
+                //如果Dto的ParentId不为空
+                if (!string.IsNullOrWhiteSpace(input_parentid))
+                {
+                    if (!GetParent(input_parentid))
+                        return false;
+
+                    //添加ParentId
+                    out_parentid = input_parentid;
+                }
+            }
+
+            return true;
+        }
+
+        #endregion 
     }
 }

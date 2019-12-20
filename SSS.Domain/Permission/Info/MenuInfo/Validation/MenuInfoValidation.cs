@@ -24,7 +24,8 @@ namespace SSS.Domain.Permission.Info.MenuInfo.Validation
 
             RuleSet("Update", () =>
             {
-
+                RuleFor(x => x.menuname).NotEmpty().WithMessage("菜单名称不能为空！");
+                RuleFor(x => x.id).NotEmpty().WithMessage("Id不能为空！");
             });
 
             RuleSet("Select", () =>

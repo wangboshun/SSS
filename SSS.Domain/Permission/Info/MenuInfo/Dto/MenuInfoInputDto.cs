@@ -6,6 +6,7 @@ namespace SSS.Domain.Permission.Info.MenuInfo.Dto
     {
         public string parentid { set; get; }
         public string menuname { set; get; }
+        public string menuurl { set; get; }
         public string powergroupid { set; get; }
     }
 }

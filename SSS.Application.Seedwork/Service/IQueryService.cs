@@ -21,5 +21,14 @@ namespace SSS.Application.Seedwork.Service
 
         Pages<List<TOutput>> GetPage(TInput input);
         Pages<List<TOutput>> GetPage(TInput input, Expression<Func<TEntity, bool>> predicate);
+
+        /// <summary>
+        /// 获取父级
+        /// </summary>
+        /// <param name="parentid"></param>
+        /// <returns></returns>
+        bool GetParent(string parentid);
+
+        bool AddParentId(string parentid, string input_parentid, out string out_parentid);
     }
 }

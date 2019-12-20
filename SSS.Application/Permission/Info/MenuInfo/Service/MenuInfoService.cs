@@ -22,8 +22,7 @@ using System.Linq;
 namespace SSS.Application.Permission.Info.MenuInfo.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IMenuInfoService))]
-    public class MenuInfoService :
-        QueryService<Domain.Permission.Info.MenuInfo.MenuInfo, MenuInfoInputDto, MenuInfoOutputDto>, IMenuInfoService
+    public class MenuInfoService : QueryService<Domain.Permission.Info.MenuInfo.MenuInfo, MenuInfoInputDto, MenuInfoOutputDto>, IMenuInfoService
     {
         private readonly IMenuInfoRepository _menuInfoRepository;
         private readonly IPowerGroupRepository _powerGroupRepository;
@@ -51,16 +50,19 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
                 return null;
             }
 
-            var menu = Get(x => x.MenuName.Equals(input.menuname));
+            var menu = _menuInfoRepository.Get(x => x.MenuName.Equals(input.menuname));
             if (menu != null)
             {
                 Error.Execute("菜单名已存在！");
                 return null;
             }
 
+            if (!GetParent(input.parentid))
+                return null;
+
             input.id = Guid.NewGuid().ToString();
-            var model = Mapper.Map<Domain.Permission.Info.MenuInfo.MenuInfo>(input);
-            model.CreateTime = DateTime.Now;
+            menu = Mapper.Map<Domain.Permission.Info.MenuInfo.MenuInfo>(input);
+            menu.CreateTime = DateTime.Now;
 
             if (!string.IsNullOrWhiteSpace(input.powergroupid))
             {
@@ -70,14 +72,88 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
                     {
                         CreateTime = DateTime.Now,
                         Id = Guid.NewGuid().ToString(),
-                        MenuId = model.Id,
+                        MenuId = menu.Id,
                         PowerGroupId = powergroup.Id,
                         IsDelete = 0
                     });
             }
 
-            Repository.Add(model);
-            return Repository.SaveChanges() > 0 ? Mapper.Map<MenuInfoOutputDto>(model) : null;
+            Repository.Add(menu);
+            return Repository.SaveChanges() > 0 ? Mapper.Map<MenuInfoOutputDto>(menu) : null;
+        }
+
+        public bool UpdateMenuInfo(MenuInfoInputDto input)
+        {
+            var result = Validator.Validate(input, ruleSet: "Update");
+            if (!result.IsValid)
+            {
+                Error.Execute(result);
+                return false;
+            }
+
+            var menu = _menuInfoRepository.Get(input.id);
+            if (menu == null)
+            {
+                Error.Execute("菜单不存在！");
+                return false;
+            }
+
+            if (!AddParentId(menu.ParentId, input.parentid, out string parentid))
+                return false;
+
+            menu.MenuName = input.menuname;
+            menu.MenuUrl = input.menuurl;
+            menu.ParentId = parentid;
+
+            var pgmr = _powerGroupMenuRelationRepository.Get(x => x.MenuId.Equals(menu.Id));
+
+            if (!string.IsNullOrWhiteSpace(input.powergroupid))
+            {
+                var powergroup = _powerGroupRepository.Get(input.powergroupid);
+                if (powergroup != null)
+                {
+                    //如果没有映射关系，增加
+                    if (pgmr == null)
+                        _powerGroupMenuRelationRepository.Add(new Domain.Permission.Relation.PowerGroupMenuRelation.PowerGroupMenuRelation
+                        {
+                            CreateTime = DateTime.Now,
+                            Id = Guid.NewGuid().ToString(),
+                            MenuId = menu.Id,
+                            PowerGroupId = powergroup.Id,
+                            IsDelete = 0
+                        });
+                    else
+                    {
+                        //如果不等于现有映射PowerGroupId，更新
+                        if (!pgmr.PowerGroupId.Equals(input.powergroupid))
+                        {
+                            pgmr.IsDelete = 0;
+                            pgmr.UpdateTime = DateTime.Now;
+                            pgmr.PowerGroupId = powergroup.Id;
+                            _powerGroupMenuRelationRepository.Update(pgmr);
+                        }
+                    }
+                }
+                else
+                {
+                    Error.Execute("权限组不存在！");
+                    return false;
+                }
+            }
+            else
+            {
+                //如果映射不为空，更新映射
+                if (pgmr != null)
+                {
+                    pgmr.IsDelete = 1;
+                    pgmr.UpdateTime = DateTime.Now;
+                    _powerGroupMenuRelationRepository.Update(pgmr);
+                }
+            }
+
+            menu.UpdateTime = DateTime.Now;
+            Repository.Update(menu);
+            return Repository.SaveChanges() > 0;
         }
 
         public bool DeleteMenuInfo(string id)

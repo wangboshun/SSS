@@ -11,6 +11,7 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
         MenuInfoOutputDto>
     {
         MenuInfoOutputDto AddMenuInfo(MenuInfoInputDto input);
+        bool UpdateMenuInfo(MenuInfoInputDto input);
         bool DeleteMenuInfo(string id);
         Pages<List<MenuInfoOutputDto>> GetListMenuInfo(MenuInfoInputDto input);
         /// <summary>

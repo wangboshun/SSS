@@ -81,6 +81,19 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
+        /// 修改菜单
+        /// </summary>
+        /// <param name="input">菜单</param>
+        /// <returns></returns> 
+        [HttpPost("update")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult UpdateMenuInfo([FromBody]MenuInfoInputDto input)
+        {
+            var result = _service.UpdateMenuInfo(input);
+            return UpdateResponse(input.id, result);
+        }
+
+        /// <summary>
         /// 根据权限组Id或名称，遍历关联菜单
         /// </summary>
         /// <param name="input">权限组Id或名称</param>

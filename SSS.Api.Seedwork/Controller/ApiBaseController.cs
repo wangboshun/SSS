@@ -84,6 +84,19 @@ namespace SSS.Api.Seedwork.Controller
         }
 
         /// <summary>
+        /// 修改
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        protected IActionResult UpdateResponse(object data, bool status)
+        {
+            if (data != null & status)
+                return ApiResponse(data, true, "修改成功", 200);
+            return ApiResponse(data, false, "修改失败", 402);
+        }
+
+        /// <summary>
         ///分页 
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -129,7 +142,12 @@ namespace SSS.Api.Seedwork.Controller
         protected IActionResult ApiResponse(object data, bool status, string message, int code)
         {
             if (!status)
+            {
+                if (!IsValidOperation())
+                    return BadRequest(new { status = false, data = "", message = Notice.Select(n => n.ErrorMessage), code = 402 });
+
                 return Accepted(new { status, data, message, code });
+            }
 
             if (IsValidOperation())
             {

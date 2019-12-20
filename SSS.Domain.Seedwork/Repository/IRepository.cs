@@ -22,22 +22,22 @@ namespace SSS.Domain.Seedwork.Repository
         bool Add(TEntity obj, bool save = false);
         bool AddList(List<TEntity> list, bool save = false);
         bool UpdateList(List<TEntity> list, bool save = false);
-        bool DeleteList(Expression<Func<TEntity, bool>> predicate, bool save = false);
-        TEntity Get(string id);
-        TEntity Get(Expression<Func<TEntity, bool>> predicate);
+        bool DeleteList(Expression<Func<TEntity, bool>> predicate, bool save = false, bool have_delete = false);
+        TEntity Get(string id, bool have_delete = false);
+        TEntity Get(Expression<Func<TEntity, bool>> predicate, bool have_delete = false);
         IQueryable<TEntity> GetBySql(string sql);
         IQueryable<TEntity> GetBySql(string sql, params DbParameter[] parameter);
         IQueryable<TEntity> GetBySql(string sql, int pageindex, int pagesize, ref int count);
-        IQueryable<TEntity> GetBySql(string sql, Expression<Func<TEntity, bool>> predicate);
-        IQueryable<TEntity> GetBySql(string sql, Expression<Func<TEntity, bool>> predicate, int pageindex, int pagesize, ref int count);
+        IQueryable<TEntity> GetBySql(string sql, Expression<Func<TEntity, bool>> predicate, bool have_delete = false);
+        IQueryable<TEntity> GetBySql(string sql, Expression<Func<TEntity, bool>> predicate, int pageindex, int pagesize, ref int count, bool have_delete = false);
         IQueryable<TEntity> GetAll();
-        IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate);
+        IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate, bool have_delete = false);
         IQueryable<TEntity> GetPage(int pageindex, int pagesize, ref int count);
-        IQueryable<TEntity> GetPage(int pageindex, int pagesize, Expression<Func<TEntity, bool>> predicate, ref int count);
+        IQueryable<TEntity> GetPage(int pageindex, int pagesize, Expression<Func<TEntity, bool>> predicate, ref int count, bool have_delete = false);
         Pages<IEnumerable<TEntity>> GetPage(string sql, string field, int pageindex, int pagesize);
         bool Update(TEntity obj, bool save = false);
         bool Remove(string id, bool save = false);
-        bool Remove(Expression<Func<TEntity, bool>> predicate, bool save = false);
+        bool Remove(Expression<Func<TEntity, bool>> predicate, bool save = false, bool have_delete = false);
         int SaveChanges();
     }
 }

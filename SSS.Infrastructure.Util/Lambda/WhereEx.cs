@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace SSS.Infrastructure.Util.Lambda
 {
-    public class WhereExtention
+    public class WhereEx
     {
         public string Key { get; set; } //过滤的关键字  
         public string Value { get; set; } //过滤的值  
@@ -15,7 +15,7 @@ namespace SSS.Infrastructure.Util.Lambda
 
     public static class DynamicLinq
     {
-        public static IQueryable<T> Where<T>(this IQueryable<T> query, List<WhereExtention> filters)
+        public static IQueryable<T> Where<T>(this IQueryable<T> query, List<WhereEx> filters)
         {
             var param = DynamicLinq.CreateLambdaParam<T>("c");
             Expression body = Expression.Constant(true); //初始默认一个true  
@@ -38,7 +38,7 @@ namespace SSS.Infrastructure.Util.Lambda
         /// <summary>  
         /// 创建linq表达示的body部分,即c=>c.xxx==xx 中的c.xxx==xx  
         /// </summary>  
-        public static Expression GenerateBody<T>(this ParameterExpression param, WhereExtention filterObj)
+        public static Expression GenerateBody<T>(this ParameterExpression param, WhereEx filterObj)
         {
             PropertyInfo property = typeof(T).GetProperty(filterObj.Key);
 
