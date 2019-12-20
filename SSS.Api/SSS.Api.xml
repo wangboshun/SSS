@@ -779,11 +779,12 @@
             代码生成	
             </summary>	
         </member>
-        <member name="M:SSS.Api.Controllers.System.CodeController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
-            <summary>	
-            构造	
-            </summary>	
-            <param name="env"></param>	
+        <member name="M:SSS.Api.Controllers.System.CodeController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,SSS.Application.System.IGeneratorCodeService)">
+            <summary>
+            CodeController
+            </summary>
+            <param name="env"></param>
+            <param name="generatorCodeService"></param>
         </member>
         <member name="M:SSS.Api.Controllers.System.CodeController.Index">
             <summary>	
@@ -796,47 +797,6 @@
             生成操作	
             </summary>	
             <returns></returns>	
-        </member>
-        <member name="M:SSS.Api.Controllers.System.CodeController.AppDomainContext(System.Collections.Generic.List{SSS.Api.Controllers.System.Field})">
-            <summary>	
-            填充类字段信息	
-            </summary>	  
-            <param name="fields"></param>	
-        </member>
-        <member name="M:SSS.Api.Controllers.System.CodeController.Generator_Domain">
-            <summary>	
-                1	
-            </summary>	 
-        </member>
-        <member name="M:SSS.Api.Controllers.System.CodeController.Generator_Infrastructure">
-            <summary>	
-                2	
-            </summary>	 
-        </member>
-        <member name="M:SSS.Api.Controllers.System.CodeController.Generator_Application">
-            <summary>	
-                3	
-            </summary>	 
-        </member>
-        <member name="M:SSS.Api.Controllers.System.CodeController.Generator_Api">
-            <summary>	
-                4	
-            </summary>	 
-        </member>
-        <member name="T:SSS.Api.Controllers.System.Field">
-            <summary>	
-            Field	
-            </summary>	
-        </member>
-        <member name="P:SSS.Api.Controllers.System.Field.field_name">
-            <summary>	
-            field_name	
-            </summary>	
-        </member>
-        <member name="P:SSS.Api.Controllers.System.Field.field_type">
-            <summary>	
-            field_type	
-            </summary>	
         </member>
         <member name="T:SSS.Api.Program">
             <summary>
