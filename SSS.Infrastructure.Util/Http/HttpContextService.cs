@@ -11,7 +11,7 @@ namespace SSS.Infrastructure.Util.Http
 
         public static IServiceProvider ServiceProvider;
 
-        private static IHostingEnvironment _hostingEnvironment;
+        private static IWebHostEnvironment _hostingEnvironment;
 
         public static HttpContext Current
         {
@@ -23,7 +23,7 @@ namespace SSS.Infrastructure.Util.Http
             _accessor = accessor;
         }
 
-        public static void Configure(IHttpContextAccessor accessor, IHostingEnvironment hostingEnvironment)
+        public static void Configure(IHttpContextAccessor accessor, IWebHostEnvironment hostingEnvironment)
         {
             _accessor = accessor;
             _hostingEnvironment = hostingEnvironment;

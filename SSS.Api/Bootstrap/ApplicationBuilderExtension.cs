@@ -26,7 +26,7 @@ namespace SSS.Api.Bootstrap
             //获取HtppContext实例
             var httpContextAccessor = app.ApplicationServices.GetRequiredService<IHttpContextAccessor>();
             //获取IHostingEnvironment实例
-            var hostingEnvironment = app.ApplicationServices.GetRequiredService<IHostingEnvironment>();
+            var hostingEnvironment = app.ApplicationServices.GetRequiredService<IWebHostEnvironment>();
             //注入实例
             HttpContextService.Configure(httpContextAccessor, hostingEnvironment);
             return app;

@@ -73,12 +73,10 @@ namespace SSS.Infrastructure.Util.IO
 
                 return encoding.GetString(buff);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
-            }
-
-            return string.Empty;
+                throw new ApplicationException();
+            } 
         }
 
         /// <summary>
@@ -149,11 +147,10 @@ namespace SSS.Infrastructure.Util.IO
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-            }
-
-            return false;
+                throw new ApplicationException();
+            } 
         }
 
         /// <summary>
@@ -174,8 +171,9 @@ namespace SSS.Infrastructure.Util.IO
                         }
                     }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
+                throw new ApplicationException();
             }
 
             return false;

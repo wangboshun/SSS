@@ -6,10 +6,10 @@ namespace SSS.Api.Seedwork.Filter
 {
     public class MvcFilter : IActionFilter, IResultFilter, IAuthorizationFilter, IExceptionFilter
     {
-        private readonly IHostingEnvironment _env;
+        private readonly IWebHostEnvironment _env;
         private readonly ILogger _logger;
 
-        public MvcFilter(ILogger<MvcFilter> logger, IHostingEnvironment env)
+        public MvcFilter(ILogger<MvcFilter> logger, IWebHostEnvironment env)
         {
             _logger = logger;
             _env = env;
