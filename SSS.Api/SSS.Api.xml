@@ -223,6 +223,45 @@
             <param name="input">CoinInfoInputDto</param>
             <returns></returns> 
         </member>
+        <member name="T:SSS.Api.Controllers.Coin.CoinKLineDataController">
+            <summary>
+            CoinKLineDataController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Coin.CoinKLineDataController.#ctor(SSS.Application.Coin.CoinKLineData.Service.ICoinKLineDataService)">
+            <summary>
+            CoinKLineDataController
+            </summary>
+            <param name="service">ICoinKLineDataService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.Coin.CoinKLineDataController.GetList(SSS.Domain.Coin.CoinKLineData.Dto.CoinKLineDataInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Coin.CoinKLineDataController.GetCoinKLineData(System.String)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="id">id</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Coin.CoinKLineDataController.DeleteCoinKLineData(System.String)">
+            <summary>
+            删除数据
+            </summary>
+            <param name="id">id</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Coin.CoinKLineDataController.AddCoinKLineData(SSS.Domain.Coin.CoinKLineData.Dto.CoinKLineDataInputDto)">
+            <summary>
+            AddCoinKLineData
+            </summary>
+            <param name="input">CoinKLineDataInputDto</param>
+            <returns></returns> 
+        </member>
         <member name="T:SSS.Api.Controllers.Coin.CoinMessageController">
             <summary>
             CoinMessageController

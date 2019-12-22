@@ -15,6 +15,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using SSS.Infrastructure.Util.DateTime;
 
 namespace SSS.Application.Coin.CoinAnalyse.Job
 {
@@ -108,13 +110,12 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
 
                 foreach (var coin in allcoin)
                 {
-                    var kline = _huobi.GetKLine(coin.base_currency, coin.quote_currency, type.ToString().Split('_')[1],
-                        6);
+                    var kline = _huobi.GetKLine(coin.base_currency, coin.quote_currency, type.ToString().Split('_')[1], 6);
 
                     if (kline == null || kline.Count < 1)
                         continue;
 
-                    if (kline.First().close / kline.Last().close > 1.1)
+                    if (kline.First().Close / kline.Last().Close > 1.1)
                     {
                         Domain.Coin.CoinAnalyse.CoinAnalyse model = new Domain.Coin.CoinAnalyse.CoinAnalyse
                         {
@@ -247,12 +248,7 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
 
                 foreach (var coin in allcoin)
                 {
-                    var kline = _huobi.GetKLine(coin.base_currency, coin.quote_currency, type.ToString().Split('_')[1],
-                        2000);
-
-                    if (kline == null || kline.Count < 1)
-                        continue;
-
+                    var kline = _huobi.GetKLine(coin.base_currency, coin.quote_currency, type.ToString().Split('_')[1], 2000);
                     var data5 = _indicator.SMA(kline, 5);
                     var data10 = _indicator.SMA(kline, 10);
                     var data30 = _indicator.SMA(kline, 30);
@@ -271,10 +267,10 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
                             CreateTime = DateTime.Now,
                             Platform = "火币",
                             IsDelete = 0,
-                            Close = kline.First().close,
-                            Open = kline.First().open,
-                            High = kline.First().high,
-                            Low = kline.First().low,
+                            Close = kline.First().Close,
+                            Open = kline.First().Open,
+                            High = kline.First().High,
+                            Low = kline.First().Low,
                             IndicatorType = 1
                         };
 
@@ -282,22 +278,19 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
                         {
                             if (data5.Count > 0 && data60.Count > 0 && data5.First().Item2 > data60.First().Item2)
                             {
-                                Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() +
-                                                  $"【{typename}】突破60K压力位,金叉");
+                                Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() + $"【{typename}】突破60K压力位,金叉");
                                 model.Desc = $"【{typename}级别,均线突破60K压力位】";
                             }
                             else
                             {
-                                Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() +
-                                                  $"【{typename}】突破30K压力位,金叉");
+                                Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() + $"【{typename}】突破30K压力位,金叉");
                                 model.Desc = $"【{typename}级别,均线突破30K压力位】";
                             }
                         }
                         else
                         {
                             model.Desc = $"【{typename}级别,均线突破10K压力位】";
-                            Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() +
-                                              $"【{typename}】突破10K压力位,金叉");
+                            Console.WriteLine(coin.base_currency.ToUpper() + "—" + coin.quote_currency.ToUpper() + $"【{typename}】突破10K压力位,金叉");
                         }
 
                         model.HighRange = model.High / model.Low - 1;
@@ -360,10 +353,10 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
                         CreateTime = DateTime.Now,
                         Platform = "火币",
                         IsDelete = 0,
-                        Close = kline.First().close,
-                        Open = kline.First().open,
-                        High = kline.First().high,
-                        Low = kline.First().low,
+                        Close = kline.First().Close,
+                        Open = kline.First().Open,
+                        High = kline.First().High,
+                        Low = kline.First().Low,
                         IndicatorType = 2,
                         Desc = $"【{typename}级别,MACD金叉】"
                     };
@@ -445,10 +438,10 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
                         CreateTime = DateTime.Now,
                         Platform = "火币",
                         IsDelete = 0,
-                        Close = kline.First().close,
-                        Open = kline.First().open,
-                        High = kline.First().high,
-                        Low = kline.First().low,
+                        Close = kline.First().Close,
+                        Open = kline.First().Open,
+                        High = kline.First().High,
+                        Low = kline.First().Low,
                         IndicatorType = 3,
                         Desc = desc
                     };

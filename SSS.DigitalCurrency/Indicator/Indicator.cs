@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 
 using SSS.DigitalCurrency.Domain;
+using SSS.Domain.Coin.CoinKLineData;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
@@ -26,7 +27,7 @@ namespace SSS.DigitalCurrency.Indicator
         /// <param name="data">k线</param>
         /// <param name="length">周期</param>
         /// <returns>时间，值，长度</returns>
-        public List<Tuple<DateTime, double>> SMA(List<KLine> data, int length)
+        public List<Tuple<DateTime, double>> SMA(List<CoinKLineData> data, int length)
         {
             List<Tuple<DateTime, double>> result = new List<Tuple<DateTime, double>>();
 
@@ -35,7 +36,7 @@ namespace SSS.DigitalCurrency.Indicator
                 if (data.Skip(i).Take(length).Count() < length)
                     return result;
 
-                result.Add(new Tuple<DateTime, double>(data[i].time, data.Skip(i).Take(length).Sum(x => x.close) / length));
+                result.Add(new Tuple<DateTime, double>(data[i].Datatime, data.Skip(i).Take(length).Sum(x => x.Close) / length));
             }
 
             return result;
@@ -47,7 +48,7 @@ namespace SSS.DigitalCurrency.Indicator
         /// <param name="data">k线</param>
         /// <param name="length">周期</param>
         /// <returns></returns>
-        public List<Tuple<DateTime, double>> EMA(List<KLine> data, int length)
+        public List<Tuple<DateTime, double>> EMA(List<CoinKLineData> data, int length)
         {
             List<Tuple<DateTime, double>> result = new List<Tuple<DateTime, double>>();
             try
@@ -55,16 +56,16 @@ namespace SSS.DigitalCurrency.Indicator
                 if (data.Count < length)
                     return result;
 
-                data = data.OrderBy(x => x.time).ToList();
+                data = data.OrderBy(x => x.Datatime).ToList();
 
-                double old_ema = data[length - 1].close;
+                double old_ema = data[length - 1].Close;
 
                 for (int i = length; i < data.Count; i++)
                 {
-                    var ema = EmaCale(data[i].close, old_ema, length);
+                    var ema = EmaCale(data[i].Close, old_ema, length);
                     old_ema = ema;
 
-                    result.Add(new Tuple<DateTime, double>(data[i].time, old_ema));
+                    result.Add(new Tuple<DateTime, double>(data[i].Datatime, old_ema));
                 }
 
                 result.Reverse();
@@ -101,7 +102,7 @@ namespace SSS.DigitalCurrency.Indicator
         /// DIF=EMA(12)-EMA(26)
         /// DEA=(2/(N+1))*DIF+(N-1)/(N+1)*DEA`  N 默认为9
         /// MACD=2*(DIF-DEA)
-        public List<Tuple<DateTime, double, double, double>> MACD(List<KLine> data, int long_ = 26, int short_ = 12,
+        public List<Tuple<DateTime, double, double, double>> MACD(List<CoinKLineData> data, int long_ = 26, int short_ = 12,
             int day = 9)
         {
             List<Tuple<DateTime, double, double, double>> result = new List<Tuple<DateTime, double, double, double>>();
@@ -110,14 +111,14 @@ namespace SSS.DigitalCurrency.Indicator
                 if (data.Count < long_)
                     return result;
 
-                data = data.OrderBy(x => x.time).ToList();
+                data = data.OrderBy(x => x.Datatime).ToList();
 
-                double old_dea = 0, old_ema_long = data[long_ - 1].close, old_ema_short = data[long_ - 1].close;
+                double old_dea = 0, old_ema_long = data[long_ - 1].Close, old_ema_short = data[long_ - 1].Close;
 
                 for (int i = long_; i < data.Count; i++)
                 {
-                    var ema_long = EmaCale(data[i].close, old_ema_long, long_);
-                    var ema_short = EmaCale(data[i].close, old_ema_short, short_);
+                    var ema_long = EmaCale(data[i].Close, old_ema_long, long_);
+                    var ema_short = EmaCale(data[i].Close, old_ema_short, short_);
 
                     var dif = ema_short - ema_long;
                     var dea = (2.0 / (day + 1.0)) * dif + ((day - 1.0) / (day + 1.0)) * old_dea;
@@ -125,7 +126,7 @@ namespace SSS.DigitalCurrency.Indicator
                     old_ema_short = ema_short;
                     old_dea = dea;
                     var macd = 2 * (dif - dea);
-                    result.Add(new Tuple<DateTime, double, double, double>(data[i].time, dif, dea, macd));
+                    result.Add(new Tuple<DateTime, double, double, double>(data[i].Datatime, dif, dea, macd));
                 }
 
                 result.Reverse();
@@ -146,7 +147,7 @@ namespace SSS.DigitalCurrency.Indicator
         /// <param name="m1">周期M1</param>
         /// <param name="m2">周期M2</param>
         /// <returns></returns>
-        public List<Tuple<DateTime, double, double, double>> KDJ(List<KLine> data, int n = 9, int m1 = 3, int m2 = 3)
+        public List<Tuple<DateTime, double, double, double>> KDJ(List<CoinKLineData> data, int n = 9, int m1 = 3, int m2 = 3)
         {
             List<Tuple<DateTime, double, double, double>> result = new List<Tuple<DateTime, double, double, double>>();
             try
@@ -154,15 +155,15 @@ namespace SSS.DigitalCurrency.Indicator
                 if (data.Count < n)
                     return result;
 
-                data = data.OrderBy(x => x.time).ToList();
+                data = data.OrderBy(x => x.Datatime).ToList();
                 double old_k = 50, old_d = 50;
 
                 for (int i = n - 1; i < data.Count; i++)
                 {
-                    double low = data.Skip(i - n + 1).Take(n).Min(x => x.low);
-                    double high = data.Skip(i - n + 1).Take(n).Max(x => x.high);
+                    double low = data.Skip(i - n + 1).Take(n).Min(x => x.Low);
+                    double high = data.Skip(i - n + 1).Take(n).Max(x => x.High);
 
-                    var rsv = (data[i].close - low) / (high - low) * 100;
+                    var rsv = (data[i].Close - low) / (high - low) * 100;
 
                     var k = (2.0 / 3.0) * old_k + (1.0 / 3.0) * rsv;
                     var d = (2.0 / 3.0) * old_d + (1.0 / 3.0) * k;
@@ -170,7 +171,7 @@ namespace SSS.DigitalCurrency.Indicator
 
                     old_d = d;
                     old_k = k;
-                    result.Add(new Tuple<DateTime, double, double, double>(data[i].time, k, d, j));
+                    result.Add(new Tuple<DateTime, double, double, double>(data[i].Datatime, k, d, j));
                 }
 
                 result.Reverse();

@@ -27,6 +27,7 @@ using SSS.Domain.Permission.Relation.UserGroupRoleGroupRelation;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
+using SSS.Domain.Coin.CoinKLineData;
 
 namespace SSS.Infrastructure.Seedwork.DbContext
 {
@@ -45,17 +46,14 @@ namespace SSS.Infrastructure.Seedwork.DbContext
         #region Coin
 
         public DbSet<CoinArticel> CoinArticel { get; set; }
-
         public DbSet<CoinAnalyse> CoinAnalyse { get; set; }
-
         public DbSet<CoinInfo> CoinInfo { get; set; }
-
         public DbSet<CoinMessage> CoinMessage { get; set; }
-
         public DbSet<CoinTrade> CoinTrade { set; get; }
 
-        #endregion
+        public DbSet<CoinKLineData> CoinKLineData { set; get; }
 
+        #endregion
 
         #region Permission
 
@@ -66,8 +64,6 @@ namespace SSS.Infrastructure.Seedwork.DbContext
         public DbSet<OperateInfo> OperateInfo { get; set; }
         public DbSet<PowerInfo> PowerInfo { get; set; }
 
-
-
         public DbSet<PowerGroupOperateRelation> PowerGroupOperateRelation { get; set; }
         public DbSet<PowerGroupMenuRelation> PowerGroupMenuRelation { get; set; }
         public DbSet<UserGroupRelation> UserGroupRelation { get; set; }
@@ -75,8 +71,6 @@ namespace SSS.Infrastructure.Seedwork.DbContext
         public DbSet<PowerGroupRelation> PowerGroupRelation { set; get; }
         public DbSet<RoleGroupPowerGroupRelation> RoleGroupPowerGroupRelation { set; get; }
         public DbSet<UserGroupRoleGroupRelation> UserGroupRoleGroupRelation { set; get; }
-
-
 
         public DbSet<RoleGroup> RoleGroup { get; set; }
         public DbSet<PowerGroup> PowerGroup { get; set; }
@@ -90,11 +84,8 @@ namespace SSS.Infrastructure.Seedwork.DbContext
                 .SetBasePath(_env.ContentRootPath)
                 .AddJsonFile("appsettings.json")
                 .Build();
-
-
-            optionsBuilder.UseMySql(
-                config.GetConnectionString("MYSQLConnection"),
-                builder =>
+            
+            optionsBuilder.UseMySql(config.GetConnectionString("MYSQLConnection"), builder =>
                 {
                     builder.EnableRetryOnFailure(
                         maxRetryCount: 5,

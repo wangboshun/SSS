@@ -11,15 +11,10 @@ namespace SSS.Infrastructure.Util.DateTime
         /// <returns></returns>
         public static System.DateTime ConvertIntDateTime(double val)
         {
-            //System.DateTime time = System.DateTime.MinValue;
-            //System.DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1));
-            //time = startTime.AddMilliseconds(val);
-            //return time; 
-
-            System.DateTime dateTimeStart = TimeZoneInfo.ConvertTimeToUtc(new System.DateTime(1970, 1, 1));
-            long lTime = long.Parse(val + "0000000");
+            System.DateTime dtStart = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1));
+            long lTime = long.Parse(val.ToString() + "0000000");
             TimeSpan toNow = new TimeSpan(lTime);
-            return dateTimeStart.Add(toNow);
+            return dtStart.Add(toNow);
         }
 
         /// <summary>
@@ -29,10 +24,10 @@ namespace SSS.Infrastructure.Util.DateTime
         /// <returns></returns>
         public static System.DateTime ConvertDateTime(string val)
         {
-            System.DateTime dateTimeStart = TimeZoneInfo.ConvertTimeToUtc(new System.DateTime(1970, 1, 1));
-            long lTime = long.Parse(val + "0000000");
+            System.DateTime dtStart = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1));
+            long lTime = long.Parse(val.ToString() + "0000000");
             TimeSpan toNow = new TimeSpan(lTime);
-            return dateTimeStart.Add(toNow);
+            return dtStart.Add(toNow);
         }
 
         /// <summary>
