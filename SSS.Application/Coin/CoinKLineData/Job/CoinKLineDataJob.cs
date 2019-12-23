@@ -46,17 +46,48 @@ namespace SSS.Application.Coin.CoinKLineData.Job
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(11));
 
             return Task.CompletedTask;
         }
 
         private void DoWork(object state)
         {
-            if (Config.GetSectionValue("JobManager:CoinKLineDataJob").Equals("OFF"))
-                return;
+            lock (_lock)
+            {
+                Stopwatch watch = new Stopwatch();
+                watch.Start();
+                ManualResetEvent e = new ManualResetEvent(false);
+                if (Config.GetSectionValue("JobManager:CoinKLineDataJob").Equals("OFF"))
+                    return;
 
-            AddKLineData();
+                string[] coin_array = { "btc", "eth", "eos", "xrp", "bch" };
+
+                //Thread[] thread = new Thread[coin_array.Length];
+                //for (int i = 0; i < coin_array.Length; i++)
+                //{
+                //    thread[i] = new Thread(new ParameterizedThreadStart(AddKLineData));
+
+                //    thread[i].Start(i);
+                //}
+
+                ManualResetEvent man = new ManualResetEvent(false);
+                Thread[] threads = new Thread[coin_array.Length];
+                int count = threads.Length;
+                for (int i = 0; i < count; ++i)
+                {
+                    threads[i] = new Thread(delegate ()
+                    {
+                        AddKLineData(i);
+                        if (Interlocked.Decrement(ref count) == 0)
+                            e.Set();
+                    });
+                    threads[i].Start();
+                }
+                man.WaitOne();
+                watch.Stop();
+                _logger.LogInformation($"DoWork {watch.ElapsedMilliseconds}");
+            }
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
@@ -69,88 +100,79 @@ namespace SSS.Application.Coin.CoinKLineData.Job
             _timer?.Dispose();
         }
 
-        public void AddKLineData()
+        public void AddKLineData(object index)
         {
-            lock (_lock)
+            try
             {
-                Stopwatch watch = new Stopwatch();
-                watch.Start();
-                try
+                using var scope = _scopeFactory.CreateScope();
+                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+
+                string[] coin_array = { "btc", "eth", "eos", "xrp", "bch" };
+                string coin = coin_array[(int)index];
+
+                foreach (CoinTime time in Enum.GetValues(typeof(CoinTime)))
                 {
-                    using var scope = _scopeFactory.CreateScope();
-                    using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+                    var max = context.CoinKLineData.Where(x => x.Coin.Equals(coin) && x.IsDelete == 0 && x.Timetype == (int)time && x.Platform == (int)Platform.Huobi).OrderByDescending(x => x.Datatime).FirstOrDefault();
+                    int size = 2000;
+                    if (max != null)
+                        size = GetSize(max.Datatime, time);
 
-                    string[] coin_array = { "btc", "eth", "eos", "xrp", "bch" };
+                    string kline = "";
 
-                    foreach (var coin in coin_array)
+                    var retry = Policy.Handle<WebException>().Retry(3, (ex, count, text) =>
                     {
-                        foreach (CoinTime time in Enum.GetValues(typeof(CoinTime)))
-                        {
-                            var max = context.CoinKLineData.Where(x => x.Coin.Equals(coin) && x.IsDelete == 0 && x.Timetype == (int)time && x.Platform == (int)Platform.Huobi).OrderByDescending(x => x.Datatime).FirstOrDefault();
-                            int size = 2000;
-                            if (max != null)
-                                size = GetSize(max.Datatime, time);
+                        _logger.LogError(new EventId(ex.HResult), ex, $"--- GetKLine Exception,进行重试 {count}次---");
+                        Thread.Sleep(100);
+                    });
 
-                            string kline = "";
+                    retry.Execute(() =>
+                    {
+                        kline = _huobi.GetKLine(coin + "usdt", time.ToString().Split('_')[1], size);
+                    });
 
-                            var retry = Policy.Handle<WebException>().Retry(3, (ex, count, text) =>
+                    if (string.IsNullOrWhiteSpace(kline)) continue;
+
+                    JObject jobject = JObject.Parse(kline);
+
+                    var json = jobject?["data"];
+                    if (json == null) continue;
+
+                    List<Domain.Coin.CoinKLineData.CoinKLineData> list = new List<Domain.Coin.CoinKLineData.CoinKLineData>();
+
+                    foreach (var item in json)
+                    {
+                        var data_time = DateTimeConvert.ConvertDateTime(item["id"].ToString());
+
+                        var old_data = context.CoinKLineData.Where(x => x.Coin.Equals(coin) && x.IsDelete == 0 && x.Timetype == (int)time && x.Platform == (int)Platform.Huobi && x.Datatime == data_time);
+
+                        if (old_data.Count() > 0)
+                            context.CoinKLineData.RemoveRange(old_data);
+
+                        Domain.Coin.CoinKLineData.CoinKLineData model =
+                            new Domain.Coin.CoinKLineData.CoinKLineData
                             {
-                                _logger.LogError(new EventId(ex.HResult), ex, $"--- GetKLine Exception,进行重试 {count}次---");
-                                Thread.Sleep(500);
-                            });
-
-                            retry.Execute(() =>
-                            {
-                                kline = _huobi.GetKLine(coin + "usdt", time.ToString().Split('_')[1], size);
-                            });
-
-                            if (string.IsNullOrWhiteSpace(kline)) continue;
-
-                            JObject jobject = JObject.Parse(kline);
-
-                            var json = jobject?["data"];
-                            if (json == null) continue;
-
-                            List<Domain.Coin.CoinKLineData.CoinKLineData> list = new List<Domain.Coin.CoinKLineData.CoinKLineData>();
-
-                            foreach (var item in json)
-                            {
-                                var data_time = DateTimeConvert.ConvertDateTime(item["id"].ToString());
-
-                                var old_data = context.CoinKLineData.Where(x => x.Coin.Equals(coin) && x.IsDelete == 0 && x.Timetype == (int)time && x.Platform == (int)Platform.Huobi && x.Datatime == data_time);
-
-                                if (old_data.Count() > 0)
-                                    context.CoinKLineData.RemoveRange(old_data);
-
-                                Domain.Coin.CoinKLineData.CoinKLineData model =
-                                    new Domain.Coin.CoinKLineData.CoinKLineData
-                                    {
-                                        Id = Guid.NewGuid().ToString(),
-                                        IsDelete = 0,
-                                        Platform = (int) Platform.Huobi,
-                                        Coin = coin,
-                                        Timetype = (int) time,
-                                        Datatime = data_time,
-                                        Open = Convert.ToDouble(item["open"]),
-                                        Close = Convert.ToDouble(item["close"]),
-                                        Low = Convert.ToDouble(item["low"]),
-                                        High = Convert.ToDouble(item["high"]),
-                                        CreateTime = DateTime.Now
-                                    };
-                                list.Add(model);
-                            }
-
-                            context.CoinKLineData.AddRange(list);
-                        }
+                                Id = Guid.NewGuid().ToString(),
+                                IsDelete = 0,
+                                Platform = (int)Platform.Huobi,
+                                Coin = coin,
+                                Timetype = (int)time,
+                                Datatime = data_time,
+                                Open = Convert.ToDouble(item["open"]),
+                                Close = Convert.ToDouble(item["close"]),
+                                Low = Convert.ToDouble(item["low"]),
+                                High = Convert.ToDouble(item["high"]),
+                                CreateTime = DateTime.Now
+                            };
+                        list.Add(model);
                     }
-                    context.SaveChanges();
-                    watch.Stop();
-                    _logger.LogInformation($"AddKLineData RunTime {watch.ElapsedMilliseconds}");
+
+                    context.CoinKLineData.AddRange(list);
                 }
-                catch (Exception ex)
-                {
-                    _logger.LogError(new EventId(ex.HResult), ex, "---AddKLineData Exception---");
-                }
+                context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(new EventId(ex.HResult), ex, "---AddKLineData Exception---");
             }
         }
 
