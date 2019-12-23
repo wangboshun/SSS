@@ -12,6 +12,7 @@ using SSS.Infrastructure.Util.Config;
 using SSS.Infrastructure.Util.Json;
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -70,9 +71,6 @@ namespace SSS.Application.Coin.CoinTrade.Job
         {
             try
             {
-                Stopwatch watch = new Stopwatch();
-                watch.Start();
-
                 using var scope = _scopeFactory.CreateScope();
                 using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
 
@@ -89,11 +87,11 @@ namespace SSS.Application.Coin.CoinTrade.Job
                     }
                 }
 
-                foreach (var item in coin_kline_data)
+                //并行计算  订单操作
+                Parallel.ForEach(coin_kline_data, (item) =>
+                {
                     Trade(item.Key, item.Value);
-
-                watch.Stop();
-                _logger.LogInformation($"Futures RunTime {watch.ElapsedMilliseconds}");
+                });
             }
             catch (Exception ex)
             {

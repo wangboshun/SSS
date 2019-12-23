@@ -20,6 +20,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SSS.Infrastructure.Util.Config;
 
 namespace SSS.Application.Coin.CoinKLineData.Job
 {
@@ -52,6 +53,9 @@ namespace SSS.Application.Coin.CoinKLineData.Job
 
         private void DoWork(object state)
         {
+            if (Config.GetSectionValue("JobManager:CoinKLineDataJob").Equals("OFF"))
+                return;
+
             AddKLineData();
         }
 
@@ -118,18 +122,21 @@ namespace SSS.Application.Coin.CoinKLineData.Job
                                 if (old_data.Count() > 0)
                                     context.CoinKLineData.RemoveRange(old_data);
 
-                                Domain.Coin.CoinKLineData.CoinKLineData model = new Domain.Coin.CoinKLineData.CoinKLineData();
-                                model.Id = Guid.NewGuid().ToString();
-                                model.IsDelete = 0;
-                                model.Platform = (int)Platform.Huobi;
-                                model.Coin = coin;
-                                model.Timetype = (int)time;
-                                model.Datatime = data_time;
-                                model.Open = Convert.ToDouble(item["open"]);
-                                model.Close = Convert.ToDouble(item["close"]);
-                                model.Low = Convert.ToDouble(item["low"]);
-                                model.High = Convert.ToDouble(item["high"]);
-                                model.CreateTime = DateTime.Now;
+                                Domain.Coin.CoinKLineData.CoinKLineData model =
+                                    new Domain.Coin.CoinKLineData.CoinKLineData
+                                    {
+                                        Id = Guid.NewGuid().ToString(),
+                                        IsDelete = 0,
+                                        Platform = (int) Platform.Huobi,
+                                        Coin = coin,
+                                        Timetype = (int) time,
+                                        Datatime = data_time,
+                                        Open = Convert.ToDouble(item["open"]),
+                                        Close = Convert.ToDouble(item["close"]),
+                                        Low = Convert.ToDouble(item["low"]),
+                                        High = Convert.ToDouble(item["high"]),
+                                        CreateTime = DateTime.Now
+                                    };
                                 list.Add(model);
                             }
 
