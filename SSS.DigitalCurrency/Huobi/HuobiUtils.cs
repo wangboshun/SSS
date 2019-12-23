@@ -164,7 +164,7 @@ namespace SSS.DigitalCurrency.Huobi
             {
                 _logger.LogError(new EventId(ex.HResult), ex, $"---GetKLine {DateTime.Now}---");
                 throw;
-            }
+            } 
         }
     }
 }

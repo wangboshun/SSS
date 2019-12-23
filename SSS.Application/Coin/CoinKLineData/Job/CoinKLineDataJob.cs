@@ -31,7 +31,7 @@ namespace SSS.Application.Coin.CoinKLineData.Job
         private readonly Indicator _indicator;
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _scopeFactory;
-
+        private static object _threadlock;
         private static readonly object _lock = new object();
 
         private Timer _timer;
@@ -55,38 +55,27 @@ namespace SSS.Application.Coin.CoinKLineData.Job
         {
             lock (_lock)
             {
-                Stopwatch watch = new Stopwatch();
-                watch.Start();
-                ManualResetEvent e = new ManualResetEvent(false);
                 if (Config.GetSectionValue("JobManager:CoinKLineDataJob").Equals("OFF"))
                     return;
 
                 string[] coin_array = { "btc", "eth", "eos", "xrp", "bch" };
 
-                //Thread[] thread = new Thread[coin_array.Length];
-                //for (int i = 0; i < coin_array.Length; i++)
-                //{
-                //    thread[i] = new Thread(new ParameterizedThreadStart(AddKLineData));
+                Parallel.ForEach(coin_array, AddKLineData);
 
-                //    thread[i].Start(i);
+                //两种处理方式
+                //Thread[] threads = new Thread[coin_array.Length];
+                //_threadlock = new object();
+
+                //for (int i = 0; i < threads.Length - 1; ++i)
+                //{
+                //    threads[i] = new Thread(new ParameterizedThreadStart(AddKLineData));
+                //    threads[i].Start(i);
                 //}
 
-                ManualResetEvent man = new ManualResetEvent(false);
-                Thread[] threads = new Thread[coin_array.Length];
-                int count = threads.Length;
-                for (int i = 0; i < count; ++i)
-                {
-                    threads[i] = new Thread(delegate ()
-                    {
-                        AddKLineData(i);
-                        if (Interlocked.Decrement(ref count) == 0)
-                            e.Set();
-                    });
-                    threads[i].Start();
-                }
-                man.WaitOne();
-                watch.Stop();
-                _logger.LogInformation($"DoWork {watch.ElapsedMilliseconds}");
+                //for (int i = 0; i < threads.Length - 1; i++)
+                //{
+                //    threads[i].Join();
+                //}  
             }
         }
 
@@ -100,15 +89,12 @@ namespace SSS.Application.Coin.CoinKLineData.Job
             _timer?.Dispose();
         }
 
-        public void AddKLineData(object index)
+        public void AddKLineData(string coin)
         {
             try
             {
                 using var scope = _scopeFactory.CreateScope();
                 using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
-
-                string[] coin_array = { "btc", "eth", "eos", "xrp", "bch" };
-                string coin = coin_array[(int)index];
 
                 foreach (CoinTime time in Enum.GetValues(typeof(CoinTime)))
                 {
@@ -174,6 +160,8 @@ namespace SSS.Application.Coin.CoinKLineData.Job
             {
                 _logger.LogError(new EventId(ex.HResult), ex, "---AddKLineData Exception---");
             }
+            //Monitor.Enter(_threadlock);
+            //Monitor.Exit(_threadlock);
         }
 
         private int GetSize(DateTime datatime, CoinTime timetype)
