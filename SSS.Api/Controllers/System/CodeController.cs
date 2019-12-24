@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
+using Quartz;
+
+using SSS.Api.Bootstrap;
 using SSS.Api.Seedwork.Controller;
+using SSS.Application.System;
 
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
-using SSS.Application.System;
 
 namespace SSS.Api.Controllers.System
 {
@@ -22,13 +25,17 @@ namespace SSS.Api.Controllers.System
         private readonly IWebHostEnvironment _env;
         private readonly IGeneratorCodeService _generatorCodeService;
 
+        private readonly ISchedulerFactory _schedulerFactory;
+        private IScheduler _scheduler;
+
         /// <summary>
         /// CodeController
         /// </summary>
         /// <param name="env"></param>
         /// <param name="generatorCodeService"></param>
-        public CodeController(IWebHostEnvironment env, IGeneratorCodeService generatorCodeService)
+        public CodeController(IWebHostEnvironment env, IGeneratorCodeService generatorCodeService, ISchedulerFactory schedulerFactory)
         {
+            this._schedulerFactory = schedulerFactory;
             _env = env;
             current_path = _env.ContentRootPath;
             _generatorCodeService = generatorCodeService;
@@ -41,6 +48,21 @@ namespace SSS.Api.Controllers.System
         [HttpGet("index")]
         public ContentResult Index()
         {
+            //1、通过调度工厂获得调度器
+            _scheduler = _schedulerFactory.GetScheduler().Result;
+            //2、开启调度器
+            _scheduler.Start();
+            //3、创建一个触发器
+            var trigger = TriggerBuilder.Create()
+                .WithSimpleSchedule(x => x.WithIntervalInSeconds(5).RepeatForever())//每两秒执行一次
+                .Build();
+            //4、创建任务
+            var jobDetail = JobBuilder.Create<MyJob>()
+                .WithIdentity("job", "group")
+                .Build();
+            //5、将触发器和任务器绑定到调度器中
+            _scheduler.ScheduleJob(jobDetail, trigger);
+
             string html = "";
             string filepath = RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
                 ? current_path + "//codegenerator.html"

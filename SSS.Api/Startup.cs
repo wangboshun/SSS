@@ -9,6 +9,9 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
+using Quartz;
+using Quartz.Impl;
+
 using Senparc.CO2NET;
 using Senparc.CO2NET.RegisterServices;
 using Senparc.Weixin;
@@ -54,6 +57,8 @@ namespace SSS.Api
         /// <param name="services">IServiceCollection</param>
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
+
             services.AddMvc(options =>
                 {
                     //全局Action Exception Result过滤器

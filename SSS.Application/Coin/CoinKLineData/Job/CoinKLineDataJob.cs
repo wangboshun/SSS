@@ -8,7 +8,6 @@ using Polly;
 
 using SSS.DigitalCurrency.Domain;
 using SSS.DigitalCurrency.Huobi;
-using SSS.DigitalCurrency.Indicator;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.Config;
@@ -28,20 +27,17 @@ namespace SSS.Application.Coin.CoinKLineData.Job
     public class CoinKLineDataJob : IHostedService, IDisposable
     {
         private readonly HuobiUtils _huobi;
-        private readonly Indicator _indicator;
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _scopeFactory;
-        private static object _threadlock;
         private static readonly object _lock = new object();
 
         private Timer _timer;
 
-        public CoinKLineDataJob(ILogger<CoinKLineDataJob> logger, HuobiUtils huobi, IServiceScopeFactory scopeFactory, Indicator indicator)
+        public CoinKLineDataJob(ILogger<CoinKLineDataJob> logger, HuobiUtils huobi, IServiceScopeFactory scopeFactory)
         {
             _logger = logger;
             _scopeFactory = scopeFactory;
             _huobi = huobi;
-            _indicator = indicator;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -62,21 +58,6 @@ namespace SSS.Application.Coin.CoinKLineData.Job
 
                 Parallel.ForEach(coin_array, AddKLineData);
 
-                //两种处理方式
-                //Thread[] threads = new Thread[coin_array.Length];
-                //_threadlock = new object();
-
-                //for (int i = 0; i < threads.Length - 1; ++i)
-                //{
-                //    threads[i] = new Thread(new ParameterizedThreadStart(AddKLineData));
-                //    threads[i].Start(i);
-                //}
-
-                //for (int i = 0; i < threads.Length - 1; i++)
-                //{
-                //    threads[i].Join();
-                //} 
-
                 watch.Stop();
                 _logger.LogDebug($" CoinKLineDataJob  RunTime {watch.ElapsedMilliseconds} ");
             }
@@ -93,7 +74,8 @@ namespace SSS.Application.Coin.CoinKLineData.Job
         }
 
         public void AddKLineData(string coin)
-        {
+        { 
+            return;
             try
             {
                 using var scope = _scopeFactory.CreateScope();
@@ -178,13 +160,13 @@ namespace SSS.Application.Coin.CoinKLineData.Job
                     number = (int)(DateTime.Now - datatime).TotalMinutes;
                     if (number < 5)
                         return 1;
-                    number = number / 5;
+                    number /= 5;
                     break;
                 case CoinTime.Time_15min:
                     number = (int)(DateTime.Now - datatime).TotalMinutes;
                     if (number < 15)
                         return 1;
-                    number = number / 15;
+                    number /= 15;
                     break;
                 case CoinTime.Time_60min:
                     number = (int)(DateTime.Now - datatime).TotalHours;
@@ -193,7 +175,7 @@ namespace SSS.Application.Coin.CoinKLineData.Job
                     number = (int)(DateTime.Now - datatime).TotalHours;
                     if (number < 4)
                         return 1;
-                    number = number / 4;
+                    number /= 4;
                     break;
                 case CoinTime.Time_1day:
                     number = (int)(DateTime.Now - datatime).TotalDays;
