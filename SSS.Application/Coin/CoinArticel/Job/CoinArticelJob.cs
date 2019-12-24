@@ -57,7 +57,7 @@ namespace SSS.Application.Coin.CoinArticel.Job
 
         private void DoWork(object state)
         {
-            if (Config.GetSectionValue("JobManager:CoinArticelJob").Equals("OFF"))
+            if (JsonConfig.GetSectionValue("JobManager:CoinArticelJob").Equals("OFF"))
                 return;
 
             GetNotice();

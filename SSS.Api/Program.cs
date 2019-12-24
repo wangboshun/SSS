@@ -46,8 +46,8 @@ namespace SSS.Api
             {
                 x.Listen(IPAddress.Loopback, 443, listenOptions =>
                 {
-                    var path = Directory.GetCurrentDirectory() + "\\File\\cert\\" + Config.GetSectionValue("Cert:Path");
-                    listenOptions.UseHttps(path, Config.GetSectionValue("Cert:PassWord"));
+                    var path = Directory.GetCurrentDirectory() + "\\File\\cert\\" + JsonConfig.GetSectionValue("Cert:Path");
+                    listenOptions.UseHttps(path, JsonConfig.GetSectionValue("Cert:PassWord"));
                 });
             };
         }

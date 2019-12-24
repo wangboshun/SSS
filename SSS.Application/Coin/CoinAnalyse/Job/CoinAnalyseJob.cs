@@ -75,7 +75,7 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
 
         private void DoWorkForFast(object state)
         {
-            if (Config.GetSectionValue("JobManager:CoinAnalyseJob").Equals("OFF"))
+            if (JsonConfig.GetSectionValue("JobManager:CoinAnalyseJob").Equals("OFF"))
                 return;
 
             _logger.LogInformation("---爆拉分析---");
@@ -85,7 +85,7 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
 
         private void DoWork(object state)
         {
-            if (Config.GetSectionValue("JobManager:CoinAnalyseJob").Equals("OFF"))
+            if (JsonConfig.GetSectionValue("JobManager:CoinAnalyseJob").Equals("OFF"))
                 return;
 
             FastFlag = 0;

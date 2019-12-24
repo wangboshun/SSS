@@ -58,7 +58,7 @@ namespace SSS.Application.Coin.CoinInfo.Job
 
         private void DoWork(object state)
         {
-            if (Config.GetSectionValue("JobManager:CoinInfoJob").Equals("OFF"))
+            if (JsonConfig.GetSectionValue("JobManager:CoinInfoJob").Equals("OFF"))
                 return;
 
             GetCoinInfo();

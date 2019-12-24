@@ -5,11 +5,11 @@ using System.IO;
 
 namespace SSS.Infrastructure.Util.Config
 {
-    public static class Config
+    public static class JsonConfig
     {
         private static readonly IConfiguration _configuration;
 
-        static Config()
+        static JsonConfig()
         {
             //在当前目录或者根目录中寻找appsettings.json文件
             var fileName = "appsettings.json";

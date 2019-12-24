@@ -11,6 +11,7 @@ using SSS.DigitalCurrency.Huobi;
 using SSS.DigitalCurrency.Indicator;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Config;
 using SSS.Infrastructure.Util.DateTime;
 
 using System;
@@ -20,7 +21,6 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using SSS.Infrastructure.Util.Config;
 
 namespace SSS.Application.Coin.CoinKLineData.Job
 {
@@ -46,7 +46,7 @@ namespace SSS.Application.Coin.CoinKLineData.Job
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(11));
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
 
             return Task.CompletedTask;
         }
@@ -55,10 +55,10 @@ namespace SSS.Application.Coin.CoinKLineData.Job
         {
             lock (_lock)
             {
-                if (Config.GetSectionValue("JobManager:CoinKLineDataJob").Equals("OFF"))
-                    return;
+                Stopwatch watch = new Stopwatch();
+                watch.Start();
 
-                string[] coin_array = { "btc", "eth", "eos", "xrp", "bch" };
+                string[] coin_array = JsonConfig.GetSectionValue("TradeConfig:Coin").Split(',');
 
                 Parallel.ForEach(coin_array, AddKLineData);
 
@@ -75,7 +75,10 @@ namespace SSS.Application.Coin.CoinKLineData.Job
                 //for (int i = 0; i < threads.Length - 1; i++)
                 //{
                 //    threads[i].Join();
-                //}  
+                //} 
+
+                watch.Stop();
+                _logger.LogDebug($" CoinKLineDataJob  RunTime {watch.ElapsedMilliseconds} ");
             }
         }
 
@@ -95,6 +98,7 @@ namespace SSS.Application.Coin.CoinKLineData.Job
             {
                 using var scope = _scopeFactory.CreateScope();
                 using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+                List<Domain.Coin.CoinKLineData.CoinKLineData> old_list = new List<Domain.Coin.CoinKLineData.CoinKLineData>();
 
                 foreach (CoinTime time in Enum.GetValues(typeof(CoinTime)))
                 {
@@ -132,36 +136,34 @@ namespace SSS.Application.Coin.CoinKLineData.Job
                         var old_data = context.CoinKLineData.Where(x => x.Coin.Equals(coin) && x.IsDelete == 0 && x.Timetype == (int)time && x.Platform == (int)Platform.Huobi && x.Datatime == data_time);
 
                         if (old_data.Count() > 0)
-                            context.CoinKLineData.RemoveRange(old_data);
+                            old_list.AddRange(old_data);
 
-                        Domain.Coin.CoinKLineData.CoinKLineData model =
-                            new Domain.Coin.CoinKLineData.CoinKLineData
-                            {
-                                Id = Guid.NewGuid().ToString(),
-                                IsDelete = 0,
-                                Platform = (int)Platform.Huobi,
-                                Coin = coin,
-                                Timetype = (int)time,
-                                Datatime = data_time,
-                                Open = Convert.ToDouble(item["open"]),
-                                Close = Convert.ToDouble(item["close"]),
-                                Low = Convert.ToDouble(item["low"]),
-                                High = Convert.ToDouble(item["high"]),
-                                CreateTime = DateTime.Now
-                            };
+                        Domain.Coin.CoinKLineData.CoinKLineData model = new Domain.Coin.CoinKLineData.CoinKLineData
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            IsDelete = 0,
+                            Platform = (int)Platform.Huobi,
+                            Coin = coin,
+                            Timetype = (int)time,
+                            Datatime = data_time,
+                            Open = Convert.ToDouble(item["open"]),
+                            Close = Convert.ToDouble(item["close"]),
+                            Low = Convert.ToDouble(item["low"]),
+                            High = Convert.ToDouble(item["high"]),
+                            CreateTime = DateTime.Now
+                        };
                         list.Add(model);
                     }
 
                     context.CoinKLineData.AddRange(list);
                 }
+                context.CoinKLineData.RemoveRange(old_list);
                 context.SaveChanges();
             }
             catch (Exception ex)
             {
                 _logger.LogError(new EventId(ex.HResult), ex, "---AddKLineData Exception---");
             }
-            //Monitor.Enter(_threadlock);
-            //Monitor.Exit(_threadlock);
         }
 
         private int GetSize(DateTime datatime, CoinTime timetype)

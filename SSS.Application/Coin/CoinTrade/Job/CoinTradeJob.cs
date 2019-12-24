@@ -12,7 +12,6 @@ using SSS.Infrastructure.Util.Config;
 using SSS.Infrastructure.Util.Json;
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -28,6 +27,7 @@ namespace SSS.Application.Coin.CoinTrade.Job
         private readonly Indicator _indicator;
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _scopeFactory;
+        private static readonly object _lock = new object();
 
         private Timer _timer;
 
@@ -58,10 +58,17 @@ namespace SSS.Application.Coin.CoinTrade.Job
 
         private void DoWork(object state)
         {
-            if (Config.GetSectionValue("JobManager:CoinTradeJob").Equals("OFF"))
-                return;
+            lock (_lock)
+            {
+                Stopwatch watch = new Stopwatch();
+                watch.Start();
+                if (JsonConfig.GetSectionValue("JobManager:CoinTradeJob").Equals("OFF"))
+                    return;
 
-            Futures();
+                Futures();
+                watch.Stop();
+                _logger.LogDebug($" CoinTradeJob  RunTime {watch.ElapsedMilliseconds} ");
+            }
         }
 
         /// <summary>
@@ -76,9 +83,9 @@ namespace SSS.Application.Coin.CoinTrade.Job
 
                 Dictionary<string, List<Domain.Coin.CoinKLineData.CoinKLineData>> coin_kline_data = new Dictionary<string, List<Domain.Coin.CoinKLineData.CoinKLineData>>();
 
-                string[] futures_coin = { "btc", "eth", "eos", "xrp", "bch" };
+                string[] coin_array = JsonConfig.GetSectionValue("TradeConfig:Coin").Split(',');
 
-                foreach (var coin in futures_coin)
+                foreach (var coin in coin_array)
                 {
                     foreach (CoinTime time in Enum.GetValues(typeof(CoinTime)))
                     {

@@ -158,7 +158,7 @@ namespace SSS.DigitalCurrency.Huobi
                 WebClient http = new WebClient();
 
                 //return http.DownloadString($"https://api.huobi.pro/market/history/kline?period={time}&size={size}&symbol={coin}");
-                return http.DownloadString($"{Config.GetSectionValue("TradeApi:Huobi")}/market/history/kline?period={time}&size={size}&symbol={coin}");
+                return http.DownloadString($"{JsonConfig.GetSectionValue("TradeConfig:Api:Huobi")}/market/history/kline?period={time}&size={size}&symbol={coin}");
             }
             catch (WebException ex)
             {

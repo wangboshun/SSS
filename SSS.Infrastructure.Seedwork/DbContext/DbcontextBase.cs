@@ -28,6 +28,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 using System;
 using SSS.Domain.Coin.CoinKLineData;
+using SSS.Infrastructure.Util.Config;
 
 namespace SSS.Infrastructure.Seedwork.DbContext
 {
@@ -84,14 +85,19 @@ namespace SSS.Infrastructure.Seedwork.DbContext
                 .SetBasePath(_env.ContentRootPath)
                 .AddJsonFile("appsettings.json")
                 .Build();
-            
-            optionsBuilder.UseMySql(config.GetConnectionString("MYSQLConnection"), builder =>
-                {
-                    builder.EnableRetryOnFailure(
-                        maxRetryCount: 5,
-                        maxRetryDelay: TimeSpan.FromSeconds(30),
-                        null);
-                }).UseLoggerFactory(_factory);
+
+            var builder = optionsBuilder.UseMySql(config.GetConnectionString("MYSQLConnection"), builder =>
+                  {
+                      builder.EnableRetryOnFailure(
+                          maxRetryCount: 5,
+                          maxRetryDelay: TimeSpan.FromSeconds(30),
+                          null);
+                  });
+
+            var enable_log = JsonConfig.GetSectionValue("SystemConfig:EnableEfSqlLogger");
+
+            if (!string.IsNullOrWhiteSpace(enable_log) && enable_log.Equals("True"))
+                builder.UseLoggerFactory(_factory);
 
             //optionsBuilder.UseSqlite(config.GetConnectionString("SQLITEConnection"));
             //optionsBuilder.UseSqlServer(config.GetConnectionString("MSSQLConnection"));
