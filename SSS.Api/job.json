@@ -1,0 +1,16 @@
+{
+  "JobConfig": [
+    {
+      "Name": "Job1",
+      "Type": "SSS.Application.Seedwork.Job.MyJob1",
+      "Value": "1",
+      "Group": "job_group"
+    },
+    {
+      "Name": "Job2",
+      "Type": "SSS.Application.Seedwork.Job.MyJob2",
+      "Value": "2",
+      "Group": "job_group"
+    }
+  ]
+}

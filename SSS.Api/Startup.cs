@@ -23,6 +23,7 @@ using SSS.Api.Bootstrap;
 using SSS.Api.Seedwork.Filter;
 using SSS.Api.Seedwork.Json;
 using SSS.Api.Seedwork.Middleware;
+using SSS.Application.Seedwork.Job;
 
 using StackExchange.Profiling.SqlFormatters;
 
@@ -57,7 +58,8 @@ namespace SSS.Api
         /// <param name="services">IServiceCollection</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
+            //注入 Quartz调度类 
+            services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();//注册ISchedulerFactory的实例。
 
             services.AddMvc(options =>
                 {
@@ -137,8 +139,9 @@ namespace SSS.Api
         /// <param name="env"></param>
         /// <param name="senparcSetting"></param>
         /// <param name="senparcWeixinSetting"></param>
+        /// <param name="appLifetime"></param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<SenparcSetting> senparcSetting,
-            IOptions<SenparcWeixinSetting> senparcWeixinSetting)
+            IOptions<SenparcWeixinSetting> senparcWeixinSetting, IHostApplicationLifetime appLifetime)
         {
             IRegisterService register = RegisterService.Start(env, senparcSetting.Value).UseSenparcGlobal();
 
@@ -201,8 +204,21 @@ namespace SSS.Api
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
             //公众号注入
-            register.UseSenparcWeixin(senparcWeixinSetting.Value, senparcSetting.Value)
-                .RegisterWxOpenAccount(senparcWeixinSetting.Value, "SSS");
+            register.UseSenparcWeixin(senparcWeixinSetting.Value, senparcSetting.Value).RegisterWxOpenAccount(senparcWeixinSetting.Value, "SSS");
+
+            var quartz = app.ApplicationServices.GetRequiredService<JobStartup>();
+
+            appLifetime.ApplicationStarted.Register(() =>
+            {
+                quartz.Start().Wait();
+                //网站启动完成执行
+            });
+
+            appLifetime.ApplicationStopped.Register(() =>
+            {
+                quartz.Stop();
+                //网站停止完成执行
+            });
         }
 
         /// <summary>
