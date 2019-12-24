@@ -67,14 +67,14 @@ namespace SSS.Application.Seedwork.Job
 
             foreach (var item in result)
             {
-                var typestr = item["Type"].ToString();
-                var type = Type.GetType(typestr);
-                var name = item["Name"].ToString();
-                var value = item["Value"].ToString();
-                var group = item["Group"].ToString();
+                var type = Type.GetType(item["Type"].ToString());  //类型
+                var name = item["Name"].ToString();   //任务名
+                var value = item["Value"].ToString();  //传值
+                var group = item["Group"].ToString();  //任务组
+                var time = Convert.ToInt32(item["Time"]);   //秒为单位
 
                 //4、创建一个触发器
-                var trigger = TriggerBuilder.Create().WithSimpleSchedule(x => x.WithIntervalInSeconds(2).RepeatForever()).Build();
+                var trigger = TriggerBuilder.Create().WithSimpleSchedule(x => x.WithIntervalInSeconds(time).RepeatForever()).Build();
 
                 //5、创建任务
                 var jobDetail = JobBuilder.Create(type).WithIdentity(name, group).UsingJobData("value1", value).Build();

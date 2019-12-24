@@ -4,12 +4,14 @@
       "Name": "Job1",
       "Type": "SSS.Application.Seedwork.Job.MyJob1",
       "Value": "1",
+      "Time": 1,  //ÃëÎªµ¥Î»
       "Group": "job_group"
     },
     {
       "Name": "Job2",
       "Type": "SSS.Application.Seedwork.Job.MyJob2",
       "Value": "2",
+      "Time": 5,
       "Group": "job_group"
     }
   ]
