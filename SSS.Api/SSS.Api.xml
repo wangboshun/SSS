@@ -869,9 +869,16 @@
             <param name="id">id</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.AddJobInfo(SSS.Domain.System.Job.JobInfo.Dto.JobInfoInputDto)">
+        <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.PauseJob(SSS.Domain.System.Job.JobInfo.Dto.JobInfoInputDto)">
             <summary>
-            AddJobInfo
+            Pause
+            </summary>
+            <param name="input">JobInfoInputDto</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.ResumeJob(SSS.Domain.System.Job.JobInfo.Dto.JobInfoInputDto)">
+            <summary>
+            Resume
             </summary>
             <param name="input">JobInfoInputDto</param>
             <returns></returns> 

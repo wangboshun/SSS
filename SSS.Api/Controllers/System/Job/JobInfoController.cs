@@ -26,7 +26,7 @@ namespace SSS.Api.Controllers.System.Job
             _service = service;
         }
 
-		/// <summary>
+        /// <summary>
         /// GetList
         /// </summary>
         /// <param name="input">input</param>
@@ -52,7 +52,7 @@ namespace SSS.Api.Controllers.System.Job
             return ApiResponse(result);
         }
 
-          /// <summary>
+        /// <summary>
         /// 删除数据
         /// </summary>
         /// <param name="id">id</param>
@@ -66,16 +66,29 @@ namespace SSS.Api.Controllers.System.Job
         }
 
         /// <summary>
-        /// AddJobInfo
+        /// Pause
         /// </summary>
         /// <param name="input">JobInfoInputDto</param>
         /// <returns></returns> 
-        [HttpPost("add")]
+        [HttpPost("pause")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult AddJobInfo([FromBody]JobInfoInputDto input)
+        public IActionResult PauseJob([FromBody]JobInfoInputDto input)
         {
-            var result = _service.AddJobInfo(input);
-            return AddResponse(result);
+            var result = _service.PauseJob(input);
+            return UpdateResponse(input.jobname, result);
+        }
+
+        /// <summary>
+        /// Resume
+        /// </summary>
+        /// <param name="input">JobInfoInputDto</param>
+        /// <returns></returns> 
+        [HttpPost("resume")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult ResumeJob([FromBody]JobInfoInputDto input)
+        {
+            var result = _service.ResumeJob(input);
+            return UpdateResponse(input.jobname, result);
         }
     }
 }

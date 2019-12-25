@@ -2,17 +2,16 @@
 
 using Quartz;
 
+using SqlSugar;
+
 using SSS.Domain.System.Job.JobInfo;
-using SSS.Infrastructure.Seedwork.DbContext;
+using SSS.Infrastructure.Util.Config;
 using SSS.Infrastructure.Util.Json;
 using SSS.Infrastructure.Util.Log;
 
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SqlSugar;
-using SSS.Infrastructure.Util.Config;
 
 namespace SSS.Application.Seedwork.Job
 {
@@ -76,6 +75,9 @@ namespace SSS.Application.Seedwork.Job
                         JobGroup = trigger.JobGroup,
                         JobValue = context.JobDetail.JobDataMap.ToJson(),
                         IsDelete = 0,
+                        JobCount = 1,
+                        JobStatus = 1,
+                        JobResult = "",
                         JobCron = trigger.CronExpressionString,
                         CreateTime = DateTime.Now,
                         JobStartTime = trigger.StartTimeUtc.LocalDateTime,
@@ -88,8 +90,10 @@ namespace SSS.Application.Seedwork.Job
                     job.JobStartTime = trigger.StartTimeUtc.LocalDateTime;
                     job.JobValue = context.JobDetail.JobDataMap.ToJson();
                     job.JobCron = trigger.CronExpressionString;
+                    job.JobCount += 1;
                     job.JobNextTime = trigger.GetNextFireTimeUtc().GetValueOrDefault().LocalDateTime;
                     job.UpdateTime = DateTime.Now;
+                    job.JobResult = "";
                     db.Updateable(job).ExecuteCommand();
                 }
 

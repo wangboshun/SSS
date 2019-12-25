@@ -11,5 +11,7 @@ namespace SSS.Application.System.Job.JobInfo.Service
         JobInfoOutputDto AddJobInfo(JobInfoInputDto input);
 
         Pages<List<JobInfoOutputDto>> GetListJobInfo(JobInfoInputDto input);
+        bool ResumeJob(JobInfoInputDto input);
+        bool PauseJob(JobInfoInputDto input);
     }
 }
