@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.System.Job.JobInfo.Service;
 using SSS.Domain.System.Job.JobInfo.Dto;

@@ -41,7 +41,7 @@ namespace SSS.Application.Seedwork.Service
 
         public bool Delete(string id)
         {
-            return Repository.Remove(id,true);
+            return Repository.Remove(id, true);
         }
 
         public TOutput Get(string id)
@@ -135,7 +135,7 @@ namespace SSS.Application.Seedwork.Service
             Error.Execute("父级不存在！");
             return false;
         }
-        
+
         /// <summary>
         /// 父级Id赋值
         /// </summary>

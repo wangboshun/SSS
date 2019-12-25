@@ -37,6 +37,6 @@ namespace SSS.Infrastructure.Util.Http
         public static string WebRootPath(this HttpContext context)
         {
             return _hostingEnvironment.WebRootPath;
-        } 
+        }
     }
 }

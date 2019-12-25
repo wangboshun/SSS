@@ -5,16 +5,15 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using SSS.DigitalCurrency.Domain;
+using SSS.Domain.Coin.CoinKLineData;
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Config;
 using SSS.Infrastructure.Util.DateTime;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Threading;
-using SSS.Domain.Coin.CoinKLineData;
-using SSS.Infrastructure.Util.Config;
 
 namespace SSS.DigitalCurrency.Huobi
 {
@@ -164,7 +163,7 @@ namespace SSS.DigitalCurrency.Huobi
             {
                 _logger.LogError(new EventId(ex.HResult), ex, $"---GetKLine {DateTime.Now}---");
                 throw;
-            } 
+            }
         }
     }
 }

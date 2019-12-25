@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -140,8 +141,7 @@ namespace SSS.Api
         /// <param name="senparcSetting"></param>
         /// <param name="senparcWeixinSetting"></param>
         /// <param name="appLifetime"></param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<SenparcSetting> senparcSetting,
-            IOptions<SenparcWeixinSetting> senparcWeixinSetting, IHostApplicationLifetime appLifetime)
+        public void Configure(IApplicationBuilder app, IHttpContextFactory _httpContextFactory, IWebHostEnvironment env, IOptions<SenparcSetting> senparcSetting, IOptions<SenparcWeixinSetting> senparcWeixinSetting, IHostApplicationLifetime appLifetime)
         {
             IRegisterService register = RegisterService.Start(env, senparcSetting.Value).UseSenparcGlobal();
 
@@ -206,17 +206,18 @@ namespace SSS.Api
             //公众号注入
             register.UseSenparcWeixin(senparcWeixinSetting.Value, senparcSetting.Value).RegisterWxOpenAccount(senparcWeixinSetting.Value, "SSS");
 
-            var quartz = app.ApplicationServices.GetRequiredService<JobManager>();
+            var job_service = app.ApplicationServices.GetRequiredService<IJobManager>();
+            
 
             appLifetime.ApplicationStarted.Register(() =>
-            {
-                quartz.Start().Wait();
+            { 
+                job_service.Start().Wait();
                 //网站启动完成执行
             });
 
             appLifetime.ApplicationStopped.Register(() =>
             {
-                quartz.Stop();
+                job_service.Stop();
                 //网站停止完成执行
             });
         }

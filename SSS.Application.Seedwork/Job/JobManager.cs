@@ -1,11 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 using Quartz;
 using Quartz.Impl.Matchers;
 using Quartz.Spi;
+
 using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.IO;
 using SSS.Infrastructure.Util.Json;
+
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -16,7 +19,7 @@ namespace SSS.Application.Seedwork.Job
     /// JobStartup启动类
     /// </summary>
     [DIService(ServiceLifetime.Singleton, typeof(IJobManager))]
-    public class JobManager
+    public class JobManager : IJobManager
     {
         private readonly ILogger<JobManager> _logger;
         private readonly ISchedulerFactory _schedulerFactory;
@@ -156,7 +159,7 @@ namespace SSS.Application.Seedwork.Job
                     .ForJob(jobname, jobgroup).Build();
 
                 //6、监听
-                var jobListener = new JobListener {Name = jobname + "_listener"};
+                var jobListener = new JobListener { Name = jobname + "_listener" };
                 IMatcher<JobKey> matcher = KeyMatcher<JobKey>.KeyEquals(jobDetail.Key);
                 _scheduler.ListenerManager.AddJobListener(jobListener, matcher);
 

@@ -1,16 +1,19 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+using Newtonsoft.Json;
+
+using SSS.Domain.System;
+using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.IO;
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using SSS.Domain.System;
-using SSS.Infrastructure.Util.Attribute;
-using SSS.Infrastructure.Util.IO;
 
 namespace SSS.Application.System.Generator
 {

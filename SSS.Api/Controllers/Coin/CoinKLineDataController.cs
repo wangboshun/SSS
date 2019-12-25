@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.Coin.CoinKLineData.Service;
 using SSS.Domain.Coin.CoinKLineData.Dto;
@@ -26,7 +27,7 @@ namespace SSS.Api.Controllers.Coin
             _service = service;
         }
 
-		/// <summary>
+        /// <summary>
         /// GetList
         /// </summary>
         /// <param name="input">input</param>
@@ -52,7 +53,7 @@ namespace SSS.Api.Controllers.Coin
             return ApiResponse(result);
         }
 
-          /// <summary>
+        /// <summary>
         /// 删除数据
         /// </summary>
         /// <param name="id">id</param>

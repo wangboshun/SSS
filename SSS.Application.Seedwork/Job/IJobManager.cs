@@ -8,5 +8,6 @@ namespace SSS.Application.Seedwork.Job
         Task PauseJob(string jobname, string jobgroup);
         Task<bool> DeleteJob(string jobname, string jobgroup);
         Task<string> Start();
+        void Stop();
     }
 }

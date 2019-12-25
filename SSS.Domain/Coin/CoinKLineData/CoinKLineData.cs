@@ -1,10 +1,12 @@
+using SSS.Domain.Seedwork.Model;
+
 using System;
-using SSS.Domain.Seedwork.Model; 
 
 namespace SSS.Domain.Coin.CoinKLineData
 {
     public class CoinKLineData : Entity
-    { 
+    {
+
 
         public string Coin { set; get; }
 

@@ -2,12 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 
 using SSS.Api.Seedwork.Controller;
-using SSS.Application.System;
+using SSS.Application.System.Generator;
 
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
-using SSS.Application.System.Generator;
 
 namespace SSS.Api.Controllers.System
 {

@@ -923,7 +923,7 @@
             </summary>
             <param name="services">IServiceCollection</param>
         </member>
-        <member name="M:SSS.Api.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Options.IOptions{Senparc.CO2NET.SenparcSetting},Microsoft.Extensions.Options.IOptions{Senparc.Weixin.Entities.SenparcWeixinSetting},Microsoft.Extensions.Hosting.IHostApplicationLifetime)">
+        <member name="M:SSS.Api.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Http.IHttpContextFactory,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Options.IOptions{Senparc.CO2NET.SenparcSetting},Microsoft.Extensions.Options.IOptions{Senparc.Weixin.Entities.SenparcWeixinSetting},Microsoft.Extensions.Hosting.IHostApplicationLifetime)">
             <summary>
             Configure
             </summary>

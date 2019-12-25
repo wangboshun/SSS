@@ -1,8 +1,9 @@
-using System;
 using SSS.Domain.Seedwork.Model;
 
+using System;
+
 namespace SSS.Domain.System.Job.JobInfo
-{ 
+{
     public class JobInfo : Entity
     {
         public string JobName { set; get; }

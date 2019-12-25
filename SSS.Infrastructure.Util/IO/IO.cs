@@ -76,7 +76,7 @@ namespace SSS.Infrastructure.Util.IO
             catch (Exception)
             {
                 throw new ApplicationException();
-            } 
+            }
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace SSS.Infrastructure.Util.IO
             catch (Exception)
             {
                 throw new ApplicationException();
-            } 
+            }
         }
 
         /// <summary>

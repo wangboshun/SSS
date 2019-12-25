@@ -47,6 +47,6 @@ namespace SSS.Application.Coin.CoinKLineData.Service
         public Pages<List<CoinKLineDataOutputDto>> GetListCoinKLineData(CoinKLineDataInputDto input)
         {
             return GetPage(input);
-        } 
+        }
     }
 }

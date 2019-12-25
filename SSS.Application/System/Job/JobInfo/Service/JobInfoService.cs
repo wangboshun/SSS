@@ -1,16 +1,21 @@
 using AutoMapper;
+
 using FluentValidation;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using Quartz;
+
+using SSS.Application.Seedwork.Job;
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Domain.System.Job.JobInfo.Dto;
 using SSS.Infrastructure.Repository.System.Job.JobInfo;
 using SSS.Infrastructure.Util.Attribute;
+
 using System;
 using System.Collections.Generic;
-using SSS.Application.Seedwork.Job;
 
 namespace SSS.Application.System.Job.JobInfo.Service
 {

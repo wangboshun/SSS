@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-using SSS.DigitalCurrency.Domain;
 using SSS.Domain.Coin.CoinKLineData;
 using SSS.Infrastructure.Util.Attribute;
 
