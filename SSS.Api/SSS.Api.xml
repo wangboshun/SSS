@@ -818,7 +818,7 @@
             代码生成	
             </summary>	
         </member>
-        <member name="M:SSS.Api.Controllers.System.CodeController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,SSS.Application.System.IGeneratorCodeService)">
+        <member name="M:SSS.Api.Controllers.System.CodeController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,SSS.Application.System.Generator.IGeneratorCodeService)">
             <summary>
             CodeController
             </summary>
@@ -836,6 +836,45 @@
             生成操作	
             </summary>	
             <returns></returns>	
+        </member>
+        <member name="T:SSS.Api.Controllers.System.Job.JobInfoController">
+            <summary>
+            JobInfoController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.#ctor(SSS.Application.System.Job.JobInfo.Service.IJobInfoService)">
+            <summary>
+            JobInfoController
+            </summary>
+            <param name="service">IJobInfoService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.GetList(SSS.Domain.System.Job.JobInfo.Dto.JobInfoInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.GetJobInfo(System.String)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="id">id</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.DeleteJobInfo(System.String)">
+            <summary>
+            删除数据
+            </summary>
+            <param name="id">id</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.AddJobInfo(SSS.Domain.System.Job.JobInfo.Dto.JobInfoInputDto)">
+            <summary>
+            AddJobInfo
+            </summary>
+            <param name="input">JobInfoInputDto</param>
+            <returns></returns> 
         </member>
         <member name="T:SSS.Api.Program">
             <summary>

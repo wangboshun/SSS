@@ -7,6 +7,7 @@ using SSS.Application.System;
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
+using SSS.Application.System.Generator;
 
 namespace SSS.Api.Controllers.System
 {

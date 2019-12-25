@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using SSS.Domain.Coin.CoinAnalyse;
 using SSS.Domain.Coin.CoinArticel;
 using SSS.Domain.Coin.CoinInfo;
+using SSS.Domain.Coin.CoinKLineData;
 using SSS.Domain.Coin.CoinMessage;
 using SSS.Domain.Coin.CoinTrade;
 using SSS.Domain.Permission.Group.PowerGroup;
@@ -24,11 +25,11 @@ using SSS.Domain.Permission.Relation.RoleGroupPowerGroupRelation;
 using SSS.Domain.Permission.Relation.RoleGroupRelation;
 using SSS.Domain.Permission.Relation.UserGroupRelation;
 using SSS.Domain.Permission.Relation.UserGroupRoleGroupRelation;
+using SSS.Domain.System.Job.JobInfo;
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Config;
 
 using System;
-using SSS.Domain.Coin.CoinKLineData;
-using SSS.Infrastructure.Util.Config;
 
 namespace SSS.Infrastructure.Seedwork.DbContext
 {
@@ -43,6 +44,12 @@ namespace SSS.Infrastructure.Seedwork.DbContext
             _env = env;
             _factory = factory;
         }
+
+        #region System
+
+        public DbSet<JobInfo> JobInfo { get; set; }
+
+        #endregion
 
         #region Coin
 
@@ -94,9 +101,9 @@ namespace SSS.Infrastructure.Seedwork.DbContext
                           null);
                   });
 
-            var enable_log = JsonConfig.GetSectionValue("SystemConfig:EnableEfSqlLogger");
+            var enableLog = JsonConfig.GetSectionValue("SystemConfig:EnableEfSqlLogger");
 
-            if (!string.IsNullOrWhiteSpace(enable_log) && enable_log.Equals("True"))
+            if (!string.IsNullOrWhiteSpace(enableLog) && enableLog.Equals("True"))
                 builder.UseLoggerFactory(_factory);
 
             //optionsBuilder.UseSqlite(config.GetConnectionString("SQLITEConnection"));

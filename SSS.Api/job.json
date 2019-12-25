@@ -19,9 +19,9 @@
           "Value": 0.22,
           "Type": "Double"
         }
-      ],
-      "JobTime": 1, //ÃëÎªµ¥Î»
-      "JobGroup": "job_group"
+      ], 
+      "JobGroup": "job_group",
+      "JobCron": "0/1 * * * * ?"
     },
     {
       "JobName": "Job2",
@@ -32,8 +32,8 @@
           "Value": "a1",
           "Type": "String"
         }
-      ],
-      "JobTime": 5,
+      ], 
+      "JobCron": "0/2 * * * * ?",
       "JobGroup": "job_group"
     }
   ]

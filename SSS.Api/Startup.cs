@@ -58,9 +58,6 @@ namespace SSS.Api
         /// <param name="services">IServiceCollection</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            //注入 Quartz调度类 
-            services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();//注册ISchedulerFactory的实例。
-
             services.AddMvc(options =>
                 {
                     //全局Action Exception Result过滤器
@@ -128,6 +125,9 @@ namespace SSS.Api
 
             services.AddSenparcGlobalServices(Configuration) //Senparc.CO2NET 全局注册
                 .AddSenparcWeixinServices(Configuration); //Senparc.Weixin 注册   
+
+            //注入 Quartz调度类 
+            services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();//注册ISchedulerFactory的实例。
 
             services.AddControllers();
         }

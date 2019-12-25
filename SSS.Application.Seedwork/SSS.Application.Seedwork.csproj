@@ -6,6 +6,7 @@
   <ItemGroup>
  <PackageReference Include="AutoMapper" Version="9.0.0" />
     <ProjectReference Include="..\SSS.Domain.Seedwork\SSS.Domain.Seedwork.csproj" />
+    <ProjectReference Include="..\SSS.Infrastructure.Seedwork\SSS.Infrastructure.Seedwork.csproj" />
   </ItemGroup>
 
 </Project>

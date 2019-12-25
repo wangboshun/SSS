@@ -84,7 +84,7 @@ namespace SSS.Application.Seedwork.Job
                 var jobclass = Type.GetType(item["JobClass"].ToString());  //类型
                 var jobname = item["JobName"].ToString();   //任务名
                 var jobgroup = item["JobGroup"].ToString();  //任务组
-                var jobtime = Convert.ToInt32(item["JobTime"]);   //秒为单位
+                var jobcron = item["JobCron"].ToString();   //Cron
                 var value_result = item["JobValue"];//传值
 
                 JobDataMap data = new JobDataMap();
@@ -114,17 +114,17 @@ namespace SSS.Application.Seedwork.Job
                         }
                     }
 
-                //4、创建一个触发器
-                var trigger = TriggerBuilder.Create().WithSimpleSchedule(x => x.WithIntervalInSeconds(jobtime).RepeatForever()).Build();
-
-                //5、创建任务
+                //4、创建任务
                 var jobDetail = JobBuilder.Create(jobclass).WithIdentity(jobname, jobgroup).UsingJobData(data).Build();
 
+                //5、创建一个触发器
+                ITrigger trigger = TriggerBuilder.Create().WithIdentity(jobname, jobgroup).WithCronSchedule(jobcron).ForJob(jobname, jobgroup).Build();
+
                 //6、监听
-                JobListener listener = new JobListener {Name = jobname + "_listener" };
+                var jobListener = new JobListener { Name = jobname + "_listener" };
                 IMatcher<JobKey> matcher = KeyMatcher<JobKey>.KeyEquals(jobDetail.Key);
-                _scheduler.ListenerManager.AddJobListener(listener, matcher);
-                 
+                _scheduler.ListenerManager.AddJobListener(jobListener, matcher);
+
                 //7、将触发器和任务器绑定到调度器中
                 await _scheduler.ScheduleJob(jobDetail, trigger);
             }

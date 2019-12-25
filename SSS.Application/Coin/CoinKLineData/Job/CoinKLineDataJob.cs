@@ -74,7 +74,7 @@ namespace SSS.Application.Coin.CoinKLineData.Job
         }
 
         public void AddKLineData(string coin)
-        { 
+        {
             return;
             try
             {
