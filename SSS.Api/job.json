@@ -1,18 +1,40 @@
 {
   "JobConfig": [
     {
-      "Name": "Job1",
-      "Type": "SSS.Application.Seedwork.Job.MyJob1",
-      "Value": "1",
-      "Time": 1,  //秒为单位
-      "Group": "job_group"
+      "JobName": "Job1",
+      "JobClass": "SSS.Application.Seedwork.Job.MyJob1",
+      "JobValue": [
+        {
+          "Name": "A",
+          "Value": "a1",
+          "Type": "String"
+        },
+        {
+          "Name": "B",
+          "Value": 2,
+          "Type": "Int"
+        },
+        {
+          "Name": "C",
+          "Value": 0.22,
+          "Type": "Double"
+        }
+      ],
+      "JobTime": 1, //秒为单位
+      "JobGroup": "job_group"
     },
     {
-      "Name": "Job2",
-      "Type": "SSS.Application.Seedwork.Job.MyJob2",
-      "Value": "2",
-      "Time": 5,
-      "Group": "job_group"
+      "JobName": "Job2",
+      "JobClass": "SSS.Application.Seedwork.Job.MyJob2",
+      "JobValue": [
+        {
+          "Name": "A",
+          "Value": "a1",
+          "Type": "String"
+        }
+      ],
+      "JobTime": 5,
+      "JobGroup": "job_group"
     }
   ]
 }

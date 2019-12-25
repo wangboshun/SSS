@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
-using Quartz;
-
-using SSS.Api.Bootstrap;
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.System;
 
@@ -25,17 +22,13 @@ namespace SSS.Api.Controllers.System
         private readonly IWebHostEnvironment _env;
         private readonly IGeneratorCodeService _generatorCodeService;
 
-        private readonly ISchedulerFactory _schedulerFactory;
-        private IScheduler _scheduler;
-
         /// <summary>
         /// CodeController
         /// </summary>
         /// <param name="env"></param>
         /// <param name="generatorCodeService"></param>
-        public CodeController(IWebHostEnvironment env, IGeneratorCodeService generatorCodeService, ISchedulerFactory schedulerFactory)
+        public CodeController(IWebHostEnvironment env, IGeneratorCodeService generatorCodeService)
         {
-            this._schedulerFactory = schedulerFactory;
             _env = env;
             current_path = _env.ContentRootPath;
             _generatorCodeService = generatorCodeService;
@@ -47,7 +40,7 @@ namespace SSS.Api.Controllers.System
         /// <returns></returns>	
         [HttpGet("index")]
         public ContentResult Index()
-        { 
+        {
             string html = "";
             string filepath = RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
                 ? current_path + "//codegenerator.html"

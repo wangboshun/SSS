@@ -4,9 +4,10 @@ using Microsoft.Extensions.Logging;
 using Quartz;
 
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Json;
 
 using System;
-using System.Globalization;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SSS.Application.Seedwork.Job
@@ -15,7 +16,7 @@ namespace SSS.Application.Seedwork.Job
     /// MyJob1
     /// </summary>
     [DIService(ServiceLifetime.Transient, typeof(MyJob1))]
-    public class MyJob1 : IJobBase
+    public class MyJob1 : IJob
     {
         private readonly ILogger<MyJob1> _logger;
 
@@ -33,15 +34,21 @@ namespace SSS.Application.Seedwork.Job
         /// <param name="context"></param>
         /// <returns></returns>
         public Task Execute(IJobExecutionContext context)
-        { 
-            JobKey key = context.JobDetail.Key; 
-            JobDataMap dataMap = context.JobDetail.JobDataMap;
+        {
+            StringBuilder str = new StringBuilder();
 
-            //string data = dataMap.GetString("value1"); 
+            JobKey key = context.JobDetail.Key;
+            JobDataMap dataMap = context.JobDetail.JobDataMap;
+            str.Append($"正在运行---> 任务：{key} ");
+
+            if (dataMap.Count > 0)
+                str.Append($"任务传递参数：{ dataMap.ToJson() } ");
+
+            str.Append("任务时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffffff "));
 
             return Task.Run(() =>
             {
-                _logger.LogInformation($"{DateTime.Now.ToString(CultureInfo.InvariantCulture)}：------MyJob1------");
+                _logger.LogDebug(str.ToString());
 
             });
         }

@@ -206,7 +206,7 @@ namespace SSS.Api
             //公众号注入
             register.UseSenparcWeixin(senparcWeixinSetting.Value, senparcSetting.Value).RegisterWxOpenAccount(senparcWeixinSetting.Value, "SSS");
 
-            var quartz = app.ApplicationServices.GetRequiredService<JobStartup>();
+            var quartz = app.ApplicationServices.GetRequiredService<JobManager>();
 
             appLifetime.ApplicationStarted.Register(() =>
             {
