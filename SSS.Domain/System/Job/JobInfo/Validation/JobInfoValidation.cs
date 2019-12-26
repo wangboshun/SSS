@@ -14,22 +14,27 @@ namespace SSS.Domain.System.Job.JobInfo.Validation
         {
             RuleSet("Insert", () =>
             {
-
+                RuleFor(x => x.jobname).NotNull().WithMessage("Job名称不能为空!");
+                RuleFor(x => x.jobgroup).NotNull().WithMessage("Job组名称不能为空!");
+                RuleFor(x => x.jobcron).NotNull().WithMessage("Cron策略不能为空!");
             });
 
             RuleSet("Delete", () =>
             {
-
+                RuleFor(x => x.jobname).NotNull().WithMessage("Job名称不能为空!");
+                RuleFor(x => x.jobgroup).NotNull().WithMessage("Job组名称不能为空!");
             });
 
             RuleSet("Update", () =>
             {
-
+                RuleFor(x => x.jobname).NotNull().WithMessage("Job名称不能为空!");
+                RuleFor(x => x.jobgroup).NotNull().WithMessage("Job组名称不能为空!");
             });
 
             RuleSet("Select", () =>
             {
-
+                RuleFor(x => x.jobname).NotNull().WithMessage("Job名称不能为空!");
+                RuleFor(x => x.jobgroup).NotNull().WithMessage("Job组名称不能为空!");
             });
         }
     }

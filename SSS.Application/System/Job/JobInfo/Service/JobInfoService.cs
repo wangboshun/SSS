@@ -16,12 +16,12 @@ using SSS.Infrastructure.Util.Attribute;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SSS.Application.System.Job.JobInfo.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IJobInfoService))]
-    public class JobInfoService :
-        QueryService<SSS.Domain.System.Job.JobInfo.JobInfo, JobInfoInputDto, JobInfoOutputDto>, IJobInfoService
+    public class JobInfoService : QueryService<SSS.Domain.System.Job.JobInfo.JobInfo, JobInfoInputDto, JobInfoOutputDto>, IJobInfoService
     {
         private readonly ISchedulerFactory _schedulerFactory;
         private readonly IJobInfoRepository _jobInfoRepository;
@@ -41,25 +41,9 @@ namespace SSS.Application.System.Job.JobInfo.Service
             _jobInfoRepository = jobInfoRepository;
         }
 
-        public JobInfoOutputDto AddJobInfo(JobInfoInputDto input)
-        {
-            var result = Validator.Validate(input, ruleSet: "Insert");
-            if (!result.IsValid)
-            {
-                Error.Execute(result);
-                return null;
-            }
-
-            input.id = Guid.NewGuid().ToString();
-            var model = Mapper.Map<SSS.Domain.System.Job.JobInfo.JobInfo>(input);
-            model.CreateTime = DateTime.Now;
-            Repository.Add(model);
-            return Repository.SaveChanges() > 0 ? Mapper.Map<JobInfoOutputDto>(model) : null;
-        }
-
         public Pages<List<JobInfoOutputDto>> GetListJobInfo(JobInfoInputDto input)
         {
-            return GetPage(input);
+            return _jobInfoRepository.GetJobDetail(input.jobname, input.jobgroup, input.pageindex, input.pagesize);
         }
 
         /// <summary>
@@ -72,7 +56,8 @@ namespace SSS.Application.System.Job.JobInfo.Service
             if (job == null) return false;
 
             _jobManager.ResumeJob(input.jobname, input.jobgroup);
-            job.JobStatus = 1;
+            job.JobStatus = (int)TriggerState.Normal;
+            job.UpdateTime = DateTime.Now;
             _jobInfoRepository.Update(job);
             return _jobInfoRepository.SaveChanges() > 0;
         }
@@ -87,9 +72,80 @@ namespace SSS.Application.System.Job.JobInfo.Service
             if (job == null) return false;
 
             _jobManager.PauseJob(input.jobname, input.jobgroup);
-            job.JobStatus = 0;
+            var trigger_state = _jobManager.GeTriggerState(input.jobname, input.jobgroup);
+            if (trigger_state != TriggerState.Paused) return false;
+
+            job.JobStatus = (int)TriggerState.Paused;
+            job.UpdateTime = DateTime.Now;
             _jobInfoRepository.Update(job);
             return _jobInfoRepository.SaveChanges() > 0;
+
+        }
+
+        /// <summary>
+        /// 修改Job
+        /// </summary>
+        /// <param name="input"></param>
+        public bool UpdateJob(JobInfoInputDto input)
+        {
+            var job = _jobInfoRepository.Get(x => x.JobName.Equals(input.jobname) && x.JobGroup.Equals(input.jobgroup));
+            if (job == null) return false;
+
+            _jobManager.UpdateJob(input.jobname, input.jobgroup, input.jobcron);
+            job.JobCron = input.jobcron;
+            job.UpdateTime = DateTime.Now;
+            _jobInfoRepository.Update(job);
+            return _jobInfoRepository.SaveChanges() > 0;
+        }
+
+        /// <summary>
+        /// 删除Job
+        /// </summary>
+        /// <param name="input"></param>
+        public bool DeleteJob(JobInfoInputDto input)
+        {
+            var job = _jobInfoRepository.Get(x => x.JobName.Equals(input.jobname) && x.JobGroup.Equals(input.jobgroup));
+            if (job == null) return false;
+
+            var result = _jobManager.DeleteJob(input.jobname, input.jobgroup).Result;
+            var trigger_state = _jobManager.GeTriggerState(input.jobname, input.jobgroup);
+            if (trigger_state != TriggerState.None) return false;
+            job.IsDelete = 1;
+            job.JobStatus = (int)TriggerState.None;
+            job.UpdateTime = DateTime.Now;
+            _jobInfoRepository.Update(job);
+            return _jobInfoRepository.SaveChanges() > 0;
+        }
+
+        /// <summary>
+        /// 添加Job
+        /// </summary>
+        /// <param name="input"></param>
+        public bool AddJob(JobInfoInputDto input)
+        {
+            var job = _jobInfoRepository.Get(x => x.JobName.Equals(input.jobname) && x.JobGroup.Equals(input.jobgroup), true);
+            if (job == null) return false;
+
+            var result = _jobManager.AddJob(input.jobname, input.jobgroup, input.jobcron, job.JobValue, job.JobClass).Result;
+            var trigger_state = _jobManager.GeTriggerState(input.jobname, input.jobgroup);
+            if (trigger_state != TriggerState.Normal || trigger_state != TriggerState.Paused) return false;
+            job.JobCron = input.jobcron;
+            job.IsDelete = 0;
+            job.JobStatus = (int)TriggerState.Normal;
+            job.CreateTime = DateTime.Now;
+            job.UpdateTime = DateTime.Now;
+            _jobInfoRepository.Update(job);
+            return _jobInfoRepository.SaveChanges() > 0;
+        }
+
+        /// <summary>
+        /// 获取Job
+        /// </summary>
+        /// <param name="input"></param>
+        public JobInfoOutputDto GetJob(JobInfoInputDto input)
+        {
+            var data = _jobInfoRepository.GetJobDetail(input.jobname, input.jobgroup, input.pageindex, input.pagesize);
+            return data.items.FirstOrDefault();
         }
     }
 }

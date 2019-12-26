@@ -837,6 +837,45 @@
             </summary>	
             <returns></returns>	
         </member>
+        <member name="T:SSS.Api.Controllers.System.Job.JobErrorController">
+            <summary>
+            JobErrorController
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.System.Job.JobErrorController.#ctor(SSS.Application.System.Job.JobError.Service.IJobErrorService)">
+            <summary>
+            JobErrorController
+            </summary>
+            <param name="service">IJobErrorService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.System.Job.JobErrorController.GetList(SSS.Domain.System.Job.JobError.Dto.JobErrorInputDto)">
+            <summary>
+            GetList
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.System.Job.JobErrorController.GetJobError(System.String)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="id">id</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.System.Job.JobErrorController.DeleteJobError(System.String)">
+            <summary>
+            删除数据
+            </summary>
+            <param name="id">id</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.System.Job.JobErrorController.AddJobError(SSS.Domain.System.Job.JobError.Dto.JobErrorInputDto)">
+            <summary>
+            AddJobError
+            </summary>
+            <param name="input">JobErrorInputDto</param>
+            <returns></returns> 
+        </member>
         <member name="T:SSS.Api.Controllers.System.Job.JobInfoController">
             <summary>
             JobInfoController
@@ -855,18 +894,25 @@
             <param name="input">input</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.GetJobInfo(System.String)">
+        <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.GetJobInfo(SSS.Domain.System.Job.JobInfo.Dto.JobInfoInputDto)">
             <summary>
             获取数据
             </summary>
-            <param name="id">id</param>
+            <param name="input">JobInfoInputDto</param>
             <returns></returns> 
         </member>
-        <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.DeleteJobInfo(System.String)">
+        <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.AddJobInfo(SSS.Domain.System.Job.JobInfo.Dto.JobInfoInputDto)">
             <summary>
-            删除数据
+            Add
             </summary>
-            <param name="id">id</param>
+            <param name="input">JobInfoInputDto</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.DeleteJobInfo(SSS.Domain.System.Job.JobInfo.Dto.JobInfoInputDto)">
+            <summary>
+            Delete
+            </summary>
+            <param name="input">JobInfoInputDto</param>
             <returns></returns> 
         </member>
         <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.PauseJob(SSS.Domain.System.Job.JobInfo.Dto.JobInfoInputDto)">
@@ -879,6 +925,13 @@
         <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.ResumeJob(SSS.Domain.System.Job.JobInfo.Dto.JobInfoInputDto)">
             <summary>
             Resume
+            </summary>
+            <param name="input">JobInfoInputDto</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.UpdateJob(SSS.Domain.System.Job.JobInfo.Dto.JobInfoInputDto)">
+            <summary>
+            Update
             </summary>
             <param name="input">JobInfoInputDto</param>
             <returns></returns> 

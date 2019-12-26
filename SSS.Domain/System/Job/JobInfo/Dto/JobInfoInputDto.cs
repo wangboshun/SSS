@@ -6,5 +6,6 @@ namespace SSS.Domain.System.Job.JobInfo.Dto
     {
         public string jobname { set; get; }
         public string jobgroup { set; get; }
+        public string jobcron { set; get; }
     }
 }

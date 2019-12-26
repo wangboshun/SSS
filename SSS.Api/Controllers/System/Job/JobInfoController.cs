@@ -43,27 +43,40 @@ namespace SSS.Api.Controllers.System.Job
         /// <summary>
         /// 获取数据
         /// </summary>
-        /// <param name="id">id</param>
+        /// <param name="input">JobInfoInputDto</param>
         /// <returns></returns> 
-        [HttpGet("{id}")]
+        [HttpGet("getjob")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult GetJobInfo(string id)
+        public IActionResult GetJobInfo([FromQuery]JobInfoInputDto input)
         {
-            var result = _service.Get(id);
+            var result = _service.GetJob(input);
             return ApiResponse(result);
         }
 
         /// <summary>
-        /// 删除数据
+        /// Add
         /// </summary>
-        /// <param name="id">id</param>
+        /// <param name="input">JobInfoInputDto</param>
         /// <returns></returns> 
-        [HttpDelete("{id}")]
+        [HttpPost("add")]
         [AllowAnonymous]  //匿名访问
-        public IActionResult DeleteJobInfo(string id)
+        public IActionResult AddJobInfo([FromBody]JobInfoInputDto input)
         {
-            var result = _service.Delete(id);
-            return DeleteResponse(id, result);
+            var result = _service.AddJob(input);
+            return UpdateResponse(input.jobname, result);
+        }
+
+        /// <summary>
+        /// Delete
+        /// </summary>
+        /// <param name="input">JobInfoInputDto</param>
+        /// <returns></returns> 
+        [HttpDelete("delete")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult DeleteJobInfo([FromBody]JobInfoInputDto input)
+        {
+            var result = _service.DeleteJob(input);
+            return UpdateResponse(input.jobname, result);
         }
 
         /// <summary>
@@ -89,6 +102,19 @@ namespace SSS.Api.Controllers.System.Job
         public IActionResult ResumeJob([FromBody]JobInfoInputDto input)
         {
             var result = _service.ResumeJob(input);
+            return UpdateResponse(input.jobname, result);
+        }
+
+        /// <summary>
+        /// Update
+        /// </summary>
+        /// <param name="input">JobInfoInputDto</param>
+        /// <returns></returns> 
+        [HttpPost("update")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult UpdateJob([FromBody]JobInfoInputDto input)
+        {
+            var result = _service.UpdateJob(input);
             return UpdateResponse(input.jobname, result);
         }
     }

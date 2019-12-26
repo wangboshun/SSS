@@ -21,7 +21,7 @@
         }
       ], 
       "JobGroup": "job_group",
-      "JobCron": "0/1 * * * * ?"
+      "JobCron": "0/10 * * * * ?"
     },
     {
       "JobName": "Job2",

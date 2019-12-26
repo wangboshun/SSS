@@ -207,10 +207,10 @@ namespace SSS.Api
             register.UseSenparcWeixin(senparcWeixinSetting.Value, senparcSetting.Value).RegisterWxOpenAccount(senparcWeixinSetting.Value, "SSS");
 
             var job_service = app.ApplicationServices.GetRequiredService<IJobManager>();
-            
+
 
             appLifetime.ApplicationStarted.Register(() =>
-            { 
+            {
                 job_service.Start().Wait();
                 //网站启动完成执行
             });

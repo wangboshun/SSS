@@ -25,6 +25,7 @@ using SSS.Domain.Permission.Relation.RoleGroupPowerGroupRelation;
 using SSS.Domain.Permission.Relation.RoleGroupRelation;
 using SSS.Domain.Permission.Relation.UserGroupRelation;
 using SSS.Domain.Permission.Relation.UserGroupRoleGroupRelation;
+using SSS.Domain.System.Job.JobError;
 using SSS.Domain.System.Job.JobInfo;
 using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.Config;
@@ -48,6 +49,8 @@ namespace SSS.Infrastructure.Seedwork.DbContext
         #region System
 
         public DbSet<JobInfo> JobInfo { get; set; }
+
+        public DbSet<JobError> JobError { get; set; }
 
         #endregion
 
