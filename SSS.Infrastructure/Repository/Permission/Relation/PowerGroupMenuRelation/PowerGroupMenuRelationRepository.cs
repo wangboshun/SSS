@@ -9,7 +9,7 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.PowerGroupMenuRelati
     [DIService(ServiceLifetime.Scoped, typeof(IPowerGroupMenuRelationRepository))]
     public class PowerGroupMenuRelationRepository : Repository<Domain.Permission.Relation.PowerGroupMenuRelation.PowerGroupMenuRelation>, IPowerGroupMenuRelationRepository
     {
-        public PowerGroupMenuRelationRepository(SystemDbContext context) : base(context)
+        public PowerGroupMenuRelationRepository(PermissionDbContext context) : base(context)
         {
         }
     }

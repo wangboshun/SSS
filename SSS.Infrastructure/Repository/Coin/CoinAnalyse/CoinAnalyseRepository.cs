@@ -12,7 +12,7 @@ namespace SSS.Infrastructure.Repository.Coin.CoinAnalyse
     [DIService(ServiceLifetime.Scoped, typeof(ICoinAnalyseRepository))]
     public class CoinAnalyseRepository : Repository<SSS.Domain.Coin.CoinAnalyse.CoinAnalyse>, ICoinAnalyseRepository
     {
-        public CoinAnalyseRepository(SystemDbContext context) : base(context)
+        public CoinAnalyseRepository(CoinDbContext context) : base(context)
         {
         }
 

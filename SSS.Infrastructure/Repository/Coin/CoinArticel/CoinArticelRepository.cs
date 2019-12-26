@@ -15,7 +15,7 @@ namespace SSS.Infrastructure.Repository.Coin.CoinArticel
     [DIService(ServiceLifetime.Scoped, typeof(ICoinArticelRepository))]
     public class CoinArticelRepository : Repository<Domain.Coin.CoinArticel.CoinArticel>, ICoinArticelRepository
     {
-        public CoinArticelRepository(SystemDbContext context) : base(context)
+        public CoinArticelRepository(CoinDbContext context) : base(context)
         {
         }
 

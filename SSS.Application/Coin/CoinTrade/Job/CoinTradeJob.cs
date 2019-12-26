@@ -341,7 +341,7 @@ namespace SSS.Application.Coin.CoinTrade.Job
         private void Ping(string id, double price)
         {
             using var scope = _scopeFactory.CreateScope();
-            using var context = scope.ServiceProvider.GetRequiredService<SystemDbContext>();
+            using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
             context.Database.ExecuteSqlRaw("UPDATE CoinTrade SET Status=2,Last_Price={0},UpdateTime=Now()  where Id={1}", price, id);
             context.SaveChanges();
 

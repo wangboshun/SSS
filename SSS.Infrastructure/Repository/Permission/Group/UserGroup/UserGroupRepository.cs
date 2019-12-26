@@ -14,7 +14,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.UserGroup
     {
         private static string field = "ug";
 
-        public UserGroupRepository(SystemDbContext context) : base(context)
+        public UserGroupRepository(PermissionDbContext context) : base(context)
         {
         }
 

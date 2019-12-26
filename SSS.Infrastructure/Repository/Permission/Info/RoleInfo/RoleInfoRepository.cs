@@ -18,7 +18,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.RoleInfo
 
         public readonly List<RoleInfoTreeOutputDto> Tree;
 
-        public RoleInfoRepository(SystemDbContext context) : base(context)
+        public RoleInfoRepository(PermissionDbContext context) : base(context)
         {
             Tree = new List<RoleInfoTreeOutputDto>();
         }

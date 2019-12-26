@@ -18,7 +18,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.UserInfo
 
         public readonly List<UserInfoTreeOutputDto> Tree;
 
-        public UserInfoRepository(SystemDbContext context) : base(context)
+        public UserInfoRepository(PermissionDbContext context) : base(context)
         {
             Tree = new List<UserInfoTreeOutputDto>();
         }

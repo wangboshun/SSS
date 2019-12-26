@@ -18,7 +18,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.MenuInfo
 
         public readonly List<MenuInfoTreeOutputDto> Tree;
 
-        public MenuInfoRepository(SystemDbContext context) : base(context)
+        public MenuInfoRepository(PermissionDbContext context) : base(context)
         {
             Tree = new List<MenuInfoTreeOutputDto>();
         }

@@ -9,7 +9,7 @@ namespace SSS.Infrastructure.Repository.Coin.CoinInfo
     [DIService(ServiceLifetime.Scoped, typeof(ICoinInfoRepository))]
     public class CoinInfoRepository : Repository<Domain.Coin.CoinInfo.CoinInfo>, ICoinInfoRepository
     {
-        public CoinInfoRepository(SystemDbContext context) : base(context)
+        public CoinInfoRepository(CoinDbContext context) : base(context)
         {
         }
     }

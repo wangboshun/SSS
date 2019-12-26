@@ -23,32 +23,24 @@ using System.Linq.Expressions;
 namespace SSS.Infrastructure.Seedwork.Repository
 {
     [DIService(ServiceLifetime.Scoped, typeof(IRepository<>))]
-    public abstract class Repository<TEntity> : IRepository<TEntity>
+    public partial class Repository<TEntity> : IRepository<TEntity>
         where TEntity : Entity, new()
     {
         private readonly IErrorHandler _error;
         private readonly ILogger _logger;
-        public readonly SystemDbContext Db;
+        public readonly DbContextBase Db;
         public readonly DbSet<TEntity> DbSet;
 
-        public Repository(SystemDbContext context)
+        public Repository(DbContextBase context)
         {
             Db = context;
             DbSet = Db.Set<TEntity>();
             _error = (IErrorHandler)HttpContextService.Current.RequestServices.GetService(typeof(IErrorHandler));
-            _logger = (ILogger)HttpContextService.Current.RequestServices.GetService(typeof(ILogger<Repository<TEntity>>));
+            _logger = (ILogger)HttpContextService.Current.RequestServices.GetService(
+                typeof(ILogger<Repository<TEntity>>));
         }
 
-        /// <summary>
-        /// 执行sql
-        /// </summary>
-        /// <param name="sql"></param>
-        /// <param name="parameter"></param>
-        /// <returns></returns>
-        public virtual int Execute(string sql, params DbParameter[] parameter)
-        {
-            return Db.Database.ExecuteSqlRaw(sql);
-        }
+        #region 添加
 
         public virtual bool Add(TEntity obj, bool save = false)
         {
@@ -58,52 +50,80 @@ namespace SSS.Infrastructure.Seedwork.Repository
             return false;
         }
 
+        #endregion
+
+        #region 删除
+
         /// <summary>
-        ///     批量添加
+        ///     删除
         /// </summary>
-        /// <param name="list"></param>
-        /// <param name="save"></param>
-        public virtual bool AddList(List<TEntity> list, bool save = false)
+        /// <param name="id">Id</param>
+        /// <param name="save">是否保存  默认否</param>
+        public virtual bool Remove(string id, bool save = false)
         {
-            DbSet.AddRange(list);
+            var model = Get(id);
+            if (model == null)
+            {
+                //_error.Execute("数据不存在或已删除,删除失败！");
+                return false;
+            }
+
+            model.IsDelete = 1;
+            Update(model);
             if (save)
                 return SaveChanges() > 0;
             return false;
         }
 
         /// <summary>
-        ///     批量更新
+        ///     删除 Lambda删除
         /// </summary>
-        /// <param name="list"></param>
-        /// <param name="save"></param>
-        public virtual bool UpdateList(List<TEntity> list, bool save = false)
-        {
-            DbSet.UpdateRange(list);
-            if (save)
-                return SaveChanges() > 0;
-            return false;
-        }
-
-        /// <summary>
-        ///     批量删除
-        /// </summary>
-        /// <param name="predicate"></param>
-        /// <param name="save"></param>
-        public virtual bool DeleteList(Expression<Func<TEntity, bool>> predicate, bool save = false, bool have_delete = false)
+        /// <param name="predicate">Lambda表达式</param>
+        /// <param name="save">是否保存  默认否</param>
+        public virtual bool Remove(Expression<Func<TEntity, bool>> predicate, bool save = false,
+            bool have_delete = false)
         {
             if (!have_delete)
                 predicate = predicate.And(x => x.IsDelete == 0);
 
-            var list = DbSet.Where(predicate);
-            foreach (TEntity item in list)
+            var model = Get(predicate);
+            if (model == null)
             {
-                item.IsDelete = 1;
+                //_error.Execute("数据不存在或已删除,删除失败！");
+                return false;
             }
-            DbSet.UpdateRange(list);
+
+            model.IsDelete = 1;
+            Update(model);
             if (save)
                 return SaveChanges() > 0;
             return false;
         }
+
+        #endregion
+
+        #region 更新
+
+        /// <summary>
+        ///     更新
+        /// </summary>
+        /// <param name="obj">实体</param>
+        /// <param name="save">是否保存  默认否</param>
+        public virtual bool Update(TEntity obj, bool save = false)
+        {
+            DbSet.Attach(obj);
+            var entry = Db.Entry(obj);
+            entry.State = EntityState.Modified;
+            entry.Property(x => x.CreateTime).IsModified = false;
+            entry.Property(x => x.Id).IsModified = false;
+            if (save)
+                return SaveChanges() > 0;
+            return false;
+        }
+
+        #endregion
+
+        #region 查询
 
         /// <summary>
         ///     Id查询 
@@ -158,7 +178,8 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// <param name="sql">SQL</param>
         /// <param name="predicate">Lambda表达式</param>
         /// <returns></returns>
-        public virtual IQueryable<TEntity> GetBySql(string sql, Expression<Func<TEntity, bool>> predicate, bool have_delete = false)
+        public virtual IQueryable<TEntity> GetBySql(string sql, Expression<Func<TEntity, bool>> predicate,
+            bool have_delete = false)
         {
             if (!have_delete)
                 predicate = predicate.And(x => x.IsDelete == 0);
@@ -190,7 +211,8 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// <param name="pagesize">大小</param>
         /// <param name="count">总数量</param>
         /// <returns></returns>
-        public IQueryable<TEntity> GetBySql(string sql, Expression<Func<TEntity, bool>> predicate, int pageindex, int pagesize, ref int count, bool have_delete = false)
+        public IQueryable<TEntity> GetBySql(string sql, Expression<Func<TEntity, bool>> predicate, int pageindex,
+            int pagesize, ref int count, bool have_delete = false)
         {
             if (!have_delete)
                 predicate = predicate.And(x => x.IsDelete == 0);
@@ -243,13 +265,15 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// <param name="predicate">Lambda表达式</param>
         /// <param name="count">总数量</param>
         /// <returns></returns>
-        public IQueryable<TEntity> GetPage(int pageindex, int pagesize, Expression<Func<TEntity, bool>> predicate, ref int count, bool have_delete = false)
+        public IQueryable<TEntity> GetPage(int pageindex, int pagesize, Expression<Func<TEntity, bool>> predicate,
+            ref int count, bool have_delete = false)
         {
             if (!have_delete)
                 predicate = predicate.And(x => x.IsDelete == 0);
 
             count = DbSet.Where(predicate).Count();
-            return DbSet.OrderByDescending(x => x.CreateTime).Where(predicate).Skip(pagesize * pageindex).Take(pagesize);
+            return DbSet.OrderByDescending(x => x.CreateTime).Where(predicate).Skip(pagesize * pageindex)
+                .Take(pagesize);
         }
 
         /// <summary>
@@ -268,76 +292,88 @@ namespace SSS.Infrastructure.Seedwork.Repository
             if (pageindex > 0 && pagesize > 0)
             {
                 string limit = " limit {1},{2} ";
-                var data = Db.Database.SqlQuery<TEntity>(string.Format(sql + limit, $" DISTINCT {field}.* ", pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
+                var data = Db.Database.SqlQuery<TEntity>(string.Format(sql + limit, $" DISTINCT {field}.* ",
+                    pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
                 return new Pages<IEnumerable<TEntity>>(data, count);
             }
+
             {
                 var data = Db.Database.SqlQuery<TEntity>(string.Format(sql, $" DISTINCT {field}.* "));
                 return new Pages<IEnumerable<TEntity>>(data, count);
             }
         }
 
+        #endregion
+
+        #region 批量操作
+
         /// <summary>
-        ///     更新
+        ///     批量添加
         /// </summary>
-        /// <param name="obj">实体</param>
-        /// <param name="save">是否保存  默认否</param>
-        public virtual bool Update(TEntity obj, bool save = false)
+        /// <param name="list"></param>
+        /// <param name="save"></param>
+        public virtual bool AddList(List<TEntity> list, bool save = false)
         {
-            DbSet.Attach(obj);
-            var entry = Db.Entry(obj);
-            entry.State = EntityState.Modified;
-            entry.Property(x => x.CreateTime).IsModified = false;
-            entry.Property(x => x.Id).IsModified = false;
+            DbSet.AddRange(list);
             if (save)
                 return SaveChanges() > 0;
             return false;
         }
 
         /// <summary>
-        ///     删除
+        ///     批量更新
         /// </summary>
-        /// <param name="id">Id</param>
-        /// <param name="save">是否保存  默认否</param>
-        public virtual bool Remove(string id, bool save = false)
+        /// <param name="list"></param>
+        /// <param name="save"></param>
+        public virtual bool UpdateList(List<TEntity> list, bool save = false)
         {
-            var model = Get(id);
-            if (model == null)
-            {
-                //_error.Execute("数据不存在或已删除,删除失败！");
-                return false;
-            }
-
-            model.IsDelete = 1;
-            Update(model);
+            DbSet.UpdateRange(list);
             if (save)
                 return SaveChanges() > 0;
             return false;
         }
 
         /// <summary>
-        ///     删除 Lambda删除
+        ///     批量删除
         /// </summary>
-        /// <param name="predicate">Lambda表达式</param>
-        /// <param name="save">是否保存  默认否</param>
-        public virtual bool Remove(Expression<Func<TEntity, bool>> predicate, bool save = false, bool have_delete = false)
+        /// <param name="predicate"></param>
+        /// <param name="save"></param>
+        public virtual bool DeleteList(Expression<Func<TEntity, bool>> predicate, bool save = false,
+            bool have_delete = false)
         {
             if (!have_delete)
                 predicate = predicate.And(x => x.IsDelete == 0);
 
-            var model = Get(predicate);
-            if (model == null)
+            var list = DbSet.Where(predicate);
+            foreach (TEntity item in list)
             {
-                //_error.Execute("数据不存在或已删除,删除失败！");
-                return false;
+                item.IsDelete = 1;
             }
 
-            model.IsDelete = 1;
-            Update(model);
+            DbSet.UpdateRange(list);
             if (save)
                 return SaveChanges() > 0;
             return false;
         }
+
+        #endregion
+
+        #region Execute
+
+        /// <summary>
+        /// 执行sql
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        public virtual int Execute(string sql, params DbParameter[] parameter)
+        {
+            return Db.Database.ExecuteSqlRaw(sql);
+        }
+
+        #endregion
+
+        #region 其他
 
         /// <summary>
         ///     提交
@@ -398,16 +434,18 @@ namespace SSS.Infrastructure.Seedwork.Repository
 
             return sqlparameter.ToArray();
         }
-    }
+
+        #endregion
+    } 
 
     [DIService(ServiceLifetime.Scoped, typeof(IRepository<,,>))]
     public abstract class Repository<TEntity, TInput, TOutput> : Repository<TEntity>,
-        IRepository<TEntity, TInput, TOutput>
-        where TEntity : Entity, new()
-        where TInput : InputDtoBase
-        where TOutput : OutputDtoBase
+            IRepository<TEntity, TInput, TOutput>
+            where TEntity : Entity, new()
+            where TInput : InputDtoBase
+            where TOutput : OutputDtoBase
     {
-        public Repository(SystemDbContext context) : base(context)
+        public Repository(DbContextBase context) : base(context)
         {
         }
     }
