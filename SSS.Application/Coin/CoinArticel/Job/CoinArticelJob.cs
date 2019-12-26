@@ -90,7 +90,7 @@ namespace SSS.Application.Coin.CoinArticel.Job
                 }
 
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
                 var source = context.CoinArticel.ToList();
 
                 List<Domain.Coin.CoinArticel.CoinArticel> list = new List<Domain.Coin.CoinArticel.CoinArticel>();
@@ -151,7 +151,7 @@ namespace SSS.Application.Coin.CoinArticel.Job
                 JToken data = json.GetJsonValue("list");
 
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
 
                 var source = context.CoinArticel.ToList();
 
@@ -219,7 +219,7 @@ namespace SSS.Application.Coin.CoinArticel.Job
                 }
 
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
                 var source = context.CoinArticel.ToList();
 
                 List<Domain.Coin.CoinArticel.CoinArticel> list = new List<Domain.Coin.CoinArticel.CoinArticel>();
@@ -281,7 +281,7 @@ namespace SSS.Application.Coin.CoinArticel.Job
                 JToken data = json.GetJsonValue("list");
 
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
 
                 var source = context.CoinArticel.ToList();
 

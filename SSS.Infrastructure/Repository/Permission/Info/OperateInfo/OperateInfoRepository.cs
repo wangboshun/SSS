@@ -18,7 +18,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.OperateInfo
 
         public readonly List<OperateInfoTreeOutputDto> Tree;
 
-        public OperateInfoRepository(DbcontextBase context) : base(context)
+        public OperateInfoRepository(SystemDbContext context) : base(context)
         {
             Tree = new List<OperateInfoTreeOutputDto>();
         }

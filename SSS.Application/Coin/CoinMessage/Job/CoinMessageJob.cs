@@ -71,7 +71,7 @@ namespace SSS.Application.Coin.CoinMessage.Job
                 {
                     List<Domain.Coin.CoinMessage.CoinMessage> list = new List<Domain.Coin.CoinMessage.CoinMessage>();
                     using var scope = _scopeFactory.CreateScope();
-                    using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+                    using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
                     var source = context.CoinMessage.ToList();
 
                     for (int i = 0; i < 10; i++)

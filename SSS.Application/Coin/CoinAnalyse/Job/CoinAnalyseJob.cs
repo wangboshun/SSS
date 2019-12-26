@@ -102,7 +102,7 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
             try
             {
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
 
                 List<CoinSymbols> allcoin = _huobi.GetAllCoin();
 
@@ -158,7 +158,7 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
             try
             {
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
 
                 var Average = context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 1).ToList();
                 var Macd = context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 2).ToList();
@@ -298,7 +298,7 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
                 }
 
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
 
                 if (ListCoin.Any())
                 {
@@ -369,7 +369,7 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
                 }
 
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
 
                 if (ListCoin.Any())
                 {
@@ -453,7 +453,7 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
                 }
 
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
 
                 if (ListCoin.Any())
                 {
@@ -484,7 +484,7 @@ namespace SSS.Application.Coin.CoinAnalyse.Job
             try
             {
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
                 var info = context.CoinInfo.FirstOrDefault(x => x.Coin.Equals(coin.ToUpper()));
                 if (info != null)
                     return info.RomteLogo;

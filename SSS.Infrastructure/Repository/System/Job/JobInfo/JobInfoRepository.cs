@@ -5,6 +5,7 @@ using SSS.Domain.System.Job.JobInfo.Dto;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Seedwork.Repository;
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Ef;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace SSS.Infrastructure.Repository.System.Job.JobInfo
     [DIService(ServiceLifetime.Scoped, typeof(IJobInfoRepository))]
     public class JobInfoRepository : Repository<SSS.Domain.System.Job.JobInfo.JobInfo>, IJobInfoRepository
     {
-        public JobInfoRepository(DbcontextBase context) : base(context)
+        public JobInfoRepository(SystemDbContext context) : base(context)
         {
         }
 

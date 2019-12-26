@@ -7,9 +7,9 @@ using System.Data;
 using System.Data.Common;
 using System.Reflection;
 
-namespace SSS.Infrastructure.Seedwork.DbContext
+namespace SSS.Infrastructure.Util.Ef
 {
-    public static class DbContextExtensions
+    public static class DbContextEx
     {
         public static int Count(this DatabaseFacade facade, string sql, params object[] parameters)
         {

@@ -79,7 +79,7 @@ namespace SSS.Application.Coin.CoinTrade.Job
             try
             {
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
 
                 Dictionary<string, List<Domain.Coin.CoinKLineData.CoinKLineData>> coin_kline_data = new Dictionary<string, List<Domain.Coin.CoinKLineData.CoinKLineData>>();
 
@@ -238,7 +238,7 @@ namespace SSS.Application.Coin.CoinTrade.Job
             try
             {
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
 
                 var cointrade = context.CoinTrade.FirstOrDefault(x => x.Coin.Equals(coin) &&
                                                                       x.Status == 1 &&
@@ -290,7 +290,7 @@ namespace SSS.Application.Coin.CoinTrade.Job
             try
             {
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
 
                 var cointrade = context.CoinTrade.FirstOrDefault(x => x.Coin.Equals(coin) &&
                                                                       x.Status == 1 &&
@@ -341,7 +341,7 @@ namespace SSS.Application.Coin.CoinTrade.Job
         private void Ping(string id, double price)
         {
             using var scope = _scopeFactory.CreateScope();
-            using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+            using var context = scope.ServiceProvider.GetRequiredService<SystemDbContext>();
             context.Database.ExecuteSqlRaw("UPDATE CoinTrade SET Status=2,Last_Price={0},UpdateTime=Now()  where Id={1}", price, id);
             context.SaveChanges();
 

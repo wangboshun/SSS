@@ -18,7 +18,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
 
         public readonly List<PowerInfoTreeOutputDto> Tree;
 
-        public PowerInfoRepository(DbcontextBase context) : base(context)
+        public PowerInfoRepository(SystemDbContext context) : base(context)
         {
             Tree = new List<PowerInfoTreeOutputDto>();
         }

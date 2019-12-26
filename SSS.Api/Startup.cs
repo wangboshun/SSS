@@ -137,6 +137,7 @@ namespace SSS.Api
         /// Configure
         /// </summary>
         /// <param name="app"></param>
+        /// <param name="_httpContextFactory"></param>
         /// <param name="env"></param>
         /// <param name="senparcSetting"></param>
         /// <param name="senparcWeixinSetting"></param>

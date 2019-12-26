@@ -76,7 +76,7 @@ namespace SSS.Application.Coin.CoinInfo.Job
                 List<CoinJson> data = JsonConvert.DeserializeObject<List<CoinJson>>(json);
 
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
                 var source = context.CoinInfo.ToList();
 
                 List<Domain.Coin.CoinInfo.CoinInfo> list = new List<Domain.Coin.CoinInfo.CoinInfo>();

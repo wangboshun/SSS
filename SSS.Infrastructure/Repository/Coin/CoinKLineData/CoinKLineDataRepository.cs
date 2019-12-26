@@ -9,7 +9,7 @@ namespace SSS.Infrastructure.Repository.Coin.CoinKLineData
     [DIService(ServiceLifetime.Scoped, typeof(ICoinKLineDataRepository))]
     public class CoinKLineDataRepository : Repository<SSS.Domain.Coin.CoinKLineData.CoinKLineData>, ICoinKLineDataRepository
     {
-        public CoinKLineDataRepository(DbcontextBase context) : base(context)
+        public CoinKLineDataRepository(SystemDbContext context) : base(context)
         {
         }
     }

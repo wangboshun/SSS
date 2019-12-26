@@ -9,7 +9,7 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.RoleGroupPowerGroupR
     [DIService(ServiceLifetime.Scoped, typeof(IRoleGroupPowerGroupRelationRepository))]
     public class RoleGroupPowerGroupRelationRepository : Repository<SSS.Domain.Permission.Relation.RoleGroupPowerGroupRelation.RoleGroupPowerGroupRelation>, IRoleGroupPowerGroupRelationRepository
     {
-        public RoleGroupPowerGroupRelationRepository(DbcontextBase context) : base(context)
+        public RoleGroupPowerGroupRelationRepository(SystemDbContext context) : base(context)
         {
         }
     }

@@ -10,6 +10,7 @@ using SSS.Domain.Seedwork.Model;
 using SSS.Domain.Seedwork.Repository;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.Ef;
 using SSS.Infrastructure.Util.Http;
 using SSS.Infrastructure.Util.Lambda;
 
@@ -27,10 +28,10 @@ namespace SSS.Infrastructure.Seedwork.Repository
     {
         private readonly IErrorHandler _error;
         private readonly ILogger _logger;
-        public readonly DbcontextBase Db;
+        public readonly SystemDbContext Db;
         public readonly DbSet<TEntity> DbSet;
 
-        public Repository(DbcontextBase context)
+        public Repository(SystemDbContext context)
         {
             Db = context;
             DbSet = Db.Set<TEntity>();
@@ -406,7 +407,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         where TInput : InputDtoBase
         where TOutput : OutputDtoBase
     {
-        public Repository(DbcontextBase context) : base(context)
+        public Repository(SystemDbContext context) : base(context)
         {
         }
     }

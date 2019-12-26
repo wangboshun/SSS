@@ -79,7 +79,7 @@ namespace SSS.Application.Coin.CoinKLineData.Job
             try
             {
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<DbcontextBase>();
+                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
                 List<Domain.Coin.CoinKLineData.CoinKLineData> old_list = new List<Domain.Coin.CoinKLineData.CoinKLineData>();
 
                 foreach (CoinTime time in Enum.GetValues(typeof(CoinTime)))

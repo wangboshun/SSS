@@ -14,7 +14,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.RoleGroup
     {
         private static string field = "rg";
 
-        public RoleGroupRepository(DbcontextBase context) : base(context)
+        public RoleGroupRepository(SystemDbContext context) : base(context)
         {
 
         }

@@ -14,7 +14,7 @@ namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
     {
         private static string field = "pg";
 
-        public PowerGroupRepository(DbcontextBase context) : base(context)
+        public PowerGroupRepository(SystemDbContext context) : base(context)
         {
 
         }
