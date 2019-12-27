@@ -4,6 +4,7 @@ using Quartz;
 
 using SqlSugar;
 
+using SSS.Domain.System.Job.JobError;
 using SSS.Domain.System.Job.JobInfo;
 using SSS.Infrastructure.Util.Config;
 using SSS.Infrastructure.Util.Json;
@@ -64,6 +65,9 @@ namespace SSS.Application.Seedwork.Job
 
                 var trigger = (Quartz.Impl.Triggers.CronTriggerImpl)((Quartz.Impl.JobExecutionContextImpl)context).Trigger;
 
+                var result = context.Scheduler.Context.Get(trigger.FullName + "_Result");
+                var exception = context.Scheduler.Context.Get(trigger.FullName + "_Exception");
+
                 var job = db.Queryable<JobInfo>().Where(x => x.JobName.Equals(trigger.Name) && x.JobGroup.Equals(trigger.JobGroup) && x.IsDelete == 0)?.First();
 
                 if (job == null)
@@ -78,7 +82,7 @@ namespace SSS.Application.Seedwork.Job
                         JobCount = 1,
                         JobClass = context.JobDetail.JobType.FullName,
                         JobStatus = (int)TriggerState.Normal,
-                        JobResult = "",
+                        JobResult = result.ToJson(),
                         JobCron = trigger.CronExpressionString,
                         CreateTime = DateTime.Now,
                         JobStartTime = trigger.StartTimeUtc.LocalDateTime,
@@ -94,11 +98,26 @@ namespace SSS.Application.Seedwork.Job
                     job.JobCount += 1;
                     job.JobNextTime = trigger.GetNextFireTimeUtc().GetValueOrDefault().LocalDateTime;
                     job.UpdateTime = DateTime.Now;
-                    job.JobResult = "";
+                    job.JobResult = result.ToJson();
                     db.Updateable(job).ExecuteCommand();
                 }
 
-                ApplicationLog.CreateLogger<JobListener>().LogInformation($" 监听------> 任务名：{trigger.JobKey}  下次运行时间：{trigger.GetNextFireTimeUtc().GetValueOrDefault().LocalDateTime }");
+                //记录错误
+                if (exception != null)
+                {
+                    var error = new JobError
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        JobId = job.Id,
+                        JobCount = job.JobCount,
+                        IsDelete = 0,
+                        CreateTime = DateTime.Now,
+                        Message = exception.ToJson()
+                    };
+                    db.Insertable(error).ExecuteCommand();
+                }
+
+                ApplicationLog.CreateLogger<JobListener>().LogInformation($"任务监听：{job.ToJson()}");
                 return Task.CompletedTask;
             }
         }

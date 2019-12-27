@@ -35,22 +35,27 @@ namespace SSS.Application.Seedwork.Job
         /// <returns></returns>
         public Task Execute(IJobExecutionContext context)
         {
-            StringBuilder str = new StringBuilder();
-
-            JobKey key = context.JobDetail.Key;
-            JobDataMap dataMap = context.JobDetail.JobDataMap;
-            str.Append($"正在运行---> 任务：{key} ");
-
-            if (dataMap.Count > 0)
-                str.Append($"任务传递参数：{ dataMap.ToJson() } ");
-
-            str.Append("任务时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffffff "));
-
-            return Task.Run(() =>
+            var trigger = (Quartz.Impl.Triggers.CronTriggerImpl)((Quartz.Impl.JobExecutionContextImpl)context).Trigger;
+            try
             {
-                _logger.LogDebug(str.ToString());
+                StringBuilder str = new StringBuilder();
+                JobKey key = context.JobDetail.Key;
+                JobDataMap dataMap = context.JobDetail.JobDataMap;
+                str.Append($"正在运行---> 任务：{key} ");
 
-            });
+                if (dataMap.Count > 0)
+                    str.Append($"任务传递参数：{ dataMap.ToJson() } ");
+
+                str.Append("任务时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffffff "));
+
+                context.Scheduler.Context.Put(trigger.FullName + "_Result", "MyJob2");
+                return Task.FromResult(trigger.FullName + "Success");
+            }
+            catch (Exception ex)
+            {
+                context.Scheduler.Context.Put(trigger.FullName + "_Exception", ex);
+                return Task.FromResult(trigger.FullName + "Exception");
+            }
         }
     }
 }
