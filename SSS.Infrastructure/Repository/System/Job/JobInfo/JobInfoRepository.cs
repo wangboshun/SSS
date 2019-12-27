@@ -27,7 +27,7 @@ namespace SSS.Infrastructure.Repository.System.Job.JobInfo
             string where = $"  WHERE  i.JobName = '{job_name}'   AND i.JobGroup =  '{job_group}' ";
             if (!string.IsNullOrWhiteSpace(job_name) && !string.IsNullOrWhiteSpace(job_group))
                 sql += where;
-
+            
             int count = Db.Database.Count(string.Format(sql, " count(*) ", job_name, job_group));
 
             sql += " GROUP BY i.Id ";

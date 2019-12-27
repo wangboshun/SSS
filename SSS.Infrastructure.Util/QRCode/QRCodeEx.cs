@@ -5,18 +5,18 @@ using System.Drawing;
 namespace SSS.Infrastructure.Util.QRCode
 {
     /// <summary>
-    ///     QRCodeEx
+    ///     QrCodeEx
     /// </summary>
-    public class QRCodeEx
+    public class QrCodeEx
     {
-        private static QRCodeEx _singleton;
+        private static QrCodeEx _singleton;
         private static readonly object _lock = new object();
 
-        public static QRCodeEx Instance()
+        public static QrCodeEx Instance()
         {
             lock (_lock)
             {
-                if (_singleton == null) _singleton = new QRCodeEx();
+                if (_singleton == null) _singleton = new QrCodeEx();
             }
 
             return _singleton;
