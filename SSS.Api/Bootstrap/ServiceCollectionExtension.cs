@@ -41,6 +41,7 @@ namespace SSS.Api.Bootstrap
 
             // Application
             services.AutoRegisterServicesFromAssembly("SSS.Application.Seedwork");
+            services.AutoRegisterServicesFromAssembly("SSS.Application.Job");
             services.AutoRegisterServicesFromAssembly("SSS.Application");
 
             // Infra 

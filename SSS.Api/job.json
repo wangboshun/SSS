@@ -1,8 +1,8 @@
 {
   "JobConfig": [
     {
-      "JobName": "Job1",
-      "JobClass": "SSS.Application.Seedwork.Job.MyJob1",
+      "JobName": "CoinAnalyseJob",
+      "JobClass": "SSS.Application.Job.Coin.CoinAnalyse.CoinAnalyseJob",
       "JobValue": [
         {
           "Name": "A",
@@ -19,9 +19,10 @@
           "Value": 0.22,
           "Type": "Double"
         }
-      ], 
+      ],
       "JobGroup": "job_group",
-      "JobCron": "0/10 * * * * ?"
+      "JobStatus": true,
+      "JobCron": "0/10 * * * * ? *"
     },
     {
       "JobName": "Job2",
@@ -32,7 +33,8 @@
           "Value": "a1",
           "Type": "String"
         }
-      ], 
+      ],
+      "JobStatus": false,
       "JobCron": "0/2 * * * * ?",
       "JobGroup": "job_group"
     }

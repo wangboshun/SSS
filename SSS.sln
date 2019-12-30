@@ -33,6 +33,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sdk", "Sdk", "{9319EFDA-3CE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SSS.DigitalCurrency", "SSS.DigitalCurrency\SSS.DigitalCurrency.csproj", "{7B4D77D8-401C-4730-8FD0-E34B5B410A6A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSS.Application.Job", "SSS.Application.Job\SSS.Application.Job.csproj", "{900B19F0-22EE-4BFD-BAEF-0AF2361146EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{7B4D77D8-401C-4730-8FD0-E34B5B410A6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B4D77D8-401C-4730-8FD0-E34B5B410A6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B4D77D8-401C-4730-8FD0-E34B5B410A6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{900B19F0-22EE-4BFD-BAEF-0AF2361146EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{900B19F0-22EE-4BFD-BAEF-0AF2361146EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{900B19F0-22EE-4BFD-BAEF-0AF2361146EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{900B19F0-22EE-4BFD-BAEF-0AF2361146EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,6 +100,7 @@ Global
 		{95D2B51C-C4A1-4FF3-B1E9-021289F9C801} = {16F30F74-E54E-4A73-BF18-1295941CD601}
 		{8842D10E-320B-4519-B728-8AF082111A30} = {4854499D-7605-4D98-B8F4-173E869DA6F7}
 		{7B4D77D8-401C-4730-8FD0-E34B5B410A6A} = {9319EFDA-3CEF-4635-B65D-7E2830D24558}
+		{900B19F0-22EE-4BFD-BAEF-0AF2361146EE} = {DB1FD4E3-5CB4-451D-AEBF-564FC2CB988D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B79E580D-F10B-49C2-B263-451E0C32800C}

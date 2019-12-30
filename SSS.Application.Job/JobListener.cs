@@ -1,20 +1,16 @@
-﻿using Microsoft.Extensions.Logging;
-
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Quartz;
-
 using SqlSugar;
-
 using SSS.Domain.System.Job.JobError;
 using SSS.Domain.System.Job.JobInfo;
 using SSS.Infrastructure.Util.Config;
 using SSS.Infrastructure.Util.Json;
 using SSS.Infrastructure.Util.Log;
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace SSS.Application.Seedwork.Job
+namespace SSS.Application.Job
 {
     public class JobListener : IJobListener
     {

@@ -51,6 +51,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc5" />
     <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
     <ProjectReference Include="..\SSS.Api.Seedwork\SSS.Api.Seedwork.csproj" />
+    <ProjectReference Include="..\SSS.Application.Job\SSS.Application.Job.csproj" />
     <ProjectReference Include="..\SSS.Application.Seedwork\SSS.Application.Seedwork.csproj" />
     <ProjectReference Include="..\SSS.Application\SSS.Application.csproj" />
   </ItemGroup>

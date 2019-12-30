@@ -1,8 +1,7 @@
-﻿using Quartz;
+﻿using System.Threading.Tasks;
+using Quartz;
 
-using System.Threading.Tasks;
-
-namespace SSS.Application.Seedwork.Job
+namespace SSS.Application.Job
 {
     public interface IJobManager
     {

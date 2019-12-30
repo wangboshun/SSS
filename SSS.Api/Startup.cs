@@ -24,7 +24,7 @@ using SSS.Api.Bootstrap;
 using SSS.Api.Seedwork.Filter;
 using SSS.Api.Seedwork.Json;
 using SSS.Api.Seedwork.Middleware;
-using SSS.Application.Seedwork.Job;
+using SSS.Application.Job;
 
 using StackExchange.Profiling.SqlFormatters;
 

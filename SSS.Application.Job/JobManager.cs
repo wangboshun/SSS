@@ -1,26 +1,21 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
 using Newtonsoft.Json.Linq;
-
 using Quartz;
 using Quartz.Impl.Matchers;
 using Quartz.Impl.Triggers;
 using Quartz.Spi;
-
 using SqlSugar;
-
 using SSS.Domain.System.Job.JobInfo;
 using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.Config;
 using SSS.Infrastructure.Util.IO;
 using SSS.Infrastructure.Util.Json;
 
-using System;
-using System.IO;
-using System.Threading.Tasks;
-
-namespace SSS.Application.Seedwork.Job
+namespace SSS.Application.Job
 {
     /// <summary>
     /// JobStartup启动类
@@ -358,6 +353,7 @@ namespace SSS.Application.Seedwork.Job
                     var job_group = item["JobGroup"].ToString(); //任务组
                     var job_cron = item["JobCron"].ToString(); //Cron
                     var value_result = item["JobValue"]; //传值
+                    var job_status = item["JobStatus"]; //状态
 
                     if (string.IsNullOrWhiteSpace(job_name) ||
                        string.IsNullOrWhiteSpace(job_cron) ||
@@ -372,29 +368,34 @@ namespace SSS.Application.Seedwork.Job
                         continue;
 
                     var job_class = Type.GetType(type_str); //类型
+                    if (job_class == null)
+                        continue;
 
                     JobDataMap data = GetJobDataMap(value_result);
 
                     //4、创建任务
                     var job_detail = JobBuilder.Create(job_class).WithIdentity(job_name, job_group).UsingJobData(data).Build();
 
-                    //5.1、创建一个触发器
-                    TriggerBuilder builder = TriggerBuilder.Create();
+                    //5.1 构建器
+                    var builder = CronScheduleBuilder.CronSchedule(job_cron);
 
-                    //如果是暂停状态,延时5秒执行，用于判断数据库状态   
-                    if (job != null && job.JobStatus == (int)TriggerState.Paused)
-                        builder.StartAt(DateTimeOffset.Now.AddSeconds(5));
+                    //5.2 触发器
+                    var trigger_builder = TriggerBuilder.Create();
 
-                    //5.2、创建一个触发器  WithMisfireHandlingInstructionNextWithExistingCount(不会执行暂停期间的次数)
-                    ITrigger trigger = builder.WithIdentity(job_name, job_group).WithSimpleSchedule(x => x.WithMisfireHandlingInstructionNextWithExistingCount()).WithCronSchedule(job_cron).ForJob(job_name, job_group).Build();
+                    //6、构建
+                    var trigger = trigger_builder.WithIdentity(job_name, job_group)
+                        .ForJob(job_name, job_group)
+                        .WithSchedule(builder.WithMisfireHandlingInstructionFireAndProceed())
+                        .Build();
 
-                    //6、监听
+                    //7、监听
                     AddListener(job_detail);
 
-                    //7、将触发器和任务器绑定到调度器中
+                    //8、将触发器和任务器绑定到调度器中
                     await _scheduler.ScheduleJob(job_detail, trigger);
 
-                    if (job != null && job.JobStatus == (int)TriggerState.Paused)
+                    //9、如果是暂停状态
+                    if (job != null && job.JobStatus == (int)TriggerState.Paused || !job_status.Value<bool>())
                         await PauseJob(job_name, job_group);
                 }
 
