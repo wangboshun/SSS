@@ -22,7 +22,7 @@
       ],
       "JobGroup": "job_group",
       "JobStatus": true,
-      "JobCron": "0/10 * * * * ? *"
+      "JobCron": "0 0/1 * * * ? *"
     },
     {
       "JobName": "Job2",

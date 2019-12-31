@@ -71,49 +71,15 @@ namespace SSS.DigitalCurrency.Huobi
         /// <param name="time"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        //public List<KLine> GetKLine(string coin, string quote, string time, int size)
-        //{
-        //    List<KLine> list = new List<KLine>();
-        //    try
-        //    {
-        //        WebClient http = new WebClient();
-
-        //        //延时，防止请求频率过高
-        //        Thread.Sleep(500);
-
-        //        string result = http.DownloadString($"https://api.huobiasia.vip/market/history/kline?period={time}&size={size}&symbol={coin + quote}");
-
-        //        JObject json_root = (JObject)JsonConvert.DeserializeObject(result);
-
-        //        if (json_root.GetValue("status").ToString().Equals("error"))
-        //            return null;
-
-        //        list = JsonConvert.DeserializeObject<List<KLine>>(json_root["data"]?.ToString());
-
-        //        foreach (var item in list) item.time = DateTimeConvert.ConvertIntDateTime(item.id);
-
-        //        return list;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(new EventId(ex.HResult), ex, "---GetKLine---");
-        //        return list;
-        //    }
-        //}
-
-        /// <summary>
-        ///     获取K线
-        /// </summary>
-        /// <param name="time"></param>
-        /// <param name="size"></param>
-        /// <returns></returns>
         public List<CoinKLineData> GetKLine(string coin, string quote, string time, int size)
         {
             try
             {
                 WebClient http = new WebClient();
 
-                var result = http.DownloadString($"https://api.huobiasia.vip/market/history/kline?period={time}&size={size}&symbol={coin + quote}");
+                var result =
+                    http.DownloadString(
+                        $"https://api.huobiasia.vip/market/history/kline?period={time}&size={size}&symbol={coin + quote}");
 
                 if (string.IsNullOrWhiteSpace(result)) return null;
 
@@ -165,5 +131,6 @@ namespace SSS.DigitalCurrency.Huobi
                 throw;
             }
         }
+
     }
 }

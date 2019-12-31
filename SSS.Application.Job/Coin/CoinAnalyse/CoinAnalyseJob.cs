@@ -34,10 +34,6 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
         private readonly Indicator _indicator;
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _scopeFactory;
-
-        private readonly List<Domain.Coin.CoinAnalyse.CoinAnalyse> ListCoin =
-            new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
-
         private static object _lock = new object();
 
         public CoinAnalyseJob(ILogger<CoinAnalyseJob> logger, IServiceScopeFactory scopeFactory, HuobiUtils huobi,
@@ -53,52 +49,46 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
         {
             lock (_lock)
             {
+                Stopwatch watch = new Stopwatch();
+                watch.Start();
+
                 var trigger = (Quartz.Impl.Triggers.CronTriggerImpl)((Quartz.Impl.JobExecutionContextImpl)context).Trigger;
                 try
                 {
-                    Stopwatch watch = new Stopwatch();
-                    watch.Start();
-
                     StringBuilder str = new StringBuilder();
-                    JobKey key = context.JobDetail.Key;
-                    JobDataMap dataMap = context.JobDetail.JobDataMap;
-                    str.Append($"正在运行---> 任务：{key} ");
+                    str.Append($"正在运行---> 任务：{context.JobDetail.Key} ");
 
-                    if (dataMap.Count > 0)
-                        str.Append($"任务传递参数：{ dataMap.ToJson() } ");
+                    if (context.JobDetail.JobDataMap.Count > 0)
+                        str.Append($"任务传递参数：{ context.JobDetail.JobDataMap.ToJson() } ");
 
                     str.Append("任务时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffffff "));
 
                     var coin_array = _huobi.GetAllCoin();
 
-                    //Parallel.ForEach(coin_array, (item) =>
-                    //{
-                    //    List<CoinKLineData> kline = null;
-                    //    var retry = Policy.Handle<WebException>().Retry(3, (ex, count, text) =>
-                    //    {
-                    //        _logger.LogError(new EventId(ex.HResult), ex, $"--- GetKLine Exception,进行重试 {count}次---");
-                    //        Thread.Sleep(100);
-                    //    });
-
-                    //    retry.Execute(() =>
-                    //    {
-                    //        kline = _huobi.GetKLine(item.base_currency, item.quote_currency, CoinTime.Time_1day.ToString().Split('_')[1], 2000);
-                    //    });
-
-                    //    if (kline == null || kline.Count <= 0) return;
-                    //    Average(item.base_currency + "-" + item.quote_currency, kline, CoinTime.Time_1day);
-                    //    MACD(item.base_currency + "-" + item.quote_currency, kline, CoinTime.Time_1day);
-                    //    KDJ(item.base_currency + "-" + item.quote_currency, kline, CoinTime.Time_1day);
-                    //});
-
-                    foreach (var item in coin_array)
+                    Parallel.ForEach(coin_array, (item) =>
                     {
-                        var kline = _huobi.GetKLine(item.base_currency, item.quote_currency, CoinTime.Time_1day.ToString().Split('_')[1], 2000);
-                        if (kline == null || kline.Count <= 0) continue;
-                        Average(item.base_currency + "-" + item.quote_currency, kline, CoinTime.Time_1day);
-                        MACD(item.base_currency + "-" + item.quote_currency, kline, CoinTime.Time_1day);
-                        KDJ(item.base_currency + "-" + item.quote_currency, kline, CoinTime.Time_1day);
-                    }
+                        List<CoinKLineData> kline = null;
+
+                        var retry = Policy.Handle<WebException>().Retry(3, (ex, count, text) =>
+                        {
+                            _logger.LogError(new EventId(ex.HResult), ex, $"---CoinAnalyseJob GetKLine Exception,进行重试 {count}次---");
+                            Thread.Sleep(100);
+                        });
+
+                        retry.Execute(() =>
+                        {
+                            kline = _huobi.GetKLine(item.base_currency, item.quote_currency, CoinTime.Time_1day.ToString().Split('_')[1], 2000);
+                        });
+
+                        if (kline == null)
+                            return;
+
+                        string coin = item.base_currency + "-" + item.quote_currency;
+
+                        Average(coin, kline, CoinTime.Time_1day);
+                        MACD(coin, kline, CoinTime.Time_1day);
+                        KDJ(coin, kline, CoinTime.Time_1day);
+                    });
 
                     Analyse(CoinTime.Time_1day);
 
@@ -143,7 +133,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
 
                     List<string> removecoin = new List<string>();
                     list = list.GroupBy(c => c.Coin).Select(c => c.First()).ToList();
-
+                    List<Domain.Coin.CoinAnalyse.CoinAnalyse> list_coin = new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
                     foreach (var item in list)
                         if (item.Desc.Contains("☆"))
                         {
@@ -164,20 +154,17 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
                                 Desc = item.Desc,
                                 IndicatorType = 0
                             };
-                            ListCoin.Add(model);
+                            list_coin.Add(model);
                         }
 
-                    if (ListCoin.Any())
-                    {
-                        context.Database.ExecuteSqlRaw("UPDATE CoinAnalyse SET IsDelete=1 where IndicatorType=0 ");
-                        string sql = @"UPDATE CoinAnalyse SET IsDelete=1 where Coin in ('{0}')";
-                        sql = string.Format(sql, string.Join("','", removecoin.ToArray()));
-                        context.Database.ExecuteSqlRaw(sql);
-                        context.CoinAnalyse.AddRange(ListCoin);
-                        context.SaveChanges();
-                        ListCoin.Clear();
-                        Console.WriteLine("---Analyse  SaveChanges---");
-                    }
+                    if (!list_coin.Any()) return;
+                    context.Database.ExecuteSqlRaw("UPDATE CoinAnalyse SET IsDelete=1 where IndicatorType=0 ");
+                    string sql = @"UPDATE CoinAnalyse SET IsDelete=1 where Coin in ('{0}')";
+                    sql = string.Format(sql, string.Join("','", removecoin.ToArray()));
+                    context.Database.ExecuteSqlRaw(sql);
+                    context.CoinAnalyse.AddRange(list_coin);
+                    context.SaveChanges();
+                    Console.WriteLine("---Analyse  SaveChanges---");
                 }
                 catch (Exception ex)
                 {
@@ -222,7 +209,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
 
                 //获取时间段
                 string typename = GetTimeType(type);
-
+                List<Domain.Coin.CoinAnalyse.CoinAnalyse> list_coin = new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
                 if (data5.Count > 0 && data10.Count > 0 && data5.First().Item2 > data10.First().Item2)
                 {
                     Domain.Coin.CoinAnalyse.CoinAnalyse model = new Domain.Coin.CoinAnalyse.CoinAnalyse
@@ -261,25 +248,21 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
 
                     model.HighRange = model.High / model.Low - 1;
                     model.CloseRange = model.Close / model.Open - 1;
-                    ListCoin.Add(model);
+                    list_coin.Add(model);
                 }
-
+                if (!list_coin.Any()) return;
                 using var scope = _scopeFactory.CreateScope();
                 using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
-
-                if (ListCoin.Any())
-                {
-                    context.Database.ExecuteSqlRaw("UPDATE CoinAnalyse SET IsDelete=1 where IndicatorType=1 ");
-                    context.CoinAnalyse.AddRange(ListCoin);
-                    context.SaveChanges();
-                    ListCoin.Clear();
-                    Console.WriteLine("---Average  SaveChanges---");
-                }
+                context.Database.ExecuteSqlRaw("UPDATE CoinAnalyse SET IsDelete=1 where IndicatorType=1 ");
+                context.CoinAnalyse.AddRange(list_coin);
+                context.SaveChanges();
+                Console.WriteLine("---Average  SaveChanges---");
             }
             catch (Exception ex)
             {
                 _logger.LogError(new EventId(ex.HResult), ex, "---Average---");
             }
+            return;
         }
 
         #endregion
@@ -302,7 +285,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
 
                 //获取时间段
                 string typename = GetTimeType(type);
-
+                List<Domain.Coin.CoinAnalyse.CoinAnalyse> list_coin = new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
                 Domain.Coin.CoinAnalyse.CoinAnalyse model = new Domain.Coin.CoinAnalyse.CoinAnalyse
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -324,19 +307,15 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
 
                 Console.WriteLine($" {coin}【{typename}】MACD,金叉");
 
-                ListCoin.Add(model);
+                list_coin.Add(model);
 
+                if (!list_coin.Any()) return;
                 using var scope = _scopeFactory.CreateScope();
                 using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
-
-                if (ListCoin.Any())
-                {
-                    context.Database.ExecuteSqlRaw("UPDATE CoinAnalyse SET IsDelete=1 where IndicatorType=2 ");
-                    context.CoinAnalyse.AddRange(ListCoin);
-                    context.SaveChanges();
-                    ListCoin.Clear();
-                    Console.WriteLine("---MACD  SaveChanges---");
-                }
+                context.Database.ExecuteSqlRaw("UPDATE CoinAnalyse SET IsDelete=1 where IndicatorType=2 ");
+                context.CoinAnalyse.AddRange(list_coin);
+                context.SaveChanges();
+                Console.WriteLine("---MACD  SaveChanges---");
             }
             catch (Exception e)
             {
@@ -378,7 +357,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
                 if (kdj.FirstOrDefault()?.Item2 > 80 && kdj.FirstOrDefault()?.Item3 > 80 &&
                     kdj.FirstOrDefault()?.Item4 > 80)
                     desc = $"【{typename}级别,KDJ超买状态，建议卖出】";
-
+                List<Domain.Coin.CoinAnalyse.CoinAnalyse> list_coin = new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
                 Domain.Coin.CoinAnalyse.CoinAnalyse model = new Domain.Coin.CoinAnalyse.CoinAnalyse
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -399,19 +378,15 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
                 model.CloseRange = model.Close / model.Open - 1;
 
                 Console.WriteLine($" {coin}【{typename}】KDJ,{desc}");
-                ListCoin.Add(model);
+                list_coin.Add(model);
 
+                if (!list_coin.Any()) return;
                 using var scope = _scopeFactory.CreateScope();
                 using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
-
-                if (ListCoin.Any())
-                {
-                    context.Database.ExecuteSqlRaw("UPDATE CoinAnalyse SET IsDelete=1 where IndicatorType=3 ");
-                    context.CoinAnalyse.AddRange(ListCoin);
-                    context.SaveChanges();
-                    ListCoin.Clear();
-                    Console.WriteLine("---KDJ  SaveChanges---");
-                }
+                context.Database.ExecuteSqlRaw("UPDATE CoinAnalyse SET IsDelete=1 where IndicatorType=3 ");
+                context.CoinAnalyse.AddRange(list_coin);
+                context.SaveChanges();
+                Console.WriteLine("---KDJ  SaveChanges---");
             }
             catch (Exception e)
             {

@@ -93,7 +93,7 @@ namespace SSS.Application.Coin.CoinKLineData.Job
 
                     var retry = Policy.Handle<WebException>().Retry(3, (ex, count, text) =>
                     {
-                        _logger.LogError(new EventId(ex.HResult), ex, $"--- GetKLine Exception,进行重试 {count}次---");
+                        _logger.LogError(new EventId(ex.HResult), ex, $"---CoinKLineDataJob GetKLine Exception,进行重试 {count}次---");
                         Thread.Sleep(100);
                     });
 
