@@ -80,7 +80,7 @@ namespace SSS.Application.Job
         /// <param name="job_name"></param>
         /// <param name="job_group"></param>
         /// <returns></returns>
-        public async Task<bool> AddJob(string job_name, string job_group, string jobcron, string jobvalue, string job_class_str)
+        public async Task<bool> AddJob(string job_name, string job_group, string job_cron, string job_value, string job_class_str)
         {
             SqlSugarClient db = new SqlSugarClient(
                 new ConnectionConfig()
@@ -90,17 +90,23 @@ namespace SSS.Application.Job
                     IsAutoCloseConnection = true
                 });
 
-            JobDataMap data = GetJobDataMapByStr(jobvalue);
+            JobDataMap data = GetJobDataMapByStr(job_value);
             var jobclass = Type.GetType(job_class_str);
 
             //4、创建任务
             var jobDetail = JobBuilder.Create(jobclass).WithIdentity(job_name, job_group).UsingJobData(data).Build();
 
-            //5.1、创建一个触发器
-            TriggerBuilder builder = TriggerBuilder.Create();
+            //5.1 构建器
+            var builder = CronScheduleBuilder.CronSchedule(job_cron);
 
-            //5.2、创建一个触发器  WithMisfireHandlingInstructionNextWithExistingCount(不会执行暂停期间的次数)
-            ITrigger trigger = builder.WithIdentity(job_name, job_group).WithSimpleSchedule(x => x.WithMisfireHandlingInstructionNextWithExistingCount()).WithCronSchedule(jobcron).ForJob(job_name, job_group).Build();
+            //5.2 触发器
+            var trigger_builder = TriggerBuilder.Create();
+
+            //6、构建
+            var trigger = trigger_builder.WithIdentity(job_name, job_group)
+                .ForJob(job_name, job_group)
+                .WithSchedule(builder.WithMisfireHandlingInstructionFireAndProceed())
+                .Build();
 
             //6、监听
             AddListener(jobDetail);
@@ -130,10 +136,10 @@ namespace SSS.Application.Job
         /// <summary>
         /// 修改Job
         /// </summary> 
-        public async Task UpdateJob(string job_name, string job_group, string jobcron)
+        public async Task UpdateJob(string job_name, string job_group, string job_cron)
         {
             TriggerKey key = GetTriggerKey(job_name, job_group);
-            ICronTrigger cron = new CronTriggerImpl(job_name, job_group, job_name, job_group, jobcron);
+            ICronTrigger cron = new CronTriggerImpl(job_name, job_group, job_name, job_group, job_cron);
             await _scheduler.RescheduleJob(key, cron);
         }
 
