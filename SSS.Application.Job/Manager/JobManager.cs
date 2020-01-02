@@ -10,6 +10,7 @@ using Quartz.Spi;
 
 using SqlSugar;
 
+using SSS.Application.Job.Listener;
 using SSS.Domain.System.Job.JobInfo;
 using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.Config;
@@ -18,9 +19,11 @@ using SSS.Infrastructure.Util.Json;
 
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace SSS.Application.Job
+namespace SSS.Application.Job.Manager
 {
     /// <summary>
     /// JobStartup启动类
@@ -334,7 +337,12 @@ namespace SSS.Application.Job
         {
             try
             {
-                var json = IO.ReadAllText(Directory.GetCurrentDirectory() + "\\job.json");
+                string file = RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+                    ? Directory.GetCurrentDirectory() + "//job.json"
+                    : Directory.GetCurrentDirectory() + "\\job.json";
+
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                var json = IO.ReadAllText(file, System.Text.Encoding.GetEncoding("GB2312"));
                 if (string.IsNullOrWhiteSpace(json))
                 {
                     _logger.LogError("------JobManager 任务配置文件没有内容------");

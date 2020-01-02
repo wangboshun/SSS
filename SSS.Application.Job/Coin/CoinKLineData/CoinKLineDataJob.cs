@@ -7,6 +7,7 @@ using Polly;
 
 using Quartz;
 
+using SSS.Application.Job.Extension;
 using SSS.DigitalCurrency.Domain;
 using SSS.DigitalCurrency.Huobi;
 using SSS.Infrastructure.Seedwork.DbContext;

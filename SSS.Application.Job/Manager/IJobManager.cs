@@ -2,7 +2,7 @@
 
 using System.Threading.Tasks;
 
-namespace SSS.Application.Job
+namespace SSS.Application.Job.Manager
 {
     public interface IJobManager
     {

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 
 using Quartz;
 
+using SSS.Application.Job.Extension;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
 

@@ -7,7 +7,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 using System;
 
-namespace SSS.Application.Job
+namespace SSS.Application.Job.Factory
 {
 
     /// <summary>

@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 
 using Quartz;
 
+using SSS.Application.Job.Extension;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.DateTime;

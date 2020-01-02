@@ -141,10 +141,10 @@ namespace SSS.Application.System.Generator
                 var Template_Write_Path = parent_path + $"\\SSS.Domain{namespace_path}\\{class_name}\\{class_name}.cs";
                 var TemplateValidation_Write_Path = parent_path + $"\\SSS.Domain{namespace_path}\\{class_name}\\Validation\\{class_name}Validation.cs";
 
-                IO.Save(TemplateInputDto_Write_Path, TemplateInputDto_Content);
-                IO.Save(TemplateOutputDto_Write_Path, TemplateOutputDto_Content);
-                IO.Save(Template_Write_Path, Template_Content);
-                IO.Save(TemplateValidation_Write_Path, TemplateValidation_Content);
+                IO.Write(TemplateInputDto_Write_Path, TemplateInputDto_Content);
+                IO.Write(TemplateOutputDto_Write_Path, TemplateOutputDto_Content);
+                IO.Write(Template_Write_Path, Template_Content);
+                IO.Write(TemplateValidation_Write_Path, TemplateValidation_Content);
 
                 return true;
             }
@@ -193,8 +193,8 @@ namespace SSS.Application.System.Generator
                     parent_path +
                     $"\\SSS.Infrastructure\\Repository{namespace_path}\\{class_name}\\{class_name}Repository.cs";
 
-                IO.Save(ITemplateRepository_Write_Path, ITemplateRepository_Content);
-                IO.Save(TemplateRepository_Write_Path, TemplateRepository_Content);
+                IO.Write(ITemplateRepository_Write_Path, ITemplateRepository_Content);
+                IO.Write(TemplateRepository_Write_Path, TemplateRepository_Content);
                 return true;
             }
             catch (Exception ex)
@@ -249,9 +249,9 @@ namespace SSS.Application.System.Generator
                 var ITemplateService_Write_Path = parent_path + $"\\SSS.Application{namespace_path}\\{class_name}\\Service\\I{class_name}Service.cs";
                 var TemplateService_Write_Path = parent_path + $"\\SSS.Application{namespace_path}\\{class_name}\\Service\\{class_name}Service.cs";
 
-                IO.Save(TemplateProfile_Write_Path, TemplateProfile_Content);
-                IO.Save(ITemplateService_Write_Path, ITemplateService_Content);
-                IO.Save(TemplateService_Write_Path, TemplateService_Content);
+                IO.Write(TemplateProfile_Write_Path, TemplateProfile_Content);
+                IO.Write(ITemplateService_Write_Path, ITemplateService_Content);
+                IO.Write(TemplateService_Write_Path, TemplateService_Content);
                 return true;
             }
             catch (Exception ex)
@@ -278,7 +278,7 @@ namespace SSS.Application.System.Generator
                 else
                     TemplateController_Content = TemplateController_Content.Replace(".NameSpace", "");
 
-                IO.Save(TemplateController_Write_Path, TemplateController_Content);
+                IO.Write(TemplateController_Write_Path, TemplateController_Content);
 
                 return true;
             }
@@ -314,7 +314,7 @@ namespace SSS.Application.System.Generator
                 string Class_Content = IO.ReadAllText(Class_Path);
                 int position = Class_Content.LastIndexOf("}") - 8;
                 Class_Content = Class_Content.Insert(position, str.ToString());
-                IO.Save(Class_Path, Class_Content);
+                IO.Write(Class_Path, Class_Content);
 
                 return true;
             }
