@@ -10,7 +10,7 @@ using Quartz.Spi;
 
 using SqlSugar;
 
-using SSS.Application.Job.Listener;
+using SSS.Application.Job.JobSetting.Listener;
 using SSS.Domain.System.Job.JobInfo;
 using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.Config;
@@ -23,7 +23,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SSS.Application.Job.Manager
+namespace SSS.Application.Job.JobSetting.Manager
 {
     /// <summary>
     /// JobStartup启动类

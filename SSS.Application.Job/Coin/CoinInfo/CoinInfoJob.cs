@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 using Quartz;
 
-using SSS.Application.Job.Extension;
+using SSS.Application.Job.JobSetting.Extension;
 using SSS.Domain.Coin.CoinInfo;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;

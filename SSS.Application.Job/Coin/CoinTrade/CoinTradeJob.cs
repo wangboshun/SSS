@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 using Quartz;
 
-using SSS.Application.Job.Extension;
+using SSS.Application.Job.JobSetting.Extension;
 using SSS.DigitalCurrency.Domain;
 using SSS.DigitalCurrency.Indicator;
 using SSS.Infrastructure.Seedwork.DbContext;

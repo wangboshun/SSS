@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Quartz;
 
-using SSS.Application.Job.Manager;
+using SSS.Application.Job.JobSetting.Manager;
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;

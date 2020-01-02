@@ -5,7 +5,7 @@ using SSS.Infrastructure.Util.Json;
 using System;
 using System.Text;
 
-namespace SSS.Application.Job.Extension
+namespace SSS.Application.Job.JobSetting.Extension
 {
     public static class JobEx
     {

@@ -14,7 +14,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SSS.Application.Job.Listener
+namespace SSS.Application.Job.JobSetting.Listener
 {
     public class JobListener : IJobListener
     {
