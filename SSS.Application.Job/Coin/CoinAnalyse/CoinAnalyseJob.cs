@@ -9,17 +9,14 @@ using Quartz;
 using SSS.DigitalCurrency.Domain;
 using SSS.DigitalCurrency.Huobi;
 using SSS.DigitalCurrency.Indicator;
-using SSS.Domain.Coin.CoinKLineData;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
-using SSS.Infrastructure.Util.Json;
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,7 +25,6 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
     [DIService(ServiceLifetime.Transient, typeof(CoinAnalyseJob))]
     public class CoinAnalyseJob : IJob
     {
-        private static int FastFlag;
         private readonly HuobiUtils _huobi;
 
         private readonly Indicator _indicator;
@@ -36,8 +32,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
         private readonly IServiceScopeFactory _scopeFactory;
         private static object _lock = new object();
 
-        public CoinAnalyseJob(ILogger<CoinAnalyseJob> logger, IServiceScopeFactory scopeFactory, HuobiUtils huobi,
-            Indicator indicator)
+        public CoinAnalyseJob(ILogger<CoinAnalyseJob> logger, IServiceScopeFactory scopeFactory, HuobiUtils huobi, Indicator indicator)
         {
             _logger = logger;
             _scopeFactory = scopeFactory;
@@ -47,6 +42,12 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
 
         public Task Execute(IJobExecutionContext context)
         {
+            _logger.LogInformation("-----------------CoinAnalyseJob----------------------");
+            return DoWork(context);
+        }
+
+        public Task DoWork(IJobExecutionContext context)
+        {
             lock (_lock)
             {
                 Stopwatch watch = new Stopwatch();
@@ -55,19 +56,11 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
                 var trigger = (Quartz.Impl.Triggers.CronTriggerImpl)((Quartz.Impl.JobExecutionContextImpl)context).Trigger;
                 try
                 {
-                    StringBuilder str = new StringBuilder();
-                    str.Append($"正在运行---> 任务：{context.JobDetail.Key} ");
-
-                    if (context.JobDetail.JobDataMap.Count > 0)
-                        str.Append($"任务传递参数：{ context.JobDetail.JobDataMap.ToJson() } ");
-
-                    str.Append("任务时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffffff "));
-
                     var coin_array = _huobi.GetAllCoin();
 
                     Parallel.ForEach(coin_array, (item) =>
                     {
-                        List<CoinKLineData> kline = null;
+                        List<Domain.Coin.CoinKLineData.CoinKLineData> kline = null;
 
                         var retry = Policy.Handle<WebException>().Retry(3, (ex, count, text) =>
                         {
@@ -95,7 +88,8 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
                     watch.Stop();
                     context.Scheduler.Context.Put(trigger.FullName + "_Result", this.GetType());
                     context.Scheduler.Context.Put(trigger.FullName + "_Time", watch.ElapsedMilliseconds);
-                    _logger.LogInformation($"------>{str}  耗时：{watch.ElapsedMilliseconds} ");
+
+                    _logger.LogInformation($"------>{context.GetJobDetail()}  耗时：{watch.ElapsedMilliseconds} ");
                     return Task.FromResult($"{trigger.FullName} Success");
                 }
                 catch (Exception ex)

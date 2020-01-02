@@ -1,65 +1,51 @@
 ﻿using HtmlAgilityPack;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
+using Quartz;
 
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
-using SSS.Infrastructure.Util.Config;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace SSS.Application.Coin.CoinMessage.Job
+namespace SSS.Application.Job.Coin.CoinMessage
 {
     namespace SSS.Application.Coin.CoinMessageJob.Job
     {
-        [DIService(ServiceLifetime.Transient, typeof(IHostedService))]
-        public class CoinMessageJob : IHostedService, IDisposable
+        [DIService(ServiceLifetime.Transient, typeof(CoinMessageJob))]
+        public class CoinMessageJob : IJob
         {
-            private readonly IHostEnvironment _env;
             private readonly ILogger _logger;
             private readonly IServiceScopeFactory _scopeFactory;
-            private Timer _timer;
 
-            public CoinMessageJob(ILogger<CoinMessageJob> logger, IServiceScopeFactory scopeFactory,
-                IHostEnvironment env)
+            public CoinMessageJob(ILogger<CoinMessageJob> logger, IServiceScopeFactory scopeFactory)
             {
                 _logger = logger;
-                _env = env;
                 _scopeFactory = scopeFactory;
             }
 
-            public void Dispose()
+            public Task Execute(IJobExecutionContext context)
             {
-                _timer?.Dispose();
+                _logger.LogInformation("-----------------CoinMessageJob----------------------");
+                DoWork(context);
+                return Task.FromResult("Success");
             }
 
-            public Task StartAsync(CancellationToken stoppingToken)
+            public void DoWork(IJobExecutionContext context)
             {
-                _timer = new Timer(DoWork, null, TimeSpan.Zero,
-                    TimeSpan.FromDays(1));
-
-                return Task.CompletedTask;
-            }
-
-            public Task StopAsync(CancellationToken stoppingToken)
-            {
-                _timer?.Change(Timeout.Infinite, 0);
-
-                return Task.CompletedTask;
-            }
-
-            private void DoWork(object state)
-            {
-                if (JsonConfig.GetSectionValue("JobManager:CoinMessageJob").Equals("OFF"))
-                    return;
+                Stopwatch watch = new Stopwatch();
+                watch.Start();
 
                 GetCoinMessage();
+
+                watch.Stop();
+                _logger.LogInformation($"------>{context.GetJobDetail()}  耗时：{watch.ElapsedMilliseconds} ");
             }
 
             /// <summary>
@@ -99,7 +85,7 @@ namespace SSS.Application.Coin.CoinMessage.Job
                             if (list.Any(x => x.Coin.Equals(coin) && x.Calendar.Contains(calendar)))
                                 continue;
 
-                            Domain.Coin.CoinMessage.CoinMessage model = new Domain.Coin.CoinMessage.CoinMessage
+                            var model = new Domain.Coin.CoinMessage.CoinMessage
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Content = item.SelectSingleNode(".//h3").InnerText.Trim(),

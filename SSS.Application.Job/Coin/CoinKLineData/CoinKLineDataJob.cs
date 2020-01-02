@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json.Linq;
 
 using Polly;
+
+using Quartz;
 
 using SSS.DigitalCurrency.Domain;
 using SSS.DigitalCurrency.Huobi;
@@ -21,17 +22,15 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SSS.Application.Coin.CoinKLineData.Job
+namespace SSS.Application.Job.Coin.CoinKLineData
 {
-    [DIService(ServiceLifetime.Transient, typeof(IHostedService))]
-    public class CoinKLineDataJob : IHostedService, IDisposable
+    [DIService(ServiceLifetime.Transient, typeof(CoinKLineDataJob))]
+    public class CoinKLineDataJob : IJob
     {
         private readonly HuobiUtils _huobi;
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _scopeFactory;
-        private static readonly object _lock = new object();
-
-        private Timer _timer;
+        private static object _lock = new object();
 
         public CoinKLineDataJob(ILogger<CoinKLineDataJob> logger, HuobiUtils huobi, IServiceScopeFactory scopeFactory)
         {
@@ -40,14 +39,14 @@ namespace SSS.Application.Coin.CoinKLineData.Job
             _huobi = huobi;
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public Task Execute(IJobExecutionContext context)
         {
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
-
-            return Task.CompletedTask;
+            _logger.LogInformation("-----------------CoinKLineDataJob----------------------");
+            DoWork(context);
+            return Task.FromResult("Success");
         }
 
-        private void DoWork(object state)
+        public void DoWork(IJobExecutionContext context)
         {
             lock (_lock)
             {
@@ -59,35 +58,25 @@ namespace SSS.Application.Coin.CoinKLineData.Job
                 Parallel.ForEach(coin_array, AddKLineData);
 
                 watch.Stop();
-                _logger.LogDebug($" CoinKLineDataJob  RunTime {watch.ElapsedMilliseconds} ");
+                _logger.LogInformation($"------>{context.GetJobDetail()}  耗时：{watch.ElapsedMilliseconds} ");
             }
-        }
-
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
-
-        public void Dispose()
-        {
-            _timer?.Dispose();
         }
 
         public void AddKLineData(string coin)
         {
-            return;
             try
             {
                 using var scope = _scopeFactory.CreateScope();
                 using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
-                List<Domain.Coin.CoinKLineData.CoinKLineData> old_list = new List<Domain.Coin.CoinKLineData.CoinKLineData>();
+                var newlist = new List<Domain.Coin.CoinKLineData.CoinKLineData>();
+                var old_datatime = new List<DateTime>();
 
                 foreach (CoinTime time in Enum.GetValues(typeof(CoinTime)))
                 {
-                    var max = context.CoinKLineData.Where(x => x.Coin.Equals(coin) && x.IsDelete == 0 && x.Timetype == (int)time && x.Platform == (int)Platform.Huobi).OrderByDescending(x => x.Datatime).FirstOrDefault();
+                    var max = context.CoinKLineData.Where(x => x.Coin.Equals(coin) && x.IsDelete == 0 && x.TimeType == (int)time && x.Platform == (int)Platform.Huobi).OrderByDescending(x => x.DataTime).FirstOrDefault();
                     int size = 2000;
                     if (max != null)
-                        size = GetSize(max.Datatime, time);
+                        size = GetSize(max.DataTime, time);
 
                     string kline = "";
 
@@ -115,31 +104,35 @@ namespace SSS.Application.Coin.CoinKLineData.Job
                     {
                         var data_time = DateTimeConvert.ConvertDateTime(item["id"].ToString());
 
-                        var old_data = context.CoinKLineData.Where(x => x.Coin.Equals(coin) && x.IsDelete == 0 && x.Timetype == (int)time && x.Platform == (int)Platform.Huobi && x.Datatime == data_time);
-
-                        if (old_data.Count() > 0)
-                            old_list.AddRange(old_data);
-
                         Domain.Coin.CoinKLineData.CoinKLineData model = new Domain.Coin.CoinKLineData.CoinKLineData
                         {
                             Id = Guid.NewGuid().ToString(),
                             IsDelete = 0,
                             Platform = (int)Platform.Huobi,
                             Coin = coin,
-                            Timetype = (int)time,
-                            Datatime = data_time,
+                            TimeType = (int)time,
+                            DataTime = data_time,
                             Open = Convert.ToDouble(item["open"]),
                             Close = Convert.ToDouble(item["close"]),
                             Low = Convert.ToDouble(item["low"]),
                             High = Convert.ToDouble(item["high"]),
                             CreateTime = DateTime.Now
                         };
+                        old_datatime.Add(data_time);
                         list.Add(model);
                     }
+                    var oldlist = context.CoinKLineData.Where(x => old_datatime.Contains(x.DataTime) &&
+                                                                   x.TimeType == (int)time &&
+                                                                   x.Coin.Equals(coin) &&
+                                                                   x.Platform == (int)Platform.Huobi &&
+                                                                   x.IsDelete == 0).ToList();
 
-                    context.CoinKLineData.AddRange(list);
+                    if (oldlist.Count > 0)
+                        context.CoinKLineData.RemoveRange(oldlist);
+
+                    newlist.AddRange(list);
                 }
-                context.CoinKLineData.RemoveRange(old_list);
+                context.CoinKLineData.AddRange(newlist);
                 context.SaveChanges();
             }
             catch (Exception ex)
@@ -182,6 +175,8 @@ namespace SSS.Application.Coin.CoinKLineData.Job
                     break;
             }
 
+            if (number >= 2000)
+                return 2000;
             return number + 1;
         }
     }

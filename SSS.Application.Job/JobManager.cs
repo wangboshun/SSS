@@ -1,19 +1,24 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 using Newtonsoft.Json.Linq;
+
 using Quartz;
 using Quartz.Impl.Matchers;
 using Quartz.Impl.Triggers;
 using Quartz.Spi;
+
 using SqlSugar;
+
 using SSS.Domain.System.Job.JobInfo;
 using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.Config;
 using SSS.Infrastructure.Util.IO;
 using SSS.Infrastructure.Util.Json;
+
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace SSS.Application.Job
 {
@@ -25,21 +30,21 @@ namespace SSS.Application.Job
     {
         private readonly ILogger<JobManager> _logger;
         private readonly ISchedulerFactory _schedulerFactory;
-        private readonly IJobFactory _iocJobfactory;
+        private readonly IJobFactory _jobFactory;
         private IScheduler _scheduler;
 
         /// <summary>
-        /// QuartzStartup
+        /// JobStartup
         /// </summary>
-        /// <param name="iocJobfactory"></param>
+        /// <param name="jobFactory"></param>
         /// <param name="logger"></param>
         /// <param name="schedulerFactory"></param>
-        public JobManager(IJobFactory iocJobfactory, ILogger<JobManager> logger, ISchedulerFactory schedulerFactory)
+        public JobManager(IJobFactory jobFactory, ILogger<JobManager> logger, ISchedulerFactory schedulerFactory)
         {
             //1、声明一个调度工厂
             _logger = logger;
             _schedulerFactory = schedulerFactory;
-            _iocJobfactory = iocJobfactory;
+            _jobFactory = jobFactory;
 
             Init();
         }
@@ -82,7 +87,7 @@ namespace SSS.Application.Job
         /// <returns></returns>
         public async Task<bool> AddJob(string job_name, string job_group, string job_cron, string job_value, string job_class_str)
         {
-            SqlSugarClient db = new SqlSugarClient(
+            new SqlSugarClient(
                 new ConnectionConfig()
                 {
                     ConnectionString = JsonConfig.GetSectionValue("ConnectionStrings:MYSQLConnection"),
@@ -274,30 +279,31 @@ namespace SSS.Application.Job
         {
             JobDataMap data = new JobDataMap();
 
-            if (result != null)
-                foreach (var val in result)
-                {
-                    var name = val["Name"].ToString();
+            if (result == null) return data;
 
-                    switch (val["Type"].ToString())
-                    {
-                        case "String":
-                            data.Add(name, val["Value"].ToString());
-                            break;
-                        case "Int":
-                            data.Add(name, Convert.ToInt32(val["Value"]));
-                            break;
-                        case "Double":
-                            data.Add(name, Convert.ToDouble(val["Value"]));
-                            break;
-                        case "Bool":
-                            data.Add(name, Convert.ToBoolean(val["Value"]));
-                            break;
-                        default:
-                            data.Add(name, val["Value"].ToJson());
-                            break;
-                    }
+            foreach (var val in result)
+            {
+                var name = val["Name"].ToString();
+
+                switch (val["Type"].ToString())
+                {
+                    case "String":
+                        data.Add(name, val["Value"].ToString());
+                        break;
+                    case "Int":
+                        data.Add(name, Convert.ToInt32(val["Value"]));
+                        break;
+                    case "Double":
+                        data.Add(name, Convert.ToDouble(val["Value"]));
+                        break;
+                    case "Bool":
+                        data.Add(name, Convert.ToBoolean(val["Value"]));
+                        break;
+                    default:
+                        data.Add(name, val["Value"].ToJson());
+                        break;
                 }
+            }
 
             return data;
         }
@@ -314,7 +320,7 @@ namespace SSS.Application.Job
         {
             //2、通过调度工厂获得调度器
             _scheduler = await _schedulerFactory.GetScheduler();
-            _scheduler.JobFactory = _iocJobfactory; //  替换默认工厂
+            _scheduler.JobFactory = _jobFactory; //  替换默认工厂
 
             //3、开启调度器
             await _scheduler.Start();

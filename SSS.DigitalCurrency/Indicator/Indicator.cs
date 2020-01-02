@@ -35,7 +35,7 @@ namespace SSS.DigitalCurrency.Indicator
                 if (data.Skip(i).Take(length).Count() < length)
                     return result;
 
-                result.Add(new Tuple<DateTime, double>(data[i].Datatime, data.Skip(i).Take(length).Sum(x => x.Close) / length));
+                result.Add(new Tuple<DateTime, double>(data[i].DataTime, data.Skip(i).Take(length).Sum(x => x.Close) / length));
             }
 
             return result;
@@ -55,7 +55,7 @@ namespace SSS.DigitalCurrency.Indicator
                 if (data.Count < length)
                     return result;
 
-                data = data.OrderBy(x => x.Datatime).ToList();
+                data = data.OrderBy(x => x.DataTime).ToList();
 
                 double old_ema = data[length - 1].Close;
 
@@ -64,7 +64,7 @@ namespace SSS.DigitalCurrency.Indicator
                     var ema = EmaCale(data[i].Close, old_ema, length);
                     old_ema = ema;
 
-                    result.Add(new Tuple<DateTime, double>(data[i].Datatime, old_ema));
+                    result.Add(new Tuple<DateTime, double>(data[i].DataTime, old_ema));
                 }
 
                 result.Reverse();
@@ -110,7 +110,7 @@ namespace SSS.DigitalCurrency.Indicator
                 if (data.Count < long_)
                     return result;
 
-                data = data.OrderBy(x => x.Datatime).ToList();
+                data = data.OrderBy(x => x.DataTime).ToList();
 
                 double old_dea = 0, old_ema_long = data[long_ - 1].Close, old_ema_short = data[long_ - 1].Close;
 
@@ -125,7 +125,7 @@ namespace SSS.DigitalCurrency.Indicator
                     old_ema_short = ema_short;
                     old_dea = dea;
                     var macd = 2 * (dif - dea);
-                    result.Add(new Tuple<DateTime, double, double, double>(data[i].Datatime, dif, dea, macd));
+                    result.Add(new Tuple<DateTime, double, double, double>(data[i].DataTime, dif, dea, macd));
                 }
 
                 result.Reverse();
@@ -154,7 +154,7 @@ namespace SSS.DigitalCurrency.Indicator
                 if (data.Count < n)
                     return result;
 
-                data = data.OrderBy(x => x.Datatime).ToList();
+                data = data.OrderBy(x => x.DataTime).ToList();
                 double old_k = 50, old_d = 50;
 
                 for (int i = n - 1; i < data.Count; i++)
@@ -170,7 +170,7 @@ namespace SSS.DigitalCurrency.Indicator
 
                     old_d = d;
                     old_k = k;
-                    result.Add(new Tuple<DateTime, double, double, double>(data[i].Datatime, k, d, j));
+                    result.Add(new Tuple<DateTime, double, double, double>(data[i].DataTime, k, d, j));
                 }
 
                 result.Reverse();

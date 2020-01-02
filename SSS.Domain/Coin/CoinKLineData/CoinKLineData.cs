@@ -10,7 +10,7 @@ namespace SSS.Domain.Coin.CoinKLineData
 
         public string Coin { set; get; }
 
-        public int Timetype { set; get; }
+        public int TimeType { set; get; }
 
         public double Open { set; get; }
 
@@ -20,7 +20,7 @@ namespace SSS.Domain.Coin.CoinKLineData
 
         public double High { set; get; }
 
-        public DateTime Datatime { set; get; }
+        public DateTime DataTime { set; get; }
 
         public int Platform { set; get; }
     }

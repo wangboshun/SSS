@@ -1,8 +1,11 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+
 using Quartz;
 using Quartz.Spi;
+
 using SSS.Infrastructure.Util.Attribute;
+
+using System;
 
 namespace SSS.Application.Job
 {

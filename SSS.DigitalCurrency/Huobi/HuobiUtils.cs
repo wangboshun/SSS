@@ -94,7 +94,7 @@ namespace SSS.DigitalCurrency.Huobi
                     IsDelete = 0,
                     Platform = (int)Platform.Huobi,
                     Coin = coin,
-                    Datatime = DateTimeConvert.ConvertDateTime(item["id"].ToString()),
+                    DataTime = DateTimeConvert.ConvertDateTime(item["id"].ToString()),
                     Open = Convert.ToDouble(item["open"]),
                     Close = Convert.ToDouble(item["close"]),
                     Low = Convert.ToDouble(item["low"]),
@@ -123,7 +123,8 @@ namespace SSS.DigitalCurrency.Huobi
                 WebClient http = new WebClient();
 
                 //return http.DownloadString($"https://api.huobi.pro/market/history/kline?period={time}&size={size}&symbol={coin}");
-                return http.DownloadString($"{JsonConfig.GetSectionValue("TradeConfig:Api:Huobi")}/market/history/kline?period={time}&size={size}&symbol={coin}");
+                string url = $"{JsonConfig.GetSectionValue("TradeConfig:Api:Huobi")}/market/history/kline?period={time}&size={size}&symbol={coin}";
+                return http.DownloadString(url);
             }
             catch (WebException ex)
             {

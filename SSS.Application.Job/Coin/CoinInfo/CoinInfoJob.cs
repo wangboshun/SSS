@@ -4,31 +4,31 @@ using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
 
+using Quartz;
+
 using SSS.Domain.Coin.CoinInfo;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
-using SSS.Infrastructure.Util.Config;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace SSS.Application.Coin.CoinInfo.Job
+namespace SSS.Application.Job.Coin.CoinInfo
 {
-    [DIService(ServiceLifetime.Transient, typeof(IHostedService))]
-    public class CoinInfoJob : IHostedService, IDisposable
+    [DIService(ServiceLifetime.Transient, typeof(CoinInfoJob))]
+    public class CoinInfoJob : IJob
     {
         private readonly IHostEnvironment _env;
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _scopeFactory;
-        private Timer _timer;
 
         public CoinInfoJob(ILogger<CoinInfoJob> logger, IServiceScopeFactory scopeFactory, IHostEnvironment env)
         {
@@ -37,31 +37,22 @@ namespace SSS.Application.Coin.CoinInfo.Job
             _scopeFactory = scopeFactory;
         }
 
-        public void Dispose()
+        public Task Execute(IJobExecutionContext context)
         {
-            _timer?.Dispose();
+            _logger.LogInformation("-----------------CoinInfoJob----------------------");
+            DoWork(context);
+            return Task.FromResult("Success");
         }
 
-        public Task StartAsync(CancellationToken stoppingToken)
+        public void DoWork(IJobExecutionContext context)
         {
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromDays(1));
-
-            return Task.CompletedTask;
-        }
-
-        public Task StopAsync(CancellationToken stoppingToken)
-        {
-            _timer?.Change(Timeout.Infinite, 0);
-
-            return Task.CompletedTask;
-        }
-
-        private void DoWork(object state)
-        {
-            if (JsonConfig.GetSectionValue("JobManager:CoinInfoJob").Equals("OFF"))
-                return;
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
 
             GetCoinInfo();
+
+            watch.Stop();
+            _logger.LogInformation($"------>{context.GetJobDetail()}  耗时：{watch.ElapsedMilliseconds} ");
         }
 
         /// <summary>
@@ -81,17 +72,17 @@ namespace SSS.Application.Coin.CoinInfo.Job
 
                 List<Domain.Coin.CoinInfo.CoinInfo> list = new List<Domain.Coin.CoinInfo.CoinInfo>();
 
-                foreach (var item in data)
+                Parallel.ForEach(data, (item) =>
                 {
                     Domain.Coin.CoinInfo.CoinInfo model = new Domain.Coin.CoinInfo.CoinInfo();
                     model.Content = item.id;
                     model.Coin = item.symbol;
 
                     if (source.Any(x => x.Name.Equals(item.name)))
-                        continue;
+                        return;
 
                     if (list.Any(x => x.Name.Equals(item.name)))
-                        continue;
+                        return;
 
                     string src = item.logo_png;
                     model.RomteLogo = src;
@@ -101,7 +92,7 @@ namespace SSS.Application.Coin.CoinInfo.Job
                     model.Name = item.name;
                     model.CreateTime = DateTime.Now;
                     list.Add(model);
-                }
+                });
 
                 context.CoinInfo.AddRange(list);
                 context.SaveChanges();
@@ -172,5 +163,7 @@ namespace SSS.Application.Coin.CoinInfo.Job
                 return "";
             }
         }
+
+
     }
 }

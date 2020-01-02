@@ -1,69 +1,61 @@
 ﻿using HtmlAgilityPack;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json.Linq;
 
+using Quartz;
+
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
-using SSS.Infrastructure.Util.Config;
 using SSS.Infrastructure.Util.DateTime;
 using SSS.Infrastructure.Util.Json;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace SSS.Application.Coin.CoinArticel.Job
+namespace SSS.Application.Job.Coin.CoinArticel
 {
-    [DIService(ServiceLifetime.Transient, typeof(IHostedService))]
-    public class CoinArticelJob : IHostedService, IDisposable
+    [DIService(ServiceLifetime.Transient, typeof(CoinArticelJob))]
+    public class CoinArticelJob : IJob
     {
-        private readonly IHostEnvironment _env;
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _scopeFactory;
-        private Timer _timer;
 
-        public CoinArticelJob(ILogger<CoinArticelJob> logger, IServiceScopeFactory scopeFactory, IHostEnvironment env)
+        public CoinArticelJob(ILogger<CoinArticelJob> logger, IServiceScopeFactory scopeFactory)
         {
             _logger = logger;
-            _env = env;
             _scopeFactory = scopeFactory;
         }
-
-        public void Dispose()
+        public Task Execute(IJobExecutionContext context)
         {
-            _timer?.Dispose();
+            _logger.LogInformation("-----------------CoinArticelJob----------------------");
+            DoWork(context);
+            return Task.FromResult("Success");
         }
 
-        public Task StartAsync(CancellationToken stoppingToken)
+        public void DoWork(IJobExecutionContext context)
         {
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(15));
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
 
-            return Task.CompletedTask;
-        }
+            Task t1 = Task.Factory.StartNew(GetNotice);
 
-        public Task StopAsync(CancellationToken stoppingToken)
-        {
-            _timer?.Change(Timeout.Infinite, 0);
+            Task t2 = Task.Factory.StartNew(GetPolicy);
 
-            return Task.CompletedTask;
-        }
+            Task t3 = Task.Factory.StartNew(GetNews);
 
-        private void DoWork(object state)
-        {
-            if (JsonConfig.GetSectionValue("JobManager:CoinArticelJob").Equals("OFF"))
-                return;
+            Task t4 = Task.Factory.StartNew(GetQuickNews);
 
-            GetNotice();
-            GetPolicy();
-            GetNews();
-            GetQuickNews();
+            Task.WaitAll(t1, t2, t3, t4);
+
+            watch.Stop();
+            _logger.LogInformation($"------>{context.GetJobDetail()}  耗时：{watch.ElapsedMilliseconds} ");
         }
 
         #region 公告频道
@@ -77,9 +69,7 @@ namespace SSS.Application.Coin.CoinArticel.Job
             try
             {
                 WebClient web = new WebClient();
-                string json =
-                    web.DownloadString(
-                        "https://api.jinse.com/v4/live/list?limit=50&reading=false&source=web&sort=5&flag=down&id=0");
+                string json = web.DownloadString("https://api.jinse.com/v4/live/list?limit=50&reading=false&source=web&sort=5&flag=down&id=0");
                 JToken data = json.GetJsonValue("list");
                 List<JToken> token = new List<JToken>(); // data.First.Last.AsJEnumerable().Values();
 
@@ -95,19 +85,19 @@ namespace SSS.Application.Coin.CoinArticel.Job
 
                 List<Domain.Coin.CoinArticel.CoinArticel> list = new List<Domain.Coin.CoinArticel.CoinArticel>();
 
-                foreach (var item in token)
+                Parallel.ForEach(token, (item) =>
                 {
                     var title = GetTitleByContent(item["content"].ToString());
 
                     Console.WriteLine("---GetNotice---" + title);
 
                     if (source.Any(x => x.Title.Equals(title)))
-                        continue;
+                        return;
 
                     if (list.Any(x => x.Title.Equals(title)))
-                        continue;
+                        return;
 
-                    Domain.Coin.CoinArticel.CoinArticel model = new Domain.Coin.CoinArticel.CoinArticel
+                    var model = new Domain.Coin.CoinArticel.CoinArticel
                     {
                         Id = Guid.NewGuid().ToString(),
                         Content = GetDetail(item["content"].ToString()),
@@ -117,14 +107,12 @@ namespace SSS.Application.Coin.CoinArticel.Job
                         Logo = ""
                     };
                     list.Add(model);
-                }
+                });
 
-                if (list.Any())
-                {
-                    context.CoinArticel.AddRange(list);
-                    context.SaveChanges();
-                    Console.WriteLine("---GetNotice  SaveChanges---");
-                }
+                if (!list.Any()) return;
+                context.CoinArticel.AddRange(list);
+                context.SaveChanges();
+                Console.WriteLine("---GetNotice  SaveChanges---");
             }
             catch (Exception ex)
             {
@@ -145,9 +133,7 @@ namespace SSS.Application.Coin.CoinArticel.Job
             try
             {
                 WebClient web = new WebClient();
-                string json =
-                    web.DownloadString(
-                        "https://api.jinse.com/v6/information/list?catelogue_key=zhengce&limit=50&information_id=0&flag=down&version=9.9.9");
+                string json = web.DownloadString("https://api.jinse.com/v6/information/list?catelogue_key=zhengce&limit=50&information_id=0&flag=down&version=9.9.9");
                 JToken data = json.GetJsonValue("list");
 
                 using var scope = _scopeFactory.CreateScope();
@@ -156,19 +142,20 @@ namespace SSS.Application.Coin.CoinArticel.Job
                 var source = context.CoinArticel.ToList();
 
                 List<Domain.Coin.CoinArticel.CoinArticel> list = new List<Domain.Coin.CoinArticel.CoinArticel>();
-                foreach (var item in data.AsJEnumerable())
+
+                Parallel.ForEach(data.AsJEnumerable(), (item) =>
                 {
                     string title = GetTitle(item["title"].ToString());
 
                     if (source.Any(x => x.Title.Equals(title)))
-                        continue;
+                        return;
 
                     if (list.Any(x => x.Title.Equals(title)))
-                        continue;
+                        return;
 
                     Console.WriteLine("---GetPolicy---" + title);
 
-                    Domain.Coin.CoinArticel.CoinArticel model = new Domain.Coin.CoinArticel.CoinArticel
+                    var model = new Domain.Coin.CoinArticel.CoinArticel
                     {
                         Id = Guid.NewGuid().ToString(),
                         Title = title,
@@ -177,14 +164,12 @@ namespace SSS.Application.Coin.CoinArticel.Job
 
                     GetNewsContnt(item["extra"], model);
                     list.Add(model);
-                }
+                });
 
-                if (list.Any())
-                {
-                    context.CoinArticel.AddRange(list);
-                    context.SaveChanges();
-                    Console.WriteLine("---GetPolicy  SaveChanges---");
-                }
+                if (!list.Any()) return;
+                context.CoinArticel.AddRange(list);
+                context.SaveChanges();
+                Console.WriteLine("---GetPolicy  SaveChanges---");
             }
             catch (Exception ex)
             {
@@ -206,9 +191,7 @@ namespace SSS.Application.Coin.CoinArticel.Job
             try
             {
                 WebClient web = new WebClient();
-                string json =
-                    web.DownloadString(
-                        "https://api.jinse.com/v4/live/list?reading=false&sort=7&flag=down&id=0&limit=50");
+                string json = web.DownloadString("https://api.jinse.com/v4/live/list?reading=false&sort=7&flag=down&id=0&limit=50");
                 JToken data = json.GetJsonValue("list");
                 List<JToken> token = new List<JToken>(); // data.First.Last.AsJEnumerable().Values();
 
@@ -224,19 +207,19 @@ namespace SSS.Application.Coin.CoinArticel.Job
 
                 List<Domain.Coin.CoinArticel.CoinArticel> list = new List<Domain.Coin.CoinArticel.CoinArticel>();
 
-                foreach (var item in token)
+                Parallel.ForEach(token, (item) =>
                 {
                     var title = GetTitleByContent(item["content"].ToString());
 
                     Console.WriteLine("---GetQuickNews---" + title);
 
                     if (source.Any(x => x.Title.Equals(title)))
-                        continue;
+                        return;
 
                     if (list.Any(x => x.Title.Equals(title)))
-                        continue;
+                        return;
 
-                    Domain.Coin.CoinArticel.CoinArticel model = new Domain.Coin.CoinArticel.CoinArticel
+                    var model = new Domain.Coin.CoinArticel.CoinArticel
                     {
                         Id = Guid.NewGuid().ToString(),
                         Content = GetDetail(item["content"].ToString()),
@@ -246,14 +229,12 @@ namespace SSS.Application.Coin.CoinArticel.Job
                         Logo = ""
                     };
                     list.Add(model);
-                }
+                });
 
-                if (list.Any())
-                {
-                    context.CoinArticel.AddRange(list);
-                    context.SaveChanges();
-                    Console.WriteLine("---GetQuickNews  SaveChanges---");
-                }
+                if (!list.Any()) return;
+                context.CoinArticel.AddRange(list);
+                context.SaveChanges();
+                Console.WriteLine("---GetQuickNews  SaveChanges---");
             }
             catch (Exception ex)
             {
@@ -275,9 +256,7 @@ namespace SSS.Application.Coin.CoinArticel.Job
             try
             {
                 WebClient web = new WebClient();
-                string json =
-                    web.DownloadString(
-                        "https://api.jinse.com/v6/information/list?catelogue_key=news&limit=50&information_id=0&flag=down&version=9.9.9");
+                string json = web.DownloadString("https://api.jinse.com/v6/information/list?catelogue_key=news&limit=50&information_id=0&flag=down&version=9.9.9");
                 JToken data = json.GetJsonValue("list");
 
                 using var scope = _scopeFactory.CreateScope();
@@ -286,19 +265,20 @@ namespace SSS.Application.Coin.CoinArticel.Job
                 var source = context.CoinArticel.ToList();
 
                 List<Domain.Coin.CoinArticel.CoinArticel> list = new List<Domain.Coin.CoinArticel.CoinArticel>();
-                foreach (var item in data.AsJEnumerable())
+
+                Parallel.ForEach(data.AsJEnumerable(), (item) =>
                 {
                     string title = GetTitle(item["title"].ToString());
 
                     if (source.Any(x => x.Title.Equals(title)))
-                        continue;
+                        return;
 
                     if (list.Any(x => x.Title.Equals(title)))
-                        continue;
+                        return;
 
                     Console.WriteLine("---GetNews---" + title);
 
-                    Domain.Coin.CoinArticel.CoinArticel model = new Domain.Coin.CoinArticel.CoinArticel
+                    var model = new Domain.Coin.CoinArticel.CoinArticel
                     {
                         Id = Guid.NewGuid().ToString(),
                         Title = title,
@@ -307,14 +287,12 @@ namespace SSS.Application.Coin.CoinArticel.Job
 
                     GetNewsContnt(item["extra"], model);
                     list.Add(model);
-                }
+                });
 
-                if (list.Any())
-                {
-                    context.CoinArticel.AddRange(list);
-                    context.SaveChanges();
-                    Console.WriteLine("---GetNews  SaveChanges---");
-                }
+                if (!list.Any()) return;
+                context.CoinArticel.AddRange(list);
+                context.SaveChanges();
+                Console.WriteLine("---GetNews  SaveChanges---");
             }
             catch (Exception ex)
             {
@@ -409,6 +387,6 @@ namespace SSS.Application.Coin.CoinArticel.Job
             return content.Substring(second + 1);
         }
 
-        #endregion
+        #endregion 
     }
 }

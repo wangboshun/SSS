@@ -1,7 +1,7 @@
 {
   "JobConfig": [
     {
-      "JobName": "CoinAnalyseJob",
+      "JobName": "CoinAnalyseJob", //指标分析
       "JobClass": "SSS.Application.Job.Coin.CoinAnalyse.CoinAnalyseJob",
       "JobValue": [
         {
@@ -20,22 +20,43 @@
           "Type": "Double"
         }
       ],
-      "JobGroup": "job_group",
-      "JobStatus": true,
-      "JobCron": "0 0/1 * * * ? *"
+      "JobStatus": false,
+      "JobCron": "0 0/1 * * * ? *", //每分钟
+      "JobGroup": "job_group"
     },
     {
-      "JobName": "Job2",
-      "JobClass": "SSS.Application.Seedwork.Job.MyJob2",
-      "JobValue": [
-        {
-          "Name": "A",
-          "Value": "a1",
-          "Type": "String"
-        }
-      ],
+      "JobName": "CoinArticelJob", //文章
+      "JobClass": "SSS.Application.Job.Coin.CoinArticel.CoinArticelJob",
       "JobStatus": false,
-      "JobCron": "0/2 * * * * ?",
+      "JobCron": "0 0/15 * * * ?", //每15分钟
+      "JobGroup": "job_group"
+    },
+    {
+      "JobName": "CoinInfoJob", //币对
+      "JobClass": "false.Application.Job.Coin.CoinInfo.CoinInfoJob",
+      "JobStatus": true,
+      "JobCron": "0 0 0 1/1 * ?", //每天
+      "JobGroup": "job_group"
+    },
+    {
+      "JobName": "CoinKLineDataJob", //K线
+      "JobClass": "SSS.Application.Job.Coin.CoinKLineData.CoinKLineDataJob",
+      "JobStatus": true,
+      "JobCron": "0/10 * * * * ?", //每分钟
+      "JobGroup": "job_group"
+    },
+    {
+      "JobName": "CoinMessageJob", //利好消息
+      "JobClass": "SSS.Application.Job.Coin.CoinMessage.CoinMessageJob",
+      "JobStatus": false,
+      "JobCron": "0 0 0 1/1 * ?", //每天
+      "JobGroup": "job_group"
+    },
+    {
+      "JobName": "CoinTradeJob", //交易
+      "JobClass": "SSS.Application.Job.Coin.CoinTrade.CoinTradeJob",
+      "JobStatus": false,
+      "JobCron": "0 0/1 * * * ?", //每分钟
       "JobGroup": "job_group"
     }
   ]

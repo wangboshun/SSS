@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
+using Quartz;
+
 using SSS.DigitalCurrency.Domain;
-using SSS.DigitalCurrency.Huobi;
 using SSS.DigitalCurrency.Indicator;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
@@ -15,60 +15,40 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace SSS.Application.Coin.CoinTrade.Job
+namespace SSS.Application.Job.Coin.CoinTrade
 {
-    [DIService(ServiceLifetime.Transient, typeof(IHostedService))]
-    public class CoinTradeJob : IHostedService, IDisposable
+    [DIService(ServiceLifetime.Transient, typeof(CoinTradeJob))]
+    public class CoinTradeJob : IJob
     {
-        private readonly HuobiUtils _huobi;
         private readonly Indicator _indicator;
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _scopeFactory;
-        private static readonly object _lock = new object();
 
-        private Timer _timer;
-
-        public CoinTradeJob(ILogger<CoinTradeJob> logger, HuobiUtils huobi, IServiceScopeFactory scopeFactory, Indicator indicator)
+        public CoinTradeJob(ILogger<CoinTradeJob> logger, IServiceScopeFactory scopeFactory, Indicator indicator)
         {
-            _huobi = huobi;
             _logger = logger;
             _indicator = indicator;
             _scopeFactory = scopeFactory;
         }
 
-        public void Dispose()
+        public Task Execute(IJobExecutionContext context)
         {
-            _timer?.Dispose();
+            _logger.LogInformation("-----------------CoinTradeJob----------------------");
+            DoWork(context);
+            return Task.FromResult("Success");
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public void DoWork(IJobExecutionContext context)
         {
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
 
-            return Task.CompletedTask;
-        }
+            Futures();
 
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
-
-        private void DoWork(object state)
-        {
-            lock (_lock)
-            {
-                Stopwatch watch = new Stopwatch();
-                watch.Start();
-                if (JsonConfig.GetSectionValue("JobManager:CoinTradeJob").Equals("OFF"))
-                    return;
-
-                Futures();
-                watch.Stop();
-                _logger.LogDebug($" CoinTradeJob  RunTime {watch.ElapsedMilliseconds} ");
-            }
+            watch.Stop();
+            _logger.LogInformation($"------>{context.GetJobDetail()}  耗时：{watch.ElapsedMilliseconds} ");
         }
 
         /// <summary>
@@ -89,7 +69,12 @@ namespace SSS.Application.Coin.CoinTrade.Job
                 {
                     foreach (CoinTime time in Enum.GetValues(typeof(CoinTime)))
                     {
-                        var kline = context.CoinKLineData.Where(x => x.Coin.Equals(coin) && x.Timetype == (int)time && x.IsDelete == 0).OrderByDescending(x => x.Datatime).Take(2000).ToList();
+                        var kline = context.CoinKLineData.Where(x => x.Coin.Equals(coin) && x.TimeType == (int)time && x.IsDelete == 0).OrderByDescending(x => x.DataTime).Take(2000).ToList();
+                        if (kline.Count < 1)
+                        {
+                            _logger.LogError("---K线获取失败---");
+                            continue;
+                        }
                         coin_kline_data.Add(coin + "_" + (int)time, kline);
                     }
                 }
@@ -114,12 +99,6 @@ namespace SSS.Application.Coin.CoinTrade.Job
             try
             {
                 var coininfo_array = coin.Split('_');
-
-                if (kline == null || kline.Count < 1)
-                {
-                    _logger.LogError("---K线获取失败---");
-                    return;
-                }
 
                 //目前收盘价
                 double current_price = kline[0].Close;

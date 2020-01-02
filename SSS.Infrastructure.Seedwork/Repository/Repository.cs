@@ -436,7 +436,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         }
 
         #endregion
-    } 
+    }
 
     [DIService(ServiceLifetime.Scoped, typeof(IRepository<,,>))]
     public abstract class Repository<TEntity, TInput, TOutput> : Repository<TEntity>,
