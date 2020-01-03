@@ -163,17 +163,18 @@ namespace SSS.DigitalCurrency.Indicator
                     double high = data.Skip(i - n + 1).Take(n).Max(x => x.High);
 
                     var rsv = (data[i].Close - low) / (high - low) * 100;
+                    if (double.IsNaN(rsv))
+                    {
+                        old_d = old_k = 50;
+                        result.Add(new Tuple<DateTime, double, double, double>(data[i].DataTime, 50, 50, 50));
+                        continue;
+                    }
 
                     var k = (2.0 / 3.0) * old_k + (1.0 / 3.0) * rsv;
                     var d = (2.0 / 3.0) * old_d + (1.0 / 3.0) * k;
-
-                    if (double.IsNaN(rsv))
-                        k = d = 50;
-
                     var j = 3 * k - 2 * d;
-
                     old_d = d;
-                    old_k = k;
+                    old_k = k; 
 
                     result.Add(new Tuple<DateTime, double, double, double>(data[i].DataTime, k, d, j));
                 }
