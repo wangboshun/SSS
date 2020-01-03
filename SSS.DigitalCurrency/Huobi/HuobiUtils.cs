@@ -14,7 +14,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Threading;
 
 namespace SSS.DigitalCurrency.Huobi
 {
@@ -75,7 +74,7 @@ namespace SSS.DigitalCurrency.Huobi
         public List<CoinKLineData> GetKLine(string coin, string quote, string time, int size)
         {
             try
-            { 
+            {
                 WebClient http = new WebClient();
                 var result = http.DownloadString($"https://api.huobiasia.vip/market/history/kline?period={time}&size={size}&symbol={coin + quote}");
 
@@ -116,7 +115,7 @@ namespace SSS.DigitalCurrency.Huobi
         public string GetKLine(string coin, string time, int size)
         {
             try
-            { 
+            {
                 WebClient http = new WebClient();
                 //return http.DownloadString($"https://api.huobi.pro/market/history/kline?period={time}&size={size}&symbol={coin}");
                 string url = $"{JsonConfig.GetSectionValue("TradeConfig:Api:Huobi")}/market/history/kline?period={time}&size={size}&symbol={coin}";

@@ -813,25 +813,25 @@
             <param name="input">角色组Id或名称</param>
             <returns></returns> 
         </member>
-        <member name="T:SSS.Api.Controllers.System.CodeController">
+        <member name="T:SSS.Api.Controllers.System.Code.CodeController">
             <summary>	
             代码生成	
             </summary>	
         </member>
-        <member name="M:SSS.Api.Controllers.System.CodeController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,SSS.Application.System.Generator.IGeneratorCodeService)">
+        <member name="M:SSS.Api.Controllers.System.Code.CodeController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,SSS.Application.System.Generator.IGeneratorCodeService)">
             <summary>
             CodeController
             </summary>
             <param name="env"></param>
             <param name="generatorCodeService"></param>
         </member>
-        <member name="M:SSS.Api.Controllers.System.CodeController.Index">
+        <member name="M:SSS.Api.Controllers.System.Code.CodeController.Index">
             <summary>	
             主页	
             </summary>	
             <returns></returns>	
         </member>
-        <member name="M:SSS.Api.Controllers.System.CodeController.CreateCode">
+        <member name="M:SSS.Api.Controllers.System.Code.CodeController.CreateCode">
             <summary>	
             生成操作	
             </summary>	

@@ -25,6 +25,7 @@ namespace SSS.Application.Job.Coin.CoinTrade
     {
         private readonly Indicator _indicator;
         private readonly ILogger _logger;
+        private static object _lock = new object();
         private readonly IServiceScopeFactory _scopeFactory;
 
         public CoinTradeJob(ILogger<CoinTradeJob> logger, IServiceScopeFactory scopeFactory, Indicator indicator)
@@ -37,19 +38,35 @@ namespace SSS.Application.Job.Coin.CoinTrade
         public Task Execute(IJobExecutionContext context)
         {
             _logger.LogInformation("-----------------CoinTradeJob----------------------");
-            DoWork(context);
-            return Task.FromResult("Success");
+            return DoWork(context);
         }
 
-        public void DoWork(IJobExecutionContext context)
+        public Task DoWork(IJobExecutionContext context)
         {
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
+            lock (_lock)
+            {
+                var trigger = (Quartz.Impl.Triggers.CronTriggerImpl)((Quartz.Impl.JobExecutionContextImpl)context).Trigger;
+                try
+                {
+                    Stopwatch watch = new Stopwatch();
+                    watch.Start();
 
-            Futures();
+                    Futures();
 
-            watch.Stop();
-            _logger.LogInformation($"------>{context.GetJobDetail()}  耗时：{watch.ElapsedMilliseconds} ");
+                    watch.Stop();
+                    context.Scheduler.Context.Put(trigger.FullName + "_Result", "Success");
+                    context.Scheduler.Context.Put(trigger.FullName + "_Time", watch.ElapsedMilliseconds);
+
+                    _logger.LogInformation($"------>{context.GetJobDetail()}  耗时：{watch.ElapsedMilliseconds} ");
+                    return Task.FromResult("Success");
+                }
+                catch (Exception ex)
+                {
+                    context.Scheduler.Context.Put(trigger.FullName + "_Exception", ex);
+                    _logger.LogError(new EventId(ex.HResult), ex, "---CoinTradeJob DoWork Exception---");
+                    return Task.FromResult("Error");
+                }
+            }
         }
 
         /// <summary>

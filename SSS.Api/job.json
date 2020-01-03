@@ -20,35 +20,35 @@
           "Type": "Double"
         }
       ],
-      "JobStatus": true,
+      "JobStatus": false,
       "JobCron": "0 0/1 * * * ? *", //每分钟
       "JobGroup": "job_group"
     },
     {
       "JobName": "CoinArticelJob", //文章
       "JobClass": "SSS.Application.Job.Coin.CoinArticel.CoinArticelJob",
-      "JobStatus": true,
+      "JobStatus": false,
       "JobCron": "0 0/15 * * * ?", //每15分钟
       "JobGroup": "job_group"
     },
     {
       "JobName": "CoinInfoJob", //币对
       "JobClass": "false.Application.Job.Coin.CoinInfo.CoinInfoJob",
-      "JobStatus": true,
+      "JobStatus": false,
       "JobCron": "0 0 0 1/1 * ?", //每天
       "JobGroup": "job_group"
     },
     {
       "JobName": "CoinKLineDataJob", //K线
       "JobClass": "SSS.Application.Job.Coin.CoinKLineData.CoinKLineDataJob",
-      "JobStatus": true,
+      "JobStatus": false,
       "JobCron": "0 0/1 * * * ? *", //每分钟
       "JobGroup": "job_group"
     },
     {
       "JobName": "CoinMessageJob", //利好消息
       "JobClass": "SSS.Application.Job.Coin.CoinMessage.CoinMessageJob",
-      "JobStatus": true,
+      "JobStatus": false,
       "JobCron": "0 0 0 1/1 * ?", //每天
       "JobGroup": "job_group"
     },
@@ -56,7 +56,7 @@
       "JobName": "CoinTradeJob", //交易
       "JobClass": "SSS.Application.Job.Coin.CoinTrade.CoinTradeJob",
       "JobStatus": true,
-      "JobCron": "0 0/1 * * * ?", //每分钟
+      "JobCron": "0/5 * * * * ?", //每分钟
       "JobGroup": "job_group"
     }
   ]

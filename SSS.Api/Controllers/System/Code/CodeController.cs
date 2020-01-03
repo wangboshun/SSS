@@ -8,7 +8,7 @@ using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
 
-namespace SSS.Api.Controllers.System
+namespace SSS.Api.Controllers.System.Code
 {
     /// <summary>	
     /// 代码生成	

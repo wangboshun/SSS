@@ -26,7 +26,18 @@ namespace SSS.Api.Seedwork.Middleware
 
         public async Task Invoke(HttpContext context)
         {
-            if (context.Request.Path.Value.Equals("/code")) context.Request.Path = "/api/v3/code/index";
+            if (context.Request.Path.Value.Equals("/code"))
+                context.Request.Path = "/api/v3/code/index";
+
+            if (string.IsNullOrWhiteSpace(context.Request.Path.ToString()) ||
+                context.Request.Path.ToString().Equals("/"))
+            {
+                context.Response.ContentType = "text/html";
+                await context.Response.WriteAsync("<html><body>");
+                await context.Response.WriteAsync("<h1 style='margin-top:20%;text-align:center;color:red'>This's SSS FrameWork !</h1>");
+                await context.Response.WriteAsync("</body></html>");
+            }
+
             await _next.Invoke(context);
         }
     }

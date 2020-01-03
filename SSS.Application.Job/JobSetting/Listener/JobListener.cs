@@ -65,8 +65,9 @@ namespace SSS.Application.Job.JobSetting.Listener
 
                 var trigger = (Quartz.Impl.Triggers.CronTriggerImpl)((Quartz.Impl.JobExecutionContextImpl)context).Trigger;
 
-                var result = context.Scheduler.Context.Get(trigger.FullName + "_Result");
-                var exception = context.Scheduler.Context.Get(trigger.FullName + "_Exception");
+                var result = context.Scheduler.Context.Get(trigger.FullName + "_Result"); /*返回结果*/
+                var exception = context.Scheduler.Context.Get(trigger.FullName + "_Exception");  /*异常信息*/
+                var time = context.Scheduler.Context.Get(trigger.FullName + "_Time"); /* 耗时*/
 
                 var job = db.Queryable<JobInfo>().Where(x => x.JobName.Equals(trigger.Name) && x.JobGroup.Equals(trigger.JobGroup) && x.IsDelete == 0)?.First();
 
@@ -85,6 +86,7 @@ namespace SSS.Application.Job.JobSetting.Listener
                         JobResult = result.ToJson(),
                         JobCron = trigger.CronExpressionString,
                         CreateTime = DateTime.Now,
+                        JobRunTime = time != null ? Convert.ToInt32(time) : 0,
                         JobStartTime = trigger.StartTimeUtc.LocalDateTime,
                         JobNextTime = trigger.GetNextFireTimeUtc().GetValueOrDefault().LocalDateTime
                     };
@@ -96,6 +98,7 @@ namespace SSS.Application.Job.JobSetting.Listener
                     job.JobValue = context.JobDetail.JobDataMap.ToJson();
                     job.JobCron = trigger.CronExpressionString;
                     job.JobCount += 1;
+                    job.JobRunTime = time != null ? Convert.ToInt32(time) : 0;
                     job.JobNextTime = trigger.GetNextFireTimeUtc().GetValueOrDefault().LocalDateTime;
                     job.UpdateTime = DateTime.Now;
                     job.JobResult = result.ToJson();

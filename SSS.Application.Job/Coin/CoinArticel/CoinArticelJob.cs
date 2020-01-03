@@ -27,6 +27,7 @@ namespace SSS.Application.Job.Coin.CoinArticel
     {
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _scopeFactory;
+        private static readonly object _lock = new object();
 
         public CoinArticelJob(ILogger<CoinArticelJob> logger, IServiceScopeFactory scopeFactory)
         {
@@ -36,24 +37,39 @@ namespace SSS.Application.Job.Coin.CoinArticel
         public Task Execute(IJobExecutionContext context)
         {
             _logger.LogInformation("-----------------CoinArticelJob----------------------");
-            DoWork(context);
-            return Task.FromResult("Success");
+            return DoWork(context);
         }
 
-        public void DoWork(IJobExecutionContext context)
+        public Task DoWork(IJobExecutionContext context)
         {
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
+            lock (_lock)
+            {
+                var trigger = (Quartz.Impl.Triggers.CronTriggerImpl)((Quartz.Impl.JobExecutionContextImpl)context).Trigger;
+                try
+                {
+                    Stopwatch watch = new Stopwatch();
+                    watch.Start();
 
-            Task t1 = Task.Factory.StartNew(GetNotice);
-            Task t2 = Task.Factory.StartNew(GetPolicy);
-            Task t3 = Task.Factory.StartNew(GetNews);
-            Task t4 = Task.Factory.StartNew(GetQuickNews);
+                    Task t1 = Task.Factory.StartNew(GetNotice);
+                    Task t2 = Task.Factory.StartNew(GetPolicy);
+                    Task t3 = Task.Factory.StartNew(GetNews);
+                    Task t4 = Task.Factory.StartNew(GetQuickNews);
+                    Task.WaitAll(t1, t2, t3, t4);
 
-            Task.WaitAll(t1, t2, t3, t4);
+                    watch.Stop();
+                    context.Scheduler.Context.Put(trigger.FullName + "_Result", "Success");
+                    context.Scheduler.Context.Put(trigger.FullName + "_Time", watch.ElapsedMilliseconds);
 
-            watch.Stop();
-            _logger.LogInformation($"------>{context.GetJobDetail()}  耗时：{watch.ElapsedMilliseconds} ");
+                    _logger.LogInformation($"------>{context.GetJobDetail()}  耗时：{watch.ElapsedMilliseconds} ");
+                    return Task.FromResult("Success");
+                }
+                catch (Exception ex)
+                {
+                    context.Scheduler.Context.Put(trigger.FullName + "_Exception", ex);
+                    _logger.LogError(new EventId(ex.HResult), ex, "---CoinArticelJob DoWork Exception---");
+                    return Task.FromResult("Error");
+                }
+            }
         }
 
         #region 公告频道

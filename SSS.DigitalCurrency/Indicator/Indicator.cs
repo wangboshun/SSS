@@ -28,7 +28,7 @@ namespace SSS.DigitalCurrency.Indicator
         /// <returns>时间，值，长度</returns>
         public List<Tuple<DateTime, double>> SMA(List<CoinKLineData> data, int length)
         {
-            List<Tuple<DateTime, double>> result = new List<Tuple<DateTime, double>>();
+            var result = new List<Tuple<DateTime, double>>();
 
             for (int i = 0; i < data.Count; i++)
             {
@@ -49,7 +49,7 @@ namespace SSS.DigitalCurrency.Indicator
         /// <returns></returns>
         public List<Tuple<DateTime, double>> EMA(List<CoinKLineData> data, int length)
         {
-            List<Tuple<DateTime, double>> result = new List<Tuple<DateTime, double>>();
+            var result = new List<Tuple<DateTime, double>>();
             try
             {
                 if (data.Count < length)
@@ -104,7 +104,7 @@ namespace SSS.DigitalCurrency.Indicator
         public List<Tuple<DateTime, double, double, double>> MACD(List<CoinKLineData> data, int long_ = 26, int short_ = 12,
             int day = 9)
         {
-            List<Tuple<DateTime, double, double, double>> result = new List<Tuple<DateTime, double, double, double>>();
+            var result = new List<Tuple<DateTime, double, double, double>>();
             try
             {
                 if (data.Count < long_)
@@ -148,7 +148,7 @@ namespace SSS.DigitalCurrency.Indicator
         /// <returns></returns>
         public List<Tuple<DateTime, double, double, double>> KDJ(List<CoinKLineData> data, int n = 9, int m1 = 3, int m2 = 3)
         {
-            List<Tuple<DateTime, double, double, double>> result = new List<Tuple<DateTime, double, double, double>>();
+            var result = new List<Tuple<DateTime, double, double, double>>();
             try
             {
                 if (data.Count < n)
@@ -166,10 +166,15 @@ namespace SSS.DigitalCurrency.Indicator
 
                     var k = (2.0 / 3.0) * old_k + (1.0 / 3.0) * rsv;
                     var d = (2.0 / 3.0) * old_d + (1.0 / 3.0) * k;
+
+                    if (double.IsNaN(rsv))
+                        k = d = 50;
+
                     var j = 3 * k - 2 * d;
 
                     old_d = d;
                     old_k = k;
+
                     result.Add(new Tuple<DateTime, double, double, double>(data[i].DataTime, k, d, j));
                 }
 

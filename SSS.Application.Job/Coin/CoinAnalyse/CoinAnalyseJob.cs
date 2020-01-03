@@ -26,12 +26,11 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
     [DIService(ServiceLifetime.Transient, typeof(CoinAnalyseJob))]
     public class CoinAnalyseJob : IJob
     {
-        private readonly HuobiUtils _huobi;
-
-        private readonly Indicator _indicator;
         private readonly ILogger _logger;
+        private readonly HuobiUtils _huobi;
+        private readonly Indicator _indicator;
         private readonly IServiceScopeFactory _scopeFactory;
-        private static object _lock = new object();
+        private static readonly object _lock = new object();
 
         public CoinAnalyseJob(ILogger<CoinAnalyseJob> logger, IServiceScopeFactory scopeFactory, HuobiUtils huobi, Indicator indicator)
         {
@@ -44,20 +43,19 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
         public Task Execute(IJobExecutionContext context)
         {
             _logger.LogInformation("-----------------CoinAnalyseJob----------------------");
-            DoWork(context);
-            return Task.FromResult("Success");
+            return DoWork(context);
         }
 
-        public void DoWork(IJobExecutionContext context)
+        public Task DoWork(IJobExecutionContext context)
         {
             lock (_lock)
             {
-                Stopwatch watch = new Stopwatch();
-                watch.Start();
-
                 var trigger = (Quartz.Impl.Triggers.CronTriggerImpl)((Quartz.Impl.JobExecutionContextImpl)context).Trigger;
                 try
                 {
+
+                    Stopwatch watch = new Stopwatch();
+                    watch.Start();
                     var coin_array = _huobi.GetAllCoin();
 
                     Parallel.ForEach(coin_array, (item) =>
@@ -88,14 +86,17 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
                     Analyse(CoinTime.Time_1day);
 
                     watch.Stop();
-                    context.Scheduler.Context.Put(trigger.FullName + "_Result", this.GetType());
+                    context.Scheduler.Context.Put(trigger.FullName + "_Result", "Success");
                     context.Scheduler.Context.Put(trigger.FullName + "_Time", watch.ElapsedMilliseconds);
 
                     _logger.LogInformation($"------>{context.GetJobDetail()}  耗时：{watch.ElapsedMilliseconds} ");
+                    return Task.FromResult("Success");
                 }
                 catch (Exception ex)
                 {
                     context.Scheduler.Context.Put(trigger.FullName + "_Exception", ex);
+                    _logger.LogError(new EventId(ex.HResult), ex, "---CoinAnalyseJob DoWork Exception---");
+                    return Task.FromResult("Error");
                 }
             }
         }

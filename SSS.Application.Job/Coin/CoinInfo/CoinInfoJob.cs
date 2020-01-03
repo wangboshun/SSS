@@ -30,6 +30,7 @@ namespace SSS.Application.Job.Coin.CoinInfo
         private readonly IHostEnvironment _env;
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _scopeFactory;
+        private static readonly object _lock = new object();
 
         public CoinInfoJob(ILogger<CoinInfoJob> logger, IServiceScopeFactory scopeFactory, IHostEnvironment env)
         {
@@ -41,19 +42,35 @@ namespace SSS.Application.Job.Coin.CoinInfo
         public Task Execute(IJobExecutionContext context)
         {
             _logger.LogInformation("-----------------CoinInfoJob----------------------");
-            DoWork(context);
-            return Task.FromResult("Success");
+            return DoWork(context);
         }
 
-        public void DoWork(IJobExecutionContext context)
+        public Task DoWork(IJobExecutionContext context)
         {
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
+            lock (_lock)
+            {
+                var trigger = (Quartz.Impl.Triggers.CronTriggerImpl)((Quartz.Impl.JobExecutionContextImpl)context).Trigger;
+                try
+                {
+                    Stopwatch watch = new Stopwatch();
+                    watch.Start();
 
-            GetCoinInfo();
+                    GetCoinInfo();
 
-            watch.Stop();
-            _logger.LogInformation($"------>{context.GetJobDetail()}  耗时：{watch.ElapsedMilliseconds} ");
+                    watch.Stop();
+                    context.Scheduler.Context.Put(trigger.FullName + "_Result", "Success");
+                    context.Scheduler.Context.Put(trigger.FullName + "_Time", watch.ElapsedMilliseconds);
+
+                    _logger.LogInformation($"------>{context.GetJobDetail()}  耗时：{watch.ElapsedMilliseconds} ");
+                    return Task.FromResult("Success");
+                }
+                catch (Exception ex)
+                {
+                    context.Scheduler.Context.Put(trigger.FullName + "_Exception", ex);
+                    _logger.LogError(new EventId(ex.HResult), ex, "---CoinInfoJob DoWork Exception---");
+                    return Task.FromResult("Error");
+                }
+            }
         }
 
         /// <summary>
@@ -74,7 +91,7 @@ namespace SSS.Application.Job.Coin.CoinInfo
                 var list = new List<Domain.Coin.CoinInfo.CoinInfo>();
 
                 Parallel.ForEach(data, (item) =>
-                { 
+                {
                     if (source.Any(x => x.Name.Equals(item.name)))
                         return;
 
@@ -83,7 +100,7 @@ namespace SSS.Application.Job.Coin.CoinInfo
 
                     var model = new Domain.Coin.CoinInfo.CoinInfo
                     {
-                        Content = item.id, 
+                        Content = item.id,
                         Coin = item.symbol,
                         RomteLogo = item.logo_png,
                         LocalLogo = DownLoadCoinLogo(item.symbol, item.logo_png),
@@ -161,6 +178,6 @@ namespace SSS.Application.Job.Coin.CoinInfo
                 _logger.LogError(new EventId(ex.HResult), ex, "---UrlToBase64 Exception---");
                 return "";
             }
-        } 
+        }
     }
 }
