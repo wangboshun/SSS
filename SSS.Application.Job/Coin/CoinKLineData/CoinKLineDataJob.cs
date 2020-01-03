@@ -55,7 +55,6 @@ namespace SSS.Application.Job.Coin.CoinKLineData
                 watch.Start();
 
                 string[] coin_array = JsonConfig.GetSectionValue("TradeConfig:Coin").Split(',');
-
                 Parallel.ForEach(coin_array, AddKLineData);
 
                 watch.Stop();
@@ -69,7 +68,7 @@ namespace SSS.Application.Job.Coin.CoinKLineData
             {
                 using var scope = _scopeFactory.CreateScope();
                 using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
-                var newlist = new List<Domain.Coin.CoinKLineData.CoinKLineData>();
+                var new_list = new List<Domain.Coin.CoinKLineData.CoinKLineData>();
                 var old_datatime = new List<DateTime>();
 
                 foreach (CoinTime time in Enum.GetValues(typeof(CoinTime)))
@@ -99,13 +98,13 @@ namespace SSS.Application.Job.Coin.CoinKLineData
                     var json = jobject?["data"];
                     if (json == null) continue;
 
-                    List<Domain.Coin.CoinKLineData.CoinKLineData> list = new List<Domain.Coin.CoinKLineData.CoinKLineData>();
+                    var list = new List<Domain.Coin.CoinKLineData.CoinKLineData>();
 
                     foreach (var item in json)
                     {
                         var data_time = DateTimeConvert.ConvertDateTime(item["id"].ToString());
 
-                        Domain.Coin.CoinKLineData.CoinKLineData model = new Domain.Coin.CoinKLineData.CoinKLineData
+                        var model = new Domain.Coin.CoinKLineData.CoinKLineData
                         {
                             Id = Guid.NewGuid().ToString(),
                             IsDelete = 0,
@@ -122,18 +121,18 @@ namespace SSS.Application.Job.Coin.CoinKLineData
                         old_datatime.Add(data_time);
                         list.Add(model);
                     }
-                    var oldlist = context.CoinKLineData.Where(x => old_datatime.Contains(x.DataTime) &&
+                    var old_list = context.CoinKLineData.Where(x => old_datatime.Contains(x.DataTime) &&
                                                                    x.TimeType == (int)time &&
                                                                    x.Coin.Equals(coin) &&
                                                                    x.Platform == (int)Platform.Huobi &&
                                                                    x.IsDelete == 0).ToList();
 
-                    if (oldlist.Count > 0)
-                        context.CoinKLineData.RemoveRange(oldlist);
+                    if (old_list.Count > 0)
+                        context.CoinKLineData.RemoveRange(old_list);
 
-                    newlist.AddRange(list);
+                    new_list.AddRange(list);
                 }
-                context.CoinKLineData.AddRange(newlist);
+                context.CoinKLineData.AddRange(new_list);
                 context.SaveChanges();
             }
             catch (Exception ex)

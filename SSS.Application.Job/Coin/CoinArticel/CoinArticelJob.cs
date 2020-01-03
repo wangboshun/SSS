@@ -46,11 +46,8 @@ namespace SSS.Application.Job.Coin.CoinArticel
             watch.Start();
 
             Task t1 = Task.Factory.StartNew(GetNotice);
-
             Task t2 = Task.Factory.StartNew(GetPolicy);
-
             Task t3 = Task.Factory.StartNew(GetNews);
-
             Task t4 = Task.Factory.StartNew(GetQuickNews);
 
             Task.WaitAll(t1, t2, t3, t4);
@@ -84,7 +81,7 @@ namespace SSS.Application.Job.Coin.CoinArticel
                 using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
                 var source = context.CoinArticel.ToList();
 
-                List<Domain.Coin.CoinArticel.CoinArticel> list = new List<Domain.Coin.CoinArticel.CoinArticel>();
+                var list = new List<Domain.Coin.CoinArticel.CoinArticel>();
 
                 Parallel.ForEach(token, (item) =>
                 {
@@ -142,7 +139,7 @@ namespace SSS.Application.Job.Coin.CoinArticel
 
                 var source = context.CoinArticel.ToList();
 
-                List<Domain.Coin.CoinArticel.CoinArticel> list = new List<Domain.Coin.CoinArticel.CoinArticel>();
+                var list = new List<Domain.Coin.CoinArticel.CoinArticel>();
 
                 Parallel.ForEach(data.AsJEnumerable(), (item) =>
                 {
@@ -206,7 +203,7 @@ namespace SSS.Application.Job.Coin.CoinArticel
                 using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
                 var source = context.CoinArticel.ToList();
 
-                List<Domain.Coin.CoinArticel.CoinArticel> list = new List<Domain.Coin.CoinArticel.CoinArticel>();
+                var list = new List<Domain.Coin.CoinArticel.CoinArticel>();
 
                 Parallel.ForEach(token, (item) =>
                 {
@@ -265,7 +262,7 @@ namespace SSS.Application.Job.Coin.CoinArticel
 
                 var source = context.CoinArticel.ToList();
 
-                List<Domain.Coin.CoinArticel.CoinArticel> list = new List<Domain.Coin.CoinArticel.CoinArticel>();
+                var list = new List<Domain.Coin.CoinArticel.CoinArticel>();
 
                 Parallel.ForEach(data.AsJEnumerable(), (item) =>
                 {
@@ -314,10 +311,7 @@ namespace SSS.Application.Job.Coin.CoinArticel
 
                 HtmlDocument document = htmlWeb.Load(token["topic_url"].ToString());
 
-                HtmlNode node = document.DocumentNode.SelectSingleNode("//div[@class='js-article-detail']");
-
-                if (node == null)
-                    node = document.DocumentNode.SelectSingleNode("//div[@class='js-article']");
+                HtmlNode node = document.DocumentNode.SelectSingleNode("//div[@class='js-article-detail']") ?? document.DocumentNode.SelectSingleNode("//div[@class='js-article']");
 
                 if (node != null)
                 {

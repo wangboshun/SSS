@@ -44,10 +44,11 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
         public Task Execute(IJobExecutionContext context)
         {
             _logger.LogInformation("-----------------CoinAnalyseJob----------------------");
-            return DoWork(context);
+            DoWork(context);
+            return Task.FromResult("Success");
         }
 
-        public Task DoWork(IJobExecutionContext context)
+        public void DoWork(IJobExecutionContext context)
         {
             lock (_lock)
             {
@@ -91,12 +92,10 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
                     context.Scheduler.Context.Put(trigger.FullName + "_Time", watch.ElapsedMilliseconds);
 
                     _logger.LogInformation($"------>{context.GetJobDetail()}  耗时：{watch.ElapsedMilliseconds} ");
-                    return Task.FromResult($"{trigger.FullName} Success");
                 }
                 catch (Exception ex)
                 {
                     context.Scheduler.Context.Put(trigger.FullName + "_Exception", ex);
-                    return Task.FromResult(trigger.FullName + "Exception");
                 }
             }
         }
@@ -119,7 +118,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
                     var Kdj = context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 3).ToList();
                     var Fast = context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 4).ToList();
 
-                    List<Domain.Coin.CoinAnalyse.CoinAnalyse> list = new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
+                    var list = new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
                     list.AddRange(Average);
 
                     TotalDesc(list, Macd);
@@ -128,29 +127,29 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
 
                     List<string> removecoin = new List<string>();
                     list = list.GroupBy(c => c.Coin).Select(c => c.First()).ToList();
-                    List<Domain.Coin.CoinAnalyse.CoinAnalyse> list_coin = new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
-                    foreach (var item in list)
-                        if (item.Desc.Contains("☆"))
-                        {
-                            removecoin.Add(item.Coin);
-                            Domain.Coin.CoinAnalyse.CoinAnalyse model = new Domain.Coin.CoinAnalyse.CoinAnalyse
-                            {
-                                Id = Guid.NewGuid().ToString(),
-                                Coin = item.Coin,
-                                CreateTime = DateTime.Now,
+                    var list_coin = new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
 
-                                Platform = "火币",
-                                IsDelete = 0,
-                                Open = item.Open,
-                                Close = item.Close,
-                                CloseRange = item.CloseRange,
-                                HighRange = item.HighRange,
-                                TimeType = GetTimeType(type),
-                                Desc = item.Desc,
-                                IndicatorType = 0
-                            };
-                            list_coin.Add(model);
-                        }
+                    foreach (var item in list.Where(item => item.Desc.Contains("☆")))
+                    {
+                        removecoin.Add(item.Coin);
+                        var model = new Domain.Coin.CoinAnalyse.CoinAnalyse
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Coin = item.Coin,
+                            CreateTime = DateTime.Now,
+
+                            Platform = "火币",
+                            IsDelete = 0,
+                            Open = item.Open,
+                            Close = item.Close,
+                            CloseRange = item.CloseRange,
+                            HighRange = item.HighRange,
+                            TimeType = GetTimeType(type),
+                            Desc = item.Desc,
+                            IndicatorType = 0
+                        };
+                        list_coin.Add(model);
+                    }
 
                     if (!list_coin.Any()) return;
                     context.Database.ExecuteSqlRaw("UPDATE CoinAnalyse SET IsDelete=1 where IndicatorType=0 ");
@@ -204,10 +203,10 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
 
                 //获取时间段
                 string typename = GetTimeType(type);
-                List<Domain.Coin.CoinAnalyse.CoinAnalyse> list_coin = new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
+                var list_coin = new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
                 if (data5.Count > 0 && data10.Count > 0 && data5.First().Item2 > data10.First().Item2)
                 {
-                    Domain.Coin.CoinAnalyse.CoinAnalyse model = new Domain.Coin.CoinAnalyse.CoinAnalyse
+                    var model = new Domain.Coin.CoinAnalyse.CoinAnalyse
                     {
                         Id = Guid.NewGuid().ToString(),
                         Coin = coin,
@@ -280,8 +279,8 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
 
                 //获取时间段
                 string typename = GetTimeType(type);
-                List<Domain.Coin.CoinAnalyse.CoinAnalyse> list_coin = new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
-                Domain.Coin.CoinAnalyse.CoinAnalyse model = new Domain.Coin.CoinAnalyse.CoinAnalyse
+                var list_coin = new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
+                var model = new Domain.Coin.CoinAnalyse.CoinAnalyse
                 {
                     Id = Guid.NewGuid().ToString(),
                     Coin = coin,
@@ -352,8 +351,8 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
                 if (kdj.FirstOrDefault()?.Item2 > 80 && kdj.FirstOrDefault()?.Item3 > 80 &&
                     kdj.FirstOrDefault()?.Item4 > 80)
                     desc = $"【{typename}级别,KDJ超买状态，建议卖出】";
-                List<Domain.Coin.CoinAnalyse.CoinAnalyse> list_coin = new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
-                Domain.Coin.CoinAnalyse.CoinAnalyse model = new Domain.Coin.CoinAnalyse.CoinAnalyse
+                var list_coin = new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
+                var model = new Domain.Coin.CoinAnalyse.CoinAnalyse
                 {
                     Id = Guid.NewGuid().ToString(),
                     Coin = coin,
@@ -405,9 +404,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
                 using var scope = _scopeFactory.CreateScope();
                 using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
                 var info = context.CoinInfo.FirstOrDefault(x => x.Coin.Equals(coin.ToUpper()));
-                if (info != null)
-                    return info.RomteLogo;
-                return logo;
+                return info != null ? info.RomteLogo : logo;
             }
             catch (Exception ex)
             {

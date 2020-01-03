@@ -65,33 +65,34 @@ namespace SSS.Application.Job.Coin.CoinInfo
             {
                 WebClient web = new WebClient();
                 var json = web.DownloadString("https://fxhapi.feixiaohao.com/public/v1/ticker?start=0&limit=10000");
-                List<CoinJson> data = JsonConvert.DeserializeObject<List<CoinJson>>(json);
+                var data = JsonConvert.DeserializeObject<List<CoinJson>>(json);
 
                 using var scope = _scopeFactory.CreateScope();
                 using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
                 var source = context.CoinInfo.ToList();
 
-                List<Domain.Coin.CoinInfo.CoinInfo> list = new List<Domain.Coin.CoinInfo.CoinInfo>();
+                var list = new List<Domain.Coin.CoinInfo.CoinInfo>();
 
                 Parallel.ForEach(data, (item) =>
-                {
-                    Domain.Coin.CoinInfo.CoinInfo model = new Domain.Coin.CoinInfo.CoinInfo();
-                    model.Content = item.id;
-                    model.Coin = item.symbol;
-
+                { 
                     if (source.Any(x => x.Name.Equals(item.name)))
                         return;
 
                     if (list.Any(x => x.Name.Equals(item.name)))
                         return;
 
-                    string src = item.logo_png;
-                    model.RomteLogo = src;
-                    model.LocalLogo = DownLoadCoinLogo(model.Coin, src);
-                    model.Imagedata = UrlToBase64(src);
-                    model.Id = Guid.NewGuid().ToString();
-                    model.Name = item.name;
-                    model.CreateTime = DateTime.Now;
+                    var model = new Domain.Coin.CoinInfo.CoinInfo
+                    {
+                        Content = item.id, 
+                        Coin = item.symbol,
+                        RomteLogo = item.logo_png,
+                        LocalLogo = DownLoadCoinLogo(item.symbol, item.logo_png),
+                        Imagedata = UrlToBase64(item.logo_png),
+                        Id = Guid.NewGuid().ToString(),
+                        Name = item.name,
+                        CreateTime = DateTime.Now
+                    };
+
                     list.Add(model);
                 });
 
@@ -118,6 +119,7 @@ namespace SSS.Application.Job.Coin.CoinInfo
                 string filepath = RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
                     ? _env.ContentRootPath + "//File//coin//"
                     : _env.ContentRootPath + "\\File\\coin\\";
+
                 string filename = filepath + coin + ".png";
 
                 if (!File.Exists(filename))
@@ -142,29 +144,23 @@ namespace SSS.Application.Job.Coin.CoinInfo
             try
             {
                 WebClient web = new WebClient();
-                byte[] Bytes = web.DownloadData(url);
-                using (MemoryStream ms = new MemoryStream(Bytes))
-                {
-                    Image img = Image.FromStream(ms);
-                    Bitmap bmp = new Bitmap(img);
-                    using (MemoryStream stream = new MemoryStream())
-                    {
-                        bmp.Save(stream, ImageFormat.Jpeg);
-                        byte[] arr = new byte[stream.Length];
-                        stream.Position = 0;
-                        stream.Read(arr, 0, (int)stream.Length);
-                        stream.Close();
-                        return Convert.ToBase64String(arr);
-                    }
-                }
+                byte[] bytes = web.DownloadData(url);
+                using MemoryStream ms = new MemoryStream(bytes);
+                Image img = Image.FromStream(ms);
+                Bitmap bmp = new Bitmap(img);
+                using MemoryStream stream = new MemoryStream();
+                bmp.Save(stream, ImageFormat.Jpeg);
+                byte[] arr = new byte[stream.Length];
+                stream.Position = 0;
+                stream.Read(arr, 0, (int)stream.Length);
+                stream.Close();
+                return Convert.ToBase64String(arr);
             }
             catch (Exception ex)
             {
                 _logger.LogError(new EventId(ex.HResult), ex, "---UrlToBase64 Exception---");
                 return "";
             }
-        }
-
-
+        } 
     }
 }

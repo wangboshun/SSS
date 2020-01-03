@@ -236,7 +236,7 @@ namespace SSS.Application.Job.Coin.CoinTrade
                 if (ping != null)
                     Ping(ping.Id, price);
 
-                Domain.Coin.CoinTrade.CoinTrade model = new Domain.Coin.CoinTrade.CoinTrade
+                var model = new Domain.Coin.CoinTrade.CoinTrade
                 {
                     Id = Guid.NewGuid().ToString(),
                     Coin = coin,
@@ -288,7 +288,7 @@ namespace SSS.Application.Job.Coin.CoinTrade
                 if (ping != null)
                     Ping(ping.Id, price);
 
-                Domain.Coin.CoinTrade.CoinTrade model = new Domain.Coin.CoinTrade.CoinTrade
+                var model = new Domain.Coin.CoinTrade.CoinTrade
                 {
                     Id = Guid.NewGuid().ToString(),
                     Coin = coin,

@@ -56,7 +56,7 @@ namespace SSS.Application.Job.Coin.CoinMessage
             {
                 try
                 {
-                    List<Domain.Coin.CoinMessage.CoinMessage> list = new List<Domain.Coin.CoinMessage.CoinMessage>();
+                    var list = new List<Domain.Coin.CoinMessage.CoinMessage>();
                     using var scope = _scopeFactory.CreateScope();
                     using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
                     var source = context.CoinMessage.ToList();
@@ -67,8 +67,7 @@ namespace SSS.Application.Job.Coin.CoinMessage
 
                         HtmlDocument document = htmlWeb.Load("http://www.biknow.com/?pageNum=" + i);
 
-                        var node = document.DocumentNode.SelectNodes(
-                            "//div[@class='list']//div[@class='list_con']//div[@class='box']");
+                        var node = document.DocumentNode.SelectNodes("//div[@class='list']//div[@class='list_con']//div[@class='box']");
                         if (node == null)
                             continue;
 
@@ -101,12 +100,10 @@ namespace SSS.Application.Job.Coin.CoinMessage
                         }
                     }
 
-                    if (list.Any())
-                    {
-                        context.CoinMessage.AddRange(list);
-                        context.SaveChanges();
-                        Console.WriteLine("---GetGoodNews  SaveChanges---");
-                    }
+                    if (!list.Any()) return;
+                    context.CoinMessage.AddRange(list);
+                    context.SaveChanges();
+                    Console.WriteLine("---GetGoodNews  SaveChanges---");
                 }
                 catch (Exception ex)
                 {
