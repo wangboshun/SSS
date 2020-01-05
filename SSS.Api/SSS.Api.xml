@@ -936,6 +936,11 @@
             <param name="input">JobInfoInputDto</param>
             <returns></returns> 
         </member>
+        <member name="T:SSS.Api.HealthCheck.RandomHealthCheck">
+            <summary>
+            RandomHealthCheck
+            </summary>
+        </member>
         <member name="T:SSS.Api.Program">
             <summary>
             Program 

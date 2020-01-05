@@ -1,6 +1,9 @@
 ﻿using FluentValidation.AspNetCore;
 
+using HealthChecks.UI.Client;
+
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +24,7 @@ using Senparc.Weixin.RegisterServices;
 using Senparc.Weixin.WxOpen;
 
 using SSS.Api.Bootstrap;
+using SSS.Api.HealthCheck;
 using SSS.Api.Seedwork.Filter;
 using SSS.Api.Seedwork.Json;
 using SSS.Api.Seedwork.Middleware;
@@ -130,6 +134,8 @@ namespace SSS.Api
             //注入 Quartz调度类 
             services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();//注册ISchedulerFactory的实例。
 
+            services.AddHealthChecksUI().AddHealthChecks().AddCheck<RandomHealthCheck>("random");
+
             services.AddControllers();
         }
 
@@ -202,7 +208,16 @@ namespace SSS.Api
             app.UseRouting();
 
             //执行路由
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(config =>
+            {
+                config.MapHealthChecks("healthz", new HealthCheckOptions()
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
+                config.MapHealthChecksUI();
+                config.MapDefaultControllerRoute();
+            });
 
             //公众号注入
             register.UseSenparcWeixin(senparcWeixinSetting.Value, senparcSetting.Value).RegisterWxOpenAccount(senparcWeixinSetting.Value, "SSS");
