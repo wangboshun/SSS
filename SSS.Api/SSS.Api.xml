@@ -941,6 +941,14 @@
             RandomHealthCheck
             </summary>
         </member>
+        <member name="M:SSS.Api.HealthCheck.RandomHealthCheck.CheckHealthAsync(Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckContext,System.Threading.CancellationToken)">
+            <summary>
+            CheckHealthAsync
+            </summary>
+            <param name="context"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:SSS.Api.Program">
             <summary>
             Program 
