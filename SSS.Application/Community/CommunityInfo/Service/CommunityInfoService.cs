@@ -7,11 +7,14 @@ using Microsoft.Extensions.DependencyInjection;
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Community.CommunityBusinessRelation.Dto;
 using SSS.Domain.Community.CommunityInfo.Dto;
+using SSS.Domain.Community.UserCommunityRelation;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Community.CommunityBusiness;
 using SSS.Infrastructure.Repository.Community.CommunityBusinessRelation;
 using SSS.Infrastructure.Repository.Community.CommunityInfo;
+using SSS.Infrastructure.Repository.Community.UserCommunityRelation;
+using SSS.Infrastructure.Repository.Permission.Info.UserInfo;
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
@@ -25,18 +28,24 @@ namespace SSS.Application.Community.CommunityInfo.Service
         private readonly ICommunityBusinessRelationRepository _communityBusinessRelationRepository;
         private readonly ICommunityBusinessRepository _communityBusinessRepository;
         private readonly ICommunityInfoRepository _communityInfoRepository;
+        private readonly IUserInfoRepository _userInfoRepository;
+        private readonly IUserCommunityRelationRepository _userCommunityRelationRepository;
 
         public CommunityInfoService(IMapper mapper,
             ICommunityInfoRepository repository,
             IErrorHandler error,
             ICommunityBusinessRepository communityBusinessRepository,
             ICommunityInfoRepository communityInfoRepository,
+            IUserCommunityRelationRepository userCommunityRelationRepository,
+        IUserInfoRepository userInfoRepository,
         ICommunityBusinessRelationRepository communityBusinessRelationRepository,
             IValidator<CommunityInfoInputDto> validator) :
             base(mapper, repository, error, validator)
         {
             _communityBusinessRepository = communityBusinessRepository;
             _communityInfoRepository = communityInfoRepository;
+            _userInfoRepository = userInfoRepository;
+            _userCommunityRelationRepository = userCommunityRelationRepository;
             _communityBusinessRelationRepository = communityBusinessRelationRepository;
         }
 
@@ -46,6 +55,13 @@ namespace SSS.Application.Community.CommunityInfo.Service
             if (!result.IsValid)
             {
                 Error.Execute(result);
+                return null;
+            }
+
+            var user = _userInfoRepository.Have(input.userid);
+            if (!user)
+            {
+                Error.Execute("用户不存在！");
                 return null;
             }
 
@@ -59,6 +75,16 @@ namespace SSS.Application.Community.CommunityInfo.Service
             input.id = Guid.NewGuid().ToString();
             var model = Mapper.Map<SSS.Domain.Community.CommunityInfo.CommunityInfo>(input);
             model.CreateTime = DateTime.Now;
+
+            _userCommunityRelationRepository.Add(new UserCommunityRelation()
+            {
+                Id = Guid.NewGuid().ToString(),
+                IsDelete = 0,
+                CommunityId = input.id,
+                CreateTime = DateTime.Now,
+                UserId = input.userid
+            });
+
             Repository.Add(model);
             return Repository.SaveChanges() > 0 ? Mapper.Map<CommunityInfoOutputDto>(model) : null;
         }

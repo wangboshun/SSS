@@ -356,6 +356,13 @@
             <param name="id">id</param>
             <returns></returns> 
         </member>
+        <member name="M:SSS.Api.Controllers.Community.CommunityBusinessController.DeleteCommunityInfo(SSS.Domain.Community.CommunityBusiness.Dto.CommunityBusinessInputDto)">
+            <summary>
+            修改数据
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
         <member name="M:SSS.Api.Controllers.Community.CommunityBusinessController.AddCommunityBusiness(SSS.Domain.Community.CommunityBusiness.Dto.CommunityBusinessInputDto)">
             <summary>
             添加业务类型

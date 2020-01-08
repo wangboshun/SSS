@@ -90,7 +90,7 @@ namespace SSS.Api.Controllers.Community
         public IActionResult DeleteCommunityInfo([FromBody]CommunityInfoInputDto input)
         {
             var result = _service.UpdateCommunityInfo(input);
-            return UpdateResponse(result, result);
+            return UpdateResponse(input, result);
         }
 
         /// <summary>

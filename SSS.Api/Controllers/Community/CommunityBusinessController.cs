@@ -81,6 +81,19 @@ namespace SSS.Api.Controllers.Community
         }
 
         /// <summary>
+        /// 修改数据
+        /// </summary>
+        /// <param name="input">input</param>
+        /// <returns></returns> 
+        [HttpPost("update")]
+        [AllowAnonymous]  //匿名访问
+        public IActionResult DeleteCommunityInfo([FromBody]CommunityBusinessInputDto input)
+        {
+            var result = _service.UpdateCommunityBusiness(input);
+            return UpdateResponse(input, result);
+        }
+
+        /// <summary>
         /// 添加业务类型
         /// </summary>
         /// <param name="input">CommunityBusinessInputDto</param>

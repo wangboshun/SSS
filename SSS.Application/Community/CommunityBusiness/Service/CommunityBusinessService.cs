@@ -57,6 +57,28 @@ namespace SSS.Application.Community.CommunityBusiness.Service
             return Repository.SaveChanges() > 0 ? Mapper.Map<CommunityBusinessOutputDto>(model) : null;
         }
 
+        public bool UpdateCommunityBusiness(CommunityBusinessInputDto input)
+        {
+            var result = Validator.Validate(input, ruleSet: "Update");
+            if (!result.IsValid)
+            {
+                Error.Execute(result);
+                return false;
+            }
+
+            var model = Mapper.Map<SSS.Domain.Community.CommunityBusiness.CommunityBusiness>(input);
+            var data = Repository.Have(model.Id);
+            if (!data)
+            {
+                Error.Execute("业务数据不存在！");
+                return false;
+            }
+
+            model.UpdateTime = DateTime.Now;
+            Repository.Update(model);
+            return Repository.SaveChanges() > 0;
+        }
+
         public Pages<List<CommunityBusinessOutputDto>> GetCommunityBusinessByCommunity(CommunityInfoInputDto input)
         {
             var data = _communityBusinessRelationRepository.GetListCommunityBusinessRelation(input.id, input.name);
