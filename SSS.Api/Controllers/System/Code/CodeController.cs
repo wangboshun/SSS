@@ -23,7 +23,7 @@ namespace SSS.Api.Controllers.System.Code
         private readonly IGeneratorCodeService _generatorCodeService;
 
         /// <summary>
-        /// CodeController
+        /// 代码生成
         /// </summary>
         /// <param name="env"></param>
         /// <param name="generatorCodeService"></param>

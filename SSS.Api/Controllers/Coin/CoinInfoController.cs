@@ -8,7 +8,7 @@ using SSS.Domain.Coin.CoinInfo.Dto;
 namespace SSS.Api.Controllers.Coin
 {
     /// <summary>
-    /// CoinInfoController
+    /// 币币信息
     /// </summary> 
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -19,7 +19,7 @@ namespace SSS.Api.Controllers.Coin
         private readonly ICoinInfoService _service;
 
         /// <summary>
-        /// CoinInfoController
+        /// 币币信息
         /// </summary>
         /// <param name="service">ICoinInfoService</param>
         public CoinInfoController(ICoinInfoService service)
@@ -28,7 +28,7 @@ namespace SSS.Api.Controllers.Coin
         }
 
         /// <summary>
-        /// GetList
+        /// 获取所有币币信息列表
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
@@ -41,7 +41,7 @@ namespace SSS.Api.Controllers.Coin
         }
 
         /// <summary>
-        /// AddCoinInfo
+        /// 添加币币
         /// </summary>
         /// <param name="input">CoinInfoInputDto</param>
         /// <returns></returns> 

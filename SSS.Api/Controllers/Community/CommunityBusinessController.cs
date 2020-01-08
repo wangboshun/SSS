@@ -9,7 +9,7 @@ using SSS.Domain.Community.CommunityInfo.Dto;
 namespace SSS.Api.Controllers.Community
 {
     /// <summary>
-    /// 业务类型
+    /// 社区服务业务类型
     /// </summary> 
     [ApiVersion("4.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -20,7 +20,7 @@ namespace SSS.Api.Controllers.Community
         private readonly ICommunityBusinessService _service;
 
         /// <summary>
-        /// CommunityBusinessController
+        /// 社区服务业务类型
         /// </summary>
         /// <param name="service">ICommunityBusinessService</param>
         public CommunityBusinessController(ICommunityBusinessService service)
@@ -29,7 +29,7 @@ namespace SSS.Api.Controllers.Community
         }
 
         /// <summary>
-        /// 所有业务
+        /// 获取所有业务类型列表
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 

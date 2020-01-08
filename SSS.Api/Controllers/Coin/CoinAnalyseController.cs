@@ -8,7 +8,7 @@ using SSS.Domain.Coin.CoinAnalyse.Dto;
 namespace SSS.Api.Controllers.Coin
 {
     /// <summary>
-    /// CoinAnalyseController
+    /// 币币分析
     /// </summary> 
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -19,7 +19,7 @@ namespace SSS.Api.Controllers.Coin
         private readonly ICoinAnalyseService _service;
 
         /// <summary>
-        /// CoinAnalyseController
+        /// 币币分析
         /// </summary>
         /// <param name="service">ICoinAnalyseService</param>
         public CoinAnalyseController(ICoinAnalyseService service)
@@ -28,7 +28,7 @@ namespace SSS.Api.Controllers.Coin
         }
 
         /// <summary>
-        /// GetList
+        /// 获取所有分析列表
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
@@ -41,7 +41,7 @@ namespace SSS.Api.Controllers.Coin
         }
 
         /// <summary>
-        /// AddCoinAnalyse
+        /// 添加
         /// </summary>
         /// <param name="input">CoinAnalyseInputDto</param>
         /// <returns></returns> 

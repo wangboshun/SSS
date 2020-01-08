@@ -22,7 +22,7 @@ namespace SSS.Api.Controllers.Permission.Info
         private readonly IUserInfoService _service;
 
         /// <summary>
-        ///     UserInfoController
+        ///     用户信息
         /// </summary>
         /// <param name="service">IUserInfoService</param>
         public UserInfoController(IUserInfoService service)

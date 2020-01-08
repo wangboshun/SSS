@@ -8,7 +8,7 @@ using SSS.Domain.Coin.CoinMessage.Dto;
 namespace SSS.Api.Controllers.Coin
 {
     /// <summary>
-    /// CoinMessageController
+    /// 利好消息
     /// </summary> 
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -19,7 +19,7 @@ namespace SSS.Api.Controllers.Coin
         private readonly ICoinMessageService _service;
 
         /// <summary>
-        /// CoinMessageController
+        /// 利好消息
         /// </summary>
         /// <param name="service">ICoinMessageService</param>
         public CoinMessageController(ICoinMessageService service)
@@ -28,7 +28,7 @@ namespace SSS.Api.Controllers.Coin
         }
 
         /// <summary>
-        /// GetList
+        /// 获取所有信息列表
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
@@ -41,7 +41,7 @@ namespace SSS.Api.Controllers.Coin
         }
 
         /// <summary>
-        /// AddCoinMessage
+        /// 添加利好消息
         /// </summary>
         /// <param name="input">CoinMessageInputDto</param>
         /// <returns></returns> 

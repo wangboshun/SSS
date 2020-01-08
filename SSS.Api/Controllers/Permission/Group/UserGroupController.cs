@@ -11,7 +11,7 @@ using SSS.Domain.Permission.Info.UserInfo.Dto;
 namespace SSS.Api.Controllers.Permission.Group
 {
     /// <summary>
-    /// UserGroupController
+    /// 用户组
     /// </summary> 
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]

@@ -20,7 +20,7 @@ namespace SSS.Api.Controllers.Community
         private readonly ICommunityInfoService _service;
 
         /// <summary>
-        /// CommunityInfoController
+        /// 社区信息
         /// </summary>
         /// <param name="service">ICommunityInfoService</param>
         public CommunityInfoController(ICommunityInfoService service)
@@ -29,7 +29,7 @@ namespace SSS.Api.Controllers.Community
         }
 
         /// <summary>
-        /// 所有社区信息
+        /// 获取所有社区信息列表
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 

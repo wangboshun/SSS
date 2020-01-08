@@ -12,7 +12,7 @@ using SSS.Domain.Permission.Info.UserInfo.Dto;
 namespace SSS.Api.Controllers.Permission.Info
 {
     /// <summary>
-    /// PowerInfoController
+    /// 权限信息
     /// </summary> 
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -23,7 +23,7 @@ namespace SSS.Api.Controllers.Permission.Info
         private readonly IPowerInfoService _service;
 
         /// <summary>
-        /// PowerInfoController
+        /// 权限信息
         /// </summary>
         /// <param name="service">IPowerInfoService</param>
         public PowerInfoController(IPowerInfoService service)
@@ -32,7 +32,7 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
-        /// GetList
+        /// 获取所有权限信息
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 

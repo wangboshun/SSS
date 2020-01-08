@@ -28,7 +28,7 @@ namespace SSS.Api.Controllers.System.Job
         }
 
         /// <summary>
-        /// GetList
+        /// 获取所有Job列表
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
@@ -67,7 +67,7 @@ namespace SSS.Api.Controllers.System.Job
         }
 
         /// <summary>
-        /// AddJobError
+        /// 添加错误Job
         /// </summary>
         /// <param name="input">JobErrorInputDto</param>
         /// <returns></returns> 

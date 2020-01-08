@@ -1,4 +1,6 @@
-﻿using FluentValidation.AspNetCore;
+﻿using System;
+using System.ComponentModel;
+using FluentValidation.AspNetCore;
 
 using HealthChecks.UI.Client;
 
@@ -35,6 +37,8 @@ using StackExchange.Profiling.SqlFormatters;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using SSS.Infrastructure.Util.Enum;
+using DateTimeConverter = SSS.Api.Seedwork.Json.DateTimeConverter;
 
 namespace SSS.Api
 {
@@ -248,33 +252,14 @@ namespace SSS.Api
             app.UseSwaggerUI(options =>
             {
                 //遍历版本号
-                typeof(ApiVersions).GetEnumNames().OrderByDescending(e => e).ToList().ForEach(version =>
-                {
-                    options.SwaggerEndpoint($"/swagger/{version}/swagger.json", $"{GetVersion(version)}");
-                });
+                foreach (var item in Enum.GetValues(typeof(ApiVersions)))
+                    options.SwaggerEndpoint($"/swagger/{item.ToString()}/swagger.json", $"{((ApiVersions)item).GetDescription()}");
 
                 options.RoutePrefix = "docs";
                 options.DocumentTitle = "SSS Project";
 
                 options.IndexStream = () => GetType().GetTypeInfo().Assembly.GetManifestResourceStream("SSS.Api.miniprofiler.html");
             });
-        }
-
-        private static string GetVersion(string version)
-        {
-            switch (version)
-            {
-                case "v1":
-                    return "交易接口";
-                case "v2":
-                    return "权限接口";
-                case "v3":
-                    return "系统接口";
-                case "v4":
-                    return "社区接口";
-                default:
-                    return version;
-            }
         }
 
         /// <summary>

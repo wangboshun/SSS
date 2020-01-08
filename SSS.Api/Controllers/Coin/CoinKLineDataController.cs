@@ -8,7 +8,7 @@ using SSS.Domain.Coin.CoinKLineData.Dto;
 namespace SSS.Api.Controllers.Coin
 {
     /// <summary>
-    /// CoinKLineDataController
+    /// K线数据详情
     /// </summary> 
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -19,7 +19,7 @@ namespace SSS.Api.Controllers.Coin
         private readonly ICoinKLineDataService _service;
 
         /// <summary>
-        /// CoinKLineDataController
+        /// K线数据详情
         /// </summary>
         /// <param name="service">ICoinKLineDataService</param>
         public CoinKLineDataController(ICoinKLineDataService service)
@@ -28,7 +28,7 @@ namespace SSS.Api.Controllers.Coin
         }
 
         /// <summary>
-        /// GetList
+        /// 获取所有K线数据列表
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
@@ -67,7 +67,7 @@ namespace SSS.Api.Controllers.Coin
         }
 
         /// <summary>
-        /// AddCoinKLineData
+        /// 添加K线数据
         /// </summary>
         /// <param name="input">CoinKLineDataInputDto</param>
         /// <returns></returns> 

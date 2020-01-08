@@ -10,6 +10,7 @@ using SSS.Api.Seedwork.ServiceCollection;
 using SSS.Infrastructure.Seedwork.Cache.Memcached;
 using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Seedwork.Cache.Redis;
+using SSS.Infrastructure.Util.Enum;
 
 using System;
 using System.IO;
@@ -76,36 +77,22 @@ namespace SSS.Api.Bootstrap
 
             services.AddSwaggerGen(options =>
             {
-                typeof(ApiVersions).GetEnumNames().ToList().ForEach(version =>
+                //遍历版本号
+                foreach (var item in Enum.GetValues(typeof(ApiVersions)))
                 {
-                    options.SwaggerDoc(version, new OpenApiInfo
+                    options.SwaggerDoc(item.ToString(), new OpenApiInfo
                     {
-                        Version = version,
-                        Title = GetVersion(version),
-                        Description = GetVersion(version) + "---说明文档",
+                        Version = item.ToString(),
+                        Title = ((ApiVersions)item).GetDescription(),
+                        Description = ((ApiVersions)item).GetDescription() + "---说明文档",
                         Contact = new OpenApiContact { Name = "WBS", Email = "512742341@qq.com" }
                     });
-                });
+                }
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
             });
-        }
-
-        private static string GetVersion(string version)
-        {
-            switch (version)
-            {
-                case "v1":
-                    return "交易接口";
-                case "v2":
-                    return "权限接口";
-                case "v3":
-                    return "系统接口";
-                default:
-                    return version;
-            }
         }
 
         /// <summary>

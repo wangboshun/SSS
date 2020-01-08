@@ -28,7 +28,7 @@ namespace SSS.Api.Controllers.System.Job
         }
 
         /// <summary>
-        /// GetList
+        /// 获取所有Job错误执行列表
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
@@ -54,7 +54,7 @@ namespace SSS.Api.Controllers.System.Job
         }
 
         /// <summary>
-        /// Add
+        /// 添加Job
         /// </summary>
         /// <param name="input">JobInfoInputDto</param>
         /// <returns></returns> 
@@ -67,7 +67,7 @@ namespace SSS.Api.Controllers.System.Job
         }
 
         /// <summary>
-        /// Delete
+        /// 删除Job
         /// </summary>
         /// <param name="input">JobInfoInputDto</param>
         /// <returns></returns> 
@@ -80,7 +80,7 @@ namespace SSS.Api.Controllers.System.Job
         }
 
         /// <summary>
-        /// Pause
+        /// 暂停Job
         /// </summary>
         /// <param name="input">JobInfoInputDto</param>
         /// <returns></returns> 
@@ -93,7 +93,7 @@ namespace SSS.Api.Controllers.System.Job
         }
 
         /// <summary>
-        /// Resume
+        /// 恢复Job
         /// </summary>
         /// <param name="input">JobInfoInputDto</param>
         /// <returns></returns> 
@@ -106,7 +106,7 @@ namespace SSS.Api.Controllers.System.Job
         }
 
         /// <summary>
-        /// Update
+        /// 修改Job
         /// </summary>
         /// <param name="input">JobInfoInputDto</param>
         /// <returns></returns> 

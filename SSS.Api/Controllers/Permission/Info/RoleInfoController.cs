@@ -23,7 +23,7 @@ namespace SSS.Api.Controllers.Permission.Info
         private readonly IRoleInfoService _service;
 
         /// <summary>
-        /// RoleInfoController
+        /// 角色信息
         /// </summary>
         /// <param name="service">IRoleInfoService</param>
         public RoleInfoController(IRoleInfoService service)

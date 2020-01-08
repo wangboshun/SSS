@@ -141,107 +141,107 @@
         </member>
         <member name="T:SSS.Api.Controllers.Coin.CoinAnalyseController">
             <summary>
-            CoinAnalyseController
+            币币分析
             </summary> 
         </member>
         <member name="M:SSS.Api.Controllers.Coin.CoinAnalyseController.#ctor(SSS.Application.Coin.CoinAnalyse.Service.ICoinAnalyseService)">
             <summary>
-            CoinAnalyseController
+            币币分析
             </summary>
             <param name="service">ICoinAnalyseService</param>
         </member>
         <member name="M:SSS.Api.Controllers.Coin.CoinAnalyseController.GetList(SSS.Domain.Coin.CoinAnalyse.Dto.CoinAnalyseInputDto)">
             <summary>
-            GetList
+            获取所有分析列表
             </summary>
             <param name="input">input</param>
             <returns></returns> 
         </member>
         <member name="M:SSS.Api.Controllers.Coin.CoinAnalyseController.AddCoinAnalyse(SSS.Domain.Coin.CoinAnalyse.Dto.CoinAnalyseInputDto)">
             <summary>
-            AddCoinAnalyse
+            添加
             </summary>
             <param name="input">CoinAnalyseInputDto</param>
             <returns></returns> 
         </member>
         <member name="T:SSS.Api.Controllers.Coin.CoinArticelController">
             <summary>
-                CoinArticelController
+            币币新闻
             </summary>
         </member>
         <member name="M:SSS.Api.Controllers.Coin.CoinArticelController.#ctor(SSS.Application.Coin.CoinArticel.Service.ICoinArticelService)">
             <summary>
-                CoinArticelController
+             币币新闻
             </summary>
             <param name="service">ICoinArticelService</param>
         </member>
         <member name="M:SSS.Api.Controllers.Coin.CoinArticelController.GetList(SSS.Domain.Coin.CoinArticel.Dto.CoinArticelInputDto)">
             <summary>
-                GetList
+               获取所有信息列表
             </summary>
             <param name="input">input</param>
             <returns></returns>
         </member>
         <member name="M:SSS.Api.Controllers.Coin.CoinArticelController.GetNews(SSS.Domain.Coin.CoinArticel.Dto.CoinArticelInputDto)">
             <summary>
-                GetNews
+                快讯
             </summary>
             <param name="input">input</param>
             <returns></returns>
         </member>
         <member name="M:SSS.Api.Controllers.Coin.CoinArticelController.GetNewsDetail(System.String)">
             <summary>
-            GetNewsDetail
+            新闻详情
             </summary>
             <param name="id"></param>
             <returns></returns>
         </member>
         <member name="M:SSS.Api.Controllers.Coin.CoinArticelController.AddCoinArticel(SSS.Domain.Coin.CoinArticel.Dto.CoinArticelInputDto)">
             <summary>
-                AddCoinArticel
+             添加新闻
             </summary>
             <param name="input">CoinArticelInputDto</param>
             <returns></returns>
         </member>
         <member name="T:SSS.Api.Controllers.Coin.CoinInfoController">
             <summary>
-            CoinInfoController
+            币币信息
             </summary> 
         </member>
         <member name="M:SSS.Api.Controllers.Coin.CoinInfoController.#ctor(SSS.Application.Coin.CoinInfo.Service.ICoinInfoService)">
             <summary>
-            CoinInfoController
+            币币信息
             </summary>
             <param name="service">ICoinInfoService</param>
         </member>
         <member name="M:SSS.Api.Controllers.Coin.CoinInfoController.GetList(SSS.Domain.Coin.CoinInfo.Dto.CoinInfoInputDto)">
             <summary>
-            GetList
+            获取所有币币信息列表
             </summary>
             <param name="input">input</param>
             <returns></returns> 
         </member>
         <member name="M:SSS.Api.Controllers.Coin.CoinInfoController.AddCoinInfo(SSS.Domain.Coin.CoinInfo.Dto.CoinInfoInputDto)">
             <summary>
-            AddCoinInfo
+            添加币币
             </summary>
             <param name="input">CoinInfoInputDto</param>
             <returns></returns> 
         </member>
         <member name="T:SSS.Api.Controllers.Coin.CoinKLineDataController">
             <summary>
-            CoinKLineDataController
+            K线数据详情
             </summary> 
         </member>
         <member name="M:SSS.Api.Controllers.Coin.CoinKLineDataController.#ctor(SSS.Application.Coin.CoinKLineData.Service.ICoinKLineDataService)">
             <summary>
-            CoinKLineDataController
+            K线数据详情
             </summary>
             <param name="service">ICoinKLineDataService</param>
         </member>
         <member name="M:SSS.Api.Controllers.Coin.CoinKLineDataController.GetList(SSS.Domain.Coin.CoinKLineData.Dto.CoinKLineDataInputDto)">
             <summary>
-            GetList
+            获取所有K线数据列表
             </summary>
             <param name="input">input</param>
             <returns></returns> 
@@ -262,75 +262,75 @@
         </member>
         <member name="M:SSS.Api.Controllers.Coin.CoinKLineDataController.AddCoinKLineData(SSS.Domain.Coin.CoinKLineData.Dto.CoinKLineDataInputDto)">
             <summary>
-            AddCoinKLineData
+            添加K线数据
             </summary>
             <param name="input">CoinKLineDataInputDto</param>
             <returns></returns> 
         </member>
         <member name="T:SSS.Api.Controllers.Coin.CoinMessageController">
             <summary>
-            CoinMessageController
+            利好消息
             </summary> 
         </member>
         <member name="M:SSS.Api.Controllers.Coin.CoinMessageController.#ctor(SSS.Application.Coin.CoinMessage.Service.ICoinMessageService)">
             <summary>
-            CoinMessageController
+            利好消息
             </summary>
             <param name="service">ICoinMessageService</param>
         </member>
         <member name="M:SSS.Api.Controllers.Coin.CoinMessageController.GetList(SSS.Domain.Coin.CoinMessage.Dto.CoinMessageInputDto)">
             <summary>
-            GetList
+            获取所有信息列表
             </summary>
             <param name="input">input</param>
             <returns></returns> 
         </member>
         <member name="M:SSS.Api.Controllers.Coin.CoinMessageController.AddCoinMessage(SSS.Domain.Coin.CoinMessage.Dto.CoinMessageInputDto)">
             <summary>
-            AddCoinMessage
+            添加利好消息
             </summary>
             <param name="input">CoinMessageInputDto</param>
             <returns></returns> 
         </member>
         <member name="T:SSS.Api.Controllers.Coin.CoinTradeController">
             <summary>
-            CoinTradeController
+            币币账单
             </summary> 
         </member>
         <member name="M:SSS.Api.Controllers.Coin.CoinTradeController.#ctor(SSS.Application.Coin.CoinTrade.Service.ICoinTradeService)">
             <summary>
-            CoinTradeController
+            币币账单
             </summary>
             <param name="service">ICoinTradeService</param>
         </member>
         <member name="M:SSS.Api.Controllers.Coin.CoinTradeController.GetList(SSS.Domain.Coin.CoinTrade.Dto.CoinTradeInputDto)">
             <summary>
-            GetList
+            获取所有账单列表
             </summary>
             <param name="input">input</param>
             <returns></returns> 
         </member>
         <member name="M:SSS.Api.Controllers.Coin.CoinTradeController.AddCoinTrade(SSS.Domain.Coin.CoinTrade.Dto.CoinTradeInputDto)">
             <summary>
-            AddCoinTrade
+            添加账单
             </summary>
             <param name="input">CoinTradeInputDto</param>
             <returns></returns> 
         </member>
         <member name="T:SSS.Api.Controllers.Community.CommunityBusinessController">
             <summary>
-            业务类型
+            社区服务业务类型
             </summary> 
         </member>
         <member name="M:SSS.Api.Controllers.Community.CommunityBusinessController.#ctor(SSS.Application.Community.CommunityBusiness.Service.ICommunityBusinessService)">
             <summary>
-            CommunityBusinessController
+            社区服务业务类型
             </summary>
             <param name="service">ICommunityBusinessService</param>
         </member>
         <member name="M:SSS.Api.Controllers.Community.CommunityBusinessController.GetList(SSS.Domain.Community.CommunityBusiness.Dto.CommunityBusinessInputDto)">
             <summary>
-            所有业务
+            获取所有业务类型列表
             </summary>
             <param name="input">input</param>
             <returns></returns> 
@@ -377,13 +377,13 @@
         </member>
         <member name="M:SSS.Api.Controllers.Community.CommunityInfoController.#ctor(SSS.Application.Community.CommunityInfo.Service.ICommunityInfoService)">
             <summary>
-            CommunityInfoController
+            社区信息
             </summary>
             <param name="service">ICommunityInfoService</param>
         </member>
         <member name="M:SSS.Api.Controllers.Community.CommunityInfoController.GetList(SSS.Domain.Community.CommunityInfo.Dto.CommunityInfoInputDto)">
             <summary>
-            所有社区信息
+            获取所有社区信息列表
             </summary>
             <param name="input">input</param>
             <returns></returns> 
@@ -425,7 +425,7 @@
         </member>
         <member name="T:SSS.Api.Controllers.Permission.Group.PowerGroupController">
             <summary>
-            PowerGroupController
+            权限组
             </summary> 
         </member>
         <member name="M:SSS.Api.Controllers.Permission.Group.PowerGroupController.#ctor(SSS.Application.Permission.Group.PowerGroup.Service.IPowerGroupService)">
@@ -499,7 +499,7 @@
         </member>
         <member name="T:SSS.Api.Controllers.Permission.Group.RoleGroupController">
             <summary>
-            RoleGroupController
+            角色组
             </summary> 
         </member>
         <member name="M:SSS.Api.Controllers.Permission.Group.RoleGroupController.#ctor(SSS.Application.Permission.Group.RoleGroup.Service.IRoleGroupService)">
@@ -559,7 +559,7 @@
         </member>
         <member name="T:SSS.Api.Controllers.Permission.Group.UserGroupController">
             <summary>
-            UserGroupController
+            用户组
             </summary> 
         </member>
         <member name="M:SSS.Api.Controllers.Permission.Group.UserGroupController.#ctor(SSS.Application.Permission.Group.UserGroup.Service.IUserGroupService)">
@@ -718,18 +718,18 @@
         </member>
         <member name="T:SSS.Api.Controllers.Permission.Info.PowerInfoController">
             <summary>
-            PowerInfoController
+            权限信息
             </summary> 
         </member>
         <member name="M:SSS.Api.Controllers.Permission.Info.PowerInfoController.#ctor(SSS.Application.Permission.Info.PowerInfo.Service.IPowerInfoService)">
             <summary>
-            PowerInfoController
+            权限信息
             </summary>
             <param name="service">IPowerInfoService</param>
         </member>
         <member name="M:SSS.Api.Controllers.Permission.Info.PowerInfoController.GetList(SSS.Domain.Permission.Info.PowerInfo.Dto.PowerInfoInputDto)">
             <summary>
-            GetList
+            获取所有权限信息
             </summary>
             <param name="input">input</param>
             <returns></returns> 
@@ -790,7 +790,7 @@
         </member>
         <member name="M:SSS.Api.Controllers.Permission.Info.RoleInfoController.#ctor(SSS.Application.Permission.Info.RoleInfo.Service.IRoleInfoService)">
             <summary>
-            RoleInfoController
+            角色信息
             </summary>
             <param name="service">IRoleInfoService</param>
         </member>
@@ -857,7 +857,7 @@
         </member>
         <member name="M:SSS.Api.Controllers.Permission.Info.UserInfoController.#ctor(SSS.Application.Permission.Info.UserInfo.Service.IUserInfoService)">
             <summary>
-                UserInfoController
+                用户信息
             </summary>
             <param name="service">IUserInfoService</param>
         </member>
@@ -931,7 +931,7 @@
         </member>
         <member name="M:SSS.Api.Controllers.System.Code.CodeController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,SSS.Application.System.Generator.IGeneratorCodeService)">
             <summary>
-            CodeController
+            代码生成
             </summary>
             <param name="env"></param>
             <param name="generatorCodeService"></param>
@@ -961,7 +961,7 @@
         </member>
         <member name="M:SSS.Api.Controllers.System.Job.JobErrorController.GetList(SSS.Domain.System.Job.JobError.Dto.JobErrorInputDto)">
             <summary>
-            GetList
+            获取所有Job列表
             </summary>
             <param name="input">input</param>
             <returns></returns> 
@@ -982,7 +982,7 @@
         </member>
         <member name="M:SSS.Api.Controllers.System.Job.JobErrorController.AddJobError(SSS.Domain.System.Job.JobError.Dto.JobErrorInputDto)">
             <summary>
-            AddJobError
+            添加错误Job
             </summary>
             <param name="input">JobErrorInputDto</param>
             <returns></returns> 
@@ -1000,7 +1000,7 @@
         </member>
         <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.GetList(SSS.Domain.System.Job.JobInfo.Dto.JobInfoInputDto)">
             <summary>
-            GetList
+            获取所有Job错误执行列表
             </summary>
             <param name="input">input</param>
             <returns></returns> 
@@ -1014,35 +1014,35 @@
         </member>
         <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.AddJobInfo(SSS.Domain.System.Job.JobInfo.Dto.JobInfoInputDto)">
             <summary>
-            Add
+            添加Job
             </summary>
             <param name="input">JobInfoInputDto</param>
             <returns></returns> 
         </member>
         <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.DeleteJobInfo(SSS.Domain.System.Job.JobInfo.Dto.JobInfoInputDto)">
             <summary>
-            Delete
+            删除Job
             </summary>
             <param name="input">JobInfoInputDto</param>
             <returns></returns> 
         </member>
         <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.PauseJob(SSS.Domain.System.Job.JobInfo.Dto.JobInfoInputDto)">
             <summary>
-            Pause
+            暂停Job
             </summary>
             <param name="input">JobInfoInputDto</param>
             <returns></returns> 
         </member>
         <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.ResumeJob(SSS.Domain.System.Job.JobInfo.Dto.JobInfoInputDto)">
             <summary>
-            Resume
+            恢复Job
             </summary>
             <param name="input">JobInfoInputDto</param>
             <returns></returns> 
         </member>
         <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.UpdateJob(SSS.Domain.System.Job.JobInfo.Dto.JobInfoInputDto)">
             <summary>
-            Update
+            修改Job
             </summary>
             <param name="input">JobInfoInputDto</param>
             <returns></returns> 

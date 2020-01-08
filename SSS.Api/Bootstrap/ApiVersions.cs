@@ -9,14 +9,14 @@ public enum ApiVersions
     /// <summary>
     /// v1 版本
     /// </summary>
-    [Description("交易接口")]
+    [Description("量化接口")]
     v1 = 1,
 
 
     /// <summary>
     /// v2 版本
     /// </summary>
-    [Description("交易接口")]
+    [Description("权限接口")]
     v2 = 2,
 
 
