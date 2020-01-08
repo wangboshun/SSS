@@ -181,7 +181,7 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
         public Pages<List<MenuInfoOutputDto>> GetMenuByPowerGroup(PowerGroupInputDto input)
         {
             var data = _menuInfoRepository.GetMenuByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<MenuInfoOutputDto>>(data.items.MapperToOutPut<MenuInfoOutputDto>().ToList(), data.count);
+            return new Pages<List<MenuInfoOutputDto>>(data.items.MapperToOutPut<MenuInfoOutputDto>()?.ToList(), data.count);
         }
 
         public Pages<List<MenuInfoOutputDto>> GetListMenuInfo(MenuInfoInputDto input)

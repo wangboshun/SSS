@@ -8,7 +8,7 @@ namespace SSS.Infrastructure.Repository.NameSpace.Template
     [DIService(ServiceLifetime.Scoped, typeof(ITemplateRepository))]
     public class TemplateRepository : Repository<SSS.Domain.NameSpace.Template.Template>, ITemplateRepository
     {
-        public TemplateRepository(DbcontextBase context) : base(context)
+        public TemplateRepository(DbContextBase context) : base(context)
         {
         }
     }

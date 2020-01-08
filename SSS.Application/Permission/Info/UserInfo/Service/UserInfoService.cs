@@ -217,7 +217,7 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         {
             var data = _userinfoRepository.GetUserByUserGroup(input.id, input.usergroupname, input.parentid,
                 input.pageindex, input.pagesize);
-            return new Pages<List<UserInfoOutputDto>>(data.items.MapperToOutPut<UserInfoOutputDto>().ToList(), data.count);
+            return new Pages<List<UserInfoOutputDto>>(data.items.MapperToOutPut<UserInfoOutputDto>()?.ToList(), data.count);
         }
 
         /// <summary>
@@ -229,7 +229,7 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         {
             var data = _userinfoRepository.GetUserByPowerGroup(input.id, input.powergroupname, input.parentid,
                 input.pageindex, input.pagesize);
-            return new Pages<List<UserInfoOutputDto>>(data.items.MapperToOutPut<UserInfoOutputDto>().ToList(), data.count);
+            return new Pages<List<UserInfoOutputDto>>(data.items.MapperToOutPut<UserInfoOutputDto>()?.ToList(), data.count);
         }
 
         /// <summary>
@@ -241,7 +241,7 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         {
             var data = _userinfoRepository.GetUserByRoleGroup(input.id, input.rolegroupname, input.parentid,
                 input.pageindex, input.pagesize);
-            return new Pages<List<UserInfoOutputDto>>(data.items.MapperToOutPut<UserInfoOutputDto>().ToList(), data.count);
+            return new Pages<List<UserInfoOutputDto>>(data.items.MapperToOutPut<UserInfoOutputDto>()?.ToList(), data.count);
         }
     }
 }

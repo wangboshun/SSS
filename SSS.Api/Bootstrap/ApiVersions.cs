@@ -26,5 +26,10 @@ public enum ApiVersions
     [Description("系统接口")]
     v3 = 3,
 
+    /// <summary>
+    /// v4 版本
+    /// </summary>
+    [Description("社区接口")]
+    v4 = 4,
 
 }

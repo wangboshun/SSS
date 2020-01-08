@@ -39,14 +39,14 @@ namespace SSS.Api.Bootstrap
             services.AutoRegisterServicesFromAssembly("SSS.Domain.Seedwork");
             services.AutoRegisterServicesFromAssembly("SSS.Domain");
 
+            // Infra 
+            services.AutoRegisterServicesFromAssembly("SSS.Infrastructure.Seedwork");
+            services.AutoRegisterServicesFromAssembly("SSS.Infrastructure");
+
             // Application
             services.AutoRegisterServicesFromAssembly("SSS.Application.Seedwork");
             services.AutoRegisterServicesFromAssembly("SSS.Application.Job");
             services.AutoRegisterServicesFromAssembly("SSS.Application");
-
-            // Infra 
-            services.AutoRegisterServicesFromAssembly("SSS.Infrastructure.Seedwork");
-            services.AutoRegisterServicesFromAssembly("SSS.Infrastructure");
         }
 
         /// <summary>

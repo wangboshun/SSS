@@ -79,7 +79,7 @@ namespace SSS.Application.Job.Coin.CoinTrade
                 using var scope = _scopeFactory.CreateScope();
                 using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
 
-                Dictionary<string, List<Domain.Coin.CoinKLineData.CoinKLineData>> coin_kline_data = new Dictionary<string, List<Domain.Coin.CoinKLineData.CoinKLineData>>();
+                var coin_kline_data = new Dictionary<string, List<Domain.Coin.CoinKLineData.CoinKLineData>>();
 
                 string[] coin_array = JsonConfig.GetSectionValue("TradeConfig:Coin").Split(',');
 

@@ -270,6 +270,8 @@ namespace SSS.Api
                     return "权限接口";
                 case "v3":
                     return "系统接口";
+                case "v4":
+                    return "社区接口";
                 default:
                     return version;
             }

@@ -24,6 +24,11 @@
             v3 版本
             </summary>
         </member>
+        <member name="F:ApiVersions.v4">
+            <summary>
+            v4 版本
+            </summary>
+        </member>
         <member name="T:SSS.Api.Bootstrap.ApplicationBuilderExtension">
             <summary>
                 ApplicationBuilderExtension
@@ -310,6 +315,105 @@
             AddCoinTrade
             </summary>
             <param name="input">CoinTradeInputDto</param>
+            <returns></returns> 
+        </member>
+        <member name="T:SSS.Api.Controllers.Community.CommunityBusinessController">
+            <summary>
+            业务类型
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Community.CommunityBusinessController.#ctor(SSS.Application.Community.CommunityBusiness.Service.ICommunityBusinessService)">
+            <summary>
+            CommunityBusinessController
+            </summary>
+            <param name="service">ICommunityBusinessService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.Community.CommunityBusinessController.GetList(SSS.Domain.Community.CommunityBusiness.Dto.CommunityBusinessInputDto)">
+            <summary>
+            所有业务
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Community.CommunityBusinessController.GetCommunityBusinessByCommunity(SSS.Domain.Community.CommunityInfo.Dto.CommunityInfoInputDto)">
+            <summary>
+            根据社区获取承接业务
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Community.CommunityBusinessController.GetCommunityBusiness(System.String)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="id">id</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Community.CommunityBusinessController.DeleteCommunityBusiness(System.String)">
+            <summary>
+            删除数据
+            </summary>
+            <param name="id">id</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Community.CommunityBusinessController.AddCommunityBusiness(SSS.Domain.Community.CommunityBusiness.Dto.CommunityBusinessInputDto)">
+            <summary>
+            添加业务类型
+            </summary>
+            <param name="input">CommunityBusinessInputDto</param>
+            <returns></returns> 
+        </member>
+        <member name="T:SSS.Api.Controllers.Community.CommunityInfoController">
+            <summary>
+            社区信息
+            </summary> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Community.CommunityInfoController.#ctor(SSS.Application.Community.CommunityInfo.Service.ICommunityInfoService)">
+            <summary>
+            CommunityInfoController
+            </summary>
+            <param name="service">ICommunityInfoService</param>
+        </member>
+        <member name="M:SSS.Api.Controllers.Community.CommunityInfoController.GetList(SSS.Domain.Community.CommunityInfo.Dto.CommunityInfoInputDto)">
+            <summary>
+            所有社区信息
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Community.CommunityInfoController.GetCommunityInfo(System.String)">
+            <summary>
+            获取数据
+            </summary>
+            <param name="id">id</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Community.CommunityInfoController.AddCommunityBusiness(SSS.Domain.Community.CommunityBusinessRelation.Dto.CommunityBusinessRelationInputDto)">
+            <summary>
+            添加承接业务
+            </summary>
+            <param name="input">业务Id和社区Id</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Community.CommunityInfoController.DeleteCommunityInfo(System.String)">
+            <summary>
+            删除数据
+            </summary>
+            <param name="id">id</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Community.CommunityInfoController.DeleteCommunityInfo(SSS.Domain.Community.CommunityInfo.Dto.CommunityInfoInputDto)">
+            <summary>
+            修改数据
+            </summary>
+            <param name="input">input</param>
+            <returns></returns> 
+        </member>
+        <member name="M:SSS.Api.Controllers.Community.CommunityInfoController.AddCommunityInfo(SSS.Domain.Community.CommunityInfo.Dto.CommunityInfoInputDto)">
+            <summary>
+            添加社区
+            </summary>
+            <param name="input">CommunityInfoInputDto</param>
             <returns></returns> 
         </member>
         <member name="T:SSS.Api.Controllers.Permission.Group.PowerGroupController">

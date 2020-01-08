@@ -58,7 +58,7 @@ namespace SSS.Application.Coin.CoinArticel.Service
         public List<CoinArticelOutputDto> GetNews(CoinArticelInputDto input)
         {
             var data = _repository.GetNews(input);
-            return data.MapperToOutPut<CoinArticelOutputDto>().ToList();
+            return data.MapperToOutPut<CoinArticelOutputDto>()?.ToList();
         }
     }
 }

@@ -25,6 +25,8 @@ namespace SSS.Domain.Seedwork.Repository
         bool DeleteList(Expression<Func<TEntity, bool>> predicate, bool save = false, bool have_delete = false);
         TEntity Get(string id, bool have_delete = false);
         TEntity Get(Expression<Func<TEntity, bool>> predicate, bool have_delete = false);
+        bool Have(string id, bool have_delete = false);
+        bool Have(Expression<Func<TEntity, bool>> predicate, bool have_delete = false);
         IQueryable<TEntity> GetBySql(string sql);
         IQueryable<TEntity> GetBySql(string sql, params DbParameter[] parameter);
         IQueryable<TEntity> GetBySql(string sql, int pageindex, int pagesize, ref int count);

@@ -114,13 +114,13 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
         public Pages<List<RoleInfoOutputDto>> GetRoleByRoleGroup(RoleGroupInputDto input)
         {
             var data = _roleInfoRepository.GetRoleByRoleGroup(input.id, input.rolegroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<RoleInfoOutputDto>>(data.items.MapperToOutPut<RoleInfoOutputDto>().ToList(), data.count);
+            return new Pages<List<RoleInfoOutputDto>>(data.items.MapperToOutPut<RoleInfoOutputDto>()?.ToList(), data.count);
         }
 
         public Pages<List<RoleInfoOutputDto>> GetRoleByPowerGroup(PowerGroupInputDto input)
         {
             var data = _roleInfoRepository.GetRoleByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<RoleInfoOutputDto>>(data.items.MapperToOutPut<RoleInfoOutputDto>().ToList(), data.count);
+            return new Pages<List<RoleInfoOutputDto>>(data.items.MapperToOutPut<RoleInfoOutputDto>()?.ToList(), data.count);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
         public Pages<List<RoleInfoOutputDto>> GetRoleByUserGroup(UserGroupInputDto input)
         {
             var data = _roleInfoRepository.GetRoleByUserGroup(input.id, input.usergroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<RoleInfoOutputDto>>(data.items.MapperToOutPut<RoleInfoOutputDto>().ToList(), data.count);
+            return new Pages<List<RoleInfoOutputDto>>(data.items.MapperToOutPut<RoleInfoOutputDto>()?.ToList(), data.count);
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
         public Pages<List<RoleInfoOutputDto>> GetRoleByUser(UserInfoInputDto input)
         {
             var data = _roleInfoRepository.GetRoleByUser(input.id, input.username, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<RoleInfoOutputDto>>(data.items.MapperToOutPut<RoleInfoOutputDto>().ToList(), data.count);
+            return new Pages<List<RoleInfoOutputDto>>(data.items.MapperToOutPut<RoleInfoOutputDto>()?.ToList(), data.count);
         }
     }
 }

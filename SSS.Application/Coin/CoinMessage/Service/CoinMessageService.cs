@@ -58,10 +58,14 @@ namespace SSS.Application.Coin.CoinMessage.Service
         {
             int count = 0;
             var data = _coinmessagerepository.GetPageOrderByAsc(input, ref count);
-            var list = data.MapperToOutPut<CoinMessageOutputDto>().ToList();
-            foreach (var item in list) item.Logo = _coininforepository.Get(x => x.Coin.Equals(item.Coin))?.RomteLogo;
+            var list = data.MapperToOutPut<CoinMessageOutputDto>()?.ToList();
+            if (list == null) return null;
+
+            foreach (var item in list)
+                item.Logo = _coininforepository.Get(x => x.Coin.Equals(item.Coin))?.RomteLogo;
 
             return new Pages<List<CoinMessageOutputDto>>(list, count);
+
         }
     }
 }

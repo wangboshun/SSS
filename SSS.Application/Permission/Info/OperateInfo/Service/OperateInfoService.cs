@@ -117,7 +117,7 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
         public Pages<List<OperateInfoOutputDto>> GetOperateByPowerGroup(PowerGroupInputDto input)
         {
             var data = _operateInfoRepository.GetOperateByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<OperateInfoOutputDto>>(data.items.MapperToOutPut<OperateInfoOutputDto>().ToList(), data.count);
+            return new Pages<List<OperateInfoOutputDto>>(data.items.MapperToOutPut<OperateInfoOutputDto>()?.ToList(), data.count);
         }
     }
 }

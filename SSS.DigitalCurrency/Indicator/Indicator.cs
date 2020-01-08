@@ -174,7 +174,7 @@ namespace SSS.DigitalCurrency.Indicator
                     var d = (2.0 / 3.0) * old_d + (1.0 / 3.0) * k;
                     var j = 3 * k - 2 * d;
                     old_d = d;
-                    old_k = k; 
+                    old_k = k;
 
                     result.Add(new Tuple<DateTime, double, double, double>(data[i].DataTime, k, d, j));
                 }
