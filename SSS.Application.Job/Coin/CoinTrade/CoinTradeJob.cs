@@ -7,9 +7,11 @@ using Quartz;
 using SSS.Application.Job.JobSetting.Extension;
 using SSS.DigitalCurrency.Domain;
 using SSS.DigitalCurrency.Indicator;
+using SSS.Infrastructure.Repository.Coin.CoinTrade;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.Config;
+using SSS.Infrastructure.Util.DI;
 using SSS.Infrastructure.Util.Json;
 
 using System;
@@ -20,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace SSS.Application.Job.Coin.CoinTrade
 {
-    [DIService(ServiceLifetime.Transient, typeof(CoinTradeJob))]
+    [DIService(ServiceLifetime.Singleton, typeof(CoinTradeJob))]
     public class CoinTradeJob : IJob
     {
         private readonly Indicator _indicator;
@@ -37,6 +39,16 @@ namespace SSS.Application.Job.Coin.CoinTrade
 
         public Task Execute(IJobExecutionContext context)
         {
+            try
+            {
+                var a = IocEx.Instance.GetService<ICoinTradeRepository>();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            
             _logger.LogInformation("-----------------CoinTradeJob----------------------");
             return DoWork(context);
         }

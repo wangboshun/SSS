@@ -32,6 +32,7 @@ using SSS.Api.Seedwork.Json;
 using SSS.Api.Seedwork.Middleware;
 using SSS.Application.Job.JobSetting.Manager;
 using SSS.Infrastructure.Util.Config;
+using SSS.Infrastructure.Util.DI;
 using SSS.Infrastructure.Util.Enum;
 
 using StackExchange.Profiling.SqlFormatters;
@@ -174,7 +175,7 @@ namespace SSS.Api
         /// <param name="senparcWeixinSetting"></param>
         /// <param name="appLifetime"></param>
         public void Configure(IApplicationBuilder app, IHttpContextFactory _httpContextFactory, IWebHostEnvironment env, IOptions<SenparcSetting> senparcSetting, IOptions<SenparcWeixinSetting> senparcWeixinSetting, IHostApplicationLifetime appLifetime)
-        {
+        { 
             IRegisterService register = RegisterService.Start(env, senparcSetting.Value).UseSenparcGlobal();
 
             if (env.IsDevelopment())
@@ -251,9 +252,10 @@ namespace SSS.Api
 
             var job_service = app.ApplicationServices.GetRequiredService<IJobManager>();
 
-
             appLifetime.ApplicationStarted.Register(() =>
             {
+                IocEx.Instance = app.ApplicationServices;
+
                 job_service.Start().Wait();
                 //网站启动完成执行
             });

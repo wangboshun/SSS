@@ -39,7 +39,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
-        [HttpGet("getlist")] 
+        [HttpGet("getlist")]
         public IActionResult GetList([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetListPowerGroup(input);
@@ -51,7 +51,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// </summary>
         /// <param name="input">权限组名称</param>
         /// <returns></returns> 
-        [HttpPost("add")] 
+        [HttpPost("add")]
         public IActionResult AddPowerGroup([FromBody]PowerGroupInputDto input)
         {
             var result = _service.AddPowerGroup(input);
@@ -63,7 +63,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpDelete("{id}")] 
+        [HttpDelete("{id}")]
         public IActionResult DeletePowerGroup(string id)
         {
             var result = _service.DeletePowerGroup(id);
@@ -75,7 +75,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// </summary>
         /// <param name="input">权限Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_powergroup_by_power")] 
+        [HttpGet("get_powergroup_by_power")]
         public IActionResult GetPowerGroupByPower([FromQuery]PowerInfoInputDto input)
         {
             var result = _service.GetPowerGroupByPower(input);
@@ -87,7 +87,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// </summary>
         /// <param name="input">菜单Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_powergroup_by_menu")] 
+        [HttpGet("get_powergroup_by_menu")]
         public IActionResult GetPowerGroupByMenu([FromQuery]MenuInfoInputDto input)
         {
             var result = _service.GetPowerGroupByMenu(input);
@@ -99,7 +99,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// </summary>
         /// <param name="input">操作Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_powergroup_by_operate")] 
+        [HttpGet("get_powergroup_by_operate")]
         public IActionResult GetPowerGroupByOperate([FromQuery]OperateInfoInputDto input)
         {
             var result = _service.GetPowerGroupByOperate(input);
@@ -111,7 +111,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// </summary>
         /// <param name="input">用户Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_powergroup_by_user")] 
+        [HttpGet("get_powergroup_by_user")]
         public IActionResult GetPowerGroupByUser([FromQuery]UserInfoInputDto input)
         {
             var result = _service.GetPowerGroupByUser(input);
@@ -123,7 +123,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// </summary>
         /// <param name="input">用户组Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_powergroup_by_usergroup")] 
+        [HttpGet("get_powergroup_by_usergroup")]
         public IActionResult GetPowerGroupByUserGroup([FromQuery]UserGroupInputDto input)
         {
             var result = _service.GetPowerGroupByUserGroup(input);
@@ -135,7 +135,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// </summary>
         /// <param name="input">角色组Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_powergroup_by_rolegroup")] 
+        [HttpGet("get_powergroup_by_rolegroup")]
         public IActionResult GetPowerGroupByRoleGroup([FromQuery]RoleGroupInputDto input)
         {
             var result = _service.GetPowerGroupByRoleGroup(input);

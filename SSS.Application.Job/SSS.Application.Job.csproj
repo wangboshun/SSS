@@ -15,6 +15,7 @@
     <ProjectReference Include="..\SSS.DigitalCurrency\SSS.DigitalCurrency.csproj" />
     <ProjectReference Include="..\SSS.Infrastructure.Seedwork\SSS.Infrastructure.Seedwork.csproj" />
     <ProjectReference Include="..\SSS.Infrastructure.Util\SSS.Infrastructure.Util.csproj" />
+    <ProjectReference Include="..\SSS.Infrastructure\SSS.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -34,7 +34,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns>
-        [HttpGet("getlist")] 
+        [HttpGet("getlist")]
         public IActionResult GetList([FromQuery] OperateInfoInputDto input)
         {
             var result = _service.GetListOperateInfo(input);
@@ -46,7 +46,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">操作名称</param>
         /// <returns></returns> 
-        [HttpPost("add")] 
+        [HttpPost("add")]
         public IActionResult AddOperateInfo([FromBody]OperateInfoInputDto input)
         {
             var result = _service.AddOperateInfo(input);
@@ -58,7 +58,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpDelete("{id}")] 
+        [HttpDelete("{id}")]
         public IActionResult DeleteOperateInfo(string id)
         {
             var result = _service.DeleteOperateInfo(id);
@@ -70,7 +70,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="operateid">操作Id</param>
         /// <returns></returns>
-        [HttpGet("get_children_by_operateid")] 
+        [HttpGet("get_children_by_operateid")]
         public IActionResult GetChildren(string operateid)
         {
             var result = _service.GetChildrenById(operateid);
@@ -82,7 +82,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">权限组Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_operate_by_powergroup")] 
+        [HttpGet("get_operate_by_powergroup")]
         public IActionResult GetOperateByPowerGroup([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetOperateByPowerGroup(input);

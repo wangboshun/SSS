@@ -924,6 +924,13 @@
             <param name="input">角色组Id或名称</param>
             <returns></returns> 
         </member>
+        <member name="M:SSS.Api.Controllers.System.AuthController.Auth(SSS.Domain.Permission.Info.UserInfo.Dto.UserInfoInputDto)">
+            <summary>
+            授权
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
         <member name="T:SSS.Api.Controllers.System.Code.CodeController">
             <summary>	
             代码生成	

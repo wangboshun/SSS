@@ -36,7 +36,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
-        [HttpGet("getlist")] 
+        [HttpGet("getlist")]
         public IActionResult GetList([FromQuery]UserGroupInputDto input)
         {
             var result = _service.GetListUserGroup(input);
@@ -48,7 +48,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// </summary>
         /// <param name="input">用户组名称</param>
         /// <returns></returns> 
-        [HttpPost("add")] 
+        [HttpPost("add")]
         public IActionResult AddUserGroup([FromBody]UserGroupInputDto input)
         {
             var result = _service.AddUserGroup(input);
@@ -60,7 +60,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpDelete("{id}")] 
+        [HttpDelete("{id}")]
         public IActionResult DeleteUserGroup(string id)
         {
             var result = _service.DeleteUserGroup(id);
@@ -72,7 +72,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// </summary>
         /// <param name="input">用户Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_usergroup_by_user")] 
+        [HttpGet("get_usergroup_by_user")]
         public IActionResult GetUserGroupByUser([FromQuery]UserInfoInputDto input)
         {
             var result = _service.GetUserGroupByUser(input);
@@ -84,7 +84,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// </summary>
         /// <param name="input">权限组Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_usergroup_by_powergroup")] 
+        [HttpGet("get_usergroup_by_powergroup")]
         public IActionResult GetUserGroupByPowerGroup([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetUserGroupByPowerGroup(input);
@@ -96,7 +96,7 @@ namespace SSS.Api.Controllers.Permission.Group
         /// </summary>
         /// <param name="input">角色组Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_usergroup_by_rolegroup")] 
+        [HttpGet("get_usergroup_by_rolegroup")]
         public IActionResult GetUserGroupByRoleGroup([FromQuery]RoleGroupInputDto input)
         {
             var result = _service.GetUserGroupByRoleGroup(input);
