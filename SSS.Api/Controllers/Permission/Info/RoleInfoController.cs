@@ -18,6 +18,7 @@ namespace SSS.Api.Controllers.Permission.Info
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
     [ApiController]
+    [Authorize]
     public class RoleInfoController : ApiBaseController
     {
         private readonly IRoleInfoService _service;
@@ -36,8 +37,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns>
-        [HttpGet("getlist")]
-        [AllowAnonymous] //匿名访问
+        [HttpGet("getlist")] 
         public IActionResult GetList([FromQuery] RoleInfoInputDto input)
         {
             var result = _service.GetListRoleInfo(input);
@@ -49,8 +49,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="roleid">角色Id</param>
         /// <returns></returns>
-        [HttpGet("get_children_by_roleid")]
-        [AllowAnonymous] //匿名访问
+        [HttpGet("get_children_by_roleid")] 
         public IActionResult GetChildren(string roleid)
         {
             var result = _service.GetChildren(roleid);
@@ -62,8 +61,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">角色名称</param>
         /// <returns></returns> 
-        [HttpPost("add")]
-        [AllowAnonymous]  //匿名访问
+        [HttpPost("add")] 
         public IActionResult AddRoleInfo([FromBody]RoleInfoInputDto input)
         {
             var result = _service.AddRoleInfo(input);
@@ -75,8 +73,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpDelete("{id}")]
-        [AllowAnonymous]  //匿名访问
+        [HttpDelete("{id}")] 
         public IActionResult DeletePowerInfo(string id)
         {
             var result = _service.DeleteRoleInfo(id);
@@ -88,8 +85,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">角色组Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_role_by_rolegroup")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("get_role_by_rolegroup")] 
         public IActionResult GetRoleByRoleGroup([FromQuery]RoleGroupInputDto input)
         {
             var result = _service.GetRoleByRoleGroup(input);
@@ -101,8 +97,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">权限组Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_role_by_powergroup")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("get_role_by_powergroup")] 
         public IActionResult GetRoleByPowerGroup([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetRoleByPowerGroup(input);
@@ -114,8 +109,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">用户组Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_role_by_usergroup")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("get_role_by_usergroup")] 
         public IActionResult GetRoleByUserGroup([FromQuery]UserGroupInputDto input)
         {
             var result = _service.GetRoleByUserGroup(input);
@@ -127,8 +121,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">用户Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_role_by_user")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("get_role_by_user")] 
         public IActionResult GetRoleByUser([FromQuery]UserInfoInputDto input)
         {
             var result = _service.GetRoleByUser(input);

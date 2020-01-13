@@ -15,6 +15,7 @@ namespace SSS.Api.Controllers.Permission.Info
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
     [ApiController]
+    [Authorize]
     public class MenuInfoController : ApiBaseController
     {
         private readonly IMenuInfoService _service;
@@ -33,8 +34,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
-        [HttpGet("getlist")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("getlist")] 
         public IActionResult GetList([FromQuery]MenuInfoInputDto input)
         {
             var result = _service.GetListMenuInfo(input);
@@ -46,8 +46,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="menuid">菜单Id</param>
         /// <returns></returns>
-        [HttpGet("get_children_by_menuid")]
-        [AllowAnonymous] //匿名访问
+        [HttpGet("get_children_by_menuid")] 
         public IActionResult GetChildren(string menuid)
         {
             var result = _service.GetChildren(menuid);
@@ -59,8 +58,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">菜单名称</param>
         /// <returns></returns> 
-        [HttpPost("add")]
-        [AllowAnonymous]  //匿名访问
+        [HttpPost("add")] 
         public IActionResult AddMenuInfo([FromBody]MenuInfoInputDto input)
         {
             var result = _service.AddMenuInfo(input);
@@ -72,8 +70,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpGet("{id}")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("{id}")] 
         public IActionResult GetMenuInfo(string id)
         {
             var result = _service.Get(id);
@@ -85,8 +82,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpDelete("{id}")]
-        [AllowAnonymous]  //匿名访问
+        [HttpDelete("{id}")] 
         public IActionResult DeleteMenuInfo(string id)
         {
             var result = _service.DeleteMenuInfo(id);
@@ -98,8 +94,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">菜单</param>
         /// <returns></returns> 
-        [HttpPost("update")]
-        [AllowAnonymous]  //匿名访问
+        [HttpPost("update")] 
         public IActionResult UpdateMenuInfo([FromBody]MenuInfoInputDto input)
         {
             var result = _service.UpdateMenuInfo(input);
@@ -111,8 +106,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">权限组Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_menu_by_powergroup")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("get_menu_by_powergroup")] 
         public IActionResult GetMenuByPowerGroup([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetMenuByPowerGroup(input);

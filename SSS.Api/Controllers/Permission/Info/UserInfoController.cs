@@ -17,6 +17,7 @@ namespace SSS.Api.Controllers.Permission.Info
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
     [ApiController]
+    [Authorize]
     public class UserInfoController : ApiBaseController
     {
         private readonly IUserInfoService _service;
@@ -35,8 +36,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns>
-        [HttpGet("getlist")]
-        [AllowAnonymous] //匿名访问
+        [HttpGet("getlist")] 
         public IActionResult GetList([FromQuery] UserInfoInputDto input)
         {
             var result = _service.GetListUserInfo(input);
@@ -48,8 +48,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="userid">userid</param>
         /// <returns></returns>
-        [HttpGet("getpermission")]
-        [AllowAnonymous] //匿名访问
+        [HttpGet("getpermission")] 
         public IActionResult GetPermission(string userid)
         {
             var result = _service.GetUserPermission(userid);
@@ -61,8 +60,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="userid">用户Id</param>
         /// <returns></returns>
-        [HttpGet("get_children_by_userid")]
-        [AllowAnonymous] //匿名访问
+        [HttpGet("get_children_by_userid")] 
         public IActionResult GetChildrenById(string userid)
         {
             var result = _service.GetChildrenById(userid);
@@ -74,8 +72,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">账号、密码</param>
         /// <returns></returns>
-        [HttpPost("login")]
-        [AllowAnonymous] //匿名访问
+        [HttpPost("login")] 
         public IActionResult Login([FromBody] UserInfoInputDto input)
         {
             var result = _service.GetByUserName(input);
@@ -87,8 +84,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">账号、密码</param>
         /// <returns></returns>
-        [HttpPost("add")]
-        [AllowAnonymous] //匿名访问
+        [HttpPost("add")] 
         public IActionResult AddUserInfo([FromBody] UserInfoInputDto input)
         {
             var result = _service.AddUserInfo(input);
@@ -100,8 +96,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpDelete("{id}")]
-        [AllowAnonymous]  //匿名访问
+        [HttpDelete("{id}")] 
         public IActionResult DeleteUserInfo(string id)
         {
             var result = _service.DeleteUserInfo(id);
@@ -113,8 +108,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">用户组Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_user_by_usergroup")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("get_user_by_usergroup")] 
         public IActionResult GetUserByUserGroup([FromQuery]UserGroupInputDto input)
         {
             var result = _service.GetUserByUserGroup(input);
@@ -126,8 +120,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">权限组Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_user_by_powergroup")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("get_user_by_powergroup")] 
         public IActionResult GetUserByPowerGroup([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetUserByPowerGroup(input);
@@ -139,8 +132,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">角色组Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_user_by_rolegroup")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("get_user_by_rolegroup")] 
         public IActionResult GetUserByRoleGroup([FromQuery]RoleGroupInputDto input)
         {
             var result = _service.GetUserByRoleGroup(input);

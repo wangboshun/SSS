@@ -14,6 +14,7 @@ namespace SSS.Api.Controllers.Coin
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
     [ApiController]
+    [Authorize]
     public class CoinKLineDataController : ApiBaseController
     {
         private readonly ICoinKLineDataService _service;
@@ -32,8 +33,7 @@ namespace SSS.Api.Controllers.Coin
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
-        [HttpGet("getlist")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("getlist")] 
         public IActionResult GetList([FromQuery]CoinKLineDataInputDto input)
         {
             var result = _service.GetListCoinKLineData(input);
@@ -45,8 +45,7 @@ namespace SSS.Api.Controllers.Coin
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpGet("{id}")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("{id}")] 
         public IActionResult GetCoinKLineData(string id)
         {
             var result = _service.Get(id);
@@ -58,8 +57,7 @@ namespace SSS.Api.Controllers.Coin
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpDelete("{id}")]
-        [AllowAnonymous]  //匿名访问
+        [HttpDelete("{id}")] 
         public IActionResult DeleteCoinKLineData(string id)
         {
             var result = _service.Delete(id);
@@ -71,8 +69,7 @@ namespace SSS.Api.Controllers.Coin
         /// </summary>
         /// <param name="input">CoinKLineDataInputDto</param>
         /// <returns></returns> 
-        [HttpPost("add")]
-        [AllowAnonymous]  //匿名访问
+        [HttpPost("add")] 
         public IActionResult AddCoinKLineData([FromBody]CoinKLineDataInputDto input)
         {
             var result = _service.AddCoinKLineData(input);

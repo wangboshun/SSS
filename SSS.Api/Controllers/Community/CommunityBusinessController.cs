@@ -15,6 +15,7 @@ namespace SSS.Api.Controllers.Community
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
     [ApiController]
+    [Authorize]
     public class CommunityBusinessController : ApiBaseController
     {
         private readonly ICommunityBusinessService _service;
@@ -33,8 +34,7 @@ namespace SSS.Api.Controllers.Community
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
-        [HttpGet("getlist")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("getlist")] 
         public IActionResult GetList([FromQuery]CommunityBusinessInputDto input)
         {
             var result = _service.GetListCommunityBusiness(input);
@@ -46,8 +46,7 @@ namespace SSS.Api.Controllers.Community
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
-        [HttpGet("get_communitybusiness_by_community")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("get_communitybusiness_by_community")] 
         public IActionResult GetCommunityBusinessByCommunity([FromQuery]CommunityInfoInputDto input)
         {
             var result = _service.GetCommunityBusinessByCommunity(input);
@@ -59,8 +58,7 @@ namespace SSS.Api.Controllers.Community
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpGet("{id}")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("{id}")] 
         public IActionResult GetCommunityBusiness(string id)
         {
             var result = _service.Get(id);
@@ -72,8 +70,7 @@ namespace SSS.Api.Controllers.Community
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpDelete("{id}")]
-        [AllowAnonymous]  //匿名访问
+        [HttpDelete("{id}")] 
         public IActionResult DeleteCommunityBusiness(string id)
         {
             var result = _service.Delete(id);
@@ -85,8 +82,7 @@ namespace SSS.Api.Controllers.Community
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
-        [HttpPost("update")]
-        [AllowAnonymous]  //匿名访问
+        [HttpPost("update")] 
         public IActionResult DeleteCommunityInfo([FromBody]CommunityBusinessInputDto input)
         {
             var result = _service.UpdateCommunityBusiness(input);
@@ -98,8 +94,7 @@ namespace SSS.Api.Controllers.Community
         /// </summary>
         /// <param name="input">CommunityBusinessInputDto</param>
         /// <returns></returns> 
-        [HttpPost("add")]
-        [AllowAnonymous]  //匿名访问
+        [HttpPost("add")] 
         public IActionResult AddCommunityBusiness([FromBody]CommunityBusinessInputDto input)
         {
             var result = _service.AddCommunityBusiness(input);

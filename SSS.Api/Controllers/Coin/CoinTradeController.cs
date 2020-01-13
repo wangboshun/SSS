@@ -14,6 +14,7 @@ namespace SSS.Api.Controllers.Coin
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
     [ApiController]
+    [Authorize]
     public class CoinTradeController : ApiBaseController
     {
         private readonly ICoinTradeService _service;
@@ -32,8 +33,7 @@ namespace SSS.Api.Controllers.Coin
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
-        [HttpGet("getlist")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("getlist")] 
         public IActionResult GetList([FromQuery]CoinTradeInputDto input)
         {
             var result = _service.GetListCoinTrade(input);
@@ -45,8 +45,7 @@ namespace SSS.Api.Controllers.Coin
         /// </summary>
         /// <param name="input">CoinTradeInputDto</param>
         /// <returns></returns> 
-        [HttpPost("add")]
-        [AllowAnonymous]  //匿名访问
+        [HttpPost("add")] 
         public IActionResult AddCoinTrade([FromBody]CoinTradeInputDto input)
         {
             _service.AddCoinTrade(input);

@@ -18,6 +18,7 @@ namespace SSS.Api.Controllers.Permission.Info
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
     [ApiController]
+    [Authorize]
     public class PowerInfoController : ApiBaseController
     {
         private readonly IPowerInfoService _service;
@@ -36,8 +37,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
-        [HttpGet("getlist")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("getlist")] 
         public IActionResult GetList([FromQuery]PowerInfoInputDto input)
         {
             var result = _service.GetListPowerInfo(input);
@@ -49,8 +49,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">PowerInfoInputDto</param>
         /// <returns></returns> 
-        [HttpPost("add")]
-        [AllowAnonymous]  //匿名访问
+        [HttpPost("add")] 
         public IActionResult AddPowerInfo([FromBody]PowerInfoInputDto input)
         {
             var result = _service.AddPowerInfo(input);
@@ -62,8 +61,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpDelete("{id}")]
-        [AllowAnonymous]  //匿名访问
+        [HttpDelete("{id}")] 
         public IActionResult DeletePowerInfo(string id)
         {
             var result = _service.DeletePowerInfo(id);
@@ -75,8 +73,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="powerid">权限Id</param>
         /// <returns></returns>
-        [HttpGet("get_children_by_powerid")]
-        [AllowAnonymous] //匿名访问
+        [HttpGet("get_children_by_powerid")] 
         public IActionResult GetChildren(string powerid)
         {
             var result = _service.GetChildren(powerid);
@@ -88,8 +85,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">权限组Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_power_by_powergroup")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("get_power_by_powergroup")] 
         public IActionResult GetPowerByPowerGroup([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetPowerByPowerGroup(input);
@@ -101,8 +97,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">角色组Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_power_by_rolegroup")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("get_power_by_rolegroup")] 
         public IActionResult GetPowerByRoleGroup([FromQuery]RoleGroupInputDto input)
         {
             var result = _service.GetPowerByRoleGroup(input);
@@ -114,8 +109,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">用户组Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_power_by_usergroup")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("get_power_by_usergroup")] 
         public IActionResult GetPowerByUserGroup([FromQuery]UserGroupInputDto input)
         {
             var result = _service.GetPowerByUserGroup(input);
@@ -127,8 +121,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">用户Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_power_by_user")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("get_power_by_user")] 
         public IActionResult GetPowerByUser([FromQuery]UserInfoInputDto input)
         {
             var result = _service.GetPowerByUser(input);

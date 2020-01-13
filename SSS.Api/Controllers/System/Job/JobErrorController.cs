@@ -14,6 +14,7 @@ namespace SSS.Api.Controllers.System.Job
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
     [ApiController]
+    [Authorize]
     public class JobErrorController : ApiBaseController
     {
         private readonly IJobErrorService _service;
@@ -32,8 +33,7 @@ namespace SSS.Api.Controllers.System.Job
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
-        [HttpGet("getlist")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("getlist")] 
         public IActionResult GetList([FromQuery]JobErrorInputDto input)
         {
             var result = _service.GetListJobError(input);
@@ -45,8 +45,7 @@ namespace SSS.Api.Controllers.System.Job
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpGet("{id}")]
-        [AllowAnonymous]  //匿名访问
+        [HttpGet("{id}")] 
         public IActionResult GetJobError(string id)
         {
             var result = _service.Get(id);
@@ -58,8 +57,7 @@ namespace SSS.Api.Controllers.System.Job
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpDelete("{id}")]
-        [AllowAnonymous]  //匿名访问
+        [HttpDelete("{id}")] 
         public IActionResult DeleteJobError(string id)
         {
             var result = _service.Delete(id);
@@ -71,8 +69,7 @@ namespace SSS.Api.Controllers.System.Job
         /// </summary>
         /// <param name="input">JobErrorInputDto</param>
         /// <returns></returns> 
-        [HttpPost("add")]
-        [AllowAnonymous]  //匿名访问
+        [HttpPost("add")] 
         public IActionResult AddJobError([FromBody]JobErrorInputDto input)
         {
             var result = _service.AddJobError(input);
