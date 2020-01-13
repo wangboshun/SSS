@@ -10,7 +10,7 @@ namespace SSS.Api.Controllers.System.Job
     /// <summary>
     /// JobErrorController
     /// </summary> 
-    [ApiVersion("3.0")]
+    [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
     [ApiController]
@@ -28,7 +28,7 @@ namespace SSS.Api.Controllers.System.Job
         }
 
         /// <summary>
-        /// 获取所有Job列表
+        /// 获取所有Job错误执行列表
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 

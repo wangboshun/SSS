@@ -10,7 +10,7 @@ namespace SSS.Api.Controllers.Coin
     /// <summary>
     /// 币币账单
     /// </summary> 
-    [ApiVersion("1.0")]
+    [ApiVersion("3.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
     [ApiController]

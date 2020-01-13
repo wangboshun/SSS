@@ -84,7 +84,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
                         KDJ(coin, kline, CoinTime.Time_1day);
                     });
 
-                    if (list_coin.Any()) 
+                    if (list_coin.Any())
                     {
                         using var scope = _scopeFactory.CreateScope();
                         using var db_context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();

@@ -12,6 +12,8 @@ using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Seedwork.Cache.Redis;
 using SSS.Infrastructure.Util.Enum;
 
+using Swashbuckle.AspNetCore.Filters;
+
 using System;
 using System.IO;
 using System.Linq;
@@ -92,6 +94,23 @@ namespace SSS.Api.Bootstrap
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
+
+                // 开启加权小锁
+                options.OperationFilter<AddResponseHeadersFilter>();
+                options.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
+
+                // 在header中添加token，传递到后台
+                options.OperationFilter<SecurityRequirementsOperationFilter>();
+
+                // 必须是 oauth2
+                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Description = "授权:Bearer +token",
+                    Name = "Authorization",//jwt默认的参数名称
+                    In = ParameterLocation.Header,//jwt默认存放Authorization信息的位置(请求头中)
+                    Type = SecuritySchemeType.ApiKey
+                });
+
             });
         }
 

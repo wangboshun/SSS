@@ -9,7 +9,7 @@ public enum ApiVersions
     /// <summary>
     /// v1 版本
     /// </summary>
-    [Description("量化接口")]
+    [Description("系统接口")]
     v1 = 1,
 
 
@@ -23,7 +23,7 @@ public enum ApiVersions
     /// <summary>
     /// v3 版本
     /// </summary>
-    [Description("系统接口")]
+    [Description("量化接口")]
     v3 = 3,
 
     /// <summary>

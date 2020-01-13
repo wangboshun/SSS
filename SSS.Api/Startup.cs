@@ -1,9 +1,8 @@
-﻿using System;
-using System.ComponentModel;
-using FluentValidation.AspNetCore;
+﻿using FluentValidation.AspNetCore;
 
 using HealthChecks.UI.Client;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 using Quartz;
 using Quartz.Impl;
@@ -31,13 +31,16 @@ using SSS.Api.Seedwork.Filter;
 using SSS.Api.Seedwork.Json;
 using SSS.Api.Seedwork.Middleware;
 using SSS.Application.Job.JobSetting.Manager;
+using SSS.Infrastructure.Util.Config;
+using SSS.Infrastructure.Util.Enum;
 
 using StackExchange.Profiling.SqlFormatters;
 
+using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using SSS.Infrastructure.Util.Enum;
+using System.Text;
+
 using DateTimeConverter = SSS.Api.Seedwork.Json.DateTimeConverter;
 
 namespace SSS.Api
@@ -140,6 +143,24 @@ namespace SSS.Api
 
             services.AddHealthChecksUI().AddHealthChecks().AddCheck<RandomHealthCheck>("random");
 
+            //添加jwt验证：
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,//是否验证Issuer
+                        ValidateAudience = true,//是否验证Audience
+                        ValidateLifetime = true,//是否验证失效时间
+                        ClockSkew = TimeSpan.FromSeconds(30),
+                        ValidateIssuerSigningKey = true,//是否验证SecurityKey
+                        ValidAudience = JsonConfig.GetSectionValue("Auth:Domain"),//Audience
+                        ValidIssuer = JsonConfig.GetSectionValue("Auth:Domain"),//Issuer，这两项和前面签发jwt的设置一致
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JsonConfig.GetSectionValue("Auth:SecurityKey")))//拿到SecurityKey
+                    };
+                });
+
+
             services.AddControllers();
         }
 
@@ -210,6 +231,8 @@ namespace SSS.Api
 
             //路由
             app.UseRouting();
+
+            app.UseAuthorization();
 
             //执行路由
             app.UseEndpoints(config =>

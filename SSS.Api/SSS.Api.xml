@@ -961,7 +961,7 @@
         </member>
         <member name="M:SSS.Api.Controllers.System.Job.JobErrorController.GetList(SSS.Domain.System.Job.JobError.Dto.JobErrorInputDto)">
             <summary>
-            获取所有Job列表
+            获取所有Job错误执行列表
             </summary>
             <param name="input">input</param>
             <returns></returns> 
@@ -1000,7 +1000,7 @@
         </member>
         <member name="M:SSS.Api.Controllers.System.Job.JobInfoController.GetList(SSS.Domain.System.Job.JobInfo.Dto.JobInfoInputDto)">
             <summary>
-            获取所有Job错误执行列表
+            获取所有Job列表
             </summary>
             <param name="input">input</param>
             <returns></returns> 

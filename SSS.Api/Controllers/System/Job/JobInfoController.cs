@@ -10,10 +10,11 @@ namespace SSS.Api.Controllers.System.Job
     /// <summary>
     /// JobInfoController
     /// </summary> 
-    [ApiVersion("3.0")]
+    [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
     [ApiController]
+    [Authorize]
     public class JobInfoController : ApiBaseController
     {
         private readonly IJobInfoService _service;
@@ -28,12 +29,11 @@ namespace SSS.Api.Controllers.System.Job
         }
 
         /// <summary>
-        /// 获取所有Job错误执行列表
+        /// 获取所有Job列表
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
         [HttpGet("getlist")]
-        [AllowAnonymous]  //匿名访问
         public IActionResult GetList([FromQuery]JobInfoInputDto input)
         {
             var result = _service.GetListJobInfo(input);
@@ -46,7 +46,6 @@ namespace SSS.Api.Controllers.System.Job
         /// <param name="input">JobInfoInputDto</param>
         /// <returns></returns> 
         [HttpGet("getjob")]
-        [AllowAnonymous]  //匿名访问
         public IActionResult GetJobInfo([FromQuery]JobInfoInputDto input)
         {
             var result = _service.GetJob(input);
@@ -59,7 +58,6 @@ namespace SSS.Api.Controllers.System.Job
         /// <param name="input">JobInfoInputDto</param>
         /// <returns></returns> 
         [HttpPost("add")]
-        [AllowAnonymous]  //匿名访问
         public IActionResult AddJobInfo([FromBody]JobInfoInputDto input)
         {
             var result = _service.AddJob(input);
@@ -72,7 +70,6 @@ namespace SSS.Api.Controllers.System.Job
         /// <param name="input">JobInfoInputDto</param>
         /// <returns></returns> 
         [HttpDelete("delete")]
-        [AllowAnonymous]  //匿名访问
         public IActionResult DeleteJobInfo([FromBody]JobInfoInputDto input)
         {
             var result = _service.DeleteJob(input);
@@ -85,7 +82,6 @@ namespace SSS.Api.Controllers.System.Job
         /// <param name="input">JobInfoInputDto</param>
         /// <returns></returns> 
         [HttpPost("pause")]
-        [AllowAnonymous]  //匿名访问
         public IActionResult PauseJob([FromBody]JobInfoInputDto input)
         {
             var result = _service.PauseJob(input);
@@ -98,7 +94,6 @@ namespace SSS.Api.Controllers.System.Job
         /// <param name="input">JobInfoInputDto</param>
         /// <returns></returns> 
         [HttpPost("resume")]
-        [AllowAnonymous]  //匿名访问
         public IActionResult ResumeJob([FromBody]JobInfoInputDto input)
         {
             var result = _service.ResumeJob(input);
@@ -111,7 +106,6 @@ namespace SSS.Api.Controllers.System.Job
         /// <param name="input">JobInfoInputDto</param>
         /// <returns></returns> 
         [HttpPost("update")]
-        [AllowAnonymous]  //匿名访问
         public IActionResult UpdateJob([FromBody]JobInfoInputDto input)
         {
             var result = _service.UpdateJob(input);
