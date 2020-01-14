@@ -15,7 +15,7 @@ namespace SSS.Infrastructure.Repository.System.Job.JobInfo
     [DIService(ServiceLifetime.Scoped, typeof(IJobInfoRepository))]
     public class JobInfoRepository : Repository<SSS.Domain.System.Job.JobInfo.JobInfo>, IJobInfoRepository
     {
-        public JobInfoRepository(SystemDbcontext context) : base(context)
+        public JobInfoRepository(SystemDbContext context) : base(context)
         {
         }
 

@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace SSS.Application.Job.Coin.CoinAnalyse
 {
-    [DIService(ServiceLifetime.Scoped, typeof(CoinAnalyseJob))]
+    [DIService(ServiceLifetime.Singleton, typeof(CoinAnalyseJob))]
     public class CoinAnalyseJob : IJob
     {
         private readonly ILogger _logger;

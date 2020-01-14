@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace SSS.Application.Job.Coin.CoinTrade
 {
-    [DIService(ServiceLifetime.Scoped, typeof(CoinTradeJob))]
+    [DIService(ServiceLifetime.Singleton, typeof(CoinTradeJob))]
     public class CoinTradeJob : IJob
     {
         private readonly Indicator _indicator;

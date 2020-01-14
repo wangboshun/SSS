@@ -63,7 +63,10 @@ namespace SSS.Application.Job.JobSetting.Listener
                     var exception = context.Scheduler.Context.Get(trigger.FullName + "_Exception");  /*异常信息*/
                     var time = context.Scheduler.Context.Get(trigger.FullName + "_Time"); /* 耗时*/
 
-                    var db_context = IocEx.Instance.GetRequiredService<SystemDbcontext>();
+                    var scopeFactory= IocEx.Instance.GetRequiredService<IServiceScopeFactory>();
+                    using var scope = scopeFactory.CreateScope();
+                    using var db_context = scope.ServiceProvider.GetRequiredService<SystemDbContext>();
+                     
                     var job = db_context.JobInfo.FirstOrDefault(x => x.JobName.Equals(trigger.Name) && x.JobGroup.Equals(trigger.JobGroup) && x.IsDelete == 0);
 
                     if (job == null)

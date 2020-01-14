@@ -153,8 +153,6 @@ namespace SSS.Api
         /// <param name="appLifetime"></param>
         public void Configure(IApplicationBuilder app, IHttpContextFactory _httpContextFactory, IHostEnvironment env, IHostApplicationLifetime appLifetime)
         {
-            IocEx.Instance = app.ApplicationServices;
-
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
             else
@@ -225,7 +223,7 @@ namespace SSS.Api
             var job_service = app.ApplicationServices.GetRequiredService<IJobManager>();
             appLifetime.ApplicationStarted.Register(() =>
             {
-
+                IocEx.Instance = app.ApplicationServices;
                 job_service.Start().Wait();
                 //网站启动完成执行
             });

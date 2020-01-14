@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace SSS.DigitalCurrency.Indicator
 {
-    [DIService(ServiceLifetime.Scoped, typeof(Indicator))]
+    [DIService(ServiceLifetime.Singleton, typeof(Indicator))]
     public class Indicator
     {
         private readonly ILogger _logger;
