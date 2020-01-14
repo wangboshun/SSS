@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,9 +31,6 @@ namespace SSS.Api.Bootstrap
         /// <param name="services"></param>
         public static void AddService(this IServiceCollection services)
         {
-            // HttpContext
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
             // Sdk
             services.AutoRegisterServicesFromAssembly("SSS.DigitalCurrency");
 

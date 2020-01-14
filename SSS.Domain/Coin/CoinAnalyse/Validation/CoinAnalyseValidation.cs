@@ -7,7 +7,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Domain.Coin.CoinAnalyse.Validation
 {
-    [DIService(ServiceLifetime.Scoped, typeof(IValidator<CoinAnalyseInputDto>))]
+    [DIService(ServiceLifetime.Singleton, typeof(IValidator<CoinAnalyseInputDto>))]
     public class CoinAnalyseAddValidation : AbstractValidator<CoinAnalyseInputDto>
     {
         public CoinAnalyseAddValidation()

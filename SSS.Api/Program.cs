@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting;
 
@@ -24,20 +23,23 @@ namespace SSS.Api
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            CreateHostBuilder(args).Build().Run();
         }
 
         /// <summary>
-        /// CreateWebHostBuilder
+        /// CreateHostBuilder
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        public static IHostBuilder CreateHostBuilder(string[] args)
         {
-            return WebHost.CreateDefaultBuilder(args)
-                .UseUrls("http://*:81")
-                //.UseKestrel(ConfigHttps())
-                .UseStartup<Startup>()
+            return Host.CreateDefaultBuilder(args)
+                 .ConfigureWebHostDefaults(web =>
+                 {
+                     //web.UseKestrel(ConfigHttps());
+                     web.UseUrls("http://*:81");
+                     web.UseStartup<Startup>();
+                 })
                 .UseNLog();
         }
 

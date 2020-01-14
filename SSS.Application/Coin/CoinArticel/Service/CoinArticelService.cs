@@ -18,7 +18,7 @@ using System.Linq;
 
 namespace SSS.Application.Coin.CoinArticel.Service
 {
-    [DIService(ServiceLifetime.Scoped, typeof(ICoinArticelService))]
+    [DIService(ServiceLifetime.Singleton, typeof(ICoinArticelService))]
     public class CoinArticelService :
         QueryService<Domain.Coin.CoinArticel.CoinArticel, CoinArticelInputDto, CoinArticelOutputDto>,
         ICoinArticelService

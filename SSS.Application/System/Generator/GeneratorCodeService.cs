@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
@@ -17,17 +17,17 @@ using System.Threading;
 
 namespace SSS.Application.System.Generator
 {
-    [DIService(ServiceLifetime.Scoped, typeof(IGeneratorCodeService))]
+    [DIService(ServiceLifetime.Singleton, typeof(IGeneratorCodeService))]
     public class GeneratorCodeService : IGeneratorCodeService
     {
         private static string current_path;
-        private readonly IWebHostEnvironment _env;
+        private readonly IHostEnvironment _env;
         private static string namespace_name;
         private static string namespace_path;
         private static string class_name;
         private readonly ILogger _logger;
 
-        public GeneratorCodeService(IWebHostEnvironment env, ILogger<GeneratorCodeService> logger)
+        public GeneratorCodeService(IHostEnvironment env, ILogger<GeneratorCodeService> logger)
         {
             _env = env;
             _logger = logger;

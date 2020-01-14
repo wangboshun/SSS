@@ -24,7 +24,7 @@ using System.Linq;
 
 namespace SSS.Application.Permission.Group.UserGroup.Service
 {
-    [DIService(ServiceLifetime.Scoped, typeof(IUserGroupService))]
+    [DIService(ServiceLifetime.Singleton, typeof(IUserGroupService))]
     public class UserGroupService :
         QueryService<Domain.Permission.Group.UserGroup.UserGroup, UserGroupInputDto, UserGroupOutputDto>,
         IUserGroupService

@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace SSS.Infrastructure.Repository.Permission.Group.PowerGroup
 {
-    [DIService(ServiceLifetime.Scoped, typeof(IPowerGroupRepository))]
+    [DIService(ServiceLifetime.Singleton, typeof(IPowerGroupRepository))]
     public class PowerGroupRepository : Repository<SSS.Domain.Permission.Group.PowerGroup.PowerGroup>, IPowerGroupRepository
     {
         private static string field = "pg";

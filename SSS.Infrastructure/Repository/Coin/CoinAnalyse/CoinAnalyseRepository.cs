@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace SSS.Infrastructure.Repository.Coin.CoinAnalyse
 {
-    [DIService(ServiceLifetime.Scoped, typeof(ICoinAnalyseRepository))]
+    [DIService(ServiceLifetime.Singleton, typeof(ICoinAnalyseRepository))]
     public class CoinAnalyseRepository : Repository<SSS.Domain.Coin.CoinAnalyse.CoinAnalyse>, ICoinAnalyseRepository
     {
         public CoinAnalyseRepository(CoinDbContext context) : base(context)

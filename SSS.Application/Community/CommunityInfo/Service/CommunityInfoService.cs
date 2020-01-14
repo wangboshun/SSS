@@ -22,7 +22,7 @@ using System.Collections.Generic;
 
 namespace SSS.Application.Community.CommunityInfo.Service
 {
-    [DIService(ServiceLifetime.Scoped, typeof(ICommunityInfoService))]
+    [DIService(ServiceLifetime.Singleton, typeof(ICommunityInfoService))]
     public class CommunityInfoService : QueryService<SSS.Domain.Community.CommunityInfo.CommunityInfo, CommunityInfoInputDto, CommunityInfoOutputDto>, ICommunityInfoService
     {
         private readonly ICommunityBusinessRelationRepository _communityBusinessRelationRepository;

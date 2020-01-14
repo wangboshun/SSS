@@ -7,7 +7,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Domain.Community.UserCommunityRelation.Validation
 {
-    [DIService(ServiceLifetime.Scoped, typeof(IValidator<UserCommunityRelationInputDto>))]
+    [DIService(ServiceLifetime.Singleton, typeof(IValidator<UserCommunityRelationInputDto>))]
     public class UserCommunityRelationAddValidation : AbstractValidator<UserCommunityRelationInputDto>
     {
         public UserCommunityRelationAddValidation()

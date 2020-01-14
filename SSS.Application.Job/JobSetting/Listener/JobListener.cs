@@ -1,16 +1,17 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 using Quartz;
 
-using SqlSugar;
-
 using SSS.Domain.System.Job.JobError;
 using SSS.Domain.System.Job.JobInfo;
-using SSS.Infrastructure.Util.Config;
+using SSS.Infrastructure.Seedwork.DbContext;
+using SSS.Infrastructure.Util.DI;
 using SSS.Infrastructure.Util.Json;
 using SSS.Infrastructure.Util.Log;
 
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -53,74 +54,77 @@ namespace SSS.Application.Job.JobSetting.Listener
         /// <returns></returns>
         public Task JobWasExecuted(IJobExecutionContext context, JobExecutionException jobException, CancellationToken cancellationToken = default)
         {
-            lock (_lock)
+            try
             {
-                SqlSugarClient db = new SqlSugarClient(
-                    new ConnectionConfig()
-                    {
-                        ConnectionString = JsonConfig.GetSectionValue("ConnectionStrings:MYSQLConnection"),
-                        DbType = DbType.MySql,
-                        IsAutoCloseConnection = true
-                    });
-
-                var trigger = (Quartz.Impl.Triggers.CronTriggerImpl)((Quartz.Impl.JobExecutionContextImpl)context).Trigger;
-
-                var result = context.Scheduler.Context.Get(trigger.FullName + "_Result"); /*返回结果*/
-                var exception = context.Scheduler.Context.Get(trigger.FullName + "_Exception");  /*异常信息*/
-                var time = context.Scheduler.Context.Get(trigger.FullName + "_Time"); /* 耗时*/
-
-                var job = db.Queryable<JobInfo>().Where(x => x.JobName.Equals(trigger.Name) && x.JobGroup.Equals(trigger.JobGroup) && x.IsDelete == 0)?.First();
-
-                if (job == null)
+                lock (_lock)
                 {
-                    job = new JobInfo
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        JobName = trigger.JobName,
-                        JobGroup = trigger.JobGroup,
-                        JobValue = context.JobDetail.JobDataMap.ToJson(),
-                        IsDelete = 0,
-                        JobCount = 1,
-                        JobClass = context.JobDetail.JobType.FullName,
-                        JobStatus = (int)TriggerState.Normal,
-                        JobResult = result.ToJson(),
-                        JobCron = trigger.CronExpressionString,
-                        CreateTime = DateTime.Now,
-                        JobRunTime = time != null ? Convert.ToInt32(time) : 0,
-                        JobStartTime = trigger.StartTimeUtc.LocalDateTime,
-                        JobNextTime = trigger.GetNextFireTimeUtc().GetValueOrDefault().LocalDateTime
-                    };
-                    db.Insertable(job).ExecuteCommand();
-                }
-                else
-                {
-                    job.JobStartTime = trigger.StartTimeUtc.LocalDateTime;
-                    job.JobValue = context.JobDetail.JobDataMap.ToJson();
-                    job.JobCron = trigger.CronExpressionString;
-                    job.JobCount += 1;
-                    job.JobRunTime = time != null ? Convert.ToInt32(time) : 0;
-                    job.JobNextTime = trigger.GetNextFireTimeUtc().GetValueOrDefault().LocalDateTime;
-                    job.UpdateTime = DateTime.Now;
-                    job.JobResult = result.ToJson();
-                    db.Updateable(job).ExecuteCommand();
-                }
+                    var trigger = (Quartz.Impl.Triggers.CronTriggerImpl)((Quartz.Impl.JobExecutionContextImpl)context).Trigger;
+                    var result = context.Scheduler.Context.Get(trigger.FullName + "_Result"); /*返回结果*/
+                    var exception = context.Scheduler.Context.Get(trigger.FullName + "_Exception");  /*异常信息*/
+                    var time = context.Scheduler.Context.Get(trigger.FullName + "_Time"); /* 耗时*/
 
-                //记录错误
-                if (exception != null)
-                {
-                    var error = new JobError
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        JobId = job.Id,
-                        JobCount = job.JobCount,
-                        IsDelete = 0,
-                        CreateTime = DateTime.Now,
-                        Message = exception.ToJson()
-                    };
-                    db.Insertable(error).ExecuteCommand();
-                }
+                    var db_context = IocEx.Instance.GetRequiredService<SystemDbContext>();
+                    var job = db_context.JobInfo.FirstOrDefault(x => x.JobName.Equals(trigger.Name) && x.JobGroup.Equals(trigger.JobGroup) && x.IsDelete == 0);
 
-                ApplicationLog.CreateLogger<JobListener>().LogInformation($"任务监听：{job.ToJson()}");
+                    if (job == null)
+                    {
+                        job = new JobInfo
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            JobName = trigger.JobName,
+                            JobGroup = trigger.JobGroup,
+                            JobValue = context.JobDetail.JobDataMap.ToJson(),
+                            IsDelete = 0,
+                            JobCount = 1,
+                            JobClass = context.JobDetail.JobType.FullName,
+                            JobStatus = (int)TriggerState.Normal,
+                            JobResult = result.ToJson(),
+                            JobCron = trigger.CronExpressionString,
+                            CreateTime = DateTime.Now,
+                            JobRunTime = time != null ? Convert.ToInt32(time) : 0,
+                            JobStartTime = trigger.StartTimeUtc.LocalDateTime,
+                            JobNextTime = trigger.GetNextFireTimeUtc().GetValueOrDefault().LocalDateTime
+                        };
+                        db_context.JobInfo.Add(job);
+                    }
+                    else
+                    {
+                        job.JobStartTime = trigger.StartTimeUtc.LocalDateTime;
+                        job.JobValue = context.JobDetail.JobDataMap.ToJson();
+                        job.JobCron = trigger.CronExpressionString;
+                        job.JobCount += 1;
+                        job.JobRunTime = time != null ? Convert.ToInt32(time) : 0;
+                        job.JobNextTime = trigger.GetNextFireTimeUtc().GetValueOrDefault().LocalDateTime;
+                        job.UpdateTime = DateTime.Now;
+                        job.JobResult = result.ToJson();
+                        db_context.JobInfo.Update(job);
+                    }
+
+                    //记录错误
+                    if (exception != null)
+                    {
+                        var error = new JobError
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            JobId = job.Id,
+                            JobCount = job.JobCount,
+                            IsDelete = 0,
+                            CreateTime = DateTime.Now,
+                            Message = exception.ToJson()
+                        };
+
+                        db_context.JobError.Add(error);
+                    }
+
+                    db_context.SaveChanges();
+
+                    ApplicationLog.CreateLogger<JobListener>().LogInformation($"任务监听：{job.ToJson()}");
+                    return Task.CompletedTask;
+                }
+            }
+            catch (Exception ex)
+            {
+                ApplicationLog.CreateLogger<JobListener>().LogError(new EventId(ex.HResult), ex, "---JobWasExecuted Exception---");
                 return Task.CompletedTask;
             }
         }

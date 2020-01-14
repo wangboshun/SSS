@@ -19,7 +19,7 @@ using System.Linq;
 
 namespace SSS.Application.Coin.CoinMessage.Service
 {
-    [DIService(ServiceLifetime.Scoped, typeof(ICoinMessageService))]
+    [DIService(ServiceLifetime.Singleton, typeof(ICoinMessageService))]
     public class CoinMessageService :
         QueryService<Domain.Coin.CoinMessage.CoinMessage, CoinMessageInputDto, CoinMessageOutputDto>,
         ICoinMessageService

@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace SSS.Infrastructure.Repository.Permission.Group.RoleGroup
 {
-    [DIService(ServiceLifetime.Scoped, typeof(IRoleGroupRepository))]
+    [DIService(ServiceLifetime.Singleton, typeof(IRoleGroupRepository))]
     public class RoleGroupRepository : Repository<SSS.Domain.Permission.Group.RoleGroup.RoleGroup>, IRoleGroupRepository
     {
         private static string field = "rg";

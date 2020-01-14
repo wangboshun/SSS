@@ -11,7 +11,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Infrastructure.Seedwork.DbContext
 {
-    [DIService(ServiceLifetime.Scoped, typeof(CommunityDbContext))]
+    [DIService(ServiceLifetime.Singleton, typeof(CommunityDbContext))]
     public class CommunityDbContext : DbContextBase
     {
         public CommunityDbContext(IHostEnvironment env, ILoggerFactory factory) : base(env, factory)

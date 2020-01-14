@@ -1078,9 +1078,9 @@
             </summary>
             <param name="args"></param>
         </member>
-        <member name="M:SSS.Api.Program.CreateWebHostBuilder(System.String[])">
+        <member name="M:SSS.Api.Program.CreateHostBuilder(System.String[])">
             <summary>
-            CreateWebHostBuilder
+            CreateHostBuilder
             </summary>
             <param name="args"></param>
             <returns></returns>

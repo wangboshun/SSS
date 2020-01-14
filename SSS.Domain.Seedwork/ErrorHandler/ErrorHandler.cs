@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SSS.Domain.Seedwork.ErrorHandler
 {
-    [DIService(ServiceLifetime.Scoped, typeof(IErrorHandler))]
+    [DIService(ServiceLifetime.Singleton, typeof(IErrorHandler))]
     public class ErrorHandler : IErrorHandler
     {
         private readonly ILogger _logger;
