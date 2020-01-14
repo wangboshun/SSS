@@ -34,7 +34,7 @@ namespace SSS.Api.Controllers.Community
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
-        [HttpGet("getlist")] 
+        [HttpGet("getlist")]
         public IActionResult GetList([FromQuery]CommunityInfoInputDto input)
         {
             var result = _service.GetListCommunityInfo(input);
@@ -46,7 +46,7 @@ namespace SSS.Api.Controllers.Community
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpGet("{id}")] 
+        [HttpGet("{id}")]
         public IActionResult GetCommunityInfo(string id)
         {
             var result = _service.Get(id);
@@ -58,7 +58,7 @@ namespace SSS.Api.Controllers.Community
         /// </summary>
         /// <param name="input">业务Id和社区Id</param>
         /// <returns></returns> 
-        [HttpPost("addbusiness")] 
+        [HttpPost("addbusiness")]
         public IActionResult AddCommunityBusiness([FromBody]CommunityBusinessRelationInputDto input)
         {
             var result = _service.AddCommunityBusinessRelation(input);
@@ -70,7 +70,7 @@ namespace SSS.Api.Controllers.Community
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpDelete("{id}")] 
+        [HttpDelete("{id}")]
         public IActionResult DeleteCommunityInfo(string id)
         {
             var result = _service.Delete(id);
@@ -82,7 +82,7 @@ namespace SSS.Api.Controllers.Community
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
-        [HttpPost("update")] 
+        [HttpPost("update")]
         public IActionResult DeleteCommunityInfo([FromBody]CommunityInfoInputDto input)
         {
             var result = _service.UpdateCommunityInfo(input);
@@ -94,7 +94,7 @@ namespace SSS.Api.Controllers.Community
         /// </summary>
         /// <param name="input">CommunityInfoInputDto</param>
         /// <returns></returns> 
-        [HttpPost("add")] 
+        [HttpPost("add")]
         public IActionResult AddCommunityInfo([FromBody]CommunityInfoInputDto input)
         {
             var result = _service.AddCommunityInfo(input);

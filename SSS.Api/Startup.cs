@@ -12,18 +12,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 using Quartz;
 using Quartz.Impl;
-
-using Senparc.CO2NET;
-using Senparc.CO2NET.RegisterServices;
-using Senparc.Weixin;
-using Senparc.Weixin.Entities;
-using Senparc.Weixin.RegisterServices;
-using Senparc.Weixin.WxOpen;
 
 using SSS.Api.Bootstrap;
 using SSS.Api.HealthCheck;
@@ -32,6 +24,7 @@ using SSS.Api.Seedwork.Json;
 using SSS.Api.Seedwork.Middleware;
 using SSS.Application.Job.JobSetting.Manager;
 using SSS.Infrastructure.Util.Config;
+using SSS.Infrastructure.Util.DI;
 using SSS.Infrastructure.Util.Enum;
 
 using StackExchange.Profiling.SqlFormatters;
@@ -97,16 +90,6 @@ namespace SSS.Api
 
             services.AddMemoryCacheEx();
 
-            //services.AddSingleton<ITypeActivatorCache, DefaultTypeActivatorCache>();
-
-            ////url https://blog.csdn.net/u013710468/article/details/83588725
-            //var defaultActivator = services.FirstOrDefault(c => c.ServiceType == typeof(IControllerActivator));
-            //if (defaultActivator != null)
-            //{
-            //    services.Remove(defaultActivator);
-            //    services.AddSingleton<IControllerActivator, BaseControllerActivator>();
-            //}
-
             //AutoMapper映射
             services.AddAutoMapperSupport();
 
@@ -134,9 +117,6 @@ namespace SSS.Api
                 // (defaults to true, and connection opening/closing is tracked)
                 options.TrackConnectionOpenClose = true;
             }).AddEntityFramework();
-
-            services.AddSenparcGlobalServices(Configuration) //Senparc.CO2NET 全局注册
-                .AddSenparcWeixinServices(Configuration); //Senparc.Weixin 注册   
 
             //注入 Quartz调度类 
             services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();//注册ISchedulerFactory的实例。
@@ -169,13 +149,11 @@ namespace SSS.Api
         /// </summary>
         /// <param name="app"></param>
         /// <param name="_httpContextFactory"></param>
-        /// <param name="env"></param>
-        /// <param name="senparcSetting"></param>
-        /// <param name="senparcWeixinSetting"></param>
+        /// <param name="env"></param> 
         /// <param name="appLifetime"></param>
-        public void Configure(IApplicationBuilder app, IHttpContextFactory _httpContextFactory, IWebHostEnvironment env, IOptions<SenparcSetting> senparcSetting, IOptions<SenparcWeixinSetting> senparcWeixinSetting, IHostApplicationLifetime appLifetime)
+        public void Configure(IApplicationBuilder app, IHttpContextFactory _httpContextFactory, IHostEnvironment env, IHostApplicationLifetime appLifetime)
         {
-            IRegisterService register = RegisterService.Start(env, senparcSetting.Value).UseSenparcGlobal();
+            IocEx.Instance = app.ApplicationServices;
 
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
@@ -201,9 +179,6 @@ namespace SSS.Api
 
             //异常拦截
             app.UseApiException();
-
-            ////认证中间件
-            app.UseAuthentication();
 
             //Url重定向
             app.UseMiddleware<UrlsMiddleware>();
@@ -232,6 +207,7 @@ namespace SSS.Api
             //路由
             app.UseRouting();
 
+            //Jwt验证，必须放在Routing和Endpoints中间
             app.UseAuthorization();
 
             //执行路由
@@ -246,14 +222,10 @@ namespace SSS.Api
                 config.MapDefaultControllerRoute();
             });
 
-            //公众号注入
-            register.UseSenparcWeixin(senparcWeixinSetting.Value, senparcSetting.Value).RegisterWxOpenAccount(senparcWeixinSetting.Value, "SSS");
-
             var job_service = app.ApplicationServices.GetRequiredService<IJobManager>();
-
-
             appLifetime.ApplicationStarted.Register(() =>
             {
+
                 job_service.Start().Wait();
                 //网站启动完成执行
             });
@@ -275,8 +247,8 @@ namespace SSS.Api
             app.UseSwaggerUI(options =>
             {
                 //遍历版本号
-                foreach (var item in Enum.GetValues(typeof(ApiVersions)))
-                    options.SwaggerEndpoint($"/swagger/{item.ToString()}/swagger.json", $"{((ApiVersions)item).GetDescription()}");
+                foreach (ApiVersions item in Enum.GetValues(typeof(ApiVersions)))
+                    options.SwaggerEndpoint($"/swagger/{item.ToString()}/swagger.json", $"{item.GetDescription()}");
 
                 options.RoutePrefix = "docs";
                 options.DocumentTitle = "SSS Project";

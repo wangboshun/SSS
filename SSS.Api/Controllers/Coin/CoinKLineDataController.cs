@@ -33,7 +33,7 @@ namespace SSS.Api.Controllers.Coin
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
-        [HttpGet("getlist")] 
+        [HttpGet("getlist")]
         public IActionResult GetList([FromQuery]CoinKLineDataInputDto input)
         {
             var result = _service.GetListCoinKLineData(input);
@@ -45,7 +45,7 @@ namespace SSS.Api.Controllers.Coin
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpGet("{id}")] 
+        [HttpGet("{id}")]
         public IActionResult GetCoinKLineData(string id)
         {
             var result = _service.Get(id);
@@ -57,7 +57,7 @@ namespace SSS.Api.Controllers.Coin
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpDelete("{id}")] 
+        [HttpDelete("{id}")]
         public IActionResult DeleteCoinKLineData(string id)
         {
             var result = _service.Delete(id);
@@ -69,7 +69,7 @@ namespace SSS.Api.Controllers.Coin
         /// </summary>
         /// <param name="input">CoinKLineDataInputDto</param>
         /// <returns></returns> 
-        [HttpPost("add")] 
+        [HttpPost("add")]
         public IActionResult AddCoinKLineData([FromBody]CoinKLineDataInputDto input)
         {
             var result = _service.AddCoinKLineData(input);

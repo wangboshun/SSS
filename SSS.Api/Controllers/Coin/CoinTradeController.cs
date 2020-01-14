@@ -33,7 +33,7 @@ namespace SSS.Api.Controllers.Coin
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
-        [HttpGet("getlist")] 
+        [HttpGet("getlist")]
         public IActionResult GetList([FromQuery]CoinTradeInputDto input)
         {
             var result = _service.GetListCoinTrade(input);
@@ -45,7 +45,7 @@ namespace SSS.Api.Controllers.Coin
         /// </summary>
         /// <param name="input">CoinTradeInputDto</param>
         /// <returns></returns> 
-        [HttpPost("add")] 
+        [HttpPost("add")]
         public IActionResult AddCoinTrade([FromBody]CoinTradeInputDto input)
         {
             _service.AddCoinTrade(input);

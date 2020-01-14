@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace SSS.Application.Job.Coin.CoinArticel
 {
-    [DIService(ServiceLifetime.Transient, typeof(CoinArticelJob))]
+    [DIService(ServiceLifetime.Singleton, typeof(CoinArticelJob))]
     public class CoinArticelJob : IJob
     {
         private readonly ILogger _logger;
@@ -94,8 +94,8 @@ namespace SSS.Application.Job.Coin.CoinArticel
                 }
 
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
-                var source = context.CoinArticel.ToList();
+                using var db_context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
+                var source = db_context.CoinArticel.ToList();
 
                 var list = new List<Domain.Coin.CoinArticel.CoinArticel>();
 
@@ -124,8 +124,8 @@ namespace SSS.Application.Job.Coin.CoinArticel
                 });
 
                 if (!list.Any()) return;
-                context.CoinArticel.AddRange(list);
-                context.SaveChanges();
+                db_context.CoinArticel.AddRange(list);
+                db_context.SaveChanges();
                 Console.WriteLine("---GetNotice  SaveChanges---");
             }
             catch (Exception ex)
@@ -151,9 +151,9 @@ namespace SSS.Application.Job.Coin.CoinArticel
                 JToken data = json.GetJsonValue("list");
 
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
+                using var db_context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
 
-                var source = context.CoinArticel.ToList();
+                var source = db_context.CoinArticel.ToList();
 
                 var list = new List<Domain.Coin.CoinArticel.CoinArticel>();
 
@@ -181,8 +181,8 @@ namespace SSS.Application.Job.Coin.CoinArticel
                 });
 
                 if (!list.Any()) return;
-                context.CoinArticel.AddRange(list);
-                context.SaveChanges();
+                db_context.CoinArticel.AddRange(list);
+                db_context.SaveChanges();
                 Console.WriteLine("---GetPolicy  SaveChanges---");
             }
             catch (Exception ex)
@@ -216,8 +216,8 @@ namespace SSS.Application.Job.Coin.CoinArticel
                 }
 
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
-                var source = context.CoinArticel.ToList();
+                using var db_context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
+                var source = db_context.CoinArticel.ToList();
 
                 var list = new List<Domain.Coin.CoinArticel.CoinArticel>();
 
@@ -246,8 +246,8 @@ namespace SSS.Application.Job.Coin.CoinArticel
                 });
 
                 if (!list.Any()) return;
-                context.CoinArticel.AddRange(list);
-                context.SaveChanges();
+                db_context.CoinArticel.AddRange(list);
+                db_context.SaveChanges();
                 Console.WriteLine("---GetQuickNews  SaveChanges---");
             }
             catch (Exception ex)
@@ -274,9 +274,9 @@ namespace SSS.Application.Job.Coin.CoinArticel
                 JToken data = json.GetJsonValue("list");
 
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
+                using var db_context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
 
-                var source = context.CoinArticel.ToList();
+                var source = db_context.CoinArticel.ToList();
 
                 var list = new List<Domain.Coin.CoinArticel.CoinArticel>();
 
@@ -304,8 +304,8 @@ namespace SSS.Application.Job.Coin.CoinArticel
                 });
 
                 if (!list.Any()) return;
-                context.CoinArticel.AddRange(list);
-                context.SaveChanges();
+                db_context.CoinArticel.AddRange(list);
+                db_context.SaveChanges();
                 Console.WriteLine("---GetNews  SaveChanges---");
             }
             catch (Exception ex)

@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace SSS.Application.Job.Coin.CoinAnalyse
 {
-    [DIService(ServiceLifetime.Transient, typeof(CoinAnalyseJob))]
+    [DIService(ServiceLifetime.Singleton, typeof(CoinAnalyseJob))]
     public class CoinAnalyseJob : IJob
     {
         private readonly ILogger _logger;
@@ -122,12 +122,12 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
                 try
                 {
                     using var scope = _scopeFactory.CreateScope();
-                    using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
+                    using var db_context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
 
-                    var Average = context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 1).ToList();
-                    var Macd = context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 2).ToList();
-                    var Kdj = context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 3).ToList();
-                    var Fast = context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 4).ToList();
+                    var Average = db_context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 1).ToList();
+                    var Macd = db_context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 2).ToList();
+                    var Kdj = db_context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 3).ToList();
+                    var Fast = db_context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 4).ToList();
 
                     var list = new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
                     list.AddRange(Average);
@@ -166,12 +166,12 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
                     }
 
                     if (!temp_list_coin.Any()) return;
-                    context.Database.ExecuteSqlRaw("UPDATE CoinAnalyse SET IsDelete=1 where IndicatorType=0 ");
+                    db_context.Database.ExecuteSqlRaw("UPDATE CoinAnalyse SET IsDelete=1 where IndicatorType=0 ");
                     string sql = @"UPDATE CoinAnalyse SET IsDelete=1 where Coin in ('{0}')";
                     sql = string.Format(sql, string.Join("','", removecoin.ToArray()));
-                    context.Database.ExecuteSqlRaw(sql);
-                    context.CoinAnalyse.AddRange(temp_list_coin);
-                    context.SaveChanges();
+                    db_context.Database.ExecuteSqlRaw(sql);
+                    db_context.CoinAnalyse.AddRange(temp_list_coin);
+                    db_context.SaveChanges();
                     Console.WriteLine("---Analyse  SaveChanges---");
                 }
                 catch (Exception ex)
@@ -393,8 +393,8 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
             try
             {
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
-                var info = context.CoinInfo.FirstOrDefault(x => x.Coin.Equals(coin.ToUpper()));
+                using var db_context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
+                var info = db_context.CoinInfo.FirstOrDefault(x => x.Coin.Equals(coin.ToUpper()));
                 return info != null ? info.RomteLogo : logo;
             }
             catch (Exception ex)

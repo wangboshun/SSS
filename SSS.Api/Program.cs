@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.Hosting;
 
 using NLog.Web;
 
@@ -40,6 +41,10 @@ namespace SSS.Api
                 .UseNLog();
         }
 
+        /// <summary>
+        /// ConfigHttps
+        /// </summary>
+        /// <returns></returns>
         private static Action<KestrelServerOptions> ConfigHttps()
         {
             return x =>

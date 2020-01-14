@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace SSS.Application.Job.Coin.CoinMessage
 {
-    [DIService(ServiceLifetime.Transient, typeof(CoinMessageJob))]
+    [DIService(ServiceLifetime.Singleton, typeof(CoinMessageJob))]
     public class CoinMessageJob : IJob
     {
         private readonly ILogger _logger;
@@ -73,8 +73,8 @@ namespace SSS.Application.Job.Coin.CoinMessage
             {
                 var list = new List<Domain.Coin.CoinMessage.CoinMessage>();
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
-                var source = context.CoinMessage.ToList();
+                using var db_context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
+                var source = db_context.CoinMessage.ToList();
 
                 for (int i = 0; i < 10; i++)
                 {
@@ -116,8 +116,8 @@ namespace SSS.Application.Job.Coin.CoinMessage
                 }
 
                 if (!list.Any()) return;
-                context.CoinMessage.AddRange(list);
-                context.SaveChanges();
+                db_context.CoinMessage.AddRange(list);
+                db_context.SaveChanges();
                 Console.WriteLine("---GetGoodNews  SaveChanges---");
             }
             catch (Exception ex)

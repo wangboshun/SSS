@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace SSS.Application.NameSpace.Template.Service
 {
-    [DIService(ServiceLifetime.Scoped, typeof(ITemplateService))]
+    [DIService(ServiceLifetime.Singleton, typeof(ITemplateService))]
     public class TemplateService : QueryService<SSS.Domain.NameSpace.Template.Template, TemplateInputDto, TemplateOutputDto>, ITemplateService
     {
         public TemplateService(IMapper mapper,

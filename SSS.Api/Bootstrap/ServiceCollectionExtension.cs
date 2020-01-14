@@ -80,13 +80,13 @@ namespace SSS.Api.Bootstrap
             services.AddSwaggerGen(options =>
             {
                 //遍历版本号
-                foreach (var item in Enum.GetValues(typeof(ApiVersions)))
+                foreach (ApiVersions item in Enum.GetValues(typeof(ApiVersions)))
                 {
                     options.SwaggerDoc(item.ToString(), new OpenApiInfo
                     {
                         Version = item.ToString(),
-                        Title = ((ApiVersions)item).GetDescription(),
-                        Description = ((ApiVersions)item).GetDescription() + "---说明文档",
+                        Title = item.GetDescription(),
+                        Description = item.GetDescription() + "---说明文档",
                         Contact = new OpenApiContact { Name = "WBS", Email = "512742341@qq.com" }
                     });
                 }

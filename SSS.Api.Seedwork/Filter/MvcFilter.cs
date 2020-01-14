@@ -1,15 +1,15 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace SSS.Api.Seedwork.Filter
 {
     public class MvcFilter : IActionFilter, IResultFilter, IAuthorizationFilter, IExceptionFilter
     {
-        private readonly IWebHostEnvironment _env;
+        private readonly IHostEnvironment _env;
         private readonly ILogger _logger;
 
-        public MvcFilter(ILogger<MvcFilter> logger, IWebHostEnvironment env)
+        public MvcFilter(ILogger<MvcFilter> logger, IHostEnvironment env)
         {
             _logger = logger;
             _env = env;

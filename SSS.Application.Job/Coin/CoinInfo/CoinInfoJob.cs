@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace SSS.Application.Job.Coin.CoinInfo
 {
-    [DIService(ServiceLifetime.Transient, typeof(CoinInfoJob))]
+    [DIService(ServiceLifetime.Singleton, typeof(CoinInfoJob))]
     public class CoinInfoJob : IJob
     {
         private readonly IHostEnvironment _env;
@@ -85,8 +85,8 @@ namespace SSS.Application.Job.Coin.CoinInfo
                 var data = JsonConvert.DeserializeObject<List<CoinJson>>(json);
 
                 using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
-                var source = context.CoinInfo.ToList();
+                using var db_context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
+                var source = db_context.CoinInfo.ToList();
 
                 var list = new List<Domain.Coin.CoinInfo.CoinInfo>();
 
@@ -113,8 +113,8 @@ namespace SSS.Application.Job.Coin.CoinInfo
                     list.Add(model);
                 });
 
-                context.CoinInfo.AddRange(list);
-                context.SaveChanges();
+                db_context.CoinInfo.AddRange(list);
+                db_context.SaveChanges();
                 Console.WriteLine("---GetCoinInfo  SaveChanges---");
             }
             catch (Exception ex)

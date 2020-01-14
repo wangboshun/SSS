@@ -33,7 +33,7 @@ namespace SSS.Api.Controllers.System.Job
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
-        [HttpGet("getlist")] 
+        [HttpGet("getlist")]
         public IActionResult GetList([FromQuery]JobErrorInputDto input)
         {
             var result = _service.GetListJobError(input);
@@ -45,7 +45,7 @@ namespace SSS.Api.Controllers.System.Job
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpGet("{id}")] 
+        [HttpGet("{id}")]
         public IActionResult GetJobError(string id)
         {
             var result = _service.Get(id);
@@ -57,7 +57,7 @@ namespace SSS.Api.Controllers.System.Job
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpDelete("{id}")] 
+        [HttpDelete("{id}")]
         public IActionResult DeleteJobError(string id)
         {
             var result = _service.Delete(id);
@@ -69,7 +69,7 @@ namespace SSS.Api.Controllers.System.Job
         /// </summary>
         /// <param name="input">JobErrorInputDto</param>
         /// <returns></returns> 
-        [HttpPost("add")] 
+        [HttpPost("add")]
         public IActionResult AddJobError([FromBody]JobErrorInputDto input)
         {
             var result = _service.AddJobError(input);

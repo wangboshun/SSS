@@ -103,7 +103,7 @@
         }); 
 
         $.ajax({
-            url: window.location.origin + '/api/v3/Code/createcode',
+            url: window.location.origin + '/api/v1/Code/createcode',
             type: 'post',
             data: { namespace_name: namespace_name,class_name: class_name, fields: JSON.stringify(array) },
             contentType: 'application/x-www-form-urlencoded',

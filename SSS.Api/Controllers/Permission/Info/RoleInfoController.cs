@@ -37,7 +37,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns>
-        [HttpGet("getlist")] 
+        [HttpGet("getlist")]
         public IActionResult GetList([FromQuery] RoleInfoInputDto input)
         {
             var result = _service.GetListRoleInfo(input);
@@ -49,7 +49,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="roleid">角色Id</param>
         /// <returns></returns>
-        [HttpGet("get_children_by_roleid")] 
+        [HttpGet("get_children_by_roleid")]
         public IActionResult GetChildren(string roleid)
         {
             var result = _service.GetChildren(roleid);
@@ -61,7 +61,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">角色名称</param>
         /// <returns></returns> 
-        [HttpPost("add")] 
+        [HttpPost("add")]
         public IActionResult AddRoleInfo([FromBody]RoleInfoInputDto input)
         {
             var result = _service.AddRoleInfo(input);
@@ -73,7 +73,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpDelete("{id}")] 
+        [HttpDelete("{id}")]
         public IActionResult DeletePowerInfo(string id)
         {
             var result = _service.DeleteRoleInfo(id);
@@ -85,7 +85,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">角色组Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_role_by_rolegroup")] 
+        [HttpGet("get_role_by_rolegroup")]
         public IActionResult GetRoleByRoleGroup([FromQuery]RoleGroupInputDto input)
         {
             var result = _service.GetRoleByRoleGroup(input);
@@ -97,7 +97,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">权限组Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_role_by_powergroup")] 
+        [HttpGet("get_role_by_powergroup")]
         public IActionResult GetRoleByPowerGroup([FromQuery]PowerGroupInputDto input)
         {
             var result = _service.GetRoleByPowerGroup(input);
@@ -109,7 +109,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">用户组Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_role_by_usergroup")] 
+        [HttpGet("get_role_by_usergroup")]
         public IActionResult GetRoleByUserGroup([FromQuery]UserGroupInputDto input)
         {
             var result = _service.GetRoleByUserGroup(input);
@@ -121,7 +121,7 @@ namespace SSS.Api.Controllers.Permission.Info
         /// </summary>
         /// <param name="input">用户Id或名称</param>
         /// <returns></returns> 
-        [HttpGet("get_role_by_user")] 
+        [HttpGet("get_role_by_user")]
         public IActionResult GetRoleByUser([FromQuery]UserInfoInputDto input)
         {
             var result = _service.GetRoleByUser(input);

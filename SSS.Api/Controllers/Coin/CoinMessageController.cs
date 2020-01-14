@@ -33,7 +33,7 @@ namespace SSS.Api.Controllers.Coin
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
-        [HttpGet("getlist")] 
+        [HttpGet("getlist")]
         public IActionResult GetList([FromQuery]CoinMessageInputDto input)
         {
             var result = _service.GetListCoinMessage(input);
@@ -45,7 +45,7 @@ namespace SSS.Api.Controllers.Coin
         /// </summary>
         /// <param name="input">CoinMessageInputDto</param>
         /// <returns></returns> 
-        [HttpPost("add")] 
+        [HttpPost("add")]
         public IActionResult AddCoinMessage([FromBody]CoinMessageInputDto input)
         {
             _service.AddCoinMessage(input);

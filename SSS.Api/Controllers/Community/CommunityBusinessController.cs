@@ -34,7 +34,7 @@ namespace SSS.Api.Controllers.Community
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
-        [HttpGet("getlist")] 
+        [HttpGet("getlist")]
         public IActionResult GetList([FromQuery]CommunityBusinessInputDto input)
         {
             var result = _service.GetListCommunityBusiness(input);
@@ -46,7 +46,7 @@ namespace SSS.Api.Controllers.Community
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
-        [HttpGet("get_communitybusiness_by_community")] 
+        [HttpGet("get_communitybusiness_by_community")]
         public IActionResult GetCommunityBusinessByCommunity([FromQuery]CommunityInfoInputDto input)
         {
             var result = _service.GetCommunityBusinessByCommunity(input);
@@ -58,7 +58,7 @@ namespace SSS.Api.Controllers.Community
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpGet("{id}")] 
+        [HttpGet("{id}")]
         public IActionResult GetCommunityBusiness(string id)
         {
             var result = _service.Get(id);
@@ -70,7 +70,7 @@ namespace SSS.Api.Controllers.Community
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns> 
-        [HttpDelete("{id}")] 
+        [HttpDelete("{id}")]
         public IActionResult DeleteCommunityBusiness(string id)
         {
             var result = _service.Delete(id);
@@ -82,7 +82,7 @@ namespace SSS.Api.Controllers.Community
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns> 
-        [HttpPost("update")] 
+        [HttpPost("update")]
         public IActionResult DeleteCommunityInfo([FromBody]CommunityBusinessInputDto input)
         {
             var result = _service.UpdateCommunityBusiness(input);
@@ -94,7 +94,7 @@ namespace SSS.Api.Controllers.Community
         /// </summary>
         /// <param name="input">CommunityBusinessInputDto</param>
         /// <returns></returns> 
-        [HttpPost("add")] 
+        [HttpPost("add")]
         public IActionResult AddCommunityBusiness([FromBody]CommunityBusinessInputDto input)
         {
             var result = _service.AddCommunityBusiness(input);
