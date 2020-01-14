@@ -92,7 +92,7 @@ namespace SSS.Application.Job.Coin.CoinArticel
                     token.AddRange(temp);
                 }
 
-                using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
+                var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
                 var source = db_context.CoinArticel.ToList();
 
                 var list = new List<Domain.Coin.CoinArticel.CoinArticel>();
@@ -148,7 +148,7 @@ namespace SSS.Application.Job.Coin.CoinArticel
                 string json = web.DownloadString("https://api.jinse.com/v6/information/list?catelogue_key=zhengce&limit=50&information_id=0&flag=down&version=9.9.9");
                 JToken data = json.GetJsonValue("list");
 
-                using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
+                var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
 
                 var source = db_context.CoinArticel.ToList();
 
@@ -212,7 +212,7 @@ namespace SSS.Application.Job.Coin.CoinArticel
                     token.AddRange(temp);
                 }
 
-                using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
+                var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
                 var source = db_context.CoinArticel.ToList();
 
                 var list = new List<Domain.Coin.CoinArticel.CoinArticel>();
@@ -269,7 +269,7 @@ namespace SSS.Application.Job.Coin.CoinArticel
                 string json = web.DownloadString("https://api.jinse.com/v6/information/list?catelogue_key=news&limit=50&information_id=0&flag=down&version=9.9.9");
                 JToken data = json.GetJsonValue("list");
 
-                using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
+                var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
 
                 var source = db_context.CoinArticel.ToList();
 

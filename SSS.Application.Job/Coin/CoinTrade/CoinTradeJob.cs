@@ -75,7 +75,7 @@ namespace SSS.Application.Job.Coin.CoinTrade
         {
             try
             {
-                using var context = IocEx.Instance.GetRequiredService<CoinDbContext>();
+                var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
 
                 var coin_kline_data = new Dictionary<string, List<Domain.Coin.CoinKLineData.CoinKLineData>>();
 
@@ -85,7 +85,7 @@ namespace SSS.Application.Job.Coin.CoinTrade
                 {
                     foreach (CoinTime time in Enum.GetValues(typeof(CoinTime)))
                     {
-                        var kline = context.CoinKLineData.Where(x => x.Coin.Equals(coin) && x.TimeType == (int)time && x.IsDelete == 0).OrderByDescending(x => x.DataTime).Take(2000).ToList();
+                        var kline = db_context.CoinKLineData.Where(x => x.Coin.Equals(coin) && x.TimeType == (int)time && x.IsDelete == 0).OrderByDescending(x => x.DataTime).Take(2000).ToList();
                         if (kline.Count < 1)
                         {
                             _logger.LogError("---K线获取失败---");
@@ -232,7 +232,7 @@ namespace SSS.Application.Job.Coin.CoinTrade
         {
             try
             {
-                using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
+                var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
 
                 var cointrade = db_context.CoinTrade.FirstOrDefault(x => x.Coin.Equals(coin) &&
                                                                       x.Status == 1 &&
@@ -283,7 +283,7 @@ namespace SSS.Application.Job.Coin.CoinTrade
         {
             try
             {
-                using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
+                var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
 
                 var cointrade = db_context.CoinTrade.FirstOrDefault(x => x.Coin.Equals(coin) &&
                                                                       x.Status == 1 &&
@@ -333,7 +333,7 @@ namespace SSS.Application.Job.Coin.CoinTrade
         /// <param name="price"></param>
         private void Ping(string id, double price)
         {
-            using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
+            var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
             db_context.Database.ExecuteSqlRaw("UPDATE CoinTrade SET Status=2,Last_Price={0},UpdateTime=Now()  where Id={1}", price, id);
             db_context.SaveChanges();
 

@@ -83,7 +83,7 @@ namespace SSS.Application.Job.Coin.CoinInfo
                 var json = web.DownloadString("https://fxhapi.feixiaohao.com/public/v1/ticker?start=0&limit=10000");
                 var data = JsonConvert.DeserializeObject<List<CoinJson>>(json);
 
-                using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
+                var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
                 var source = db_context.CoinInfo.ToList();
 
                 var list = new List<Domain.Coin.CoinInfo.CoinInfo>();

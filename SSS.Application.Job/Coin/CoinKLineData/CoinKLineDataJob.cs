@@ -78,7 +78,7 @@ namespace SSS.Application.Job.Coin.CoinKLineData
         {
             try
             {
-                using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
+                var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
                 var new_list = new List<Domain.Coin.CoinKLineData.CoinKLineData>();
                 var old_datatime = new List<DateTime>();
 

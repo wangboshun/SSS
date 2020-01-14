@@ -85,7 +85,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
 
                     if (list_coin.Any())
                     {
-                        using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
+                        var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
                         db_context.Database.ExecuteSqlRaw("UPDATE CoinAnalyse SET IsDelete=1 where IndicatorType<>0 ");
                         db_context.CoinAnalyse.AddRange(list_coin);
                         db_context.SaveChanges();
@@ -119,12 +119,12 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
             {
                 try
                 {
-                    using var context = IocEx.Instance.GetRequiredService<CoinDbContext>();
+                    var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
 
-                    var Average = context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 1).ToList();
-                    var Macd = context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 2).ToList();
-                    var Kdj = context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 3).ToList();
-                    var Fast = context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 4).ToList();
+                    var Average = db_context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 1).ToList();
+                    var Macd = db_context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 2).ToList();
+                    var Kdj = db_context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 3).ToList();
+                    var Fast = db_context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 4).ToList();
 
                     var list = new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
                     list.AddRange(Average);
@@ -163,12 +163,12 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
                     }
 
                     if (!temp_list_coin.Any()) return;
-                    context.Database.ExecuteSqlRaw("UPDATE CoinAnalyse SET IsDelete=1 where IndicatorType=0 ");
+                    db_context.Database.ExecuteSqlRaw("UPDATE CoinAnalyse SET IsDelete=1 where IndicatorType=0 ");
                     string sql = @"UPDATE CoinAnalyse SET IsDelete=1 where Coin in ('{0}')";
                     sql = string.Format(sql, string.Join("','", removecoin.ToArray()));
-                    context.Database.ExecuteSqlRaw(sql);
-                    context.CoinAnalyse.AddRange(temp_list_coin);
-                    context.SaveChanges();
+                    db_context.Database.ExecuteSqlRaw(sql);
+                    db_context.CoinAnalyse.AddRange(temp_list_coin);
+                    db_context.SaveChanges();
                     Console.WriteLine("---Analyse  SaveChanges---");
                 }
                 catch (Exception ex)
@@ -389,7 +389,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
             string logo = "https://s1.bqiapp.com/coin/20181030_72_png/bitcoin_200_200.png?v=1566978037";
             try
             {
-                using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
+                var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
                 var info = db_context.CoinInfo.FirstOrDefault(x => x.Coin.Equals(coin.ToUpper()));
                 return info != null ? info.RomteLogo : logo;
             }

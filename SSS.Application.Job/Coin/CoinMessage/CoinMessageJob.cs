@@ -71,7 +71,7 @@ namespace SSS.Application.Job.Coin.CoinMessage
             try
             {
                 var list = new List<Domain.Coin.CoinMessage.CoinMessage>();
-                using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
+                var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
                 var source = db_context.CoinMessage.ToList();
 
                 for (int i = 0; i < 10; i++)
