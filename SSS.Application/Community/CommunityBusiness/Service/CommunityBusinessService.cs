@@ -20,7 +20,7 @@ using System.Linq;
 
 namespace SSS.Application.Community.CommunityBusiness.Service
 {
-    [DIService(ServiceLifetime.Scoped, typeof(ICommunityBusinessService))]
+    [DIService(ServiceLifetime.Singleton, typeof(ICommunityBusinessService))]
     public class CommunityBusinessService : QueryService<SSS.Domain.Community.CommunityBusiness.CommunityBusiness, CommunityBusinessInputDto, CommunityBusinessOutputDto>, ICommunityBusinessService
     {
         private readonly ICommunityBusinessRelationRepository _communityBusinessRelationRepository;

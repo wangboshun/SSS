@@ -6,7 +6,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Infrastructure.Repository.Coin.CoinInfo
 {
-    [DIService(ServiceLifetime.Scoped, typeof(ICoinInfoRepository))]
+    [DIService(ServiceLifetime.Singleton, typeof(ICoinInfoRepository))]
     public class CoinInfoRepository : Repository<Domain.Coin.CoinInfo.CoinInfo>, ICoinInfoRepository
     {
         public CoinInfoRepository(CoinDbContext context) : base(context)

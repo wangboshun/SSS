@@ -16,7 +16,7 @@ using System.Collections.Generic;
 
 namespace SSS.Application.System.Job.JobError.Service
 {
-    [DIService(ServiceLifetime.Scoped, typeof(IJobErrorService))]
+    [DIService(ServiceLifetime.Singleton, typeof(IJobErrorService))]
     public class JobErrorService : QueryService<SSS.Domain.System.Job.JobError.JobError, JobErrorInputDto, JobErrorOutputDto>, IJobErrorService
     {
         public JobErrorService(IMapper mapper,

@@ -9,7 +9,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Infrastructure.Seedwork.DbContext
 {
-    [DIService(ServiceLifetime.Scoped, typeof(SystemDbContext))]
+    [DIService(ServiceLifetime.Singleton, typeof(SystemDbContext))]
     public class SystemDbContext : DbContextBase
     {
         public SystemDbContext(IHostEnvironment env, ILoggerFactory factory) : base(env, factory)

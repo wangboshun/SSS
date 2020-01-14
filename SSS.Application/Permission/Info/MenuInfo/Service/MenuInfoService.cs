@@ -21,7 +21,7 @@ using System.Linq;
 
 namespace SSS.Application.Permission.Info.MenuInfo.Service
 {
-    [DIService(ServiceLifetime.Scoped, typeof(IMenuInfoService))]
+    [DIService(ServiceLifetime.Singleton, typeof(IMenuInfoService))]
     public class MenuInfoService : QueryService<Domain.Permission.Info.MenuInfo.MenuInfo, MenuInfoInputDto, MenuInfoOutputDto>, IMenuInfoService
     {
         private readonly IMenuInfoRepository _menuInfoRepository;

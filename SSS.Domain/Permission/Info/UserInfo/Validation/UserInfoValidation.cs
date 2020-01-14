@@ -7,7 +7,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Domain.Permission.Info.UserInfo.Validation
 {
-    [DIService(ServiceLifetime.Scoped, typeof(IValidator<UserInfoInputDto>))]
+    [DIService(ServiceLifetime.Singleton, typeof(IValidator<UserInfoInputDto>))]
     public class UserInfoValidation : AbstractValidator<UserInfoInputDto>
     {
         public UserInfoValidation()

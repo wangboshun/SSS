@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.System.Generator;
@@ -19,7 +19,7 @@ namespace SSS.Api.Controllers.System.Code
     public class CodeController : ApiBaseController
     {
         private static string current_path;
-        private readonly IWebHostEnvironment _env;
+        private readonly IHostEnvironment _env;
         private readonly IGeneratorCodeService _generatorCodeService;
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace SSS.Api.Controllers.System.Code
         /// </summary>
         /// <param name="env"></param>
         /// <param name="generatorCodeService"></param>
-        public CodeController(IWebHostEnvironment env, IGeneratorCodeService generatorCodeService)
+        public CodeController(IHostEnvironment env, IGeneratorCodeService generatorCodeService)
         {
             _env = env;
             current_path = _env.ContentRootPath;

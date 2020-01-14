@@ -10,6 +10,7 @@ using SSS.Application.Job.JobSetting.Extension;
 using SSS.Domain.Coin.CoinInfo;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.DI;
 
 using System;
 using System.Collections.Generic;
@@ -29,14 +30,12 @@ namespace SSS.Application.Job.Coin.CoinInfo
     {
         private readonly IHostEnvironment _env;
         private readonly ILogger _logger;
-        private readonly IServiceScopeFactory _scopeFactory;
         private static readonly object _lock = new object();
 
-        public CoinInfoJob(ILogger<CoinInfoJob> logger, IServiceScopeFactory scopeFactory, IHostEnvironment env)
+        public CoinInfoJob(ILogger<CoinInfoJob> logger, IHostEnvironment env)
         {
             _logger = logger;
             _env = env;
-            _scopeFactory = scopeFactory;
         }
 
         public Task Execute(IJobExecutionContext context)
@@ -84,9 +83,8 @@ namespace SSS.Application.Job.Coin.CoinInfo
                 var json = web.DownloadString("https://fxhapi.feixiaohao.com/public/v1/ticker?start=0&limit=10000");
                 var data = JsonConvert.DeserializeObject<List<CoinJson>>(json);
 
-                using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
-                var source = context.CoinInfo.ToList();
+                using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
+                var source = db_context.CoinInfo.ToList();
 
                 var list = new List<Domain.Coin.CoinInfo.CoinInfo>();
 
@@ -113,8 +111,8 @@ namespace SSS.Application.Job.Coin.CoinInfo
                     list.Add(model);
                 });
 
-                context.CoinInfo.AddRange(list);
-                context.SaveChanges();
+                db_context.CoinInfo.AddRange(list);
+                db_context.SaveChanges();
                 Console.WriteLine("---GetCoinInfo  SaveChanges---");
             }
             catch (Exception ex)

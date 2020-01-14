@@ -12,6 +12,7 @@ using SSS.DigitalCurrency.Huobi;
 using SSS.DigitalCurrency.Indicator;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.DI;
 
 using System;
 using System.Collections.Concurrent;
@@ -30,14 +31,12 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
         private readonly ILogger _logger;
         private readonly HuobiUtils _huobi;
         private readonly Indicator _indicator;
-        private readonly IServiceScopeFactory _scopeFactory;
         private readonly ConcurrentBag<Domain.Coin.CoinAnalyse.CoinAnalyse> list_coin = new ConcurrentBag<Domain.Coin.CoinAnalyse.CoinAnalyse>();
         private static readonly object _lock = new object();
 
-        public CoinAnalyseJob(ILogger<CoinAnalyseJob> logger, IServiceScopeFactory scopeFactory, HuobiUtils huobi, Indicator indicator)
+        public CoinAnalyseJob(ILogger<CoinAnalyseJob> logger, HuobiUtils huobi, Indicator indicator)
         {
             _logger = logger;
-            _scopeFactory = scopeFactory;
             _huobi = huobi;
             _indicator = indicator;
         }
@@ -86,8 +85,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
 
                     if (list_coin.Any())
                     {
-                        using var scope = _scopeFactory.CreateScope();
-                        using var db_context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
+                        using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
                         db_context.Database.ExecuteSqlRaw("UPDATE CoinAnalyse SET IsDelete=1 where IndicatorType<>0 ");
                         db_context.CoinAnalyse.AddRange(list_coin);
                         db_context.SaveChanges();
@@ -121,8 +119,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
             {
                 try
                 {
-                    using var scope = _scopeFactory.CreateScope();
-                    using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
+                    using var context = IocEx.Instance.GetRequiredService<CoinDbContext>();
 
                     var Average = context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 1).ToList();
                     var Macd = context.CoinAnalyse.Where(x => x.IsDelete == 0 && x.IndicatorType == 2).ToList();
@@ -392,9 +389,8 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
             string logo = "https://s1.bqiapp.com/coin/20181030_72_png/bitcoin_200_200.png?v=1566978037";
             try
             {
-                using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
-                var info = context.CoinInfo.FirstOrDefault(x => x.Coin.Equals(coin.ToUpper()));
+                using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
+                var info = db_context.CoinInfo.FirstOrDefault(x => x.Coin.Equals(coin.ToUpper()));
                 return info != null ? info.RomteLogo : logo;
             }
             catch (Exception ex)

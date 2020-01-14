@@ -8,6 +8,7 @@ using Quartz;
 using SSS.Application.Job.JobSetting.Extension;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.DI;
 
 using System;
 using System.Collections.Generic;
@@ -22,12 +23,10 @@ namespace SSS.Application.Job.Coin.CoinMessage
     {
         private readonly ILogger _logger;
         private static object _lock = new object();
-        private readonly IServiceScopeFactory _scopeFactory;
 
-        public CoinMessageJob(ILogger<CoinMessageJob> logger, IServiceScopeFactory scopeFactory)
+        public CoinMessageJob(ILogger<CoinMessageJob> logger)
         {
             _logger = logger;
-            _scopeFactory = scopeFactory;
         }
 
         public Task Execute(IJobExecutionContext context)
@@ -72,9 +71,8 @@ namespace SSS.Application.Job.Coin.CoinMessage
             try
             {
                 var list = new List<Domain.Coin.CoinMessage.CoinMessage>();
-                using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
-                var source = context.CoinMessage.ToList();
+                using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
+                var source = db_context.CoinMessage.ToList();
 
                 for (int i = 0; i < 10; i++)
                 {
@@ -116,8 +114,8 @@ namespace SSS.Application.Job.Coin.CoinMessage
                 }
 
                 if (!list.Any()) return;
-                context.CoinMessage.AddRange(list);
-                context.SaveChanges();
+                db_context.CoinMessage.AddRange(list);
+                db_context.SaveChanges();
                 Console.WriteLine("---GetGoodNews  SaveChanges---");
             }
             catch (Exception ex)

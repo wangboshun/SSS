@@ -17,7 +17,7 @@ using System.Linq.Expressions;
 
 namespace SSS.Application.Seedwork.Service
 {
-    [DIService(ServiceLifetime.Scoped, typeof(IQueryService<,,>))]
+    [DIService(ServiceLifetime.Singleton, typeof(IQueryService<,,>))]
     public class QueryService<TEntity, TInput, TOutput> : IQueryService<TEntity, TInput, TOutput>
         where TEntity : Entity
         where TInput : InputDtoBase

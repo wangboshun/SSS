@@ -7,7 +7,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Domain.Permission.Group.UserGroup.Validation
 {
-    [DIService(ServiceLifetime.Scoped, typeof(IValidator<UserGroupInputDto>))]
+    [DIService(ServiceLifetime.Singleton, typeof(IValidator<UserGroupInputDto>))]
     public class UserGroupAddValidation : AbstractValidator<UserGroupInputDto>
     {
         public UserGroupAddValidation()

@@ -7,7 +7,6 @@ using Quartz;
 using SSS.Application.Job.JobSetting.Extension;
 using SSS.DigitalCurrency.Domain;
 using SSS.DigitalCurrency.Indicator;
-using SSS.Infrastructure.Repository.Coin.CoinTrade;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.Config;
@@ -28,27 +27,15 @@ namespace SSS.Application.Job.Coin.CoinTrade
         private readonly Indicator _indicator;
         private readonly ILogger _logger;
         private static object _lock = new object();
-        private readonly IServiceScopeFactory _scopeFactory;
 
-        public CoinTradeJob(ILogger<CoinTradeJob> logger, IServiceScopeFactory scopeFactory, Indicator indicator)
+        public CoinTradeJob(ILogger<CoinTradeJob> logger, Indicator indicator)
         {
             _logger = logger;
             _indicator = indicator;
-            _scopeFactory = scopeFactory;
         }
 
         public Task Execute(IJobExecutionContext context)
         {
-            try
-            {
-                var a = IocEx.Instance.GetService<ICoinTradeRepository>();
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-            
             _logger.LogInformation("-----------------CoinTradeJob----------------------");
             return DoWork(context);
         }
@@ -88,8 +75,7 @@ namespace SSS.Application.Job.Coin.CoinTrade
         {
             try
             {
-                using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
+                using var context = IocEx.Instance.GetRequiredService<CoinDbContext>();
 
                 var coin_kline_data = new Dictionary<string, List<Domain.Coin.CoinKLineData.CoinKLineData>>();
 
@@ -246,10 +232,9 @@ namespace SSS.Application.Job.Coin.CoinTrade
         {
             try
             {
-                using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
+                using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
 
-                var cointrade = context.CoinTrade.FirstOrDefault(x => x.Coin.Equals(coin) &&
+                var cointrade = db_context.CoinTrade.FirstOrDefault(x => x.Coin.Equals(coin) &&
                                                                       x.Status == 1 &&
                                                                       x.Direction.Equals("做空") &&
                                                                       x.QuantType == quanttype &&
@@ -257,7 +242,7 @@ namespace SSS.Application.Job.Coin.CoinTrade
                 if (cointrade != null)
                     return;
 
-                var ping = context.CoinTrade.FirstOrDefault(x => x.Coin.Equals(coin) &&
+                var ping = db_context.CoinTrade.FirstOrDefault(x => x.Coin.Equals(coin) &&
                                                                  x.Status == 1 &&
                                                                  x.Direction.Equals("做多") &&
                                                                  x.QuantType == quanttype &&
@@ -280,8 +265,8 @@ namespace SSS.Application.Job.Coin.CoinTrade
                     UserId = Guid.NewGuid().ToString()
                 };
 
-                context.CoinTrade.Add(model);
-                context.SaveChanges();
+                db_context.CoinTrade.Add(model);
+                db_context.SaveChanges();
 
                 _logger.LogInformation($"做空成功：{model.ToJson()}");
             }
@@ -298,10 +283,9 @@ namespace SSS.Application.Job.Coin.CoinTrade
         {
             try
             {
-                using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
+                using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
 
-                var cointrade = context.CoinTrade.FirstOrDefault(x => x.Coin.Equals(coin) &&
+                var cointrade = db_context.CoinTrade.FirstOrDefault(x => x.Coin.Equals(coin) &&
                                                                       x.Status == 1 &&
                                                                       x.Direction.Equals("做多") &&
                                                                       x.QuantType == quanttype &&
@@ -309,7 +293,7 @@ namespace SSS.Application.Job.Coin.CoinTrade
                 if (cointrade != null)
                     return;
 
-                var ping = context.CoinTrade.FirstOrDefault(x => x.Coin.Equals(coin) &&
+                var ping = db_context.CoinTrade.FirstOrDefault(x => x.Coin.Equals(coin) &&
                                                                  x.Status == 1 &&
                                                                  x.Direction.Equals("做空") &&
                                                                  x.QuantType == quanttype &&
@@ -331,8 +315,8 @@ namespace SSS.Application.Job.Coin.CoinTrade
                     Status = 1,
                     UserId = Guid.NewGuid().ToString()
                 };
-                context.CoinTrade.Add(model);
-                context.SaveChanges();
+                db_context.CoinTrade.Add(model);
+                db_context.SaveChanges();
 
                 _logger.LogInformation($"做多成功：{model.ToJson()}");
             }
@@ -349,10 +333,9 @@ namespace SSS.Application.Job.Coin.CoinTrade
         /// <param name="price"></param>
         private void Ping(string id, double price)
         {
-            using var scope = _scopeFactory.CreateScope();
-            using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
-            context.Database.ExecuteSqlRaw("UPDATE CoinTrade SET Status=2,Last_Price={0},UpdateTime=Now()  where Id={1}", price, id);
-            context.SaveChanges();
+            using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
+            db_context.Database.ExecuteSqlRaw("UPDATE CoinTrade SET Status=2,Last_Price={0},UpdateTime=Now()  where Id={1}", price, id);
+            db_context.SaveChanges();
 
             _logger.LogInformation($"---订单：{id}，平单成功---");
         }

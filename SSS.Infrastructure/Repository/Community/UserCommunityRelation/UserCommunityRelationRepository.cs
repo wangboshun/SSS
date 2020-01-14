@@ -6,7 +6,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Infrastructure.Repository.Community.UserCommunityRelation
 {
-    [DIService(ServiceLifetime.Scoped, typeof(IUserCommunityRelationRepository))]
+    [DIService(ServiceLifetime.Singleton, typeof(IUserCommunityRelationRepository))]
     public class UserCommunityRelationRepository : Repository<SSS.Domain.Community.UserCommunityRelation.UserCommunityRelation>, IUserCommunityRelationRepository
     {
         public UserCommunityRelationRepository(CommunityDbContext context) : base(context)

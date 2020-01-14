@@ -14,6 +14,7 @@ using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.Config;
 using SSS.Infrastructure.Util.DateTime;
+using SSS.Infrastructure.Util.DI;
 
 using System;
 using System.Collections.Generic;
@@ -30,13 +31,11 @@ namespace SSS.Application.Job.Coin.CoinKLineData
     {
         private readonly HuobiUtils _huobi;
         private readonly ILogger _logger;
-        private readonly IServiceScopeFactory _scopeFactory;
         private static object _lock = new object();
 
-        public CoinKLineDataJob(ILogger<CoinKLineDataJob> logger, HuobiUtils huobi, IServiceScopeFactory scopeFactory)
+        public CoinKLineDataJob(ILogger<CoinKLineDataJob> logger, HuobiUtils huobi)
         {
             _logger = logger;
-            _scopeFactory = scopeFactory;
             _huobi = huobi;
         }
 
@@ -79,14 +78,13 @@ namespace SSS.Application.Job.Coin.CoinKLineData
         {
             try
             {
-                using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
+                using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
                 var new_list = new List<Domain.Coin.CoinKLineData.CoinKLineData>();
                 var old_datatime = new List<DateTime>();
 
                 foreach (CoinTime time in Enum.GetValues(typeof(CoinTime)))
                 {
-                    var max = context.CoinKLineData.Where(x => x.Coin.Equals(coin) && x.IsDelete == 0 && x.TimeType == (int)time && x.Platform == (int)Platform.Huobi).OrderByDescending(x => x.DataTime).FirstOrDefault();
+                    var max = db_context.CoinKLineData.Where(x => x.Coin.Equals(coin) && x.IsDelete == 0 && x.TimeType == (int)time && x.Platform == (int)Platform.Huobi).OrderByDescending(x => x.DataTime).FirstOrDefault();
                     int size = 2000;
                     if (max != null)
                         size = GetSize(max.DataTime, time);
@@ -134,19 +132,19 @@ namespace SSS.Application.Job.Coin.CoinKLineData
                         old_datatime.Add(data_time);
                         list.Add(model);
                     }
-                    var old_list = context.CoinKLineData.Where(x => old_datatime.Contains(x.DataTime) &&
+                    var old_list = db_context.CoinKLineData.Where(x => old_datatime.Contains(x.DataTime) &&
                                                                    x.TimeType == (int)time &&
                                                                    x.Coin.Equals(coin) &&
                                                                    x.Platform == (int)Platform.Huobi &&
                                                                    x.IsDelete == 0).ToList();
 
                     if (old_list.Count > 0)
-                        context.CoinKLineData.RemoveRange(old_list);
+                        db_context.CoinKLineData.RemoveRange(old_list);
 
                     new_list.AddRange(list);
                 }
-                context.CoinKLineData.AddRange(new_list);
-                context.SaveChanges();
+                db_context.CoinKLineData.AddRange(new_list);
+                db_context.SaveChanges();
             }
             catch (Exception ex)
             {

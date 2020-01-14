@@ -1,4 +1,5 @@
-﻿using FluentValidation.AspNetCore;
+﻿
+using FluentValidation.AspNetCore;
 
 using HealthChecks.UI.Client;
 
@@ -20,10 +21,8 @@ using Quartz.Impl;
 
 using Senparc.CO2NET;
 using Senparc.CO2NET.RegisterServices;
-using Senparc.Weixin;
 using Senparc.Weixin.Entities;
 using Senparc.Weixin.RegisterServices;
-using Senparc.Weixin.WxOpen;
 
 using SSS.Api.Bootstrap;
 using SSS.Api.HealthCheck;
@@ -111,7 +110,10 @@ namespace SSS.Api
             //AutoMapper映射
             services.AddAutoMapperSupport();
 
-            //集中注入
+            // HttpContext
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            //集中注册
             services.AddService();
 
             //MemoryCache
@@ -161,8 +163,7 @@ namespace SSS.Api
                     };
                 });
 
-
-            services.AddControllers();
+            services.AddControllers().AddControllersAsServices();
         }
 
         /// <summary>
@@ -174,9 +175,11 @@ namespace SSS.Api
         /// <param name="senparcSetting"></param>
         /// <param name="senparcWeixinSetting"></param>
         /// <param name="appLifetime"></param>
-        public void Configure(IApplicationBuilder app, IHttpContextFactory _httpContextFactory, IWebHostEnvironment env, IOptions<SenparcSetting> senparcSetting, IOptions<SenparcWeixinSetting> senparcWeixinSetting, IHostApplicationLifetime appLifetime)
-        { 
-            IRegisterService register = RegisterService.Start(env, senparcSetting.Value).UseSenparcGlobal();
+        public void Configure(IApplicationBuilder app, IHttpContextFactory _httpContextFactory, IHostEnvironment env, IOptions<SenparcSetting> senparcSetting, IOptions<SenparcWeixinSetting> senparcWeixinSetting, IHostApplicationLifetime appLifetime)
+        {
+            IocEx.Instance = app.ApplicationServices;
+
+            //IRegisterService register = RegisterService.Start .Start(env, senparcSetting.Value).UseSenparcGlobal();
 
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
@@ -248,14 +251,12 @@ namespace SSS.Api
             });
 
             //公众号注入
-            register.UseSenparcWeixin(senparcWeixinSetting.Value, senparcSetting.Value).RegisterWxOpenAccount(senparcWeixinSetting.Value, "SSS");
+            //register.UseSenparcWeixin(senparcWeixinSetting.Value, senparcSetting.Value).RegisterWxOpenAccount(senparcWeixinSetting.Value, "SSS");
 
             var job_service = app.ApplicationServices.GetRequiredService<IJobManager>();
 
             appLifetime.ApplicationStarted.Register(() =>
             {
-                IocEx.Instance = app.ApplicationServices;
-
                 job_service.Start().Wait();
                 //网站启动完成执行
             });

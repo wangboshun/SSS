@@ -1,14 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
 using SSS.Api.Seedwork.Controller;
 using SSS.Application.Permission.Info.UserInfo.Service;
 using SSS.Domain.Permission.Info.UserInfo.Dto;
-using SSS.Infrastructure.Repository.Coin.CoinTrade;
 using SSS.Infrastructure.Util.Config;
-using SSS.Infrastructure.Util.DI;
 
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -39,8 +36,6 @@ namespace SSS.Api.Controllers.System
         [HttpPost("auth")]
         public IActionResult Auth([FromBody] UserInfoInputDto input)
         {
-            var a = IocEx.Instance.GetService<ICoinTradeRepository>();
-
             var result = _service.GetByUserName(input);
             if (result == null)
                 return ApiResponse(null, false, "登录失败", 204);

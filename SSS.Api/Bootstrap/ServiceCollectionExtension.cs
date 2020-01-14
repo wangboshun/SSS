@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +9,6 @@ using SSS.Api.Seedwork.ServiceCollection;
 using SSS.Infrastructure.Seedwork.Cache.Memcached;
 using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Seedwork.Cache.Redis;
-using SSS.Infrastructure.Util.DI;
 using SSS.Infrastructure.Util.Enum;
 
 using Swashbuckle.AspNetCore.Filters;
@@ -33,9 +31,6 @@ namespace SSS.Api.Bootstrap
         /// <param name="services"></param>
         public static void AddService(this IServiceCollection services)
         {
-            // HttpContext
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
             // Sdk
             services.AutoRegisterServicesFromAssembly("SSS.DigitalCurrency");
 
@@ -51,7 +46,7 @@ namespace SSS.Api.Bootstrap
             services.AutoRegisterServicesFromAssembly("SSS.Application.Seedwork");
             services.AutoRegisterServicesFromAssembly("SSS.Application.Job");
             services.AutoRegisterServicesFromAssembly("SSS.Application");
-        } 
+        }
 
         /// <summary>
         ///     AutoMapper

@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace SSS.Infrastructure.Repository.Permission.Info.OperateInfo
 {
-    [DIService(ServiceLifetime.Scoped, typeof(IOperateInfoRepository))]
+    [DIService(ServiceLifetime.Singleton, typeof(IOperateInfoRepository))]
     public class OperateInfoRepository : Repository<Domain.Permission.Info.OperateInfo.OperateInfo>, IOperateInfoRepository
     {
         private static string field = "o";

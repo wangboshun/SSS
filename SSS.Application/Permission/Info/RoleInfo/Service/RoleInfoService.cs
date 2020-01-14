@@ -25,7 +25,7 @@ using System.Linq;
 
 namespace SSS.Application.Permission.Info.RoleInfo.Service
 {
-    [DIService(ServiceLifetime.Scoped, typeof(IRoleInfoService))]
+    [DIService(ServiceLifetime.Singleton, typeof(IRoleInfoService))]
     public class RoleInfoService :
         QueryService<Domain.Permission.Info.RoleInfo.RoleInfo, RoleInfoInputDto, RoleInfoOutputDto>, IRoleInfoService
     {

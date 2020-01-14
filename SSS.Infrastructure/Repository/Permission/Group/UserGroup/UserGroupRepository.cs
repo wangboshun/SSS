@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace SSS.Infrastructure.Repository.Permission.Group.UserGroup
 {
-    [DIService(ServiceLifetime.Scoped, typeof(IUserGroupRepository))]
+    [DIService(ServiceLifetime.Singleton, typeof(IUserGroupRepository))]
     public class UserGroupRepository : Repository<SSS.Domain.Permission.Group.UserGroup.UserGroup>, IUserGroupRepository
     {
         private static string field = "ug";

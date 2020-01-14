@@ -936,7 +936,7 @@
             代码生成	
             </summary>	
         </member>
-        <member name="M:SSS.Api.Controllers.System.Code.CodeController.#ctor(Microsoft.AspNetCore.Hosting.IWebHostEnvironment,SSS.Application.System.Generator.IGeneratorCodeService)">
+        <member name="M:SSS.Api.Controllers.System.Code.CodeController.#ctor(Microsoft.Extensions.Hosting.IHostEnvironment,SSS.Application.System.Generator.IGeneratorCodeService)">
             <summary>
             代码生成
             </summary>
@@ -1078,9 +1078,9 @@
             </summary>
             <param name="args"></param>
         </member>
-        <member name="M:SSS.Api.Program.CreateWebHostBuilder(System.String[])">
+        <member name="M:SSS.Api.Program.CreateHostBuilder(System.String[])">
             <summary>
-            CreateWebHostBuilder
+            CreateHostBuilder
             </summary>
             <param name="args"></param>
             <returns></returns>
@@ -1107,7 +1107,7 @@
             </summary>
             <param name="services">IServiceCollection</param>
         </member>
-        <member name="M:SSS.Api.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Http.IHttpContextFactory,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Options.IOptions{Senparc.CO2NET.SenparcSetting},Microsoft.Extensions.Options.IOptions{Senparc.Weixin.Entities.SenparcWeixinSetting},Microsoft.Extensions.Hosting.IHostApplicationLifetime)">
+        <member name="M:SSS.Api.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Http.IHttpContextFactory,Microsoft.Extensions.Hosting.IHostEnvironment,Microsoft.Extensions.Options.IOptions{Senparc.CO2NET.SenparcSetting},Microsoft.Extensions.Options.IOptions{Senparc.Weixin.Entities.SenparcWeixinSetting},Microsoft.Extensions.Hosting.IHostApplicationLifetime)">
             <summary>
             Configure
             </summary>

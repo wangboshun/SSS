@@ -11,6 +11,7 @@ using SSS.Application.Job.JobSetting.Extension;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.DateTime;
+using SSS.Infrastructure.Util.DI;
 using SSS.Infrastructure.Util.Json;
 
 using System;
@@ -26,13 +27,11 @@ namespace SSS.Application.Job.Coin.CoinArticel
     public class CoinArticelJob : IJob
     {
         private readonly ILogger _logger;
-        private readonly IServiceScopeFactory _scopeFactory;
         private static readonly object _lock = new object();
 
-        public CoinArticelJob(ILogger<CoinArticelJob> logger, IServiceScopeFactory scopeFactory)
+        public CoinArticelJob(ILogger<CoinArticelJob> logger)
         {
             _logger = logger;
-            _scopeFactory = scopeFactory;
         }
         public Task Execute(IJobExecutionContext context)
         {
@@ -93,9 +92,8 @@ namespace SSS.Application.Job.Coin.CoinArticel
                     token.AddRange(temp);
                 }
 
-                using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
-                var source = context.CoinArticel.ToList();
+                using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
+                var source = db_context.CoinArticel.ToList();
 
                 var list = new List<Domain.Coin.CoinArticel.CoinArticel>();
 
@@ -124,8 +122,8 @@ namespace SSS.Application.Job.Coin.CoinArticel
                 });
 
                 if (!list.Any()) return;
-                context.CoinArticel.AddRange(list);
-                context.SaveChanges();
+                db_context.CoinArticel.AddRange(list);
+                db_context.SaveChanges();
                 Console.WriteLine("---GetNotice  SaveChanges---");
             }
             catch (Exception ex)
@@ -150,10 +148,9 @@ namespace SSS.Application.Job.Coin.CoinArticel
                 string json = web.DownloadString("https://api.jinse.com/v6/information/list?catelogue_key=zhengce&limit=50&information_id=0&flag=down&version=9.9.9");
                 JToken data = json.GetJsonValue("list");
 
-                using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
+                using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
 
-                var source = context.CoinArticel.ToList();
+                var source = db_context.CoinArticel.ToList();
 
                 var list = new List<Domain.Coin.CoinArticel.CoinArticel>();
 
@@ -181,8 +178,8 @@ namespace SSS.Application.Job.Coin.CoinArticel
                 });
 
                 if (!list.Any()) return;
-                context.CoinArticel.AddRange(list);
-                context.SaveChanges();
+                db_context.CoinArticel.AddRange(list);
+                db_context.SaveChanges();
                 Console.WriteLine("---GetPolicy  SaveChanges---");
             }
             catch (Exception ex)
@@ -215,9 +212,8 @@ namespace SSS.Application.Job.Coin.CoinArticel
                     token.AddRange(temp);
                 }
 
-                using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
-                var source = context.CoinArticel.ToList();
+                using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
+                var source = db_context.CoinArticel.ToList();
 
                 var list = new List<Domain.Coin.CoinArticel.CoinArticel>();
 
@@ -246,8 +242,8 @@ namespace SSS.Application.Job.Coin.CoinArticel
                 });
 
                 if (!list.Any()) return;
-                context.CoinArticel.AddRange(list);
-                context.SaveChanges();
+                db_context.CoinArticel.AddRange(list);
+                db_context.SaveChanges();
                 Console.WriteLine("---GetQuickNews  SaveChanges---");
             }
             catch (Exception ex)
@@ -273,10 +269,9 @@ namespace SSS.Application.Job.Coin.CoinArticel
                 string json = web.DownloadString("https://api.jinse.com/v6/information/list?catelogue_key=news&limit=50&information_id=0&flag=down&version=9.9.9");
                 JToken data = json.GetJsonValue("list");
 
-                using var scope = _scopeFactory.CreateScope();
-                using var context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
+                using var db_context = IocEx.Instance.GetRequiredService<CoinDbContext>();
 
-                var source = context.CoinArticel.ToList();
+                var source = db_context.CoinArticel.ToList();
 
                 var list = new List<Domain.Coin.CoinArticel.CoinArticel>();
 
@@ -304,8 +299,8 @@ namespace SSS.Application.Job.Coin.CoinArticel
                 });
 
                 if (!list.Any()) return;
-                context.CoinArticel.AddRange(list);
-                context.SaveChanges();
+                db_context.CoinArticel.AddRange(list);
+                db_context.SaveChanges();
                 Console.WriteLine("---GetNews  SaveChanges---");
             }
             catch (Exception ex)

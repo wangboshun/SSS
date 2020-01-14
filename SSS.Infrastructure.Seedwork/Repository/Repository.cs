@@ -22,7 +22,7 @@ using System.Linq.Expressions;
 
 namespace SSS.Infrastructure.Seedwork.Repository
 {
-    [DIService(ServiceLifetime.Singleton, typeof(IRepository<>))]
+    //[DIService(ServiceLifetime.Singleton, typeof(IRepository<>))]
     public partial class Repository<TEntity> : IRepository<TEntity>
         where TEntity : Entity, new()
     {

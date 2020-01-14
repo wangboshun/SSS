@@ -5,7 +5,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Domain.NameSpace.Template.Validation
 {
-    [DIService(ServiceLifetime.Scoped, typeof(IValidator<TemplateInputDto>))]
+    [DIService(ServiceLifetime.Singleton, typeof(IValidator<TemplateInputDto>))]
     public class TemplateAddValidation : AbstractValidator<TemplateInputDto>
     {
         public TemplateAddValidation()

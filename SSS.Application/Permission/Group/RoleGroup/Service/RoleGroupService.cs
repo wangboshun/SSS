@@ -25,7 +25,7 @@ using System.Linq;
 
 namespace SSS.Application.Permission.Group.RoleGroup.Service
 {
-    [DIService(ServiceLifetime.Scoped, typeof(IRoleGroupService))]
+    [DIService(ServiceLifetime.Singleton, typeof(IRoleGroupService))]
     public class RoleGroupService :
         QueryService<Domain.Permission.Group.RoleGroup.RoleGroup, RoleGroupInputDto, RoleGroupOutputDto>,
         IRoleGroupService
