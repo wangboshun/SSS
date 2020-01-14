@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
 {
-    [DIService(ServiceLifetime.Singleton, typeof(IPowerInfoRepository))]
+    [DIService(ServiceLifetime.Scoped, typeof(IPowerInfoRepository))]
     public class PowerInfoRepository : Repository<Domain.Permission.Info.PowerInfo.PowerInfo>, IPowerInfoRepository
     {
         private static string field = "p";

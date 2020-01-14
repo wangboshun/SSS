@@ -35,7 +35,7 @@ using System.Linq;
 
 namespace SSS.Application.Permission.Info.UserInfo.Service
 {
-    [DIService(ServiceLifetime.Singleton, typeof(IUserInfoService))]
+    [DIService(ServiceLifetime.Scoped, typeof(IUserInfoService))]
     public class UserInfoService :
         QueryService<Domain.Permission.Info.UserInfo.UserInfo, UserInfoInputDto, UserInfoOutputDto>,
         IUserInfoService

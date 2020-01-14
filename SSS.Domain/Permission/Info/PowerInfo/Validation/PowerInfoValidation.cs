@@ -7,7 +7,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Domain.Permission.Info.PowerInfo.Validation
 {
-    [DIService(ServiceLifetime.Singleton, typeof(IValidator<PowerInfoInputDto>))]
+    [DIService(ServiceLifetime.Scoped, typeof(IValidator<PowerInfoInputDto>))]
     public class PowerInfoAddValidation : AbstractValidator<PowerInfoInputDto>
     {
         public PowerInfoAddValidation()

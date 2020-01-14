@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace SSS.Infrastructure.Repository.Permission.Info.UserInfo
 {
-    [DIService(ServiceLifetime.Singleton, typeof(IUserInfoRepository))]
+    [DIService(ServiceLifetime.Scoped, typeof(IUserInfoRepository))]
     public class UserInfoRepository : Repository<Domain.Permission.Info.UserInfo.UserInfo>, IUserInfoRepository
     {
         private static string field = "u";

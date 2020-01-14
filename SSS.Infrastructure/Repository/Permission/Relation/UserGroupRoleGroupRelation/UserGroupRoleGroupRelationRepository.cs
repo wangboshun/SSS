@@ -6,7 +6,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Infrastructure.Repository.Permission.Relation.UserGroupRoleGroupRelation
 {
-    [DIService(ServiceLifetime.Singleton, typeof(IUserGroupRoleGroupRelationRepository))]
+    [DIService(ServiceLifetime.Scoped, typeof(IUserGroupRoleGroupRelationRepository))]
     public class UserGroupRoleGroupRelationRepository : Repository<SSS.Domain.Permission.Relation.UserGroupRoleGroupRelation.UserGroupRoleGroupRelation>, IUserGroupRoleGroupRelationRepository
     {
         public UserGroupRoleGroupRelationRepository(PermissionDbContext context) : base(context)

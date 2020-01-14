@@ -22,7 +22,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Infrastructure.Seedwork.DbContext
 {
-    [DIService(ServiceLifetime.Singleton, typeof(PermissionDbContext))]
+    [DIService(ServiceLifetime.Scoped, typeof(PermissionDbContext))]
     public class PermissionDbContext : DbContextBase
     {
         public PermissionDbContext(IHostEnvironment env, ILoggerFactory factory) : base(env, factory)

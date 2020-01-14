@@ -17,7 +17,7 @@ using System.Net;
 
 namespace SSS.DigitalCurrency.Huobi
 {
-    [DIService(ServiceLifetime.Singleton, typeof(HuobiUtils))]
+    [DIService(ServiceLifetime.Scoped, typeof(HuobiUtils))]
     public class HuobiUtils
     {
         private readonly ILogger _logger;

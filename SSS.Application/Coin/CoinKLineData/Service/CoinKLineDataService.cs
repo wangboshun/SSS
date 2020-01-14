@@ -16,7 +16,7 @@ using System.Collections.Generic;
 
 namespace SSS.Application.Coin.CoinKLineData.Service
 {
-    [DIService(ServiceLifetime.Singleton, typeof(ICoinKLineDataService))]
+    [DIService(ServiceLifetime.Scoped, typeof(ICoinKLineDataService))]
     public class CoinKLineDataService : QueryService<SSS.Domain.Coin.CoinKLineData.CoinKLineData, CoinKLineDataInputDto, CoinKLineDataOutputDto>, ICoinKLineDataService
     {
         public CoinKLineDataService(IMapper mapper,

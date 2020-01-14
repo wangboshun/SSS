@@ -7,7 +7,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Domain.System.Job.JobInfo.Validation
 {
-    [DIService(ServiceLifetime.Singleton, typeof(IValidator<JobInfoInputDto>))]
+    [DIService(ServiceLifetime.Scoped, typeof(IValidator<JobInfoInputDto>))]
     public class JobInfoAddValidation : AbstractValidator<JobInfoInputDto>
     {
         public JobInfoAddValidation()

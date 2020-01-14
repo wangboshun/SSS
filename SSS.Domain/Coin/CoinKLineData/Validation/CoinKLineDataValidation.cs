@@ -7,7 +7,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Domain.Coin.CoinKLineData.Validation
 {
-    [DIService(ServiceLifetime.Singleton, typeof(IValidator<CoinKLineDataInputDto>))]
+    [DIService(ServiceLifetime.Scoped, typeof(IValidator<CoinKLineDataInputDto>))]
     public class CoinKLineDataAddValidation : AbstractValidator<CoinKLineDataInputDto>
     {
         public CoinKLineDataAddValidation()

@@ -9,10 +9,10 @@ using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Infrastructure.Seedwork.DbContext
 {
-    [DIService(ServiceLifetime.Singleton, typeof(SystemDbContext))]
-    public class SystemDbContext : DbContextBase
+    [DIService(ServiceLifetime.Scoped, typeof(SystemDbcontext))]
+    public class SystemDbcontext : DbContextBase
     {
-        public SystemDbContext(IHostEnvironment env, ILoggerFactory factory) : base(env, factory)
+        public SystemDbcontext(IHostEnvironment env, ILoggerFactory factory) : base(env, factory)
         {
         }
 

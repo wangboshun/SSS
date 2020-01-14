@@ -7,7 +7,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Domain.System.Job.JobError.Validation
 {
-    [DIService(ServiceLifetime.Singleton, typeof(IValidator<JobErrorInputDto>))]
+    [DIService(ServiceLifetime.Scoped, typeof(IValidator<JobErrorInputDto>))]
     public class JobErrorAddValidation : AbstractValidator<JobErrorInputDto>
     {
         public JobErrorAddValidation()

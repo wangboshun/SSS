@@ -19,7 +19,7 @@ using System.Linq;
 
 namespace SSS.Application.Coin.CoinAnalyse.Service
 {
-    [DIService(ServiceLifetime.Singleton, typeof(ICoinAnalyseService))]
+    [DIService(ServiceLifetime.Scoped, typeof(ICoinAnalyseService))]
     public class CoinAnalyseService :
         QueryService<Domain.Coin.CoinAnalyse.CoinAnalyse, CoinAnalyseInputDto, CoinAnalyseOutputDto>,
         ICoinAnalyseService

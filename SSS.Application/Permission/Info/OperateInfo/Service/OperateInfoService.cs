@@ -24,7 +24,7 @@ using System.Linq;
 
 namespace SSS.Application.Permission.Info.OperateInfo.Service
 {
-    [DIService(ServiceLifetime.Singleton, typeof(IOperateInfoService))]
+    [DIService(ServiceLifetime.Scoped, typeof(IOperateInfoService))]
     public class OperateInfoService :
         QueryService<Domain.Permission.Info.OperateInfo.OperateInfo, OperateInfoInputDto, OperateInfoOutputDto>,
         IOperateInfoService

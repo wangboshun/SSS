@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace SSS.Infrastructure.Repository.Permission.Info.MenuInfo
 {
-    [DIService(ServiceLifetime.Singleton, typeof(IMenuInfoRepository))]
+    [DIService(ServiceLifetime.Scoped, typeof(IMenuInfoRepository))]
     public class MenuInfoRepository : Repository<Domain.Permission.Info.MenuInfo.MenuInfo>, IMenuInfoRepository
     {
         private static string field = "m";

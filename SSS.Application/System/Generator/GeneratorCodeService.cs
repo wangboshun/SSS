@@ -17,7 +17,7 @@ using System.Threading;
 
 namespace SSS.Application.System.Generator
 {
-    [DIService(ServiceLifetime.Singleton, typeof(IGeneratorCodeService))]
+    [DIService(ServiceLifetime.Scoped, typeof(IGeneratorCodeService))]
     public class GeneratorCodeService : IGeneratorCodeService
     {
         private static string current_path;

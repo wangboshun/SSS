@@ -7,7 +7,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Domain.Permission.Relation.RoleGroupPowerGroupRelation.Validation
 {
-    [DIService(ServiceLifetime.Singleton, typeof(IValidator<RoleGroupPowerGroupRelationInputDto>))]
+    [DIService(ServiceLifetime.Scoped, typeof(IValidator<RoleGroupPowerGroupRelationInputDto>))]
     public class RoleGroupPowerGroupRelationAddValidation : AbstractValidator<RoleGroupPowerGroupRelationInputDto>
     {
         public RoleGroupPowerGroupRelationAddValidation()

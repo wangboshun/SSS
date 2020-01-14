@@ -7,7 +7,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Domain.Permission.Group.PowerGroup.Validation
 {
-    [DIService(ServiceLifetime.Singleton, typeof(IValidator<PowerGroupInputDto>))]
+    [DIService(ServiceLifetime.Scoped, typeof(IValidator<PowerGroupInputDto>))]
     public class PowerGroupAddValidation : AbstractValidator<PowerGroupInputDto>
     {
         public PowerGroupAddValidation()

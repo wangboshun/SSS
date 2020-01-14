@@ -6,10 +6,10 @@ using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Infrastructure.Repository.System.Job.JobError
 {
-    [DIService(ServiceLifetime.Singleton, typeof(IJobErrorRepository))]
+    [DIService(ServiceLifetime.Scoped, typeof(IJobErrorRepository))]
     public class JobErrorRepository : Repository<SSS.Domain.System.Job.JobError.JobError>, IJobErrorRepository
     {
-        public JobErrorRepository(SystemDbContext context) : base(context)
+        public JobErrorRepository(SystemDbcontext context) : base(context)
         {
         }
     }

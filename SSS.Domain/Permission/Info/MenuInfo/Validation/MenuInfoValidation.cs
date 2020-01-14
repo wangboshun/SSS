@@ -7,7 +7,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Domain.Permission.Info.MenuInfo.Validation
 {
-    [DIService(ServiceLifetime.Singleton, typeof(IValidator<MenuInfoInputDto>))]
+    [DIService(ServiceLifetime.Scoped, typeof(IValidator<MenuInfoInputDto>))]
     public class MenuInfoAddValidation : AbstractValidator<MenuInfoInputDto>
     {
         public MenuInfoAddValidation()

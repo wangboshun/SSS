@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace SSS.Application.Job.Coin.CoinKLineData
 {
-    [DIService(ServiceLifetime.Singleton, typeof(CoinKLineDataJob))]
+    [DIService(ServiceLifetime.Scoped, typeof(CoinKLineDataJob))]
     public class CoinKLineDataJob : IJob
     {
         private readonly HuobiUtils _huobi;

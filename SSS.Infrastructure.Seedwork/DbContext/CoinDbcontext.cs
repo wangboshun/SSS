@@ -13,7 +13,7 @@ using SSS.Infrastructure.Util.Attribute;
 
 namespace SSS.Infrastructure.Seedwork.DbContext
 {
-    [DIService(ServiceLifetime.Singleton, typeof(CoinDbContext))]
+    [DIService(ServiceLifetime.Scoped, typeof(CoinDbContext))]
     public class CoinDbContext : DbContextBase
     {
         public CoinDbContext(IHostEnvironment env, ILoggerFactory factory) : base(env, factory)

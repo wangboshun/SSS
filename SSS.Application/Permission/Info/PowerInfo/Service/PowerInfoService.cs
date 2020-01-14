@@ -24,7 +24,7 @@ using System.Linq;
 
 namespace SSS.Application.Permission.Info.PowerInfo.Service
 {
-    [DIService(ServiceLifetime.Singleton, typeof(IPowerInfoService))]
+    [DIService(ServiceLifetime.Scoped, typeof(IPowerInfoService))]
     public class PowerInfoService :
         QueryService<Domain.Permission.Info.PowerInfo.PowerInfo, PowerInfoInputDto, PowerInfoOutputDto>,
         IPowerInfoService

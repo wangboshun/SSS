@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace SSS.Application.Job.Coin.CoinInfo
 {
-    [DIService(ServiceLifetime.Singleton, typeof(CoinInfoJob))]
+    [DIService(ServiceLifetime.Scoped, typeof(CoinInfoJob))]
     public class CoinInfoJob : IJob
     {
         private readonly IHostEnvironment _env;

@@ -12,10 +12,10 @@ using System.Linq;
 
 namespace SSS.Infrastructure.Repository.System.Job.JobInfo
 {
-    [DIService(ServiceLifetime.Singleton, typeof(IJobInfoRepository))]
+    [DIService(ServiceLifetime.Scoped, typeof(IJobInfoRepository))]
     public class JobInfoRepository : Repository<SSS.Domain.System.Job.JobInfo.JobInfo>, IJobInfoRepository
     {
-        public JobInfoRepository(SystemDbContext context) : base(context)
+        public JobInfoRepository(SystemDbcontext context) : base(context)
         {
         }
 

@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace SSS.Infrastructure.Repository.Community.CommunityBusinessRelation
 {
-    [DIService(ServiceLifetime.Singleton, typeof(ICommunityBusinessRelationRepository))]
+    [DIService(ServiceLifetime.Scoped, typeof(ICommunityBusinessRelationRepository))]
     public class CommunityBusinessRelationRepository : Repository<SSS.Domain.Community.CommunityBusinessRelation.CommunityBusinessRelation>, ICommunityBusinessRelationRepository
     {
         public CommunityBusinessRelationRepository(CommunityDbContext context) : base(context)

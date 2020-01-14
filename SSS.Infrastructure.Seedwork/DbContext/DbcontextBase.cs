@@ -12,7 +12,7 @@ using System;
 namespace SSS.Infrastructure.Seedwork.DbContext
 {
 
-    [DIService(ServiceLifetime.Singleton, typeof(DbContextBase))]
+    [DIService(ServiceLifetime.Scoped, typeof(DbContextBase))]
     public class DbContextBase : Microsoft.EntityFrameworkCore.DbContext
     {
         private readonly IHostEnvironment _env;

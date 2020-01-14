@@ -20,7 +20,7 @@ using System.Linq;
 
 namespace SSS.Application.System.Job.JobInfo.Service
 {
-    [DIService(ServiceLifetime.Singleton, typeof(IJobInfoService))]
+    [DIService(ServiceLifetime.Scoped, typeof(IJobInfoService))]
     public class JobInfoService : QueryService<SSS.Domain.System.Job.JobInfo.JobInfo, JobInfoInputDto, JobInfoOutputDto>, IJobInfoService
     {
         private readonly ISchedulerFactory _schedulerFactory;
