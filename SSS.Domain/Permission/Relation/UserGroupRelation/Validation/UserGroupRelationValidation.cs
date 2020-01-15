@@ -20,17 +20,14 @@ namespace SSS.Domain.Permission.Relation.UserGroupRelation.Validation
 
             RuleSet("Delete", () =>
             {
-
             });
 
             RuleSet("Update", () =>
             {
-
             });
 
             RuleSet("Select", () =>
             {
-
             });
         }
     }

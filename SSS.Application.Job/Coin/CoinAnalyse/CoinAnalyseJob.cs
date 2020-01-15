@@ -29,12 +29,12 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
     [DIService(ServiceLifetime.Singleton, typeof(CoinAnalyseJob))]
     public class CoinAnalyseJob : IJob
     {
-        private readonly ILogger _logger;
+        private static readonly object _lock = new object();
         private readonly HuobiUtils _huobi;
         private readonly Indicator _indicator;
+        private readonly ILogger _logger;
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ConcurrentBag<Domain.Coin.CoinAnalyse.CoinAnalyse> list_coin = new ConcurrentBag<Domain.Coin.CoinAnalyse.CoinAnalyse>();
-        private static readonly object _lock = new object();
 
         public CoinAnalyseJob(ILogger<CoinAnalyseJob> logger, IServiceScopeFactory scopeFactory, HuobiUtils huobi, Indicator indicator)
         {
@@ -44,77 +44,8 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
             _indicator = indicator;
         }
 
-        public Task Execute(IJobExecutionContext context)
-        {
-            _logger.LogInformation("-----------------CoinAnalyseJob----------------------");
-            return DoWork(context);
-        }
-
-        public Task DoWork(IJobExecutionContext context)
-        {
-            lock (_lock)
-            {
-                var trigger = (CronTriggerImpl)((JobExecutionContextImpl)context).Trigger;
-                try
-                {
-                    var watch = new Stopwatch();
-                    watch.Start();
-                    var coin_array = _huobi.GetAllCoin();
-
-                    Parallel.ForEach(coin_array, item =>
-                    {
-                        List<Domain.Coin.CoinKLineData.CoinKLineData> kline = null;
-
-                        var retry = Policy.Handle<WebException>().Retry(3, (ex, count, text) =>
-                        {
-                            _logger.LogError(new EventId(ex.HResult), ex,$"---CoinAnalyseJob GetKLine Exception,进行重试 {count}次---");
-                            Thread.Sleep(100);
-                        });
-
-                        retry.Execute(() =>
-                        {
-                            kline = _huobi.GetKLine(item.base_currency, item.quote_currency,CoinTime.Time_1day.ToString().Split('_')[1], 2000);
-                        });
-
-                        if (kline == null)
-                            return;
-
-                        var coin = item.base_currency + "-" + item.quote_currency;
-
-                        SMA(coin, kline, CoinTime.Time_1day);
-                        MACD(coin, kline, CoinTime.Time_1day);
-                        KDJ(coin, kline, CoinTime.Time_1day);
-                    });
-
-                    if (list_coin.Any())
-                    {
-                        using var scope = _scopeFactory.CreateScope();
-                        using var db_context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
-                        db_context.Database.ExecuteSqlRaw("UPDATE CoinAnalyse SET IsDelete=1 where IndicatorType<>0 ");
-                        db_context.CoinAnalyse.AddRange(list_coin);
-                        db_context.SaveChanges();
-                    }
-
-                    Analyse(CoinTime.Time_1day);
-
-                    watch.Stop();
-                    context.Scheduler.Context.Put(trigger.FullName + "_Result", "Success");
-                    context.Scheduler.Context.Put(trigger.FullName + "_Time", watch.ElapsedMilliseconds);
-
-                    _logger.LogInformation($"------>{context.GetJobDetail()}  耗时：{watch.ElapsedMilliseconds} ");
-                    return Task.FromResult("Success");
-                }
-                catch (Exception ex)
-                {
-                    context.Scheduler.Context.Put(trigger.FullName + "_Exception", ex);
-                    _logger.LogError(new EventId(ex.HResult), ex, "---CoinAnalyseJob DoWork Exception---");
-                    return Task.FromResult("Error");
-                }
-            }
-        }
-
         /// <summary>
-        ///     综合分析
+        /// 综合分析
         /// </summary>
         /// <param name="type"></param>
         public void Analyse(CoinTime type)
@@ -183,7 +114,76 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
             }
         }
 
-        private void TotalDesc(List<Domain.Coin.CoinAnalyse.CoinAnalyse> list,List<Domain.Coin.CoinAnalyse.CoinAnalyse> source)
+        public Task DoWork(IJobExecutionContext context)
+        {
+            lock (_lock)
+            {
+                var trigger = (CronTriggerImpl)((JobExecutionContextImpl)context).Trigger;
+                try
+                {
+                    var watch = new Stopwatch();
+                    watch.Start();
+                    var coin_array = _huobi.GetAllCoin();
+
+                    Parallel.ForEach(coin_array, item =>
+                    {
+                        List<Domain.Coin.CoinKLineData.CoinKLineData> kline = null;
+
+                        var retry = Policy.Handle<WebException>().Retry(3, (ex, count, text) =>
+                        {
+                            _logger.LogError(new EventId(ex.HResult), ex, $"---CoinAnalyseJob GetKLine Exception,进行重试 {count}次---");
+                            Thread.Sleep(100);
+                        });
+
+                        retry.Execute(() =>
+                        {
+                            kline = _huobi.GetKLine(item.base_currency, item.quote_currency, CoinTime.Time_1day.ToString().Split('_')[1], 2000);
+                        });
+
+                        if (kline == null)
+                            return;
+
+                        var coin = item.base_currency + "-" + item.quote_currency;
+
+                        SMA(coin, kline, CoinTime.Time_1day);
+                        MACD(coin, kline, CoinTime.Time_1day);
+                        KDJ(coin, kline, CoinTime.Time_1day);
+                    });
+
+                    if (list_coin.Any())
+                    {
+                        using var scope = _scopeFactory.CreateScope();
+                        using var db_context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
+                        db_context.Database.ExecuteSqlRaw("UPDATE CoinAnalyse SET IsDelete=1 where IndicatorType<>0 ");
+                        db_context.CoinAnalyse.AddRange(list_coin);
+                        db_context.SaveChanges();
+                    }
+
+                    Analyse(CoinTime.Time_1day);
+
+                    watch.Stop();
+                    context.Scheduler.Context.Put(trigger.FullName + "_Result", "Success");
+                    context.Scheduler.Context.Put(trigger.FullName + "_Time", watch.ElapsedMilliseconds);
+
+                    _logger.LogInformation($"------>{context.GetJobDetail()}  耗时：{watch.ElapsedMilliseconds} ");
+                    return Task.FromResult("Success");
+                }
+                catch (Exception ex)
+                {
+                    context.Scheduler.Context.Put(trigger.FullName + "_Exception", ex);
+                    _logger.LogError(new EventId(ex.HResult), ex, "---CoinAnalyseJob DoWork Exception---");
+                    return Task.FromResult("Error");
+                }
+            }
+        }
+
+        public Task Execute(IJobExecutionContext context)
+        {
+            _logger.LogInformation("-----------------CoinAnalyseJob----------------------");
+            return DoWork(context);
+        }
+
+        private void TotalDesc(List<Domain.Coin.CoinAnalyse.CoinAnalyse> list, List<Domain.Coin.CoinAnalyse.CoinAnalyse> source)
         {
             foreach (var item in source)
             {
@@ -200,7 +200,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
         #region 均线系统
 
         /// <summary>
-        ///     均线系统
+        /// 均线系统
         /// </summary>
         public void SMA(string coin, List<Domain.Coin.CoinKLineData.CoinKLineData> kline, CoinTime type)
         {
@@ -268,7 +268,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
             }
         }
 
-        #endregion
+        #endregion 均线系统
 
         #region MACD
 
@@ -317,7 +317,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
             }
         }
 
-        #endregion
+        #endregion MACD
 
         #region KDJ
 
@@ -380,12 +380,12 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
             }
         }
 
-        #endregion
+        #endregion KDJ
 
         #region 公共
 
         /// <summary>
-        ///     获取币币的Logo
+        /// 获取币币的Logo
         /// </summary>
         /// <returns></returns>
         public string GetLogo(string coin)
@@ -406,7 +406,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
         }
 
         /// <summary>
-        ///     获取时间段
+        /// 获取时间段
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
@@ -416,8 +416,10 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
             {
                 case CoinTime.Time_1min:
                     return "1分钟";
+
                 case CoinTime.Time_5min:
                     return "5分钟";
+
                 case CoinTime.Time_15min:
                     return "15分钟";
 
@@ -434,6 +436,6 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
             return "";
         }
 
-        #endregion
+        #endregion 公共
     }
 }

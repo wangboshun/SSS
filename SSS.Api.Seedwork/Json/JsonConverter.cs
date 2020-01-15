@@ -5,13 +5,13 @@ using System.Text.Json.Serialization;
 namespace SSS.Api.Seedwork.Json
 {
     /// <summary>
-    ///     DateTime Json输出带T问题
+    /// DateTime Json输出带T问题
     /// </summary>
     public class DateTimeConverter : JsonConverter<DateTime>
     {
         /// <summary>
-        ///     获取或设置DateTime格式
-        ///     <para>默认为: yyyy-MM-dd HH:mm:ss</para>
+        /// 获取或设置DateTime格式
+        /// <para>默认为: yyyy-MM-dd HH:mm:ss</para>
         /// </summary>
         public string DateTimeFormat { get; set; } = "yyyy-MM-dd HH:mm:ss";
 
@@ -27,13 +27,13 @@ namespace SSS.Api.Seedwork.Json
     }
 
     /// <summary>
-    ///     DateTime? Json输出带T问题
+    /// DateTime? Json输出带T问题
     /// </summary>
     public class DateTimeNullConverter : JsonConverter<DateTime?>
     {
         /// <summary>
-        ///     获取或设置DateTime格式
-        ///     <para>默认为: yyyy-MM-dd HH:mm:ss</para>
+        /// 获取或设置DateTime格式
+        /// <para>默认为: yyyy-MM-dd HH:mm:ss</para>
         /// </summary>
         public string DateTimeFormat { get; set; } = "yyyy-MM-dd HH:mm:ss";
 

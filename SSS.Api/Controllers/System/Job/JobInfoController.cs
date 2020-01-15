@@ -8,7 +8,7 @@ using SSS.Domain.System.Job.JobInfo.Dto;
 namespace SSS.Api.Controllers.System.Job
 {
     /// <summary>
-    ///     JobInfoController
+    /// JobInfoController
     /// </summary>
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -20,7 +20,7 @@ namespace SSS.Api.Controllers.System.Job
         private readonly IJobInfoService _service;
 
         /// <summary>
-        ///     JobInfoController
+        /// JobInfoController
         /// </summary>
         /// <param name="service">IJobInfoService</param>
         public JobInfoController(IJobInfoService service)
@@ -29,31 +29,7 @@ namespace SSS.Api.Controllers.System.Job
         }
 
         /// <summary>
-        ///     获取所有Job列表
-        /// </summary>
-        /// <param name="input">input</param>
-        /// <returns></returns>
-        [HttpGet("getlist")]
-        public IActionResult GetList([FromQuery] JobInfoInputDto input)
-        {
-            var result = _service.GetListJobInfo(input);
-            return PageResponse(result);
-        }
-
-        /// <summary>
-        ///     获取数据
-        /// </summary>
-        /// <param name="input">JobInfoInputDto</param>
-        /// <returns></returns>
-        [HttpGet("getjob")]
-        public IActionResult GetJobInfo([FromQuery] JobInfoInputDto input)
-        {
-            var result = _service.GetJob(input);
-            return ApiResponse(result);
-        }
-
-        /// <summary>
-        ///     添加Job
+        /// 添加Job
         /// </summary>
         /// <param name="input">JobInfoInputDto</param>
         /// <returns></returns>
@@ -65,7 +41,7 @@ namespace SSS.Api.Controllers.System.Job
         }
 
         /// <summary>
-        ///     删除Job
+        /// 删除Job
         /// </summary>
         /// <param name="input">JobInfoInputDto</param>
         /// <returns></returns>
@@ -77,7 +53,31 @@ namespace SSS.Api.Controllers.System.Job
         }
 
         /// <summary>
-        ///     暂停Job
+        /// 获取数据
+        /// </summary>
+        /// <param name="input">JobInfoInputDto</param>
+        /// <returns></returns>
+        [HttpGet("getjob")]
+        public IActionResult GetJobInfo([FromQuery] JobInfoInputDto input)
+        {
+            var result = _service.GetJob(input);
+            return ApiResponse(result);
+        }
+
+        /// <summary>
+        /// 获取所有Job列表
+        /// </summary>
+        /// <param name="input">input</param>
+        /// <returns></returns>
+        [HttpGet("getlist")]
+        public IActionResult GetList([FromQuery] JobInfoInputDto input)
+        {
+            var result = _service.GetListJobInfo(input);
+            return PageResponse(result);
+        }
+
+        /// <summary>
+        /// 暂停Job
         /// </summary>
         /// <param name="input">JobInfoInputDto</param>
         /// <returns></returns>
@@ -89,7 +89,7 @@ namespace SSS.Api.Controllers.System.Job
         }
 
         /// <summary>
-        ///     恢复Job
+        /// 恢复Job
         /// </summary>
         /// <param name="input">JobInfoInputDto</param>
         /// <returns></returns>
@@ -101,7 +101,7 @@ namespace SSS.Api.Controllers.System.Job
         }
 
         /// <summary>
-        ///     修改Job
+        /// 修改Job
         /// </summary>
         /// <param name="input">JobInfoInputDto</param>
         /// <returns></returns>

@@ -6,13 +6,25 @@ using System.Linq.Expressions;
 namespace SSS.Infrastructure.Util.Lambda
 {
     /// <summary>
-    ///     Expression表达式扩展操作类
-    ///     调用方法：repository.GetAll().AsExpandable().Where(predicate)
+    /// Expression表达式扩展操作类 调用方法：repository.GetAll().AsExpandable().Where(predicate)
     /// </summary>
     public static class ExpressionEx
     {
         /// <summary>
-        ///     以特定的条件运行组合两个Expression表达式
+        /// 以 Expression.AndAlso 组合两个Expression表达式
+        /// </summary>
+        /// <typeparam name="T">表达式的主实体类型</typeparam>
+        /// <param name="first">第一个Expression表达式</param>
+        /// <param name="second">要组合的Expression表达式</param>
+        /// <returns>组合后的表达式</returns>
+        public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> first,
+            Expression<Func<T, bool>> second)
+        {
+            return first.Compose(second, Expression.AndAlso);
+        }
+
+        /// <summary>
+        /// 以特定的条件运行组合两个Expression表达式
         /// </summary>
         /// <typeparam name="T">表达式的主实体类型</typeparam>
         /// <param name="first">第一个Expression表达式</param>
@@ -29,20 +41,7 @@ namespace SSS.Infrastructure.Util.Lambda
         }
 
         /// <summary>
-        ///     以 Expression.AndAlso 组合两个Expression表达式
-        /// </summary>
-        /// <typeparam name="T">表达式的主实体类型</typeparam>
-        /// <param name="first">第一个Expression表达式</param>
-        /// <param name="second">要组合的Expression表达式</param>
-        /// <returns>组合后的表达式</returns>
-        public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> first,
-            Expression<Func<T, bool>> second)
-        {
-            return first.Compose(second, Expression.AndAlso);
-        }
-
-        /// <summary>
-        ///     以 Expression.OrElse 组合两个Expression表达式
+        /// 以 Expression.OrElse 组合两个Expression表达式
         /// </summary>
         /// <typeparam name="T">表达式的主实体类型</typeparam>
         /// <param name="first">第一个Expression表达式</param>

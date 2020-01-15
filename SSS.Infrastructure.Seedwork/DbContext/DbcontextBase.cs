@@ -11,7 +11,6 @@ using System;
 
 namespace SSS.Infrastructure.Seedwork.DbContext
 {
-
     [DIService(ServiceLifetime.Scoped, typeof(DbContextBase))]
     public class DbContextBase : Microsoft.EntityFrameworkCore.DbContext
     {

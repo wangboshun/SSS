@@ -25,6 +25,12 @@ namespace SSS.Domain.Seedwork.ErrorHandler
             _logger = IocEx.Instance.GetService<ILogger<ErrorHandler>>();
         }
 
+        public void Dispose()
+        {
+            _notice.Clear();
+            GC.SuppressFinalize(this);
+        }
+
         public Task Execute(ValidationResult message)
         {
             _notice.AddRange(message.Errors);
@@ -53,12 +59,6 @@ namespace SSS.Domain.Seedwork.ErrorHandler
         public bool HasNotice()
         {
             return GetNotice().Any();
-        }
-
-        public void Dispose()
-        {
-            _notice.Clear();
-            GC.SuppressFinalize(this);
         }
     }
 }

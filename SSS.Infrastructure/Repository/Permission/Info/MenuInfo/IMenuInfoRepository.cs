@@ -17,9 +17,15 @@ namespace SSS.Infrastructure.Repository.Permission.Info.MenuInfo
 
         /// <summary>
         ///根据权限组Id或名称，遍历关联菜单
-        /// </summary> 
+        /// </summary>
         /// <returns></returns>
         Pages<IEnumerable<Domain.Permission.Info.MenuInfo.MenuInfo>> GetMenuByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
+
+        /// <summary>
+        /// 根据角色组Id或名称，遍历关联菜单
+        /// </summary>
+        /// <returns></returns>
+        Pages<IEnumerable<Domain.Permission.Info.MenuInfo.MenuInfo>> GetMenuByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
 
         /// <summary>
         ///根据用户Id或名称，遍历关联菜单
@@ -34,14 +40,8 @@ namespace SSS.Infrastructure.Repository.Permission.Info.MenuInfo
 
         /// <summary>
         ///根据用户组Id或名称，遍历关联菜单
-        /// </summary> 
+        /// </summary>
         /// <returns></returns>
         Pages<IEnumerable<Domain.Permission.Info.MenuInfo.MenuInfo>> GetMenuByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
-
-        /// <summary>
-        /// 根据角色组Id或名称，遍历关联菜单
-        /// </summary> 
-        /// <returns></returns>
-        Pages<IEnumerable<Domain.Permission.Info.MenuInfo.MenuInfo>> GetMenuByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
     }
 }

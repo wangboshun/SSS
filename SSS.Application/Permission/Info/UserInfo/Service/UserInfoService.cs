@@ -77,71 +77,7 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         }
 
         /// <summary>
-        ///     获取用户下所有权限
-        /// </summary>
-        /// <param name="userid"></param>
-        /// <returns></returns>
-        public object GetUserPermission(string userid)
-        {
-            var user = _userinfoRepository.Get(userid);
-            if (user == null)
-                return new { error = "用户不存在" };
-
-            var usergroup = _userGroupRepository.GetUserGroupByUser(user.Id, user.UserName).items
-                .MapperToOutPut<UserGroupOutputDto>();
-
-            var rolegroup = _roleGroupRepository.GetRoleGroupByUser(user.Id, user.UserName).items
-                .MapperToOutPut<RoleGroupOutputDto>();
-
-            var powergroup = _powerGroupRepository.GetPowerGroupByUser(user.Id, user.UserName).items
-                .MapperToOutPut<PowerGroupOutputDto>();
-
-            var role = _roleInfoRepository.GetRoleByUser(user.Id, user.UserName).items
-                .MapperToOutPut<RoleInfoOutputDto>();
-
-            var power = _powerInfoRepository.GetPowerByUser(user.Id, user.UserName).items
-                .MapperToOutPut<PowerInfoOutputDto>();
-
-            var menu = _menuInfoRepository.GetMenuByUser(user.Id, user.UserName).items
-                .MapperToOutPut<MenuInfoOutputDto>();
-
-            var operate = _operateInfoRepository.GetOperateByUser(user.Id, user.UserName).items
-                .MapperToOutPut<OperateInfoOutputDto>();
-
-            return new
-            {
-                usergroup,
-                rolegroup,
-                powergroup,
-                role,
-                power,
-                menu,
-                operate
-            };
-        }
-
-        /// <summary>
-        ///     删除用户所有权限
-        /// </summary>
-        /// <param name="userid"></param>
-        /// <returns></returns>
-        public bool DeleteUserPermission(string userid)
-        {
-            return true;
-        }
-
-        /// <summary>
-        ///     获取用户下的所有下级
-        /// </summary>
-        /// <param name="userid"></param>
-        /// <returns></returns>
-        public List<UserInfoTreeOutputDto> GetChildrenById(string userid)
-        {
-            return _userinfoRepository.GetChildrenById(userid);
-        }
-
-        /// <summary>
-        ///     添加用户
+        /// 添加用户
         /// </summary>
         /// <param name="input"></param>
         public UserInfoOutputDto AddUserInfo(UserInfoInputDto input)
@@ -190,7 +126,17 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         }
 
         /// <summary>
-        ///     账号密码登录
+        /// 删除用户所有权限
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public bool DeleteUserPermission(string userid)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// 账号密码登录
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -215,26 +161,23 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
             return userinfo;
         }
 
+        /// <summary>
+        /// 获取用户下的所有下级
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public List<UserInfoTreeOutputDto> GetChildrenById(string userid)
+        {
+            return _userinfoRepository.GetChildrenById(userid);
+        }
+
         public Pages<List<UserInfoOutputDto>> GetListUserInfo(UserInfoInputDto input)
         {
             return GetPage(input);
         }
 
         /// <summary>
-        ///     根据用户组Id或名称，遍历关联用户
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public Pages<List<UserInfoOutputDto>> GetUserByUserGroup(UserGroupInputDto input)
-        {
-            var data = _userinfoRepository.GetUserByUserGroup(input.id, input.usergroupname, input.parentid,
-                input.pageindex, input.pagesize);
-            return new Pages<List<UserInfoOutputDto>>(data.items.MapperToOutPut<UserInfoOutputDto>()?.ToList(),
-                data.count);
-        }
-
-        /// <summary>
-        ///     根据权限组Id或名称，遍历关联用户
+        /// 根据权限组Id或名称，遍历关联用户
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -247,7 +190,7 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         }
 
         /// <summary>
-        ///     根据角色组Id或名称，遍历关联用户
+        /// 根据角色组Id或名称，遍历关联用户
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -257,6 +200,63 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
                 input.pageindex, input.pagesize);
             return new Pages<List<UserInfoOutputDto>>(data.items.MapperToOutPut<UserInfoOutputDto>()?.ToList(),
                 data.count);
+        }
+
+        /// <summary>
+        /// 根据用户组Id或名称，遍历关联用户
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Pages<List<UserInfoOutputDto>> GetUserByUserGroup(UserGroupInputDto input)
+        {
+            var data = _userinfoRepository.GetUserByUserGroup(input.id, input.usergroupname, input.parentid,
+                input.pageindex, input.pagesize);
+            return new Pages<List<UserInfoOutputDto>>(data.items.MapperToOutPut<UserInfoOutputDto>()?.ToList(),
+                data.count);
+        }
+
+        /// <summary>
+        /// 获取用户下所有权限
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public object GetUserPermission(string userid)
+        {
+            var user = _userinfoRepository.Get(userid);
+            if (user == null)
+                return new { error = "用户不存在" };
+
+            var usergroup = _userGroupRepository.GetUserGroupByUser(user.Id, user.UserName).items
+                .MapperToOutPut<UserGroupOutputDto>();
+
+            var rolegroup = _roleGroupRepository.GetRoleGroupByUser(user.Id, user.UserName).items
+                .MapperToOutPut<RoleGroupOutputDto>();
+
+            var powergroup = _powerGroupRepository.GetPowerGroupByUser(user.Id, user.UserName).items
+                .MapperToOutPut<PowerGroupOutputDto>();
+
+            var role = _roleInfoRepository.GetRoleByUser(user.Id, user.UserName).items
+                .MapperToOutPut<RoleInfoOutputDto>();
+
+            var power = _powerInfoRepository.GetPowerByUser(user.Id, user.UserName).items
+                .MapperToOutPut<PowerInfoOutputDto>();
+
+            var menu = _menuInfoRepository.GetMenuByUser(user.Id, user.UserName).items
+                .MapperToOutPut<MenuInfoOutputDto>();
+
+            var operate = _operateInfoRepository.GetOperateByUser(user.Id, user.UserName).items
+                .MapperToOutPut<OperateInfoOutputDto>();
+
+            return new
+            {
+                usergroup,
+                rolegroup,
+                powergroup,
+                role,
+                power,
+                menu,
+                operate
+            };
         }
     }
 }

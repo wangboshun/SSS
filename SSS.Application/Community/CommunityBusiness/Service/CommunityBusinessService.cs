@@ -58,6 +58,19 @@ namespace SSS.Application.Community.CommunityBusiness.Service
             return Repository.SaveChanges() > 0 ? Mapper.Map<CommunityBusinessOutputDto>(model) : null;
         }
 
+        public Pages<List<CommunityBusinessOutputDto>> GetCommunityBusinessByCommunity(CommunityInfoInputDto input)
+        {
+            var data = _communityBusinessRelationRepository.GetListCommunityBusinessRelation(input.id, input.name);
+
+            return new Pages<List<CommunityBusinessOutputDto>>(
+                data.items.MapperToOutPut<CommunityBusinessOutputDto>()?.ToList(), data.count);
+        }
+
+        public Pages<List<CommunityBusinessOutputDto>> GetListCommunityBusiness(CommunityBusinessInputDto input)
+        {
+            return GetPage(input);
+        }
+
         public bool UpdateCommunityBusiness(CommunityBusinessInputDto input)
         {
             var result = Validator.Validate(input, ruleSet: "Update");
@@ -78,19 +91,6 @@ namespace SSS.Application.Community.CommunityBusiness.Service
             model.UpdateTime = DateTime.Now;
             Repository.Update(model);
             return Repository.SaveChanges() > 0;
-        }
-
-        public Pages<List<CommunityBusinessOutputDto>> GetCommunityBusinessByCommunity(CommunityInfoInputDto input)
-        {
-            var data = _communityBusinessRelationRepository.GetListCommunityBusinessRelation(input.id, input.name);
-
-            return new Pages<List<CommunityBusinessOutputDto>>(
-                data.items.MapperToOutPut<CommunityBusinessOutputDto>()?.ToList(), data.count);
-        }
-
-        public Pages<List<CommunityBusinessOutputDto>> GetListCommunityBusiness(CommunityBusinessInputDto input)
-        {
-            return GetPage(input);
         }
     }
 }

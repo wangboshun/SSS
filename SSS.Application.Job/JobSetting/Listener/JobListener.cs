@@ -26,7 +26,7 @@ namespace SSS.Application.Job.JobSetting.Listener
         public string Name { set; get; }
 
         /// <summary>
-        ///     Scheduler在JobDetail即将被执行，但又被TriggerListerner否决时会调用该方法
+        /// Scheduler在JobDetail即将被执行，但又被TriggerListerner否决时会调用该方法
         /// </summary>
         /// <param name="context"></param>
         /// <param name="cancellationToken"></param>
@@ -37,7 +37,7 @@ namespace SSS.Application.Job.JobSetting.Listener
         }
 
         /// <summary>
-        ///     Scheduler在JobDetail将要被执行时调用这个方法。
+        /// Scheduler在JobDetail将要被执行时调用这个方法。
         /// </summary>
         /// <param name="context"></param>
         /// <param name="cancellationToken"></param>
@@ -48,13 +48,13 @@ namespace SSS.Application.Job.JobSetting.Listener
         }
 
         /// <summary>
-        ///     Scheduler在JobDetail被执行之后调用这个方法
+        /// Scheduler在JobDetail被执行之后调用这个方法
         /// </summary>
         /// <param name="context"></param>
         /// <param name="jobException"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task JobWasExecuted(IJobExecutionContext context, JobExecutionException jobException,CancellationToken cancellationToken = default)
+        public Task JobWasExecuted(IJobExecutionContext context, JobExecutionException jobException, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -69,7 +69,7 @@ namespace SSS.Application.Job.JobSetting.Listener
                     using var scope = scopeFactory.CreateScope();
                     using var db_context = scope.ServiceProvider.GetRequiredService<SystemDbContext>();
 
-                    var job = db_context.JobInfo.FirstOrDefault(x =>x.JobName.Equals(trigger.Name) && x.JobGroup.Equals(trigger.JobGroup) && x.IsDelete == 0);
+                    var job = db_context.JobInfo.FirstOrDefault(x => x.JobName.Equals(trigger.Name) && x.JobGroup.Equals(trigger.JobGroup) && x.IsDelete == 0);
 
                     if (job == null)
                     {

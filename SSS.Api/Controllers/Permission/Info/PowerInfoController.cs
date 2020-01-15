@@ -12,7 +12,7 @@ using SSS.Domain.Permission.Info.UserInfo.Dto;
 namespace SSS.Api.Controllers.Permission.Info
 {
     /// <summary>
-    ///     权限信息
+    /// 权限信息
     /// </summary>
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -24,7 +24,7 @@ namespace SSS.Api.Controllers.Permission.Info
         private readonly IPowerInfoService _service;
 
         /// <summary>
-        ///     权限信息
+        /// 权限信息
         /// </summary>
         /// <param name="service">IPowerInfoService</param>
         public PowerInfoController(IPowerInfoService service)
@@ -33,19 +33,7 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
-        ///     获取所有权限信息
-        /// </summary>
-        /// <param name="input">input</param>
-        /// <returns></returns>
-        [HttpGet("getlist")]
-        public IActionResult GetList([FromQuery] PowerInfoInputDto input)
-        {
-            var result = _service.GetListPowerInfo(input);
-            return PageResponse(result);
-        }
-
-        /// <summary>
-        ///     添加权限信息
+        /// 添加权限信息
         /// </summary>
         /// <param name="input">PowerInfoInputDto</param>
         /// <returns></returns>
@@ -57,7 +45,7 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
-        ///     删除权限信息
+        /// 删除权限信息
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns>
@@ -69,7 +57,7 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
-        ///     获取权限的所有下级
+        /// 获取权限的所有下级
         /// </summary>
         /// <param name="powerid">权限Id</param>
         /// <returns></returns>
@@ -81,7 +69,19 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
-        ///     根据权限组Id或名称，遍历关联权限
+        /// 获取所有权限信息
+        /// </summary>
+        /// <param name="input">input</param>
+        /// <returns></returns>
+        [HttpGet("getlist")]
+        public IActionResult GetList([FromQuery] PowerInfoInputDto input)
+        {
+            var result = _service.GetListPowerInfo(input);
+            return PageResponse(result);
+        }
+
+        /// <summary>
+        /// 根据权限组Id或名称，遍历关联权限
         /// </summary>
         /// <param name="input">权限组Id或名称</param>
         /// <returns></returns>
@@ -93,7 +93,7 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
-        ///     根据角色组Id或名称，遍历关联权限
+        /// 根据角色组Id或名称，遍历关联权限
         /// </summary>
         /// <param name="input">角色组Id或名称</param>
         /// <returns></returns>
@@ -105,19 +105,7 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
-        ///     根据用户组Id或名称，遍历关联权限
-        /// </summary>
-        /// <param name="input">用户组Id或名称</param>
-        /// <returns></returns>
-        [HttpGet("get_power_by_usergroup")]
-        public IActionResult GetPowerByUserGroup([FromQuery] UserGroupInputDto input)
-        {
-            var result = _service.GetPowerByUserGroup(input);
-            return PageResponse(result);
-        }
-
-        /// <summary>
-        ///     根据用户Id或名称，遍历关联权限
+        /// 根据用户Id或名称，遍历关联权限
         /// </summary>
         /// <param name="input">用户Id或名称</param>
         /// <returns></returns>
@@ -125,6 +113,18 @@ namespace SSS.Api.Controllers.Permission.Info
         public IActionResult GetPowerByUser([FromQuery] UserInfoInputDto input)
         {
             var result = _service.GetPowerByUser(input);
+            return PageResponse(result);
+        }
+
+        /// <summary>
+        /// 根据用户组Id或名称，遍历关联权限
+        /// </summary>
+        /// <param name="input">用户组Id或名称</param>
+        /// <returns></returns>
+        [HttpGet("get_power_by_usergroup")]
+        public IActionResult GetPowerByUserGroup([FromQuery] UserGroupInputDto input)
+        {
+            var result = _service.GetPowerByUserGroup(input);
             return PageResponse(result);
         }
     }

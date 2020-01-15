@@ -26,10 +26,10 @@ namespace SSS.Infrastructure.Seedwork.Repository
     public class Repository<TEntity> : IRepository<TEntity>
         where TEntity : Entity, new()
     {
-        private readonly IErrorHandler _error;
-        private readonly ILogger _logger;
         public readonly DbContextBase Db;
         public readonly DbSet<TEntity> DbSet;
+        private readonly IErrorHandler _error;
+        private readonly ILogger _logger;
 
         public Repository(DbContextBase context)
         {
@@ -49,15 +49,15 @@ namespace SSS.Infrastructure.Seedwork.Repository
             return false;
         }
 
-        #endregion
+        #endregion 添加
 
         #region 更新
 
         /// <summary>
-        ///     更新
+        /// 更新
         /// </summary>
         /// <param name="obj">实体</param>
-        /// <param name="save">是否保存  默认否</param>
+        /// <param name="save">是否保存 默认否</param>
         public virtual bool Update(TEntity obj, bool save = false)
         {
             DbSet.Attach(obj);
@@ -70,12 +70,12 @@ namespace SSS.Infrastructure.Seedwork.Repository
             return false;
         }
 
-        #endregion
+        #endregion 更新
 
         #region Execute
 
         /// <summary>
-        ///     执行sql
+        /// 执行sql
         /// </summary>
         /// <param name="sql"></param>
         /// <param name="parameter"></param>
@@ -85,15 +85,15 @@ namespace SSS.Infrastructure.Seedwork.Repository
             return Db.Database.ExecuteSqlRaw(sql);
         }
 
-        #endregion
+        #endregion Execute
 
         #region 删除
 
         /// <summary>
-        ///     删除
+        /// 删除
         /// </summary>
         /// <param name="id">Id</param>
-        /// <param name="save">是否保存  默认否</param>
+        /// <param name="save">是否保存 默认否</param>
         public virtual bool Remove(string id, bool save = false)
         {
             var model = Get(id);
@@ -109,10 +109,10 @@ namespace SSS.Infrastructure.Seedwork.Repository
         }
 
         /// <summary>
-        ///     删除 Lambda删除
+        /// 删除 Lambda删除
         /// </summary>
         /// <param name="predicate">Lambda表达式</param>
-        /// <param name="save">是否保存  默认否</param>
+        /// <param name="save">是否保存 默认否</param>
         public virtual bool Remove(Expression<Func<TEntity, bool>> predicate, bool save = false,
             bool have_delete = false)
         {
@@ -131,12 +131,12 @@ namespace SSS.Infrastructure.Seedwork.Repository
             return false;
         }
 
-        #endregion
+        #endregion 删除
 
         #region 查询
 
         /// <summary>
-        ///     Id查询
+        /// Id查询
         /// </summary>
         /// <param name="id">Id</param>
         /// <returns></returns>
@@ -149,7 +149,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         }
 
         /// <summary>
-        ///     Lambda查询
+        /// Lambda查询
         /// </summary>
         /// <param name="predicate">Lambda表达式</param>
         /// <returns></returns>
@@ -162,31 +162,29 @@ namespace SSS.Infrastructure.Seedwork.Repository
         }
 
         /// <summary>
-        ///     是否存在
+        /// 查询所有
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="have_delete"></param>
         /// <returns></returns>
-        public virtual bool Have(string id, bool have_delete = false)
+        public virtual IQueryable<TEntity> GetAll()
         {
-            return DbSet.Any(x => x.Id.Equals(id) && x.IsDelete == 0);
+            return DbSet.AsNoTracking().OrderByDescending(x => x.CreateTime);
         }
 
         /// <summary>
-        ///     是否存在  Lambda表达式
+        /// 查询所有 Lambda查询
         /// </summary>
-        /// <param name="predicate">Lambda表达式</param>
+        /// <param name="predicate"></param>
         /// <returns></returns>
-        public virtual bool Have(Expression<Func<TEntity, bool>> predicate, bool have_delete = false)
+        public virtual IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate, bool have_delete = false)
         {
             if (!have_delete)
                 predicate = predicate.And(x => x.IsDelete == 0);
 
-            return DbSet.Any(predicate);
+            return DbSet.AsNoTracking().Where(predicate).OrderByDescending(x => x.CreateTime);
         }
 
         /// <summary>
-        ///     SQL查询
+        /// SQL查询
         /// </summary>
         /// <param name="sql">SQL</param>
         /// <returns></returns>
@@ -196,7 +194,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         }
 
         /// <summary>
-        ///     SQL查询  参数化
+        /// SQL查询 参数化
         /// </summary>
         /// <param name="sql">SQL</param>
         /// <param name="parameter">参数</param>
@@ -207,7 +205,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         }
 
         /// <summary>
-        ///     SQL查询 Lambda查询
+        /// SQL查询 Lambda查询
         /// </summary>
         /// <param name="sql">SQL</param>
         /// <param name="predicate">Lambda表达式</param>
@@ -222,7 +220,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         }
 
         /// <summary>
-        ///     SQL查询 分页
+        /// SQL查询 分页
         /// </summary>
         /// <param name="sql">SQL</param>
         /// <param name="pageindex">页码</param>
@@ -237,7 +235,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         }
 
         /// <summary>
-        ///     SQL查询 Lambda查询 分页
+        /// SQL查询 Lambda查询 分页
         /// </summary>
         /// <param name="sql">SQL</param>
         /// <param name="predicate">Lambda表达式</param>
@@ -257,29 +255,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         }
 
         /// <summary>
-        ///     查询所有
-        /// </summary>
-        /// <returns></returns>
-        public virtual IQueryable<TEntity> GetAll()
-        {
-            return DbSet.AsNoTracking().OrderByDescending(x => x.CreateTime);
-        }
-
-        /// <summary>
-        ///     查询所有 Lambda查询
-        /// </summary>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
-        public virtual IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate, bool have_delete = false)
-        {
-            if (!have_delete)
-                predicate = predicate.And(x => x.IsDelete == 0);
-
-            return DbSet.AsNoTracking().Where(predicate).OrderByDescending(x => x.CreateTime);
-        }
-
-        /// <summary>
-        ///     分页查询
+        /// 分页查询
         /// </summary>
         /// <param name="pageindex">页码</param>
         /// <param name="pagesize">大小</param>
@@ -292,7 +268,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         }
 
         /// <summary>
-        ///     分页查询 Lambda查询
+        /// 分页查询 Lambda查询
         /// </summary>
         /// <param name="pageindex">页码</param>
         /// <param name="pagesize">大小</param>
@@ -311,7 +287,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         }
 
         /// <summary>
-        ///     sql分页查询，用于联表查询
+        /// sql分页查询，用于联表查询
         /// </summary>
         /// <typeparam name="TEntity">返回类型</typeparam>
         /// <param name="sql">sql</param>
@@ -337,12 +313,36 @@ namespace SSS.Infrastructure.Seedwork.Repository
             }
         }
 
-        #endregion
+        /// <summary>
+        /// 是否存在
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="have_delete"></param>
+        /// <returns></returns>
+        public virtual bool Have(string id, bool have_delete = false)
+        {
+            return DbSet.Any(x => x.Id.Equals(id) && x.IsDelete == 0);
+        }
+
+        /// <summary>
+        /// 是否存在 Lambda表达式
+        /// </summary>
+        /// <param name="predicate">Lambda表达式</param>
+        /// <returns></returns>
+        public virtual bool Have(Expression<Func<TEntity, bool>> predicate, bool have_delete = false)
+        {
+            if (!have_delete)
+                predicate = predicate.And(x => x.IsDelete == 0);
+
+            return DbSet.Any(predicate);
+        }
+
+        #endregion 查询
 
         #region 批量操作
 
         /// <summary>
-        ///     批量添加
+        /// 批量添加
         /// </summary>
         /// <param name="list"></param>
         /// <param name="save"></param>
@@ -355,20 +355,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         }
 
         /// <summary>
-        ///     批量更新
-        /// </summary>
-        /// <param name="list"></param>
-        /// <param name="save"></param>
-        public virtual bool UpdateList(List<TEntity> list, bool save = false)
-        {
-            DbSet.UpdateRange(list);
-            if (save)
-                return SaveChanges() > 0;
-            return false;
-        }
-
-        /// <summary>
-        ///     批量删除
+        /// 批量删除
         /// </summary>
         /// <param name="predicate"></param>
         /// <param name="save"></param>
@@ -387,12 +374,34 @@ namespace SSS.Infrastructure.Seedwork.Repository
             return false;
         }
 
-        #endregion
+        /// <summary>
+        /// 批量更新
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="save"></param>
+        public virtual bool UpdateList(List<TEntity> list, bool save = false)
+        {
+            DbSet.UpdateRange(list);
+            if (save)
+                return SaveChanges() > 0;
+            return false;
+        }
+
+        #endregion 批量操作
 
         #region 其他
 
         /// <summary>
-        ///     提交
+        /// 释放
+        /// </summary>
+        public void Dispose()
+        {
+            Db.Dispose();
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// 提交
         /// </summary>
         /// <returns></returns>
         public int SaveChanges()
@@ -410,16 +419,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         }
 
         /// <summary>
-        ///     释放
-        /// </summary>
-        public void Dispose()
-        {
-            Db.Dispose();
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        ///     生成参数
+        /// 生成参数
         /// </summary>
         /// <param name="parameter">参数</param>
         /// <returns></returns>
@@ -438,9 +438,11 @@ namespace SSS.Infrastructure.Seedwork.Repository
                         case "String":
                             sqlparameter.Add(new SqlParameter(data.Key, data.Value.ToString()));
                             break;
+
                         case "Integer":
                             sqlparameter.Add(new SqlParameter(data.Key, Convert.ToInt32(data.Value)));
                             break;
+
                         case "Date":
                             sqlparameter.Add(new SqlParameter(data.Key, Convert.ToDateTime(data.Value)));
                             break;
@@ -451,7 +453,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
             return sqlparameter.ToArray();
         }
 
-        #endregion
+        #endregion 其他
     }
 
     [DIService(ServiceLifetime.Scoped, typeof(IRepository<,,>))]

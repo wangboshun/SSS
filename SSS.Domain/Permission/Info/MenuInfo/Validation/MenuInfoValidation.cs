@@ -19,7 +19,6 @@ namespace SSS.Domain.Permission.Info.MenuInfo.Validation
 
             RuleSet("Delete", () =>
             {
-
             });
 
             RuleSet("Update", () =>
@@ -30,7 +29,6 @@ namespace SSS.Domain.Permission.Info.MenuInfo.Validation
 
             RuleSet("Select", () =>
             {
-
             });
         }
     }

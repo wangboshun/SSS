@@ -35,7 +35,7 @@ namespace SSS.Api.Controllers.System.Auth
         }
 
         /// <summary>
-        ///     授权
+        /// 授权
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>

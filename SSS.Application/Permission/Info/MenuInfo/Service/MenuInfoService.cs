@@ -23,7 +23,7 @@ using System.Linq;
 namespace SSS.Application.Permission.Info.MenuInfo.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IMenuInfoService))]
-    public class MenuInfoService :QueryService<Domain.Permission.Info.MenuInfo.MenuInfo, MenuInfoInputDto, MenuInfoOutputDto>, IMenuInfoService
+    public class MenuInfoService : QueryService<Domain.Permission.Info.MenuInfo.MenuInfo, MenuInfoInputDto, MenuInfoOutputDto>, IMenuInfoService
     {
         private readonly IMenuInfoRepository _menuInfoRepository;
         private readonly IPowerGroupMenuRelationRepository _powerGroupMenuRelationRepository;
@@ -81,6 +81,39 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
 
             Repository.Add(menu);
             return Repository.SaveChanges() > 0 ? Mapper.Map<MenuInfoOutputDto>(menu) : null;
+        }
+
+        public bool DeleteMenuInfo(string id)
+        {
+            Repository.Remove(id);
+            _powerGroupMenuRelationRepository.Remove(x => x.MenuId.Equals(id));
+            return Repository.SaveChanges() > 0;
+        }
+
+        /// <summary>
+        /// 获取菜单下的所有下级
+        /// </summary>
+        /// <param name="menuid"></param>
+        /// <returns></returns>
+        public List<MenuInfoTreeOutputDto> GetChildren(string menuid)
+        {
+            return _menuInfoRepository.GetChildren(menuid);
+        }
+
+        public Pages<List<MenuInfoOutputDto>> GetListMenuInfo(MenuInfoInputDto input)
+        {
+            return GetPage(input);
+        }
+
+        /// <summary>
+        /// 根据权限组Id或名称，遍历关联菜单
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Pages<List<MenuInfoOutputDto>> GetMenuByPowerGroup(PowerGroupInputDto input)
+        {
+            var data = _menuInfoRepository.GetMenuByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<MenuInfoOutputDto>>(data.items.MapperToOutPut<MenuInfoOutputDto>()?.ToList(), data.count);
         }
 
         public bool UpdateMenuInfo(MenuInfoInputDto input)
@@ -157,39 +190,6 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
             menu.UpdateTime = DateTime.Now;
             Repository.Update(menu);
             return Repository.SaveChanges() > 0;
-        }
-
-        public bool DeleteMenuInfo(string id)
-        {
-            Repository.Remove(id);
-            _powerGroupMenuRelationRepository.Remove(x => x.MenuId.Equals(id));
-            return Repository.SaveChanges() > 0;
-        }
-
-        /// <summary>
-        ///     获取菜单下的所有下级
-        /// </summary>
-        /// <param name="menuid"></param>
-        /// <returns></returns>
-        public List<MenuInfoTreeOutputDto> GetChildren(string menuid)
-        {
-            return _menuInfoRepository.GetChildren(menuid);
-        }
-
-        /// <summary>
-        ///     根据权限组Id或名称，遍历关联菜单
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public Pages<List<MenuInfoOutputDto>> GetMenuByPowerGroup(PowerGroupInputDto input)
-        {
-            var data = _menuInfoRepository.GetMenuByPowerGroup(input.id, input.powergroupname, input.parentid,input.pageindex, input.pagesize);
-            return new Pages<List<MenuInfoOutputDto>>(data.items.MapperToOutPut<MenuInfoOutputDto>()?.ToList(),data.count);
-        }
-
-        public Pages<List<MenuInfoOutputDto>> GetListMenuInfo(MenuInfoInputDto input)
-        {
-            return GetPage(input);
         }
     }
 }

@@ -11,7 +11,6 @@ namespace SSS.Infrastructure.Repository.Permission.Relation.RoleGroupRelation
     {
         public RoleGroupRelationRepository(PermissionDbContext context) : base(context)
         {
-
         }
     }
 }

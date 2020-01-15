@@ -7,8 +7,8 @@ namespace SSS.Domain.Permission.Info.MenuInfo.Dto
 {
     public class MenuInfoOutputDto : OutputDtoBase
     {
-        public string menuurl { set; get; }
         public string menuname { get; set; }
+        public string menuurl { set; get; }
     }
 
     public class MenuInfoTreeOutputDto
@@ -18,15 +18,13 @@ namespace SSS.Domain.Permission.Info.MenuInfo.Dto
             Item = new List<MenuInfoTreeOutputDto>();
         }
 
+        public DateTime createtime { get; set; }
         public string id { get; set; }
 
+        public List<MenuInfoTreeOutputDto> Item { get; set; }
         public string menuname { get; set; }
         public string menuurl { set; get; }
 
         public string parentid { get; set; }
-
-        public DateTime createtime { get; set; }
-
-        public List<MenuInfoTreeOutputDto> Item { get; set; }
     }
 }

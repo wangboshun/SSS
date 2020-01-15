@@ -9,7 +9,7 @@ using SSS.Domain.Permission.Info.OperateInfo.Dto;
 namespace SSS.Api.Controllers.Permission.Info
 {
     /// <summary>
-    ///     操作信息
+    /// 操作信息
     /// </summary>
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -21,7 +21,7 @@ namespace SSS.Api.Controllers.Permission.Info
         private readonly IOperateInfoService _service;
 
         /// <summary>
-        ///     操作信息
+        /// 操作信息
         /// </summary>
         /// <param name="service">IOperateInfoService</param>
         public OperateInfoController(IOperateInfoService service)
@@ -30,19 +30,7 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
-        ///     获取所有操作信息
-        /// </summary>
-        /// <param name="input">input</param>
-        /// <returns></returns>
-        [HttpGet("getlist")]
-        public IActionResult GetList([FromQuery] OperateInfoInputDto input)
-        {
-            var result = _service.GetListOperateInfo(input);
-            return PageResponse(result);
-        }
-
-        /// <summary>
-        ///     添加操作
+        /// 添加操作
         /// </summary>
         /// <param name="input">操作名称</param>
         /// <returns></returns>
@@ -54,7 +42,7 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
-        ///     删除操作信息
+        /// 删除操作信息
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns>
@@ -66,7 +54,7 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
-        ///     获取操作下的所有下级
+        /// 获取操作下的所有下级
         /// </summary>
         /// <param name="operateid">操作Id</param>
         /// <returns></returns>
@@ -78,7 +66,19 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
-        ///     根据权限组Id或名称，遍历关联操作
+        /// 获取所有操作信息
+        /// </summary>
+        /// <param name="input">input</param>
+        /// <returns></returns>
+        [HttpGet("getlist")]
+        public IActionResult GetList([FromQuery] OperateInfoInputDto input)
+        {
+            var result = _service.GetListOperateInfo(input);
+            return PageResponse(result);
+        }
+
+        /// <summary>
+        /// 根据权限组Id或名称，遍历关联操作
         /// </summary>
         /// <param name="input">权限组Id或名称</param>
         /// <returns></returns>

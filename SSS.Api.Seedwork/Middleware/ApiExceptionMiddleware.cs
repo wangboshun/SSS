@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SSS.Api.Seedwork.Middleware
 {
     /// <summary>
-    ///     ApiExceptionMiddleware
+    /// ApiExceptionMiddleware
     /// </summary>
     public class ApiExceptionMiddleware
     {
@@ -17,7 +17,7 @@ namespace SSS.Api.Seedwork.Middleware
         private readonly RequestDelegate next;
 
         /// <summary>
-        ///     ApiExceptionMiddleware
+        /// ApiExceptionMiddleware
         /// </summary>
         /// <param name="next"></param>
         /// <param name="loggerFactory"></param>

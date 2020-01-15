@@ -37,12 +37,6 @@ namespace SSS.Application.Job.Coin.CoinArticel
             _scopeFactory = scopeFactory;
         }
 
-        public Task Execute(IJobExecutionContext context)
-        {
-            _logger.LogInformation("-----------------CoinArticelJob----------------------");
-            return DoWork(context);
-        }
-
         public Task DoWork(IJobExecutionContext context)
         {
             lock (_lock)
@@ -75,10 +69,16 @@ namespace SSS.Application.Job.Coin.CoinArticel
             }
         }
 
+        public Task Execute(IJobExecutionContext context)
+        {
+            _logger.LogInformation("-----------------CoinArticelJob----------------------");
+            return DoWork(context);
+        }
+
         #region 公告频道
 
         /// <summary>
-        ///     公告频道
+        /// 公告频道
         /// </summary>
         public void GetNotice()
         {
@@ -137,12 +137,12 @@ namespace SSS.Application.Job.Coin.CoinArticel
             }
         }
 
-        #endregion
+        #endregion 公告频道
 
         #region 政策频道
 
         /// <summary>
-        ///     政策新闻
+        /// 政策新闻
         /// </summary>
         public void GetPolicy()
         {
@@ -194,12 +194,12 @@ namespace SSS.Application.Job.Coin.CoinArticel
             }
         }
 
-        #endregion
+        #endregion 政策频道
 
         #region 快讯频道
 
         /// <summary>
-        ///     快讯频道
+        /// 快讯频道
         /// </summary>
         /// <returns></returns>
         public void GetQuickNews()
@@ -259,12 +259,12 @@ namespace SSS.Application.Job.Coin.CoinArticel
             }
         }
 
-        #endregion
+        #endregion 快讯频道
 
         #region 新闻频道
 
         /// <summary>
-        ///     热点新闻
+        /// 热点新闻
         /// </summary>
         /// <returns></returns>
         public void GetNews()
@@ -318,7 +318,7 @@ namespace SSS.Application.Job.Coin.CoinArticel
         }
 
         /// <summary>
-        ///     获取新闻具体内容
+        /// 获取新闻具体内容
         /// </summary>
         /// <param name="token"></param>
         /// <param name="model"></param>
@@ -356,25 +356,12 @@ namespace SSS.Application.Job.Coin.CoinArticel
             }
         }
 
-        #endregion
+        #endregion 新闻频道
 
         #region 去除敏感信息
 
         /// <summary>
-        ///     根据内容获取标题
-        /// </summary>
-        /// <param name="content"></param>
-        /// <returns></returns>
-        private string GetTitleByContent(string content)
-        {
-            var first = content.IndexOf(" | ");
-
-            var second = content.IndexOf("】");
-            return content.Substring(first + 2, second - 5).Trim();
-        }
-
-        /// <summary>
-        ///     根据Title获取标题
+        /// 根据Title获取标题
         /// </summary>
         /// <param name="title"></param>
         /// <returns></returns>
@@ -391,7 +378,7 @@ namespace SSS.Application.Job.Coin.CoinArticel
         }
 
         /// <summary>
-        ///     根据内容获取正文
+        /// 根据内容获取正文
         /// </summary>
         /// <param name="content"></param>
         /// <returns></returns>
@@ -401,6 +388,19 @@ namespace SSS.Application.Job.Coin.CoinArticel
             return content.Substring(second + 1);
         }
 
-        #endregion
+        /// <summary>
+        /// 根据内容获取标题
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        private string GetTitleByContent(string content)
+        {
+            var first = content.IndexOf(" | ");
+
+            var second = content.IndexOf("】");
+            return content.Substring(first + 2, second - 5).Trim();
+        }
+
+        #endregion 去除敏感信息
     }
 }

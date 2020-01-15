@@ -31,25 +31,22 @@ namespace SSS.Infrastructure.Seedwork.DbContext
 
         #region Permission
 
-        public DbSet<UserInfo> UserInfo { get; set; }
-
-        public DbSet<RoleInfo> RoleInfo { get; set; }
         public DbSet<MenuInfo> MenuInfo { get; set; }
         public DbSet<OperateInfo> OperateInfo { get; set; }
-        public DbSet<PowerInfo> PowerInfo { get; set; }
-
-        public DbSet<PowerGroupOperateRelation> PowerGroupOperateRelation { get; set; }
-        public DbSet<PowerGroupMenuRelation> PowerGroupMenuRelation { get; set; }
-        public DbSet<UserGroupRelation> UserGroupRelation { get; set; }
-        public DbSet<RoleGroupRelation> RoleGroupRelation { set; get; }
-        public DbSet<PowerGroupRelation> PowerGroupRelation { set; get; }
-        public DbSet<RoleGroupPowerGroupRelation> RoleGroupPowerGroupRelation { set; get; }
-        public DbSet<UserGroupRoleGroupRelation> UserGroupRoleGroupRelation { set; get; }
-
-        public DbSet<RoleGroup> RoleGroup { get; set; }
         public DbSet<PowerGroup> PowerGroup { get; set; }
+        public DbSet<PowerGroupMenuRelation> PowerGroupMenuRelation { get; set; }
+        public DbSet<PowerGroupOperateRelation> PowerGroupOperateRelation { get; set; }
+        public DbSet<PowerGroupRelation> PowerGroupRelation { set; get; }
+        public DbSet<PowerInfo> PowerInfo { get; set; }
+        public DbSet<RoleGroup> RoleGroup { get; set; }
+        public DbSet<RoleGroupPowerGroupRelation> RoleGroupPowerGroupRelation { set; get; }
+        public DbSet<RoleGroupRelation> RoleGroupRelation { set; get; }
+        public DbSet<RoleInfo> RoleInfo { get; set; }
         public DbSet<UserGroup> UserGroup { get; set; }
+        public DbSet<UserGroupRelation> UserGroupRelation { get; set; }
+        public DbSet<UserGroupRoleGroupRelation> UserGroupRoleGroupRelation { set; get; }
+        public DbSet<UserInfo> UserInfo { get; set; }
 
-        #endregion
+        #endregion Permission
     }
 }

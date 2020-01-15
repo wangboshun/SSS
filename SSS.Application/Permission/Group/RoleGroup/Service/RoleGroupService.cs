@@ -76,25 +76,14 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
             return Repository.SaveChanges() > 0 ? Mapper.Map<RoleGroupOutputDto>(model) : null;
         }
 
-        public Pages<List<RoleGroupOutputDto>> GetListRoleGroup(RoleGroupInputDto input)
-        {
-            return GetPage(input);
-        }
-
         public bool DeleteRoleGroup(string id)
         {
             return Repository.Remove(id, true);
         }
 
-        /// <summary>
-        ///     根据权限Id或名称，遍历关联角色组
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public Pages<List<RoleGroupOutputDto>> GetRoleGroupByRole(RoleInfoInputDto input)
+        public Pages<List<RoleGroupOutputDto>> GetListRoleGroup(RoleGroupInputDto input)
         {
-            var data = _roleGroupRepository.GetRoleGroupByRole(input.id, input.rolename, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<RoleGroupOutputDto>>(data.items.MapperToOutPut<RoleGroupOutputDto>()?.ToList(), data.count);
+            return GetPage(input);
         }
 
         /// <summary>
@@ -109,13 +98,13 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
         }
 
         /// <summary>
-        /// 根据用户组Id或名称，遍历关联角色组
+        /// 根据权限Id或名称，遍历关联角色组
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<RoleGroupOutputDto>> GetRoleGroupByUserGroup(UserGroupInputDto input)
+        public Pages<List<RoleGroupOutputDto>> GetRoleGroupByRole(RoleInfoInputDto input)
         {
-            var data = _roleGroupRepository.GetRoleGroupByUserGroup(input.id, input.usergroupname, input.parentid, input.pageindex, input.pagesize);
+            var data = _roleGroupRepository.GetRoleGroupByRole(input.id, input.rolename, input.parentid, input.pageindex, input.pagesize);
             return new Pages<List<RoleGroupOutputDto>>(data.items.MapperToOutPut<RoleGroupOutputDto>()?.ToList(), data.count);
         }
 
@@ -127,6 +116,17 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
         public Pages<List<RoleGroupOutputDto>> GetRoleGroupByUser(UserInfoInputDto input)
         {
             var data = _roleGroupRepository.GetRoleGroupByUser(input.id, input.username, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<RoleGroupOutputDto>>(data.items.MapperToOutPut<RoleGroupOutputDto>()?.ToList(), data.count);
+        }
+
+        /// <summary>
+        /// 根据用户组Id或名称，遍历关联角色组
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Pages<List<RoleGroupOutputDto>> GetRoleGroupByUserGroup(UserGroupInputDto input)
+        {
+            var data = _roleGroupRepository.GetRoleGroupByUserGroup(input.id, input.usergroupname, input.parentid, input.pageindex, input.pagesize);
             return new Pages<List<RoleGroupOutputDto>>(data.items.MapperToOutPut<RoleGroupOutputDto>()?.ToList(), data.count);
         }
     }

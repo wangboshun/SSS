@@ -8,7 +8,7 @@ using SSS.Domain.System.Job.JobError.Dto;
 namespace SSS.Api.Controllers.System.Job
 {
     /// <summary>
-    ///     JobErrorController
+    /// JobErrorController
     /// </summary>
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -20,7 +20,7 @@ namespace SSS.Api.Controllers.System.Job
         private readonly IJobErrorService _service;
 
         /// <summary>
-        ///     JobErrorController
+        /// JobErrorController
         /// </summary>
         /// <param name="service">IJobErrorService</param>
         public JobErrorController(IJobErrorService service)
@@ -29,31 +29,19 @@ namespace SSS.Api.Controllers.System.Job
         }
 
         /// <summary>
-        ///     获取所有Job错误执行列表
+        /// 添加错误Job
         /// </summary>
-        /// <param name="input">input</param>
+        /// <param name="input">JobErrorInputDto</param>
         /// <returns></returns>
-        [HttpGet("getlist")]
-        public IActionResult GetList([FromQuery] JobErrorInputDto input)
+        [HttpPost("add")]
+        public IActionResult AddJobError([FromBody] JobErrorInputDto input)
         {
-            var result = _service.GetListJobError(input);
-            return PageResponse(result);
+            var result = _service.AddJobError(input);
+            return AddResponse(result);
         }
 
         /// <summary>
-        ///     获取数据
-        /// </summary>
-        /// <param name="id">id</param>
-        /// <returns></returns>
-        [HttpGet("{id}")]
-        public IActionResult GetJobError(string id)
-        {
-            var result = _service.Get(id);
-            return ApiResponse(result);
-        }
-
-        /// <summary>
-        ///     删除数据
+        /// 删除数据
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns>
@@ -65,15 +53,27 @@ namespace SSS.Api.Controllers.System.Job
         }
 
         /// <summary>
-        ///     添加错误Job
+        /// 获取数据
         /// </summary>
-        /// <param name="input">JobErrorInputDto</param>
+        /// <param name="id">id</param>
         /// <returns></returns>
-        [HttpPost("add")]
-        public IActionResult AddJobError([FromBody] JobErrorInputDto input)
+        [HttpGet("{id}")]
+        public IActionResult GetJobError(string id)
         {
-            var result = _service.AddJobError(input);
-            return AddResponse(result);
+            var result = _service.Get(id);
+            return ApiResponse(result);
+        }
+
+        /// <summary>
+        /// 获取所有Job错误执行列表
+        /// </summary>
+        /// <param name="input">input</param>
+        /// <returns></returns>
+        [HttpGet("getlist")]
+        public IActionResult GetList([FromQuery] JobErrorInputDto input)
+        {
+            var result = _service.GetListJobError(input);
+            return PageResponse(result);
         }
     }
 }

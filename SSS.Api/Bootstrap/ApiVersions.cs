@@ -3,7 +3,7 @@
 namespace SSS.Api.Bootstrap
 {
     /// <summary>
-    ///     版本号
+    /// 版本号
     /// </summary>
     public enum ApiVersions
     {
@@ -12,12 +12,10 @@ namespace SSS.Api.Bootstrap
         /// </summary>
         [Description("系统接口")] v1 = 1,
 
-
         /// <summary>
         /// v2 版本
         /// </summary>
         [Description("权限接口")] v2 = 2,
-
 
         /// <summary>
         /// v3 版本

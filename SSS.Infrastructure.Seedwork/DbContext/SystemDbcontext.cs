@@ -18,10 +18,9 @@ namespace SSS.Infrastructure.Seedwork.DbContext
 
         #region System
 
+        public DbSet<JobError> JobError { get; set; }
         public DbSet<JobInfo> JobInfo { get; set; }
 
-        public DbSet<JobError> JobError { get; set; }
-
-        #endregion
+        #endregion System
     }
 }

@@ -14,17 +14,27 @@ namespace SSS.Infrastructure.Seedwork.Cache.MemoryCache
         }
 
         /// <summary>
-        ///     字符串存储
+        /// 泛型取出
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        public void StringSet(string key, string value)
+        /// <typeparam name="T">泛型</typeparam>
+        /// <param name="key">key</param>
+        /// <returns>泛型</returns>
+        public T Get<T>(string key)
         {
-            _cache.Set(key, value);
+            return _cache.Get<T>(key);
         }
 
         /// <summary>
-        ///     泛型存储
+        /// 删除key
+        /// </summary>
+        /// <param name="key"></param>
+        public void Remove(string key)
+        {
+            _cache.Remove(key);
+        }
+
+        /// <summary>
+        /// 泛型存储
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
@@ -35,20 +45,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.MemoryCache
         }
 
         /// <summary>
-        ///     设置缓存时间，分钟为单位 (滑动过期)
-        /// </summary>
-        /// <param name="key">key</param>
-        /// <param name="value">value</param>
-        /// <param name="minute">minute</param>
-        public void StringSet(string key, string value, double minute)
-        {
-            var options = new MemoryCacheEntryOptions
-            { SlidingExpiration = TimeSpan.FromMinutes(minute) };
-            _cache.Set(key, value, options);
-        }
-
-        /// <summary>
-        ///     泛型存储 设置缓存时间，分钟为单位 (滑动过期)
+        /// 泛型存储 设置缓存时间，分钟为单位 (滑动过期)
         /// </summary>
         /// <param name="key">key</param>
         /// <param name="value">value</param>
@@ -61,19 +58,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.MemoryCache
         }
 
         /// <summary>
-        ///     设置缓存时间,配置过期时间(绝对过期)
-        /// </summary>
-        /// <param name="key">key</param>
-        /// <param name="value">value</param>
-        /// <param name="minute">minute</param>
-        public void StringSet(string key, string value, DateTime minute)
-        {
-            var options = new MemoryCacheEntryOptions { AbsoluteExpiration = minute };
-            _cache.Set(key, value, options);
-        }
-
-        /// <summary>
-        ///     泛型存储 设置缓存时间,配置过期时间(绝对过期)
+        /// 泛型存储 设置缓存时间,配置过期时间(绝对过期)
         /// </summary>
         /// <param name="key">key</param>
         /// <param name="value">value</param>
@@ -85,7 +70,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.MemoryCache
         }
 
         /// <summary>
-        ///     字符串取出
+        /// 字符串取出
         /// </summary>
         /// <param name="key">key</param>
         /// <returns>字符串</returns>
@@ -95,23 +80,38 @@ namespace SSS.Infrastructure.Seedwork.Cache.MemoryCache
         }
 
         /// <summary>
-        ///     泛型取出
+        /// 字符串存储
         /// </summary>
-        /// <typeparam name="T">泛型</typeparam>
-        /// <param name="key">key</param>
-        /// <returns>泛型</returns>
-        public T Get<T>(string key)
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public void StringSet(string key, string value)
         {
-            return _cache.Get<T>(key);
+            _cache.Set(key, value);
         }
 
         /// <summary>
-        ///     删除key
+        /// 设置缓存时间，分钟为单位 (滑动过期)
         /// </summary>
-        /// <param name="key"></param>
-        public void Remove(string key)
+        /// <param name="key">key</param>
+        /// <param name="value">value</param>
+        /// <param name="minute">minute</param>
+        public void StringSet(string key, string value, double minute)
         {
-            _cache.Remove(key);
+            var options = new MemoryCacheEntryOptions
+            { SlidingExpiration = TimeSpan.FromMinutes(minute) };
+            _cache.Set(key, value, options);
+        }
+
+        /// <summary>
+        /// 设置缓存时间,配置过期时间(绝对过期)
+        /// </summary>
+        /// <param name="key">key</param>
+        /// <param name="value">value</param>
+        /// <param name="minute">minute</param>
+        public void StringSet(string key, string value, DateTime minute)
+        {
+            var options = new MemoryCacheEntryOptions { AbsoluteExpiration = minute };
+            _cache.Set(key, value, options);
         }
     }
 }

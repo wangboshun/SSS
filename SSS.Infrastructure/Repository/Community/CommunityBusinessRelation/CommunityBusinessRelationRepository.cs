@@ -18,7 +18,7 @@ namespace SSS.Infrastructure.Repository.Community.CommunityBusinessRelation
         }
 
         /// <summary>
-        ///     根据社区Id获取相关业务
+        /// 根据社区Id获取相关业务
         /// </summary>
         /// <returns></returns>
         public Pages<IEnumerable<SSS.Domain.Community.CommunityBusiness.CommunityBusiness>> GetListCommunityBusinessRelation(string communityid, string communityname, int pageindex = 0, int pagesize = 0)

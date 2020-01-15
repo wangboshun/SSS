@@ -4,8 +4,8 @@ namespace SSS.Domain.System.Job.JobError.Dto
 {
     public class JobErrorOutputDto : OutputDtoBase
     {
-        public string jobid { set; get; }
         public string jobcount { set; get; }
+        public string jobid { set; get; }
         public string message { set; get; }
     }
 }

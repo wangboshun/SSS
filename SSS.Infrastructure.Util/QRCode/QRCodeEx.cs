@@ -5,12 +5,12 @@ using System.Drawing;
 namespace SSS.Infrastructure.Util.QRCode
 {
     /// <summary>
-    ///     QrCodeEx
+    /// QrCodeEx
     /// </summary>
     public class QrCodeEx
     {
-        private static QrCodeEx _singleton;
         private static readonly object _lock = new object();
+        private static QrCodeEx _singleton;
 
         public static QrCodeEx Instance()
         {
@@ -23,7 +23,7 @@ namespace SSS.Infrastructure.Util.QRCode
         }
 
         /// <summary>
-        ///     GetQRCode
+        /// GetQRCode
         /// </summary>
         /// <param name="content"></param>
         /// <param name="size"></param>

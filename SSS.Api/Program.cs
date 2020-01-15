@@ -15,21 +15,12 @@ using System.Net;
 namespace SSS.Api
 {
     /// <summary>
-    ///     Program
+    /// Program
     /// </summary>
     public class Program
     {
         /// <summary>
-        ///     Main
-        /// </summary>
-        /// <param name="args"></param>
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
-
-        /// <summary>
-        ///     CreateHostBuilder
+        /// CreateHostBuilder
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
@@ -47,7 +38,16 @@ namespace SSS.Api
         }
 
         /// <summary>
-        ///     ConfigHttps
+        /// Main
+        /// </summary>
+        /// <param name="args"></param>
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
+
+        /// <summary>
+        /// ConfigHttps
         /// </summary>
         /// <returns></returns>
         private static Action<KestrelServerOptions> ConfigHttps()

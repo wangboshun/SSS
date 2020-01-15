@@ -27,7 +27,6 @@ namespace SSS.Infrastructure.Seedwork.Cache.Redis
                 if (!string.IsNullOrWhiteSpace(options.Value.host))
                     _connect = ConnectionMultiplexer.Connect(new ConfigurationOptions
                     { EndPoints = { { options.Value.host, options.Value.port } } });
-
                 else
                     _connect = ConnectionMultiplexer.Connect(new ConfigurationOptions
                     { EndPoints = { { "localhost", 6379 } } });
@@ -42,16 +41,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.Redis
         }
 
         /// <summary>
-        ///     根据Key删除缓存
-        /// </summary>
-        /// <param name="key"></param>
-        public void Remove(string key)
-        {
-            _db.KeyDelete(key);
-        }
-
-        /// <summary>
-        ///     统计Key数量
+        /// 统计Key数量
         /// </summary>
         /// <returns></returns>
         public int Count()
@@ -59,7 +49,21 @@ namespace SSS.Infrastructure.Seedwork.Cache.Redis
             return Convert.ToInt32(_db.Execute("DBSIZE").ToString());
         }
 
+        /// <summary>
+        /// 根据Key删除缓存
+        /// </summary>
+        /// <param name="key"></param>
+        public void Remove(string key)
+        {
+            _db.KeyDelete(key);
+        }
+
         #region String操作
+
+        public string StringGet(string key)
+        {
+            return _db.StringGet(key);
+        }
 
         public void StringSet(string key, string value)
         {
@@ -67,7 +71,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.Redis
         }
 
         /// <summary>
-        ///     设置缓存时间，分钟为单位
+        /// 设置缓存时间，分钟为单位
         /// </summary>
         /// <param name="key">key</param>
         /// <param name="value">value</param>
@@ -78,20 +82,9 @@ namespace SSS.Infrastructure.Seedwork.Cache.Redis
             _db.StringSet(key, value, time);
         }
 
-        public string StringGet(string key)
-        {
-            return _db.StringGet(key);
-        }
-
-        #endregion
+        #endregion String操作
 
         #region List操作
-
-        public void ListSet<T>(string key, List<T> value)
-        {
-            foreach (var item in value)
-                _db.ListRightPush(key, JsonConvert.SerializeObject(item));
-        }
 
         public List<T> ListGet<T>(string key)
         {
@@ -112,6 +105,12 @@ namespace SSS.Infrastructure.Seedwork.Cache.Redis
             return JsonConvert.DeserializeObject<T>(data);
         }
 
-        #endregion
+        public void ListSet<T>(string key, List<T> value)
+        {
+            foreach (var item in value)
+                _db.ListRightPush(key, JsonConvert.SerializeObject(item));
+        }
+
+        #endregion List操作
     }
 }

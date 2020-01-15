@@ -38,12 +38,12 @@ using System.Text;
 namespace SSS.Api
 {
     /// <summary>
-    ///     Startup
+    /// Startup
     /// </summary>
     public class Startup
     {
         /// <summary>
-        ///     Startup
+        /// Startup
         /// </summary>
         /// <param name="configuration">IConfiguration</param>
         public Startup(IConfiguration configuration)
@@ -52,108 +52,12 @@ namespace SSS.Api
         }
 
         /// <summary>
-        ///     Configuration
+        /// Configuration
         /// </summary>
         public IConfiguration Configuration { get; }
 
         /// <summary>
-        ///     ConfigureServices
-        /// </summary>
-        /// <param name="services">IServiceCollection</param>
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddMvc(options =>
-                {
-                    //全局Action Exception Result过滤器
-                    options.Filters.Add<MvcFilter>();
-                })
-                //.AddNewtonsoftJson(options =>
-                //{
-                //    options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
-                //})
-                .AddFluentValidation(config =>
-                {
-                    config.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
-                })
-                .ConfigureApiBehaviorOptions(config =>
-                {
-                    //关闭默认模型验证过滤器
-                    config.SuppressModelStateInvalidFilter = true;
-                })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
-                    options.JsonSerializerOptions.Converters.Add(new DateTimeNullConverter());
-                });
-
-            services.AddMemoryCacheEx();
-
-            //AutoMapper映射
-            services.AddAutoMapperSupport();
-
-            //集中注入
-            services.AddService();
-
-            //MemoryCache
-            services.AddMemoryCache();
-
-            //Swagger
-            services.AddSwagger();
-
-            //ApiVersion
-            services.AddApiVersion();
-
-            services.AddMiniProfiler(options =>
-            {
-                // (Optional) Path to use for profiler URLs, default is /mini-profiler-resources
-                options.RouteBasePath = "/profiler";
-
-                // (Optional) Control which SQL formatter to use, InlineFormatter is the default
-                options.SqlFormatter = new InlineFormatter();
-
-                // (Optional) You can disable "Connection Open()", "Connection Close()" (and async variant) tracking.
-                // (defaults to true, and connection opening/closing is tracked)
-                options.TrackConnectionOpenClose = true;
-            }).AddEntityFramework();
-
-            //注入 Quartz调度类 
-            services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>(); //注册ISchedulerFactory的实例。
-
-            services.AddHealthChecksUI().AddHealthChecks().AddCheck<RandomHealthCheck>("random");
-
-            //添加jwt验证：
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,//是否验证Issuer
-                        ValidateAudience = true,//是否验证Audience
-                        ValidateLifetime = true,//是否验证失效时间
-                        ClockSkew = TimeSpan.FromSeconds(30),
-                        ValidateIssuerSigningKey = true,//是否验证SecurityKey
-                        ValidAudience = JsonConfig.GetSectionValue("Auth:Domain"),//Audience
-                        ValidIssuer = JsonConfig.GetSectionValue("Auth:Domain"),//Issuer，这两项和前面签发jwt的设置一致
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JsonConfig.GetSectionValue("Auth:SecurityKey")))//拿到SecurityKey
-                    };
-                });
-
-
-            services.AddControllers();
-        }
-
-        /// <summary>
-        ///     ConfigureContainer
-        /// </summary>
-        /// <param name="builder"></param>
-        public void ConfigureContainer(ContainerBuilder builder)
-        {
-            //builder.AddAutoFacService(); 
-        }
-
-        /// <summary>
-        ///     Configure
+        /// Configure
         /// </summary>
         /// <param name="app"></param>
         /// <param name="_httpContextFactory"></param>
@@ -245,7 +149,102 @@ namespace SSS.Api
         }
 
         /// <summary>
-        ///     Swagger
+        /// ConfigureContainer
+        /// </summary>
+        /// <param name="builder"></param>
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            //builder.AddAutoFacService();
+        }
+
+        /// <summary>
+        /// ConfigureServices
+        /// </summary>
+        /// <param name="services">IServiceCollection</param>
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddMvc(options =>
+                {
+                    //全局Action Exception Result过滤器
+                    options.Filters.Add<MvcFilter>();
+                })
+                //.AddNewtonsoftJson(options =>
+                //{
+                //    options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+                //})
+                .AddFluentValidation(config =>
+                {
+                    config.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+                })
+                .ConfigureApiBehaviorOptions(config =>
+                {
+                    //关闭默认模型验证过滤器
+                    config.SuppressModelStateInvalidFilter = true;
+                })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+                    options.JsonSerializerOptions.Converters.Add(new DateTimeNullConverter());
+                });
+
+            services.AddMemoryCacheEx();
+
+            //AutoMapper映射
+            services.AddAutoMapperSupport();
+
+            //集中注入
+            services.AddService();
+
+            //MemoryCache
+            services.AddMemoryCache();
+
+            //Swagger
+            services.AddSwagger();
+
+            //ApiVersion
+            services.AddApiVersion();
+
+            services.AddMiniProfiler(options =>
+            {
+                // (Optional) Path to use for profiler URLs, default is /mini-profiler-resources
+                options.RouteBasePath = "/profiler";
+
+                // (Optional) Control which SQL formatter to use, InlineFormatter is the default
+                options.SqlFormatter = new InlineFormatter();
+
+                // (Optional) You can disable "Connection Open()", "Connection Close()" (and async
+                // variant) tracking. (defaults to true, and connection opening/closing is tracked)
+                options.TrackConnectionOpenClose = true;
+            }).AddEntityFramework();
+
+            //注入 Quartz调度类
+            services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>(); //注册ISchedulerFactory的实例。
+
+            services.AddHealthChecksUI().AddHealthChecks().AddCheck<RandomHealthCheck>("random");
+
+            //添加jwt验证：
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,//是否验证Issuer
+                        ValidateAudience = true,//是否验证Audience
+                        ValidateLifetime = true,//是否验证失效时间
+                        ClockSkew = TimeSpan.FromSeconds(30),
+                        ValidateIssuerSigningKey = true,//是否验证SecurityKey
+                        ValidAudience = JsonConfig.GetSectionValue("Auth:Domain"),//Audience
+                        ValidIssuer = JsonConfig.GetSectionValue("Auth:Domain"),//Issuer，这两项和前面签发jwt的设置一致
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JsonConfig.GetSectionValue("Auth:SecurityKey")))//拿到SecurityKey
+                    };
+                });
+
+            services.AddControllers();
+        }
+
+        /// <summary>
+        /// Swagger
         /// </summary>
         /// <param name="app"></param>
         private void Swagger(IApplicationBuilder app)
@@ -265,7 +264,7 @@ namespace SSS.Api
         }
 
         /// <summary>
-        ///     文件浏览
+        /// 文件浏览
         /// </summary>
         /// <param name="app"></param>
         private void UseDefaultStaticFile(IApplicationBuilder app)

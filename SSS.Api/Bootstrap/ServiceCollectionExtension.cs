@@ -26,31 +26,22 @@ using System.Reflection;
 namespace SSS.Api.Bootstrap
 {
     /// <summary>
-    ///     ServiceCollectionExtension
+    /// ServiceCollectionExtension
     /// </summary>
     public static class ServiceCollectionExtension
     {
         /// <summary>
-        ///     Service Base
+        /// ApiVersion
         /// </summary>
         /// <param name="services"></param>
-        public static void AddService(this IServiceCollection services)
+        public static void AddApiVersion(this IServiceCollection services)
         {
-            // Sdk
-            services.AutoRegisterServicesFromAssembly("SSS.DigitalCurrency");
-
-            // Domain  
-            services.AutoRegisterServicesFromAssembly("SSS.Domain.Seedwork");
-            services.AutoRegisterServicesFromAssembly("SSS.Domain");
-
-            // Infra 
-            services.AutoRegisterServicesFromAssembly("SSS.Infrastructure.Seedwork");
-            services.AutoRegisterServicesFromAssembly("SSS.Infrastructure");
-
-            // Application
-            services.AutoRegisterServicesFromAssembly("SSS.Application.Seedwork");
-            services.AutoRegisterServicesFromAssembly("SSS.Application.Job");
-            services.AutoRegisterServicesFromAssembly("SSS.Application");
+            services.AddApiVersioning(options =>
+            {
+                options.ReportApiVersions = true;
+                options.AssumeDefaultVersionWhenUnspecified = false;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+            });
         }
 
         /// <summary>
@@ -62,11 +53,11 @@ namespace SSS.Api.Bootstrap
             // Sdk
             builder.AutoFacRegisterService("SSS.DigitalCurrency");
 
-            // Domain  
+            // Domain
             builder.AutoFacRegisterService("SSS.Domain.Seedwork");
             builder.AutoFacRegisterService("SSS.Domain");
 
-            // Infra 
+            // Infra
             builder.AutoFacRegisterService("SSS.Infrastructure.Seedwork");
             builder.AutoFacRegisterService("SSS.Infrastructure");
 
@@ -80,7 +71,7 @@ namespace SSS.Api.Bootstrap
         }
 
         /// <summary>
-        ///     AutoMapper
+        /// AutoMapper
         /// </summary>
         /// <param name="services"></param>
         public static void AddAutoMapperSupport(this IServiceCollection services)
@@ -93,7 +84,30 @@ namespace SSS.Api.Bootstrap
         }
 
         /// <summary>
-        ///     Swagger
+        /// Service Base
+        /// </summary>
+        /// <param name="services"></param>
+        public static void AddService(this IServiceCollection services)
+        {
+            // Sdk
+            services.AutoRegisterServicesFromAssembly("SSS.DigitalCurrency");
+
+            // Domain
+            services.AutoRegisterServicesFromAssembly("SSS.Domain.Seedwork");
+            services.AutoRegisterServicesFromAssembly("SSS.Domain");
+
+            // Infra
+            services.AutoRegisterServicesFromAssembly("SSS.Infrastructure.Seedwork");
+            services.AutoRegisterServicesFromAssembly("SSS.Infrastructure");
+
+            // Application
+            services.AutoRegisterServicesFromAssembly("SSS.Application.Seedwork");
+            services.AutoRegisterServicesFromAssembly("SSS.Application.Job");
+            services.AutoRegisterServicesFromAssembly("SSS.Application");
+        }
+
+        /// <summary>
+        /// Swagger
         /// </summary>
         /// <param name="services"></param>
         public static void AddSwagger(this IServiceCollection services)
@@ -138,24 +152,10 @@ namespace SSS.Api.Bootstrap
             });
         }
 
-        /// <summary>
-        ///     ApiVersion
-        /// </summary>
-        /// <param name="services"></param>
-        public static void AddApiVersion(this IServiceCollection services)
-        {
-            services.AddApiVersioning(options =>
-            {
-                options.ReportApiVersions = true;
-                options.AssumeDefaultVersionWhenUnspecified = false;
-                options.DefaultApiVersion = new ApiVersion(1, 0);
-            });
-        }
-
         #region AddMemoryCacheEx
 
         /// <summary>
-        ///     MemoryCache扩展
+        /// MemoryCache扩展
         /// </summary>
         /// <param name="services"></param>
         public static void AddMemoryCacheEx(this IServiceCollection services)
@@ -164,12 +164,12 @@ namespace SSS.Api.Bootstrap
             services.AddTransient<MemoryCacheEx>();
         }
 
-        #endregion
+        #endregion AddMemoryCacheEx
 
         #region Redis
 
         /// <summary>
-        ///     配置Redis链接
+        /// 配置Redis链接
         /// </summary>
         /// <param name="services"></param>
         /// <param name="section"></param>
@@ -180,7 +180,7 @@ namespace SSS.Api.Bootstrap
         }
 
         /// <summary>
-        ///     配置Redis链接
+        /// 配置Redis链接
         /// </summary>
         /// <param name="services"></param>
         /// <param name="options"></param>
@@ -191,7 +191,7 @@ namespace SSS.Api.Bootstrap
         }
 
         /// <summary>
-        ///     默认Redis链接
+        /// 默认Redis链接
         /// </summary>
         /// <param name="services"></param>
         public static void AddRedisCache(this IServiceCollection services)
@@ -199,23 +199,12 @@ namespace SSS.Api.Bootstrap
             services.AddTransient<RedisCache>();
         }
 
-        #endregion
+        #endregion Redis
 
         #region Memcached
 
         /// <summary>
-        ///     配置Memcached链接
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="section"></param>
-        public static void AddMemCached(this IServiceCollection services, IConfigurationSection section)
-        {
-            services.Configure<MemCachedOptions>(section);
-            services.AddTransient<MemCached>();
-        }
-
-        /// <summary>
-        ///     默认Memcached链接
+        /// 默认Memcached链接
         /// </summary>
         /// <param name="services"></param>
         public static void AddMemcached(this IServiceCollection services)
@@ -224,7 +213,7 @@ namespace SSS.Api.Bootstrap
         }
 
         /// <summary>
-        ///     配置Memcached链接
+        /// 配置Memcached链接
         /// </summary>
         /// <param name="services"></param>
         /// <param name="options"></param>
@@ -234,6 +223,17 @@ namespace SSS.Api.Bootstrap
             services.AddTransient<RedisCache>();
         }
 
-        #endregion
+        /// <summary>
+        /// 配置Memcached链接
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="section"></param>
+        public static void AddMemCached(this IServiceCollection services, IConfigurationSection section)
+        {
+            services.Configure<MemCachedOptions>(section);
+            services.AddTransient<MemCached>();
+        }
+
+        #endregion Memcached
     }
 }

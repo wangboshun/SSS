@@ -76,16 +76,37 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
             return Repository.SaveChanges() > 0 ? Mapper.Map<PowerInfoOutputDto>(model) : null;
         }
 
-        public Pages<List<PowerInfoOutputDto>> GetListPowerInfo(PowerInfoInputDto input)
-        {
-            return GetPage(input);
-        }
-
         public bool DeletePowerInfo(string id)
         {
             Repository.Remove(id);
             _powerGroupRelationRepository.Remove(x => x.PowerId.Equals(id));
             return Repository.SaveChanges() > 0;
+        }
+
+        /// <summary>
+        /// 获取菜单下的所有下级
+        /// </summary>
+        /// <param name="menuid"></param>
+        /// <returns></returns>
+        public List<PowerInfoTreeOutputDto> GetChildren(string menuid)
+        {
+            return _powerInfoRepository.GetChildren(menuid);
+        }
+
+        public Pages<List<PowerInfoOutputDto>> GetListPowerInfo(PowerInfoInputDto input)
+        {
+            return GetPage(input);
+        }
+
+        /// <summary>
+        /// 根据权限组Id或名称，遍历关联权限
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Pages<List<PowerInfoOutputDto>> GetPowerByPowerGroup(PowerGroupInputDto input)
+        {
+            var data = _powerInfoRepository.GetPowerByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<PowerInfoOutputDto>>(data.items.MapperToOutPut<PowerInfoOutputDto>()?.ToList(), data.count);
         }
 
         /// <summary>
@@ -96,17 +117,6 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
         public Pages<List<PowerInfoOutputDto>> GetPowerByRoleGroup(RoleGroupInputDto input)
         {
             var data = _powerInfoRepository.GetPowerByRoleGroup(input.id, input.rolegroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<PowerInfoOutputDto>>(data.items.MapperToOutPut<PowerInfoOutputDto>()?.ToList(), data.count);
-        }
-
-        /// <summary>
-        /// 根据用户组Id或名称，遍历关联权限
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public Pages<List<PowerInfoOutputDto>> GetPowerByUserGroup(UserGroupInputDto input)
-        {
-            var data = _powerInfoRepository.GetPowerByUserGroup(input.id, input.usergroupname, input.parentid, input.pageindex, input.pagesize);
             return new Pages<List<PowerInfoOutputDto>>(data.items.MapperToOutPut<PowerInfoOutputDto>()?.ToList(), data.count);
         }
 
@@ -122,23 +132,13 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
         }
 
         /// <summary>
-        ///     获取菜单下的所有下级
-        /// </summary>
-        /// <param name="menuid"></param>
-        /// <returns></returns>
-        public List<PowerInfoTreeOutputDto> GetChildren(string menuid)
-        {
-            return _powerInfoRepository.GetChildren(menuid);
-        }
-
-        /// <summary>
-        /// 根据权限组Id或名称，遍历关联权限
+        /// 根据用户组Id或名称，遍历关联权限
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public Pages<List<PowerInfoOutputDto>> GetPowerByPowerGroup(PowerGroupInputDto input)
+        public Pages<List<PowerInfoOutputDto>> GetPowerByUserGroup(UserGroupInputDto input)
         {
-            var data = _powerInfoRepository.GetPowerByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
+            var data = _powerInfoRepository.GetPowerByUserGroup(input.id, input.usergroupname, input.parentid, input.pageindex, input.pagesize);
             return new Pages<List<PowerInfoOutputDto>>(data.items.MapperToOutPut<PowerInfoOutputDto>()?.ToList(), data.count);
         }
     }

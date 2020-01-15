@@ -15,9 +15,9 @@ namespace SSS.Infrastructure.Seedwork.Cache.Session
 
         private ISession _session => _httpContextAccessor.HttpContext.Session;
 
-        public void StringSet(string key, string value)
+        public void Remove(string key)
         {
-            _session.Set(key, Encoding.UTF8.GetBytes(value));
+            _session.Remove(key);
         }
 
         public string StringGet(string key)
@@ -26,9 +26,9 @@ namespace SSS.Infrastructure.Seedwork.Cache.Session
             return data == null ? null : Encoding.UTF8.GetString(data);
         }
 
-        public void Remove(string key)
+        public void StringSet(string key, string value)
         {
-            _session.Remove(key);
+            _session.Set(key, Encoding.UTF8.GetBytes(value));
         }
     }
 }

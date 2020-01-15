@@ -8,7 +8,7 @@ using SSS.Domain.Coin.CoinInfo.Dto;
 namespace SSS.Api.Controllers.Coin
 {
     /// <summary>
-    ///     币币信息
+    /// 币币信息
     /// </summary>
     [ApiVersion("3.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -20,7 +20,7 @@ namespace SSS.Api.Controllers.Coin
         private readonly ICoinInfoService _service;
 
         /// <summary>
-        ///     币币信息
+        /// 币币信息
         /// </summary>
         /// <param name="service">ICoinInfoService</param>
         public CoinInfoController(ICoinInfoService service)
@@ -29,19 +29,7 @@ namespace SSS.Api.Controllers.Coin
         }
 
         /// <summary>
-        ///     获取所有币币信息列表
-        /// </summary>
-        /// <param name="input">input</param>
-        /// <returns></returns>
-        [HttpGet("getlist")]
-        public IActionResult GetList([FromQuery] CoinInfoInputDto input)
-        {
-            var result = _service.GetListCoinInfo(input);
-            return PageResponse(result);
-        }
-
-        /// <summary>
-        ///     添加币币
+        /// 添加币币
         /// </summary>
         /// <param name="input">CoinInfoInputDto</param>
         /// <returns></returns>
@@ -50,6 +38,18 @@ namespace SSS.Api.Controllers.Coin
         {
             _service.AddCoinInfo(input);
             return AddResponse(input);
+        }
+
+        /// <summary>
+        /// 获取所有币币信息列表
+        /// </summary>
+        /// <param name="input">input</param>
+        /// <returns></returns>
+        [HttpGet("getlist")]
+        public IActionResult GetList([FromQuery] CoinInfoInputDto input)
+        {
+            var result = _service.GetListCoinInfo(input);
+            return PageResponse(result);
         }
     }
 }

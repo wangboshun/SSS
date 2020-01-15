@@ -28,8 +28,8 @@ namespace SSS.Application.Community.CommunityInfo.Service
         private readonly ICommunityBusinessRelationRepository _communityBusinessRelationRepository;
         private readonly ICommunityBusinessRepository _communityBusinessRepository;
         private readonly ICommunityInfoRepository _communityInfoRepository;
-        private readonly IUserInfoRepository _userInfoRepository;
         private readonly IUserCommunityRelationRepository _userCommunityRelationRepository;
+        private readonly IUserInfoRepository _userInfoRepository;
 
         public CommunityInfoService(IMapper mapper,
             ICommunityInfoRepository repository,
@@ -47,6 +47,34 @@ namespace SSS.Application.Community.CommunityInfo.Service
             _userInfoRepository = userInfoRepository;
             _userCommunityRelationRepository = userCommunityRelationRepository;
             _communityBusinessRelationRepository = communityBusinessRelationRepository;
+        }
+
+        public CommunityBusinessRelationOutputDto AddCommunityBusinessRelation(CommunityBusinessRelationInputDto input)
+        {
+            var community = _communityInfoRepository.Get(input.CommunityId);
+            var business = _communityBusinessRepository.Get(input.BusinessId);
+            if (community == null || business == null)
+            {
+                Error.Execute("社区或业务不存在！");
+                return null;
+            }
+
+            var relation = _communityBusinessRelationRepository.Get(x =>
+                  x.Businessid.Equals(input.BusinessId) && x.Communityid.Equals(input.CommunityId));
+
+            if (relation != null)
+            {
+                Error.Execute("社区业务已关联！");
+                return null;
+            }
+
+            input.id = Guid.NewGuid().ToString();
+            var model = Mapper.Map<SSS.Domain.Community.CommunityBusinessRelation.CommunityBusinessRelation>(input);
+            model.CreateTime = DateTime.Now;
+            model.IsDelete = 0;
+
+            _communityBusinessRelationRepository.Add(model);
+            return _communityBusinessRelationRepository.SaveChanges() > 0 ? Mapper.Map<CommunityBusinessRelationOutputDto>(model) : null;
         }
 
         public CommunityInfoOutputDto AddCommunityInfo(CommunityInfoInputDto input)
@@ -89,6 +117,11 @@ namespace SSS.Application.Community.CommunityInfo.Service
             return Repository.SaveChanges() > 0 ? Mapper.Map<CommunityInfoOutputDto>(model) : null;
         }
 
+        public Pages<List<CommunityInfoOutputDto>> GetListCommunityInfo(CommunityInfoInputDto input)
+        {
+            return GetPage(input);
+        }
+
         public bool UpdateCommunityInfo(CommunityInfoInputDto input)
         {
             var result = Validator.Validate(input, ruleSet: "Update");
@@ -109,39 +142,6 @@ namespace SSS.Application.Community.CommunityInfo.Service
             model.UpdateTime = DateTime.Now;
             Repository.Update(model);
             return Repository.SaveChanges() > 0;
-        }
-
-        public CommunityBusinessRelationOutputDto AddCommunityBusinessRelation(CommunityBusinessRelationInputDto input)
-        {
-            var community = _communityInfoRepository.Get(input.CommunityId);
-            var business = _communityBusinessRepository.Get(input.BusinessId);
-            if (community == null || business == null)
-            {
-                Error.Execute("社区或业务不存在！");
-                return null;
-            }
-
-            var relation = _communityBusinessRelationRepository.Get(x =>
-                  x.Businessid.Equals(input.BusinessId) && x.Communityid.Equals(input.CommunityId));
-
-            if (relation != null)
-            {
-                Error.Execute("社区业务已关联！");
-                return null;
-            }
-
-            input.id = Guid.NewGuid().ToString();
-            var model = Mapper.Map<SSS.Domain.Community.CommunityBusinessRelation.CommunityBusinessRelation>(input);
-            model.CreateTime = DateTime.Now;
-            model.IsDelete = 0;
-
-            _communityBusinessRelationRepository.Add(model);
-            return _communityBusinessRelationRepository.SaveChanges() > 0 ? Mapper.Map<CommunityBusinessRelationOutputDto>(model) : null;
-        }
-
-        public Pages<List<CommunityInfoOutputDto>> GetListCommunityInfo(CommunityInfoInputDto input)
-        {
-            return GetPage(input);
         }
     }
 }

@@ -41,12 +41,6 @@ namespace SSS.Application.Job.Coin.CoinInfo
             _scopeFactory = scopeFactory;
         }
 
-        public Task Execute(IJobExecutionContext context)
-        {
-            _logger.LogInformation("-----------------CoinInfoJob----------------------");
-            return DoWork(context);
-        }
-
         public Task DoWork(IJobExecutionContext context)
         {
             lock (_lock)
@@ -75,8 +69,14 @@ namespace SSS.Application.Job.Coin.CoinInfo
             }
         }
 
+        public Task Execute(IJobExecutionContext context)
+        {
+            _logger.LogInformation("-----------------CoinInfoJob----------------------");
+            return DoWork(context);
+        }
+
         /// <summary>
-        ///     获取币币信息
+        /// 获取币币信息
         /// </summary>
         public void GetCoinInfo()
         {
@@ -126,7 +126,7 @@ namespace SSS.Application.Job.Coin.CoinInfo
         }
 
         /// <summary>
-        ///     下载币币Logo
+        /// 下载币币Logo
         /// </summary>
         /// <param name="coin"></param>
         /// <param name="url"></param>
@@ -154,7 +154,7 @@ namespace SSS.Application.Job.Coin.CoinInfo
         }
 
         /// <summary>
-        ///     币币Logo转换为Base64
+        /// 币币Logo转换为Base64
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>

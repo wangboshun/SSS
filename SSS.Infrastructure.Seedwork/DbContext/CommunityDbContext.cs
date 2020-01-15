@@ -20,11 +20,11 @@ namespace SSS.Infrastructure.Seedwork.DbContext
 
         #region Coin
 
-        public DbSet<CommunityInfo> CommunityInfo { get; set; }
         public DbSet<CommunityBusiness> CommunityBusiness { get; set; }
         public DbSet<CommunityBusinessRelation> CommunityBusinessRelation { get; set; }
+        public DbSet<CommunityInfo> CommunityInfo { get; set; }
         public DbSet<UserCommunityRelation> UserCommunityRelation { get; set; }
 
-        #endregion
+        #endregion Coin
     }
 }

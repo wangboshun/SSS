@@ -1,14 +1,7 @@
 ﻿namespace SSS.DigitalCurrency.Domain
 {
-    public class CoinSymbols
-    {
-        public string base_currency { set; get; }
-
-        public string quote_currency { set; get; }
-    }
-
     /// <summary>
-    ///     时间线  分钟为单位
+    /// 时间线 分钟为单位
     /// </summary>
     public enum CoinTime
     {
@@ -32,5 +25,12 @@
         Sma = 1,
         Macd = 2,
         Kdj = 3
+    }
+
+    public class CoinSymbols
+    {
+        public string base_currency { set; get; }
+
+        public string quote_currency { set; get; }
     }
 }

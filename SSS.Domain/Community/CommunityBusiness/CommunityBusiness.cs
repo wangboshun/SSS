@@ -4,8 +4,7 @@ namespace SSS.Domain.Community.CommunityBusiness
 {
     public class CommunityBusiness : Entity
     {
-        public string Name { set; get; }
-
         public string Detail { set; get; }
+        public string Name { set; get; }
     }
 }

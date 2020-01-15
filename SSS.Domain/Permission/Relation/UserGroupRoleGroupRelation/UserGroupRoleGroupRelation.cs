@@ -4,8 +4,7 @@ namespace SSS.Domain.Permission.Relation.UserGroupRoleGroupRelation
 {
     public class UserGroupRoleGroupRelation : Entity
     {
-        public string UserGroupId { set; get; }
-
         public string RoleGroupId { set; get; }
+        public string UserGroupId { set; get; }
     }
 }

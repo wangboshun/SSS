@@ -22,14 +22,13 @@ namespace SSS.Infrastructure.Seedwork.DbContext
 
         #region Coin
 
-        public DbSet<CoinArticel> CoinArticel { get; set; }
         public DbSet<CoinAnalyse> CoinAnalyse { get; set; }
+        public DbSet<CoinArticel> CoinArticel { get; set; }
         public DbSet<CoinInfo> CoinInfo { get; set; }
+        public DbSet<CoinKLineData> CoinKLineData { set; get; }
         public DbSet<CoinMessage> CoinMessage { get; set; }
         public DbSet<CoinTrade> CoinTrade { set; get; }
 
-        public DbSet<CoinKLineData> CoinKLineData { set; get; }
-
-        #endregion
+        #endregion Coin
     }
 }

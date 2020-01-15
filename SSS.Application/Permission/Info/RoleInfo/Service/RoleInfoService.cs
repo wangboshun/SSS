@@ -91,7 +91,7 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
         }
 
         /// <summary>
-        ///     获取角色下的所有下级
+        /// 获取角色下的所有下级
         /// </summary>
         /// <param name="roleid"></param>
         /// <returns></returns>
@@ -105,6 +105,12 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
             return GetPage(input);
         }
 
+        public Pages<List<RoleInfoOutputDto>> GetRoleByPowerGroup(PowerGroupInputDto input)
+        {
+            var data = _roleInfoRepository.GetRoleByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<RoleInfoOutputDto>>(data.items.MapperToOutPut<RoleInfoOutputDto>()?.ToList(), data.count);
+        }
+
         /// <summary>
         /// 根据角色组Id或名称，遍历关联角色
         /// </summary>
@@ -116,9 +122,14 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
             return new Pages<List<RoleInfoOutputDto>>(data.items.MapperToOutPut<RoleInfoOutputDto>()?.ToList(), data.count);
         }
 
-        public Pages<List<RoleInfoOutputDto>> GetRoleByPowerGroup(PowerGroupInputDto input)
+        /// <summary>
+        /// 根据用户Id或名称，遍历关联角色
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Pages<List<RoleInfoOutputDto>> GetRoleByUser(UserInfoInputDto input)
         {
-            var data = _roleInfoRepository.GetRoleByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
+            var data = _roleInfoRepository.GetRoleByUser(input.id, input.username, input.parentid, input.pageindex, input.pagesize);
             return new Pages<List<RoleInfoOutputDto>>(data.items.MapperToOutPut<RoleInfoOutputDto>()?.ToList(), data.count);
         }
 
@@ -130,17 +141,6 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
         public Pages<List<RoleInfoOutputDto>> GetRoleByUserGroup(UserGroupInputDto input)
         {
             var data = _roleInfoRepository.GetRoleByUserGroup(input.id, input.usergroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<RoleInfoOutputDto>>(data.items.MapperToOutPut<RoleInfoOutputDto>()?.ToList(), data.count);
-        }
-
-        /// <summary>
-        /// 根据用户Id或名称，遍历关联角色
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public Pages<List<RoleInfoOutputDto>> GetRoleByUser(UserInfoInputDto input)
-        {
-            var data = _roleInfoRepository.GetRoleByUser(input.id, input.username, input.parentid, input.pageindex, input.pagesize);
             return new Pages<List<RoleInfoOutputDto>>(data.items.MapperToOutPut<RoleInfoOutputDto>()?.ToList(), data.count);
         }
     }

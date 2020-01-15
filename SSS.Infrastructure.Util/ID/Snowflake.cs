@@ -5,28 +5,46 @@ namespace SSS.Infrastructure.Util.ID
 {
     public class Snowflake
     {
+        public static long maxMachineId = -1L ^ (-1L << (int)machineIdBits);
+        public static long sequenceMask = -1L ^ (-1L << (int)sequenceBits);
+        private static readonly long datacenterIdBits = 5L;
+        private static readonly long datacenterIdShift = sequenceBits + machineIdBits;
+        private static readonly long machineIdBits = 5L;
+        private static readonly long machineIdShift = sequenceBits;
+
+        //机器码字节数
+        //数据字节数
+        //最大机器ID
+        private static readonly long maxDatacenterId = -1L ^ (-1L << (int)datacenterIdBits);
+
+        private static readonly long sequenceBits = 12L;
+        private static readonly object syncRoot = new object();
+
+        //计数器字节数，12个字节用来保存计数码
+        //机器码数据左移位数，就是后面计数器占用的位数
+        private static readonly long
+            timestampLeftShift = sequenceBits + machineIdBits + datacenterIdBits;
+
+        private static readonly long twepoch = 687888001020L;
+        private static long datacenterId;
+
+        //一微秒内可以产生计数，如果达到该值则等到下一微妙在进行生成
+        private static long lastTimestamp = -1L;
+
         private static long machineId; //机器ID
-        private static long datacenterId; //数据ID
+
+        //数据ID
         private static long sequence; //计数从零开始
 
-        private static readonly long twepoch = 687888001020L; //唯一时间随机量
+        //唯一时间随机量
 
-        private static readonly long machineIdBits = 5L; //机器码字节数
-        private static readonly long datacenterIdBits = 5L; //数据字节数
-        public static long maxMachineId = -1L ^ (-1L << (int)machineIdBits); //最大机器ID
-        private static readonly long maxDatacenterId = -1L ^ (-1L << (int)datacenterIdBits); //最大数据ID
+        //最大数据ID
 
-        private static readonly long sequenceBits = 12L; //计数器字节数，12个字节用来保存计数码
-        private static readonly long machineIdShift = sequenceBits; //机器码数据左移位数，就是后面计数器占用的位数
-        private static readonly long datacenterIdShift = sequenceBits + machineIdBits;
+        //时间戳左移动位数就是机器码+计数器总字节数+数据字节数
 
-        private static readonly long
-            timestampLeftShift = sequenceBits + machineIdBits + datacenterIdBits; //时间戳左移动位数就是机器码+计数器总字节数+数据字节数
+        //最后时间戳
 
-        public static long sequenceMask = -1L ^ (-1L << (int)sequenceBits); //一微秒内可以产生计数，如果达到该值则等到下一微妙在进行生成
-        private static long lastTimestamp = -1L; //最后时间戳
-
-        private static readonly object syncRoot = new object(); //加锁对象
+        //加锁对象
         private static Snowflake snowflake;
 
         public Snowflake()
@@ -49,55 +67,8 @@ namespace SSS.Infrastructure.Util.ID
             return snowflake ??= new Snowflake();
         }
 
-        private void Snowflakes(long machineId, long datacenterId)
-        {
-            if (machineId >= 0)
-            {
-                if (machineId > maxMachineId) throw new Exception("机器码ID非法");
-                Snowflake.machineId = machineId;
-            }
-
-            if (datacenterId >= 0)
-            {
-                if (datacenterId > maxDatacenterId) throw new Exception("数据中心ID非法");
-                Snowflake.datacenterId = datacenterId;
-            }
-        }
-
         /// <summary>
-        ///     生成当前时间戳
-        /// </summary>
-        /// <returns>毫秒</returns>
-        private static long GetTimestamp()
-        {
-            //让他2000年开始
-            return (long)(System.DateTime.UtcNow - new System.DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc))
-                .TotalMilliseconds;
-        }
-
-        /// <summary>
-        ///     获取下一微秒时间戳
-        /// </summary>
-        /// <param name="lastTimestamp"></param>
-        /// <returns></returns>
-        private static long GetNextTimestamp(long lastTimestamp)
-        {
-            var timestamp = GetTimestamp();
-            var count = 0;
-            while (timestamp <= lastTimestamp) //这里获取新的时间,可能会有错,这算法与comb一样对机器时间的要求很严格
-            {
-                count++;
-                if (count > 10)
-                    throw new Exception("机器的时间可能不对");
-                Thread.Sleep(1);
-                timestamp = GetTimestamp();
-            }
-
-            return timestamp;
-        }
-
-        /// <summary>
-        ///     获取长整形的ID
+        /// 获取长整形的ID
         /// </summary>
         /// <returns></returns>
         public long GetId()
@@ -126,6 +97,53 @@ namespace SSS.Infrastructure.Util.ID
                          | (machineId << (int)machineIdShift)
                          | sequence;
                 return Id;
+            }
+        }
+
+        /// <summary>
+        /// 获取下一微秒时间戳
+        /// </summary>
+        /// <param name="lastTimestamp"></param>
+        /// <returns></returns>
+        private static long GetNextTimestamp(long lastTimestamp)
+        {
+            var timestamp = GetTimestamp();
+            var count = 0;
+            while (timestamp <= lastTimestamp) //这里获取新的时间,可能会有错,这算法与comb一样对机器时间的要求很严格
+            {
+                count++;
+                if (count > 10)
+                    throw new Exception("机器的时间可能不对");
+                Thread.Sleep(1);
+                timestamp = GetTimestamp();
+            }
+
+            return timestamp;
+        }
+
+        /// <summary>
+        /// 生成当前时间戳
+        /// </summary>
+        /// <returns>毫秒</returns>
+        private static long GetTimestamp()
+        {
+            //让他2000年开始
+            return (long)(System.DateTime.UtcNow - new System.DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc))
+                .TotalMilliseconds;
+        }
+
+        private void Snowflakes(long machineId, long datacenterId)
+        {
+            if (machineId >= 0)
+            {
+                if (machineId > maxMachineId) throw new Exception("机器码ID非法");
+                Snowflake.machineId = machineId;
+            }
+
+            if (datacenterId >= 0)
+            {
+                if (datacenterId > maxDatacenterId) throw new Exception("数据中心ID非法");
+                Snowflake.datacenterId = datacenterId;
             }
         }
     }

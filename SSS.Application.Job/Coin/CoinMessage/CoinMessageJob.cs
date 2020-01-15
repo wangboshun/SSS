@@ -32,12 +32,6 @@ namespace SSS.Application.Job.Coin.CoinMessage
             _scopeFactory = scopeFactory;
         }
 
-        public Task Execute(IJobExecutionContext context)
-        {
-            _logger.LogInformation("-----------------CoinMessageJob----------------------");
-            return DoWork(context);
-        }
-
         public Task DoWork(IJobExecutionContext context)
         {
             lock (_lock)
@@ -66,8 +60,14 @@ namespace SSS.Application.Job.Coin.CoinMessage
             }
         }
 
+        public Task Execute(IJobExecutionContext context)
+        {
+            _logger.LogInformation("-----------------CoinMessageJob----------------------");
+            return DoWork(context);
+        }
+
         /// <summary>
-        ///     获取利好新闻消息
+        /// 获取利好新闻消息
         /// </summary>
         public void GetCoinMessage()
         {

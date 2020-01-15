@@ -6,8 +6,7 @@ namespace SSS.Domain.Permission.Info.MenuInfo
     {
         public string MenuName { set; get; }
 
-        public string ParentId { set; get; }
-
         public string MenuUrl { set; get; }
+        public string ParentId { set; get; }
     }
 }

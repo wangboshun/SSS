@@ -10,8 +10,11 @@ namespace SSS.Application.Community.CommunityBusiness.Service
     public interface ICommunityBusinessService : IQueryService<Domain.Community.CommunityBusiness.CommunityBusiness, CommunityBusinessInputDto, CommunityBusinessOutputDto>
     {
         CommunityBusinessOutputDto AddCommunityBusiness(CommunityBusinessInputDto input);
-        bool UpdateCommunityBusiness(CommunityBusinessInputDto input);
-        Pages<List<CommunityBusinessOutputDto>> GetListCommunityBusiness(CommunityBusinessInputDto input);
+
         Pages<List<CommunityBusinessOutputDto>> GetCommunityBusinessByCommunity(CommunityInfoInputDto input);
+
+        Pages<List<CommunityBusinessOutputDto>> GetListCommunityBusiness(CommunityBusinessInputDto input);
+
+        bool UpdateCommunityBusiness(CommunityBusinessInputDto input);
     }
 }

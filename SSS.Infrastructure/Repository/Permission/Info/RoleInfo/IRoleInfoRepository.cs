@@ -16,28 +16,27 @@ namespace SSS.Infrastructure.Repository.Permission.Info.RoleInfo
         List<RoleInfoTreeOutputDto> GetChildren(string roleid);
 
         /// <summary>
-        /// 根据角色组Id或名称，遍历关联角色
-        /// </summary> 
-        /// <returns></returns>
-        Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>> GetRoleByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
-
-        /// <summary>
         /// 根据权限组Id或名称，遍历关联角色
-        /// </summary> 
+        /// </summary>
         /// <returns></returns>
         Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>> GetRoleByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
 
         /// <summary>
-        /// 根据用户组Id或名称，遍历关联角色
-        /// </summary> 
+        /// 根据角色组Id或名称，遍历关联角色
+        /// </summary>
         /// <returns></returns>
-        Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>> GetRoleByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
+        Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>> GetRoleByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
 
         /// <summary>
         /// 根据用户Id或名称，遍历关联角色
-        /// </summary> 
+        /// </summary>
         /// <returns></returns>
         Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>> GetRoleByUser(string userid, string usename, string parentid = "", int pageindex = 0, int pagesize = 0);
 
+        /// <summary>
+        /// 根据用户组Id或名称，遍历关联角色
+        /// </summary>
+        /// <returns></returns>
+        Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>> GetRoleByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
     }
 }

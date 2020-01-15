@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace SSS.Api.Seedwork.Middleware
 {
     /// <summary>
-    ///     UrlsMiddleware
+    /// UrlsMiddleware
     /// </summary>
     public class UrlsMiddleware
     {
@@ -14,7 +14,7 @@ namespace SSS.Api.Seedwork.Middleware
         private readonly RequestDelegate _next;
 
         /// <summary>
-        ///     UrlsMiddleware
+        /// UrlsMiddleware
         /// </summary>
         /// <param name="next"></param>
         /// <param name="loggerFactory"></param>

@@ -28,7 +28,7 @@ namespace SSS.DigitalCurrency.Huobi
         }
 
         /// <summary>
-        ///     获取所有USDT交易对
+        /// 获取所有USDT交易对
         /// </summary>
         /// <returns></returns>
         public List<CoinSymbols> GetAllCoin()
@@ -66,7 +66,7 @@ namespace SSS.DigitalCurrency.Huobi
         }
 
         /// <summary>
-        ///     获取K线
+        /// 获取K线
         /// </summary>
         /// <param name="time"></param>
         /// <param name="size"></param>
@@ -107,7 +107,7 @@ namespace SSS.DigitalCurrency.Huobi
         }
 
         /// <summary>
-        ///     获取K线
+        /// 获取K线
         /// </summary>
         /// <param name="time"></param>
         /// <param name="size"></param>

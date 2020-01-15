@@ -12,18 +12,19 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
     {
         OperateInfoOutputDto AddOperateInfo(OperateInfoInputDto input);
 
+        bool DeleteOperateInfo(string id);
+
         /// <summary>
-        ///     获取操作下的所有下级
+        /// 获取操作下的所有下级
         /// </summary>
         /// <param name="operateid"></param>
         /// <returns></returns>
         List<OperateInfoTreeOutputDto> GetChildrenById(string operateid);
 
-        bool DeleteOperateInfo(string id);
         Pages<List<OperateInfoOutputDto>> GetListOperateInfo(OperateInfoInputDto input);
 
         /// <summary>
-        ///     根据权限组Id或名称，遍历关联操作
+        /// 根据权限组Id或名称，遍历关联操作
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>

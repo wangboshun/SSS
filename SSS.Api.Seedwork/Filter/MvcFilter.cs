@@ -15,13 +15,13 @@ namespace SSS.Api.Seedwork.Filter
             _env = env;
         }
 
-        //2
-        public void OnActionExecuting(ActionExecutingContext context)
+        //3
+        public void OnActionExecuted(ActionExecutedContext context)
         {
         }
 
-        //3
-        public void OnActionExecuted(ActionExecutedContext context)
+        //2
+        public void OnActionExecuting(ActionExecutingContext context)
         {
         }
 
@@ -41,13 +41,13 @@ namespace SSS.Api.Seedwork.Filter
                 context.HttpContext.Request.Path);
         }
 
-        //5
-        public void OnResultExecuting(ResultExecutingContext context)
+        //6
+        public void OnResultExecuted(ResultExecutedContext context)
         {
         }
 
-        //6
-        public void OnResultExecuted(ResultExecutedContext context)
+        //5
+        public void OnResultExecuting(ResultExecutingContext context)
         {
         }
     }

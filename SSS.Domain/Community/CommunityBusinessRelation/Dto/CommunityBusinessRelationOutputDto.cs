@@ -4,7 +4,7 @@ namespace SSS.Domain.Community.CommunityBusinessRelation.Dto
 {
     public class CommunityBusinessRelationOutputDto : OutputDtoBase
     {
-        public string CommunityId { set; get; }
         public string BusinessId { set; get; }
+        public string CommunityId { set; get; }
     }
 }

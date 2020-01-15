@@ -17,14 +17,11 @@ namespace SSS.Domain.Permission.Info.UserInfo.Dto
             Item = new List<UserInfoTreeOutputDto>();
         }
 
+        public DateTime createtime { get; set; }
         public string id { get; set; }
 
-        public string username { get; set; }
-
-        public string parentid { get; set; }
-
-        public DateTime createtime { get; set; }
-
         public List<UserInfoTreeOutputDto> Item { get; set; }
+        public string parentid { get; set; }
+        public string username { get; set; }
     }
 }

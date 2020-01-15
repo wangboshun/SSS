@@ -37,10 +37,43 @@ namespace SSS.Application.Job.Coin.CoinTrade
             _scopeFactory = scopeFactory;
         }
 
-        public Task Execute(IJobExecutionContext context)
+        /// <summary> kdj是否金叉 j<20 && k>d </summary> <param name="coin"></param> <param
+        /// name="kline"></param> <returns></returns>
+        public bool Calc_Kdj(string coin, List<Domain.Coin.CoinKLineData.CoinKLineData> kline)
         {
-            _logger.LogInformation("-----------------CoinTradeJob----------------------");
-            return DoWork(context);
+            var kdj = _indicator.KDJ(kline);
+            var kdj_status = /* kdj.FirstOrDefault()?.Item4 < 20 &&*/
+                kdj.FirstOrDefault()?.Item2 > kdj.FirstOrDefault()?.Item3;
+            _logger.LogInformation($"{coin}  kdj指标    时间：{kdj.FirstOrDefault()?.Item1} ，j:{kdj.FirstOrDefault()?.Item4} , k:{kdj.FirstOrDefault()?.Item2}， d:{kdj.FirstOrDefault()?.Item3}   状态：{kdj_status}");
+            return kdj_status;
+        }
+
+        /// <summary> macd是否金叉 macd>0 && dif>dea </summary> <param name="coin"></param> <param
+        /// name="kline"></param> <returns></returns>
+        public bool Calc_Macd(string coin, List<Domain.Coin.CoinKLineData.CoinKLineData> kline)
+        {
+            var macd = _indicator.MACD(kline);
+
+            //macd是否金叉   macd>0 && dif>dea
+            var macd_status = /* macd.FirstOrDefault().Item4 > 0 &&*/
+                macd.FirstOrDefault()?.Item2 > macd.FirstOrDefault()?.Item3;
+            _logger.LogInformation($"{coin}  macd指标   时间：{macd.FirstOrDefault()?.Item1} , macd:{macd.FirstOrDefault()?.Item4} , dif:{macd.FirstOrDefault()?.Item2}， dea:{macd.FirstOrDefault()?.Item3}   状态：{macd_status}");
+            return macd_status;
+        }
+
+        /// <summary>
+        /// 均线是否金叉 5日线&gt;10日线
+        /// </summary>
+        /// <param name="coin"></param>
+        /// <param name="kline"></param>
+        /// <returns></returns>
+        public bool Calc_Sma(string coin, List<Domain.Coin.CoinKLineData.CoinKLineData> kline)
+        {
+            var data5 = _indicator.SMA(kline, 5);
+            var data10 = _indicator.SMA(kline, 10);
+            var avg_status = data5.First()?.Item2 > data10.First()?.Item2;
+            _logger.LogInformation($"{coin} 均线指标    时间：{data5.First()?.Item1} ，5日线{data5.First()?.Item2}，10日线{data10.First()?.Item2}   状态：{avg_status}");
+            return avg_status;
         }
 
         public Task DoWork(IJobExecutionContext context)
@@ -71,8 +104,14 @@ namespace SSS.Application.Job.Coin.CoinTrade
             }
         }
 
+        public Task Execute(IJobExecutionContext context)
+        {
+            _logger.LogInformation("-----------------CoinTradeJob----------------------");
+            return DoWork(context);
+        }
+
         /// <summary>
-        ///     合约分析
+        /// 合约分析
         /// </summary>
         public void Futures()
         {
@@ -90,8 +129,8 @@ namespace SSS.Application.Job.Coin.CoinTrade
                     {
                         var kline = db_context.CoinKLineData
                             .Where(x => x.Coin.Equals(coin) &&
- 							x.TimeType == (int)time && 
-							x.IsDelete == 0)
+                             x.TimeType == (int)time &&
+                            x.IsDelete == 0)
                             .OrderByDescending(x => x.DataTime).Take(2000).ToList();
                         if (kline.Count < 1)
                         {
@@ -112,125 +151,58 @@ namespace SSS.Application.Job.Coin.CoinTrade
         }
 
         /// <summary>
-        ///     订单处理
+        /// 做多
         /// </summary>
-        private void Trade(string coin, List<Domain.Coin.CoinKLineData.CoinKLineData> kline)
+        private void DoBuy(string coin, double price, int timetype, int quanttype)
         {
             try
             {
-                var coininfo_array = coin.Split('_');
+                using var scope = _scopeFactory.CreateScope();
+                using var db_context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
 
-                //目前收盘价
-                var current_price = kline[0].Close;
+                var cointrade = db_context.CoinTrade.FirstOrDefault(x => x.Coin.Equals(coin) &&
+                                                                         x.Status == 1 &&
+                                                                         x.Direction.Equals("做多") &&
+                                                                         x.QuantType == quanttype &&
+                                                                         x.TimeType == timetype);
+                if (cointrade != null)
+                    return;
 
-                //均线是否金叉   
-                var avg_status = Calc_Sma(coin, kline);
+                var ping = db_context.CoinTrade.FirstOrDefault(x => x.Coin.Equals(coin) &&
+                                                                    x.Status == 1 &&
+                                                                    x.Direction.Equals("做空") &&
+                                                                    x.QuantType == quanttype &&
+                                                                    x.TimeType == timetype);
+                if (ping != null)
+                    Ping(ping.Id, price);
 
-                //macd是否金叉  
-                var macd_status = Calc_Macd(coin, kline);
+                var model = new Domain.Coin.CoinTrade.CoinTrade
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Coin = coin,
+                    CreateTime = DateTime.Now,
+                    IsDelete = 0,
+                    Direction = "做多",
+                    First_Price = price,
+                    Size = 100,
+                    QuantType = quanttype,
+                    TimeType = timetype,
+                    Status = 1,
+                    UserId = Guid.NewGuid().ToString()
+                };
+                db_context.CoinTrade.Add(model);
+                db_context.SaveChanges();
 
-                //kdj是否金叉   
-                var kdj_status = Calc_Kdj(coin, kline);
-
-                foreach (QuantEnum quant in Enum.GetValues(typeof(QuantEnum)))
-                    switch (quant)
-                    {
-                        case QuantEnum.Macd_Sma_Kdj:
-                            //三线金叉
-                            if (avg_status && macd_status && kdj_status) //做多
-                                DoBuy(coininfo_array[0], current_price, Convert.ToInt32(coininfo_array[1]),(int)QuantEnum.Macd_Sma_Kdj);
-
-                            //三线死叉
-                            else if (!avg_status && !macd_status && !kdj_status) //做空
-                                DoSell(coininfo_array[0], current_price, Convert.ToInt32(coininfo_array[1]),(int)QuantEnum.Macd_Sma_Kdj);
-                            break;
-
-                        case QuantEnum.Sma:
-                            //Sma金叉
-                            if (avg_status) //做多
-                                DoBuy(coininfo_array[0], current_price, Convert.ToInt32(coininfo_array[1]),(int)QuantEnum.Sma);
-
-                            //Sma死叉
-                            else //做空
-                                DoSell(coininfo_array[0], current_price, Convert.ToInt32(coininfo_array[1]),(int)QuantEnum.Sma);
-                            break;
-
-                        case QuantEnum.Macd:
-                            //Macd金叉
-                            if (macd_status) //做多
-                                DoBuy(coininfo_array[0], current_price, Convert.ToInt32(coininfo_array[1]),(int)QuantEnum.Macd);
-
-                            //Macd死叉
-                            else //做空
-                                DoSell(coininfo_array[0], current_price, Convert.ToInt32(coininfo_array[1]),(int)QuantEnum.Macd);
-                            break;
-
-                        case QuantEnum.Kdj:
-                            //Kdj金叉
-                            if (kdj_status) //做多
-                                DoBuy(coininfo_array[0], current_price, Convert.ToInt32(coininfo_array[1]),(int)QuantEnum.Kdj);
-
-                            //Kdj死叉
-                            else //做空
-                                DoSell(coininfo_array[0], current_price, Convert.ToInt32(coininfo_array[1]),(int)QuantEnum.Kdj);
-                            break;
-                    }
+                _logger.LogInformation($"做多成功：{model.ToJson()}");
             }
             catch (Exception ex)
             {
-                _logger.LogError(new EventId(ex.HResult), ex, "---Trade Exception---");
+                _logger.LogError(new EventId(ex.HResult), ex, "---DoBuy Exception---");
             }
         }
 
         /// <summary>
-        ///     均线是否金叉    5日线>10日线
-        /// </summary>
-        /// <param name="coin"></param>
-        /// <param name="kline"></param>
-        /// <returns></returns>
-        public bool Calc_Sma(string coin, List<Domain.Coin.CoinKLineData.CoinKLineData> kline)
-        {
-            var data5 = _indicator.SMA(kline, 5);
-            var data10 = _indicator.SMA(kline, 10);
-            var avg_status = data5.First()?.Item2 > data10.First()?.Item2;
-            _logger.LogInformation($"{coin} 均线指标    时间：{data5.First()?.Item1} ，5日线{data5.First()?.Item2}，10日线{data10.First()?.Item2}   状态：{avg_status}");
-            return avg_status;
-        }
-
-        /// <summary>
-        ///     macd是否金叉   macd>0 && dif>dea
-        /// </summary>
-        /// <param name="coin"></param>
-        /// <param name="kline"></param>
-        /// <returns></returns>
-        public bool Calc_Macd(string coin, List<Domain.Coin.CoinKLineData.CoinKLineData> kline)
-        {
-            var macd = _indicator.MACD(kline);
-
-            //macd是否金叉   macd>0 && dif>dea
-            var macd_status = /* macd.FirstOrDefault().Item4 > 0 &&*/
-                macd.FirstOrDefault()?.Item2 > macd.FirstOrDefault()?.Item3;
-            _logger.LogInformation($"{coin}  macd指标   时间：{macd.FirstOrDefault()?.Item1} , macd:{macd.FirstOrDefault()?.Item4} , dif:{macd.FirstOrDefault()?.Item2}， dea:{macd.FirstOrDefault()?.Item3}   状态：{macd_status}");
-            return macd_status;
-        }
-
-        /// <summary>
-        ///     kdj是否金叉    j<20  && k>d
-        /// </summary>
-        /// <param name="coin"></param>
-        /// <param name="kline"></param>
-        /// <returns></returns>
-        public bool Calc_Kdj(string coin, List<Domain.Coin.CoinKLineData.CoinKLineData> kline)
-        {
-            var kdj = _indicator.KDJ(kline);
-            var kdj_status = /* kdj.FirstOrDefault()?.Item4 < 20 &&*/
-                kdj.FirstOrDefault()?.Item2 > kdj.FirstOrDefault()?.Item3;
-            _logger.LogInformation( $"{coin}  kdj指标    时间：{kdj.FirstOrDefault()?.Item1} ，j:{kdj.FirstOrDefault()?.Item4} , k:{kdj.FirstOrDefault()?.Item2}， d:{kdj.FirstOrDefault()?.Item3}   状态：{kdj_status}");
-            return kdj_status;
-        }
-
-        /// <summary>
-        ///     做空
+        /// 做空
         /// </summary>
         private void DoSell(string coin, double price, int timetype, int quanttype)
         {
@@ -282,58 +254,7 @@ namespace SSS.Application.Job.Coin.CoinTrade
         }
 
         /// <summary>
-        ///     做多
-        /// </summary>
-        private void DoBuy(string coin, double price, int timetype, int quanttype)
-        {
-            try
-            {
-                using var scope = _scopeFactory.CreateScope();
-                using var db_context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
-
-                var cointrade = db_context.CoinTrade.FirstOrDefault(x => x.Coin.Equals(coin) &&
-                                                                         x.Status == 1 &&
-                                                                         x.Direction.Equals("做多") &&
-                                                                         x.QuantType == quanttype &&
-                                                                         x.TimeType == timetype);
-                if (cointrade != null)
-                    return;
-
-                var ping = db_context.CoinTrade.FirstOrDefault(x => x.Coin.Equals(coin) &&
-                                                                    x.Status == 1 &&
-                                                                    x.Direction.Equals("做空") &&
-                                                                    x.QuantType == quanttype &&
-                                                                    x.TimeType == timetype);
-                if (ping != null)
-                    Ping(ping.Id, price);
-
-                var model = new Domain.Coin.CoinTrade.CoinTrade
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Coin = coin,
-                    CreateTime = DateTime.Now,
-                    IsDelete = 0,
-                    Direction = "做多",
-                    First_Price = price,
-                    Size = 100,
-                    QuantType = quanttype,
-                    TimeType = timetype,
-                    Status = 1,
-                    UserId = Guid.NewGuid().ToString()
-                };
-                db_context.CoinTrade.Add(model);
-                db_context.SaveChanges();
-
-                _logger.LogInformation($"做多成功：{model.ToJson()}");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(new EventId(ex.HResult), ex, "---DoBuy Exception---");
-            }
-        }
-
-        /// <summary>
-        ///     平仓
+        /// 平仓
         /// </summary>
         /// <param name="id"></param>
         /// <param name="price"></param>
@@ -345,6 +266,77 @@ namespace SSS.Application.Job.Coin.CoinTrade
             db_context.SaveChanges();
 
             _logger.LogInformation($"---订单：{id}，平单成功---");
+        }
+
+        /// <summary>
+        /// 订单处理
+        /// </summary>
+        private void Trade(string coin, List<Domain.Coin.CoinKLineData.CoinKLineData> kline)
+        {
+            try
+            {
+                var coininfo_array = coin.Split('_');
+
+                //目前收盘价
+                var current_price = kline[0].Close;
+
+                //均线是否金叉
+                var avg_status = Calc_Sma(coin, kline);
+
+                //macd是否金叉
+                var macd_status = Calc_Macd(coin, kline);
+
+                //kdj是否金叉
+                var kdj_status = Calc_Kdj(coin, kline);
+
+                foreach (QuantEnum quant in Enum.GetValues(typeof(QuantEnum)))
+                    switch (quant)
+                    {
+                        case QuantEnum.Macd_Sma_Kdj:
+                            //三线金叉
+                            if (avg_status && macd_status && kdj_status) //做多
+                                DoBuy(coininfo_array[0], current_price, Convert.ToInt32(coininfo_array[1]), (int)QuantEnum.Macd_Sma_Kdj);
+
+                            //三线死叉
+                            else if (!avg_status && !macd_status && !kdj_status) //做空
+                                DoSell(coininfo_array[0], current_price, Convert.ToInt32(coininfo_array[1]), (int)QuantEnum.Macd_Sma_Kdj);
+                            break;
+
+                        case QuantEnum.Sma:
+                            //Sma金叉
+                            if (avg_status) //做多
+                                DoBuy(coininfo_array[0], current_price, Convert.ToInt32(coininfo_array[1]), (int)QuantEnum.Sma);
+
+                            //Sma死叉
+                            else //做空
+                                DoSell(coininfo_array[0], current_price, Convert.ToInt32(coininfo_array[1]), (int)QuantEnum.Sma);
+                            break;
+
+                        case QuantEnum.Macd:
+                            //Macd金叉
+                            if (macd_status) //做多
+                                DoBuy(coininfo_array[0], current_price, Convert.ToInt32(coininfo_array[1]), (int)QuantEnum.Macd);
+
+                            //Macd死叉
+                            else //做空
+                                DoSell(coininfo_array[0], current_price, Convert.ToInt32(coininfo_array[1]), (int)QuantEnum.Macd);
+                            break;
+
+                        case QuantEnum.Kdj:
+                            //Kdj金叉
+                            if (kdj_status) //做多
+                                DoBuy(coininfo_array[0], current_price, Convert.ToInt32(coininfo_array[1]), (int)QuantEnum.Kdj);
+
+                            //Kdj死叉
+                            else //做空
+                                DoSell(coininfo_array[0], current_price, Convert.ToInt32(coininfo_array[1]), (int)QuantEnum.Kdj);
+                            break;
+                    }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(new EventId(ex.HResult), ex, "---Trade Exception---");
+            }
         }
     }
 }

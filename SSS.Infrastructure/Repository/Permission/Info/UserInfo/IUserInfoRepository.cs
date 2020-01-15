@@ -16,22 +16,21 @@ namespace SSS.Infrastructure.Repository.Permission.Info.UserInfo
         List<UserInfoTreeOutputDto> GetChildrenById(string userid);
 
         /// <summary>
-        /// 根据用户组Id或名称，遍历关联用户
-        /// </summary> 
-        /// <returns></returns>
-        Pages<IEnumerable<Domain.Permission.Info.UserInfo.UserInfo>> GetUserByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
-
-        /// <summary>
         /// 根据权限组Id或名称，遍历关联用户
-        /// </summary> 
+        /// </summary>
         /// <returns></returns>
         Pages<IEnumerable<Domain.Permission.Info.UserInfo.UserInfo>> GetUserByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
 
         /// <summary>
         /// 根据角色组Id或名称，遍历关联用户
-        /// </summary> 
+        /// </summary>
         /// <returns></returns>
         Pages<IEnumerable<Domain.Permission.Info.UserInfo.UserInfo>> GetUserByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
 
+        /// <summary>
+        /// 根据用户组Id或名称，遍历关联用户
+        /// </summary>
+        /// <returns></returns>
+        Pages<IEnumerable<Domain.Permission.Info.UserInfo.UserInfo>> GetUserByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0);
     }
 }

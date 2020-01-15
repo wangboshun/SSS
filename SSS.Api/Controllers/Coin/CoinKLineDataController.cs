@@ -8,7 +8,7 @@ using SSS.Domain.Coin.CoinKLineData.Dto;
 namespace SSS.Api.Controllers.Coin
 {
     /// <summary>
-    ///     K线数据详情
+    /// K线数据详情
     /// </summary>
     [ApiVersion("3.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -20,7 +20,7 @@ namespace SSS.Api.Controllers.Coin
         private readonly ICoinKLineDataService _service;
 
         /// <summary>
-        ///     K线数据详情
+        /// K线数据详情
         /// </summary>
         /// <param name="service">ICoinKLineDataService</param>
         public CoinKLineDataController(ICoinKLineDataService service)
@@ -29,31 +29,19 @@ namespace SSS.Api.Controllers.Coin
         }
 
         /// <summary>
-        ///     获取所有K线数据列表
+        /// 添加K线数据
         /// </summary>
-        /// <param name="input">input</param>
+        /// <param name="input">CoinKLineDataInputDto</param>
         /// <returns></returns>
-        [HttpGet("getlist")]
-        public IActionResult GetList([FromQuery] CoinKLineDataInputDto input)
+        [HttpPost("add")]
+        public IActionResult AddCoinKLineData([FromBody] CoinKLineDataInputDto input)
         {
-            var result = _service.GetListCoinKLineData(input);
-            return PageResponse(result);
+            var result = _service.AddCoinKLineData(input);
+            return AddResponse(result);
         }
 
         /// <summary>
-        ///     获取数据
-        /// </summary>
-        /// <param name="id">id</param>
-        /// <returns></returns>
-        [HttpGet("{id}")]
-        public IActionResult GetCoinKLineData(string id)
-        {
-            var result = _service.Get(id);
-            return ApiResponse(result);
-        }
-
-        /// <summary>
-        ///     删除数据
+        /// 删除数据
         /// </summary>
         /// <param name="id">id</param>
         /// <returns></returns>
@@ -65,15 +53,27 @@ namespace SSS.Api.Controllers.Coin
         }
 
         /// <summary>
-        ///     添加K线数据
+        /// 获取数据
         /// </summary>
-        /// <param name="input">CoinKLineDataInputDto</param>
+        /// <param name="id">id</param>
         /// <returns></returns>
-        [HttpPost("add")]
-        public IActionResult AddCoinKLineData([FromBody] CoinKLineDataInputDto input)
+        [HttpGet("{id}")]
+        public IActionResult GetCoinKLineData(string id)
         {
-            var result = _service.AddCoinKLineData(input);
-            return AddResponse(result);
+            var result = _service.Get(id);
+            return ApiResponse(result);
+        }
+
+        /// <summary>
+        /// 获取所有K线数据列表
+        /// </summary>
+        /// <param name="input">input</param>
+        /// <returns></returns>
+        [HttpGet("getlist")]
+        public IActionResult GetList([FromQuery] CoinKLineDataInputDto input)
+        {
+            var result = _service.GetListCoinKLineData(input);
+            return PageResponse(result);
         }
     }
 }

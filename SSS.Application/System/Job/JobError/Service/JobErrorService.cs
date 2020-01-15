@@ -25,7 +25,6 @@ namespace SSS.Application.System.Job.JobError.Service
             IValidator<JobErrorInputDto> validator) :
             base(mapper, repository, error, validator)
         {
-
         }
 
         public JobErrorOutputDto AddJobError(JobErrorInputDto input)

@@ -15,7 +15,6 @@ namespace SSS.Infrastructure.Seedwork.Cache.Memcached
 
         private readonly IMemcachedClient _memcache;
 
-
         public MemCached(IOptions<MemCachedOptions> options, ILogger<MemCached> logger)
         {
             _logger = logger;
@@ -40,12 +39,17 @@ namespace SSS.Infrastructure.Seedwork.Cache.Memcached
         }
 
         /// <summary>
-        ///     根据Key删除缓存
+        /// 根据Key删除缓存
         /// </summary>
         /// <param name="key"></param>
         public void Remove(string key)
         {
             _memcache.DeleteAsync(key);
+        }
+
+        public string StringGet(string key)
+        {
+            return _memcache.GetAsync<string>(key).Result;
         }
 
         public void StringSet(string key, string value)
@@ -54,7 +58,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.Memcached
         }
 
         /// <summary>
-        ///     设置缓存时间，分钟为单位
+        /// 设置缓存时间，分钟为单位
         /// </summary>
         /// <param name="key">key</param>
         /// <param name="value">value</param>
@@ -63,11 +67,6 @@ namespace SSS.Infrastructure.Seedwork.Cache.Memcached
         {
             var time = TimeSpan.FromMinutes(minute);
             _memcache.SetAsync(key, value, time);
-        }
-
-        public string StringGet(string key)
-        {
-            return _memcache.GetAsync<string>(key).Result;
         }
     }
 }

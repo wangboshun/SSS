@@ -15,7 +15,7 @@ namespace SSS.Api.Seedwork.ServiceCollection
         #region 将程序集中的所有符合条件的类型全部注册到 IServiceCollection中
 
         /// <summary>
-        ///     将程序集中的所有符合条件的类型全部注册到 IServiceCollection 中
+        /// 将程序集中的所有符合条件的类型全部注册到 IServiceCollection 中
         /// </summary>
         /// <param name="services">IServiceCollection</param>
         /// <param name="AassemblyName">程序集名字</param>
@@ -42,31 +42,9 @@ namespace SSS.Api.Seedwork.ServiceCollection
             }
         }
 
-        #endregion
+        #endregion 将程序集中的所有符合条件的类型全部注册到 IServiceCollection中
 
         #region 自动注册服务
-
-        /// <summary>
-        ///     自动注册服务
-        /// </summary>
-        /// <param name="services">注册服务的集合（向其中注册）</param>
-        /// <param name="ImplementationType">要注册的类型</param>
-        public static void AutoRegisterService(this IServiceCollection services, Type ImplementationType)
-        {
-            //获取类型的 UseDIAttribute 属性 对应的对象
-            var attr =ImplementationType.GetCustomAttribute(typeof(DIServiceAttribute)) as DIServiceAttribute;
-            ////获取类实现的所有接口
-            //Type[] types = ImplementationType.GetInterfaces();
-            var types = attr.GetTargetTypes();
-            var lifetime = attr.Lifetime;
-            //遍历类实现的每一个接口
-            foreach (var t in types)
-            {
-                //将类注册为接口的实现-----但是存在一个问题，就是担心 如果一个类实现了IDisposible接口 担心这个类变成了这个接口的实现
-                var serviceDescriptor = new ServiceDescriptor(t, ImplementationType, lifetime);
-                services.Add(serviceDescriptor);
-            }
-        }
 
         public static void AutoFacRegisterService(this ContainerBuilder builder, string AassemblyName)
         {
@@ -93,9 +71,11 @@ namespace SSS.Api.Seedwork.ServiceCollection
                                 case ServiceLifetime.Scoped:
                                     builder.RegisterType(item).As(t).InstancePerLifetimeScope();
                                     break;
+
                                 case ServiceLifetime.Singleton:
                                     builder.RegisterType(item).As(t).SingleInstance();
                                     break;
+
                                 case ServiceLifetime.Transient:
                                     builder.RegisterType(item).As(t).InstancePerDependency();
                                     break;
@@ -107,15 +87,37 @@ namespace SSS.Api.Seedwork.ServiceCollection
             }
         }
 
-        #endregion
+        /// <summary>
+        /// 自动注册服务
+        /// </summary>
+        /// <param name="services">注册服务的集合（向其中注册）</param>
+        /// <param name="ImplementationType">要注册的类型</param>
+        public static void AutoRegisterService(this IServiceCollection services, Type ImplementationType)
+        {
+            //获取类型的 UseDIAttribute 属性 对应的对象
+            var attr = ImplementationType.GetCustomAttribute(typeof(DIServiceAttribute)) as DIServiceAttribute;
+            ////获取类实现的所有接口
+            //Type[] types = ImplementationType.GetInterfaces();
+            var types = attr.GetTargetTypes();
+            var lifetime = attr.Lifetime;
+            //遍历类实现的每一个接口
+            foreach (var t in types)
+            {
+                //将类注册为接口的实现-----但是存在一个问题，就是担心 如果一个类实现了IDisposible接口 担心这个类变成了这个接口的实现
+                var serviceDescriptor = new ServiceDescriptor(t, ImplementationType, lifetime);
+                services.Add(serviceDescriptor);
+            }
+        }
+
+        #endregion 自动注册服务
 
         #region Autowired
 
         /// <summary>
-        ///     注入字段和属性
+        /// 注入字段和属性
         /// </summary>
         /// <param name="serviceProvider"></param>
-        /// <param name="instance"> 待注入的对象实例或类型实例 </param>
+        /// <param name="instance">待注入的对象实例或类型实例</param>
         /// <returns></returns>
         public static IServiceProvider Autowired(this IServiceProvider serviceProvider, object instance)
         {
@@ -131,7 +133,6 @@ namespace SSS.Api.Seedwork.ServiceCollection
             {
                 flags |= BindingFlags.Instance;
             }
-
 
             foreach (var field in type.GetFields(flags))
             {
@@ -154,22 +155,7 @@ namespace SSS.Api.Seedwork.ServiceCollection
         }
 
         /// <summary>
-        ///     从服务中获取对象或动态创建对象, 并注入字段和属性
-        /// </summary>
-        /// <param name="serviceProvider">服务提供程序</param>
-        /// <param name="type">待获取或创建的对象类型</param>
-        /// <returns></returns>
-        public static object GetServiceOrCreateInstance(this IServiceProvider serviceProvider, Type type)
-        {
-            if (serviceProvider == null) return Activator.CreateInstance(type);
-
-            var obj = ActivatorUtilities.GetServiceOrCreateInstance(serviceProvider, type);
-            if (obj != null) serviceProvider.Autowired(obj);
-            return obj;
-        }
-
-        /// <summary>
-        ///     获取用于创建指定对象并注入字段和属性的委托方法
+        /// 获取用于创建指定对象并注入字段和属性的委托方法
         /// </summary>
         /// <param name="serviceProvider">服务提供程序</param>
         /// <param name="instanceType">待创建的对象类型</param>
@@ -189,7 +175,7 @@ namespace SSS.Api.Seedwork.ServiceCollection
         }
 
         /// <summary>
-        ///     动态创建对象, 并注入字段和属性
+        /// 动态创建对象, 并注入字段和属性
         /// </summary>
         /// <param name="provider">服务提供程序</param>
         /// <param name="instanceType">待创建的对象类型</param>
@@ -204,7 +190,7 @@ namespace SSS.Api.Seedwork.ServiceCollection
         }
 
         /// <summary>
-        ///     动态创建对象, 并注入字段和属性
+        /// 动态创建对象, 并注入字段和属性
         /// </summary>
         /// <typeparam name="T">待创建的对象类型</typeparam>
         /// <param name="provider">服务提供程序</param>
@@ -216,7 +202,22 @@ namespace SSS.Api.Seedwork.ServiceCollection
         }
 
         /// <summary>
-        ///     从服务中获取对象或动态创建对象, 并注入字段和属性
+        /// 从服务中获取对象或动态创建对象, 并注入字段和属性
+        /// </summary>
+        /// <param name="serviceProvider">服务提供程序</param>
+        /// <param name="type">待获取或创建的对象类型</param>
+        /// <returns></returns>
+        public static object GetServiceOrCreateInstance(this IServiceProvider serviceProvider, Type type)
+        {
+            if (serviceProvider == null) return Activator.CreateInstance(type);
+
+            var obj = ActivatorUtilities.GetServiceOrCreateInstance(serviceProvider, type);
+            if (obj != null) serviceProvider.Autowired(obj);
+            return obj;
+        }
+
+        /// <summary>
+        /// 从服务中获取对象或动态创建对象, 并注入字段和属性
         /// </summary>
         /// <typeparam name="T">待获取或创建的对象类型</typeparam>
         /// <param name="provider">服务提供程序</param>
@@ -227,7 +228,7 @@ namespace SSS.Api.Seedwork.ServiceCollection
         }
 
         /// <summary>
-        ///     通过服务中的 <see cref="IServiceProviderFactory{IServiceProvider}" /> 重新编译提供程序
+        /// 通过服务中的 <see cref="IServiceProviderFactory{IServiceProvider}"/> 重新编译提供程序
         /// </summary>
         /// <param name="provider"></param>
         /// <returns></returns>
@@ -238,6 +239,6 @@ namespace SSS.Api.Seedwork.ServiceCollection
             return provider;
         }
 
-        #endregion
+        #endregion Autowired
     }
 }

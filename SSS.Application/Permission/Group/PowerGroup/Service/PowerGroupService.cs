@@ -54,25 +54,14 @@ namespace SSS.Application.Permission.Group.PowerGroup.Service
             return Repository.SaveChanges() > 0 ? Mapper.Map<PowerGroupOutputDto>(model) : null;
         }
 
-        public Pages<List<PowerGroupOutputDto>> GetListPowerGroup(PowerGroupInputDto input)
-        {
-            return GetPage(input);
-        }
-
         public bool DeletePowerGroup(string id)
         {
             return Repository.Remove(id);
         }
 
-        /// <summary>
-        /// 根据权限Id或名称，遍历关联权限组
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public Pages<List<PowerGroupOutputDto>> GetPowerGroupByPower(PowerInfoInputDto input)
+        public Pages<List<PowerGroupOutputDto>> GetListPowerGroup(PowerGroupInputDto input)
         {
-            var data = _powerGroupRepository.GetPowerGroupByPower(input.id, input.powername, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<PowerGroupOutputDto>>(data.items.MapperToOutPut<PowerGroupOutputDto>()?.ToList(), data.count);
+            return GetPage(input);
         }
 
         /// <summary>
@@ -98,7 +87,29 @@ namespace SSS.Application.Permission.Group.PowerGroup.Service
         }
 
         /// <summary>
-        ///  根据用户Id或名称，遍历关联权限组
+        /// 根据权限Id或名称，遍历关联权限组
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Pages<List<PowerGroupOutputDto>> GetPowerGroupByPower(PowerInfoInputDto input)
+        {
+            var data = _powerGroupRepository.GetPowerGroupByPower(input.id, input.powername, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<PowerGroupOutputDto>>(data.items.MapperToOutPut<PowerGroupOutputDto>()?.ToList(), data.count);
+        }
+
+        /// <summary>
+        /// 根据角色组Id或名称，遍历关联权限组
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Pages<List<PowerGroupOutputDto>> GetPowerGroupByRoleGroup(RoleGroupInputDto input)
+        {
+            var data = _powerGroupRepository.GetPowerGroupByRoleGroup(input.id, input.rolegroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<PowerGroupOutputDto>>(data.items.MapperToOutPut<PowerGroupOutputDto>()?.ToList(), data.count);
+        }
+
+        /// <summary>
+        /// 根据用户Id或名称，遍历关联权限组
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -116,17 +127,6 @@ namespace SSS.Application.Permission.Group.PowerGroup.Service
         public Pages<List<PowerGroupOutputDto>> GetPowerGroupByUserGroup(UserGroupInputDto input)
         {
             var data = _powerGroupRepository.GetPowerGroupByUserGroup(input.id, input.usergroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<PowerGroupOutputDto>>(data.items.MapperToOutPut<PowerGroupOutputDto>()?.ToList(), data.count);
-        }
-
-        /// <summary>
-        /// 根据角色组Id或名称，遍历关联权限组
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public Pages<List<PowerGroupOutputDto>> GetPowerGroupByRoleGroup(RoleGroupInputDto input)
-        {
-            var data = _powerGroupRepository.GetPowerGroupByRoleGroup(input.id, input.rolegroupname, input.parentid, input.pageindex, input.pagesize);
             return new Pages<List<PowerGroupOutputDto>>(data.items.MapperToOutPut<PowerGroupOutputDto>()?.ToList(), data.count);
         }
     }

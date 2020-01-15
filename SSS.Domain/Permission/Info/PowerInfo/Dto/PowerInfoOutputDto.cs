@@ -17,14 +17,11 @@ namespace SSS.Domain.Permission.Info.PowerInfo.Dto
             Item = new List<PowerInfoTreeOutputDto>();
         }
 
+        public DateTime createtime { get; set; }
         public string id { get; set; }
 
-        public string powername { get; set; }
-
-        public string parentid { get; set; }
-
-        public DateTime createtime { get; set; }
-
         public List<PowerInfoTreeOutputDto> Item { get; set; }
+        public string parentid { get; set; }
+        public string powername { get; set; }
     }
 }

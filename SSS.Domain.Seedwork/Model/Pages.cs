@@ -8,8 +8,7 @@
             this.count = count;
         }
 
-        public ListEntity items { set; get; }
-
         public int count { set; get; }
+        public ListEntity items { set; get; }
     }
 }

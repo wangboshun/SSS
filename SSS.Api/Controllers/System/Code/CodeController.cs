@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 namespace SSS.Api.Controllers.System.Code
 {
     /// <summary>
-    ///     代码生成
+    /// 代码生成
     /// </summary>
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -23,7 +23,7 @@ namespace SSS.Api.Controllers.System.Code
         private readonly IGeneratorCodeService _generatorCodeService;
 
         /// <summary>
-        ///     代码生成
+        /// 代码生成
         /// </summary>
         /// <param name="env"></param>
         /// <param name="generatorCodeService"></param>
@@ -35,7 +35,19 @@ namespace SSS.Api.Controllers.System.Code
         }
 
         /// <summary>
-        ///     主页
+        /// 生成操作
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("createcode")]
+        public IActionResult CreateCode()
+        {
+            var result = _generatorCodeService.CreateCode(HttpContext.Request.Form["class_name"],
+                HttpContext.Request.Form["namespace_name"], HttpContext.Request.Form["fields"]);
+            return ApiResponse(result);
+        }
+
+        /// <summary>
+        /// 主页
         /// </summary>
         /// <returns></returns>
         [HttpGet("index")]
@@ -57,18 +69,6 @@ namespace SSS.Api.Controllers.System.Code
                 StatusCode = (int)HttpStatusCode.OK,
                 Content = html
             };
-        }
-
-        /// <summary>
-        ///     生成操作
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost("createcode")]
-        public IActionResult CreateCode()
-        {
-            var result = _generatorCodeService.CreateCode(HttpContext.Request.Form["class_name"],
-                HttpContext.Request.Form["namespace_name"], HttpContext.Request.Form["fields"]);
-            return ApiResponse(result);
         }
     }
 }

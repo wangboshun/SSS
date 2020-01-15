@@ -19,17 +19,14 @@ namespace SSS.Domain.Permission.Info.RoleInfo.Validation
 
             RuleSet("Delete", () =>
             {
-
             });
 
             RuleSet("Update", () =>
             {
-
             });
 
             RuleSet("Select", () =>
             {
-
             });
         }
     }

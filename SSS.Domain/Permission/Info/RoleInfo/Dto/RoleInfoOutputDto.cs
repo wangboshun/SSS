@@ -17,14 +17,11 @@ namespace SSS.Domain.Permission.Info.RoleInfo.Dto
             Item = new List<RoleInfoTreeOutputDto>();
         }
 
+        public DateTime createtime { get; set; }
         public string id { get; set; }
 
-        public string rolename { get; set; }
-
-        public string parentid { get; set; }
-
-        public DateTime createtime { get; set; }
-
         public List<RoleInfoTreeOutputDto> Item { get; set; }
+        public string parentid { get; set; }
+        public string rolename { get; set; }
     }
 }

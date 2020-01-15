@@ -127,20 +127,6 @@ namespace SSS.Application.Seedwork.Service
         #region Permission
 
         /// <summary>
-        /// 获取父级
-        /// </summary>
-        /// <param name="parentid"></param>
-        /// <returns></returns>
-        public bool GetParent(string parentid)
-        {
-            var parent = Repository.Get(parentid);
-            if (parent != null)
-                return true;
-            Error.Execute("父级不存在！");
-            return false;
-        }
-
-        /// <summary>
         /// 父级Id赋值
         /// </summary>
         /// <returns></returns>
@@ -180,6 +166,20 @@ namespace SSS.Application.Seedwork.Service
             return true;
         }
 
-        #endregion 
+        /// <summary>
+        /// 获取父级
+        /// </summary>
+        /// <param name="parentid"></param>
+        /// <returns></returns>
+        public bool GetParent(string parentid)
+        {
+            var parent = Repository.Get(parentid);
+            if (parent != null)
+                return true;
+            Error.Execute("父级不存在！");
+            return false;
+        }
+
+        #endregion Permission
     }
 }

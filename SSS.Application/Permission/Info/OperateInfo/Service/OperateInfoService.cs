@@ -93,7 +93,7 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
         }
 
         /// <summary>
-        ///     获取操作下的所有下级
+        /// 获取操作下的所有下级
         /// </summary>
         /// <param name="operateid"></param>
         /// <returns></returns>
@@ -108,7 +108,7 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
         }
 
         /// <summary>
-        ///     根据权限组Id或名称，遍历关联操作
+        /// 根据权限组Id或名称，遍历关联操作
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>

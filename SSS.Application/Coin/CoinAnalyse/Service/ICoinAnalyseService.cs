@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace SSS.Application.Coin.CoinAnalyse.Service
 {
-    public interface ICoinAnalyseService : IQueryService<Domain.Coin.CoinAnalyse.CoinAnalyse,CoinAnalyseInputDto, CoinAnalyseOutputDto>
+    public interface ICoinAnalyseService : IQueryService<Domain.Coin.CoinAnalyse.CoinAnalyse, CoinAnalyseInputDto, CoinAnalyseOutputDto>
     {
         CoinAnalyseOutputDto AddCoinAnalyse(CoinAnalyseInputDto input);
 

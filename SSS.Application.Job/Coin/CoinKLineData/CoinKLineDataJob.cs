@@ -42,41 +42,6 @@ namespace SSS.Application.Job.Coin.CoinKLineData
             _huobi = huobi;
         }
 
-        public Task Execute(IJobExecutionContext context)
-        {
-            _logger.LogInformation("-----------------CoinKLineDataJob----------------------");
-            return DoWork(context);
-        }
-
-        public Task DoWork(IJobExecutionContext context)
-        {
-            lock (_lock)
-            {
-                var trigger = (CronTriggerImpl)((JobExecutionContextImpl)context).Trigger;
-                try
-                {
-                    var watch = new Stopwatch();
-                    watch.Start();
-
-                    var coin_array = JsonConfig.GetSectionValue("TradeConfig:Coin").Split(',');
-                    Parallel.ForEach(coin_array, AddKLineData);
-
-                    watch.Stop();
-                    context.Scheduler.Context.Put(trigger.FullName + "_Result", "Success");
-                    context.Scheduler.Context.Put(trigger.FullName + "_Time", watch.ElapsedMilliseconds);
-
-                    _logger.LogInformation($"------>{context.GetJobDetail()}  耗时：{watch.ElapsedMilliseconds} ");
-                    return Task.FromResult("Success");
-                }
-                catch (Exception ex)
-                {
-                    context.Scheduler.Context.Put(trigger.FullName + "_Exception", ex);
-                    _logger.LogError(new EventId(ex.HResult), ex, "---CoinKLineDataJob DoWork Exception---");
-                    return Task.FromResult("Error");
-                }
-            }
-        }
-
         public void AddKLineData(string coin)
         {
             try
@@ -89,8 +54,8 @@ namespace SSS.Application.Job.Coin.CoinKLineData
                 foreach (CoinTime time in Enum.GetValues(typeof(CoinTime)))
                 {
                     var max = db_context.CoinKLineData.Where(x => x.Coin.Equals(coin) &&
- 						x.IsDelete == 0 &&
-						x.TimeType == (int)time &&
+                         x.IsDelete == 0 &&
+                        x.TimeType == (int)time &&
                         x.Platform == (int)Platform.Huobi).OrderByDescending(x => x.DataTime)
                         .FirstOrDefault();
                     var size = 2000;
@@ -101,7 +66,7 @@ namespace SSS.Application.Job.Coin.CoinKLineData
 
                     var retry = Policy.Handle<WebException>().Retry(3, (ex, count, text) =>
                     {
-                        _logger.LogError(new EventId(ex.HResult), ex,$"---CoinKLineDataJob GetKLine Exception,进行重试 {count}次---");
+                        _logger.LogError(new EventId(ex.HResult), ex, $"---CoinKLineDataJob GetKLine Exception,进行重试 {count}次---");
                         Thread.Sleep(100);
                     });
 
@@ -162,6 +127,41 @@ namespace SSS.Application.Job.Coin.CoinKLineData
             }
         }
 
+        public Task DoWork(IJobExecutionContext context)
+        {
+            lock (_lock)
+            {
+                var trigger = (CronTriggerImpl)((JobExecutionContextImpl)context).Trigger;
+                try
+                {
+                    var watch = new Stopwatch();
+                    watch.Start();
+
+                    var coin_array = JsonConfig.GetSectionValue("TradeConfig:Coin").Split(',');
+                    Parallel.ForEach(coin_array, AddKLineData);
+
+                    watch.Stop();
+                    context.Scheduler.Context.Put(trigger.FullName + "_Result", "Success");
+                    context.Scheduler.Context.Put(trigger.FullName + "_Time", watch.ElapsedMilliseconds);
+
+                    _logger.LogInformation($"------>{context.GetJobDetail()}  耗时：{watch.ElapsedMilliseconds} ");
+                    return Task.FromResult("Success");
+                }
+                catch (Exception ex)
+                {
+                    context.Scheduler.Context.Put(trigger.FullName + "_Exception", ex);
+                    _logger.LogError(new EventId(ex.HResult), ex, "---CoinKLineDataJob DoWork Exception---");
+                    return Task.FromResult("Error");
+                }
+            }
+        }
+
+        public Task Execute(IJobExecutionContext context)
+        {
+            _logger.LogInformation("-----------------CoinKLineDataJob----------------------");
+            return DoWork(context);
+        }
+
         private int GetSize(DateTime datatime, CoinTime timetype)
         {
             var number = 0;
@@ -170,27 +170,32 @@ namespace SSS.Application.Job.Coin.CoinKLineData
                 case CoinTime.Time_1min:
                     number = (int)(DateTime.Now - datatime).TotalMinutes;
                     break;
+
                 case CoinTime.Time_5min:
                     number = (int)(DateTime.Now - datatime).TotalMinutes;
                     if (number < 5)
                         return 1;
                     number /= 5;
                     break;
+
                 case CoinTime.Time_15min:
                     number = (int)(DateTime.Now - datatime).TotalMinutes;
                     if (number < 15)
                         return 1;
                     number /= 15;
                     break;
+
                 case CoinTime.Time_60min:
                     number = (int)(DateTime.Now - datatime).TotalHours;
                     break;
+
                 case CoinTime.Time_4hour:
                     number = (int)(DateTime.Now - datatime).TotalHours;
                     if (number < 4)
                         return 1;
                     number /= 4;
                     break;
+
                 case CoinTime.Time_1day:
                     number = (int)(DateTime.Now - datatime).TotalDays;
                     break;

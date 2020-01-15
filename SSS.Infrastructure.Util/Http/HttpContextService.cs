@@ -7,10 +7,8 @@ namespace SSS.Infrastructure.Util.Http
 {
     public static class HttpContextService
     {
-        private static IHttpContextAccessor _accessor;
-
         public static IServiceProvider ServiceProvider;
-
+        private static IHttpContextAccessor _accessor;
         private static IHostEnvironment _hostingEnvironment;
 
         public static HttpContext Current => _accessor.HttpContext;

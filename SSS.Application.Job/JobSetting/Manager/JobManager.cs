@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 namespace SSS.Application.Job.JobSetting.Manager
 {
     /// <summary>
-    ///     JobStartup启动类
+    /// JobStartup启动类
     /// </summary>
     [DIService(ServiceLifetime.Singleton, typeof(IJobManager))]
     public class JobManager : IJobManager
@@ -37,7 +37,7 @@ namespace SSS.Application.Job.JobSetting.Manager
         private IScheduler _scheduler;
 
         /// <summary>
-        ///     JobStartup
+        /// JobStartup
         /// </summary>
         /// <param name="jobFactory"></param>
         /// <param name="logger"></param>
@@ -55,40 +55,12 @@ namespace SSS.Application.Job.JobSetting.Manager
         #region Job CURD
 
         /// <summary>
-        ///     恢复Job
-        /// </summary>
-        public async Task ResumeJob(string job_name, string job_group)
-        {
-            var key = GetJobKey(job_name, job_group);
-            var trigger = GetTriggerKey(job_name, job_group);
-            var status = GetTriggerState(trigger);
-            if (status == TriggerState.Normal)
-                return;
-            await _scheduler.ResumeJob(key);
-            await _scheduler.ResumeTrigger(trigger);
-        }
-
-        /// <summary>
-        ///     暂停Job
-        /// </summary>
-        public async Task PauseJob(string job_name, string job_group)
-        {
-            var key = GetJobKey(job_name, job_group);
-            var trigger = GetTriggerKey(job_name, job_group);
-            var status = GetTriggerState(trigger);
-            if (status == TriggerState.Paused)
-                return;
-            await _scheduler.PauseJob(key);
-            await _scheduler.PauseTrigger(trigger);
-        }
-
-        /// <summary>
-        ///     添加job
+        /// 添加job
         /// </summary>
         /// <param name="job_name"></param>
         /// <param name="job_group"></param>
         /// <returns></returns>
-        public async Task<bool> AddJob(string job_name, string job_group, string job_cron, string job_value,string job_class_str)
+        public async Task<bool> AddJob(string job_name, string job_group, string job_cron, string job_value, string job_class_str)
         {
             new SqlSugarClient(
                 new ConnectionConfig
@@ -126,7 +98,7 @@ namespace SSS.Application.Job.JobSetting.Manager
         }
 
         /// <summary>
-        ///     删除job
+        /// 删除job
         /// </summary>
         /// <param name="job_name"></param>
         /// <param name="job_group"></param>
@@ -142,17 +114,7 @@ namespace SSS.Application.Job.JobSetting.Manager
         }
 
         /// <summary>
-        ///     修改Job
-        /// </summary>
-        public async Task UpdateJob(string job_name, string job_group, string job_cron)
-        {
-            var key = GetTriggerKey(job_name, job_group);
-            ICronTrigger cron = new CronTriggerImpl(job_name, job_group, job_name, job_group, job_cron);
-            await _scheduler.RescheduleJob(key, cron);
-        }
-
-        /// <summary>
-        ///     查看Job信息
+        /// 查看Job信息
         /// </summary>
         /// <param name="job_name"></param>
         /// <param name="job_group"></param>
@@ -164,7 +126,19 @@ namespace SSS.Application.Job.JobSetting.Manager
         }
 
         /// <summary>
-        ///     查看Trigger信息
+        /// 获取Trigger状态
+        /// </summary>
+        /// <param name="job_name"></param>
+        /// <param name="job_group"></param>
+        /// <returns></returns>
+        public TriggerState GeTriggerState(string job_name, string job_group)
+        {
+            var key = GetTriggerKey(job_name, job_group);
+            return _scheduler.GetTriggerState(key).Result;
+        }
+
+        /// <summary>
+        /// 查看Trigger信息
         /// </summary>
         /// <param name="job_name"></param>
         /// <param name="job_group"></param>
@@ -176,23 +150,49 @@ namespace SSS.Application.Job.JobSetting.Manager
         }
 
         /// <summary>
-        ///     获取Trigger状态
+        /// 暂停Job
         /// </summary>
-        /// <param name="job_name"></param>
-        /// <param name="job_group"></param>
-        /// <returns></returns>
-        public TriggerState GeTriggerState(string job_name, string job_group)
+        public async Task PauseJob(string job_name, string job_group)
         {
-            var key = GetTriggerKey(job_name, job_group);
-            return _scheduler.GetTriggerState(key).Result;
+            var key = GetJobKey(job_name, job_group);
+            var trigger = GetTriggerKey(job_name, job_group);
+            var status = GetTriggerState(trigger);
+            if (status == TriggerState.Paused)
+                return;
+            await _scheduler.PauseJob(key);
+            await _scheduler.PauseTrigger(trigger);
         }
 
-        #endregion
+        /// <summary>
+        /// 恢复Job
+        /// </summary>
+        public async Task ResumeJob(string job_name, string job_group)
+        {
+            var key = GetJobKey(job_name, job_group);
+            var trigger = GetTriggerKey(job_name, job_group);
+            var status = GetTriggerState(trigger);
+            if (status == TriggerState.Normal)
+                return;
+            await _scheduler.ResumeJob(key);
+            await _scheduler.ResumeTrigger(trigger);
+        }
+
+        /// <summary>
+        /// 修改Job
+        /// </summary>
+        public async Task UpdateJob(string job_name, string job_group, string job_cron)
+        {
+            var key = GetTriggerKey(job_name, job_group);
+            ICronTrigger cron = new CronTriggerImpl(job_name, job_group, job_name, job_group, job_cron);
+            await _scheduler.RescheduleJob(key, cron);
+        }
+
+        #endregion Job CURD
 
         #region 私有方法，特殊处理
 
         /// <summary>
-        ///     添加Job监听
+        /// 添加Job监听
         /// </summary>
         /// <param name="detail"></param>
         private void AddListener(IJobDetail detail)
@@ -203,39 +203,49 @@ namespace SSS.Application.Job.JobSetting.Manager
         }
 
         /// <summary>
-        ///     获取触发器状态
+        /// 获取参数,根据JToken（json文件的内容）
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="result"></param>
         /// <returns></returns>
-        private TriggerState GetTriggerState(TriggerKey key)
+        private JobDataMap GetJobDataMap(JToken result)
         {
-            return _scheduler.GetTriggerState(key).Result;
+            var data = new JobDataMap();
+
+            if (result == null) return data;
+
+            foreach (var val in result)
+            {
+                var name = val["Name"].ToString();
+
+                switch (val["Type"].ToString())
+                {
+                    case "String":
+                        data.Add(name, val["Value"].ToString());
+                        break;
+
+                    case "Int":
+                        data.Add(name, Convert.ToInt32(val["Value"]));
+                        break;
+
+                    case "Double":
+                        data.Add(name, Convert.ToDouble(val["Value"]));
+                        break;
+
+                    case "Bool":
+                        data.Add(name, Convert.ToBoolean(val["Value"]));
+                        break;
+
+                    default:
+                        data.Add(name, val["Value"].ToJson());
+                        break;
+                }
+            }
+
+            return data;
         }
 
         /// <summary>
-        ///     获取JobKey
-        /// </summary>
-        /// <param name="job_name"></param>
-        /// <param name="job_group"></param>
-        /// <returns></returns>
-        private JobKey GetJobKey(string job_name, string job_group)
-        {
-            return JobKey.Create(job_name, job_group);
-        }
-
-        /// <summary>
-        ///     获取TriggerKey
-        /// </summary>
-        /// <param name="job_name"></param>
-        /// <param name="job_group"></param>
-        /// <returns></returns>
-        private TriggerKey GetTriggerKey(string job_name, string job_group)
-        {
-            return new TriggerKey(job_name, job_group);
-        }
-
-        /// <summary>
-        ///     获取参数,根据字符串（数据库存储的内容）
+        /// 获取参数,根据字符串（数据库存储的内容）
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
@@ -255,15 +265,19 @@ namespace SSS.Application.Job.JobSetting.Manager
                         case "String":
                             data.Add(val.Path, v.ToString());
                             break;
+
                         case "Int":
                             data.Add(val.Path, Convert.ToInt32(v));
                             break;
+
                         case "Double":
                             data.Add(val.Path, Convert.ToDouble(v));
                             break;
+
                         case "Bool":
                             data.Add(val.Path, Convert.ToBoolean(v));
                             break;
+
                         default:
                             data.Add(val.Path, v.ToString());
                             break;
@@ -274,63 +288,43 @@ namespace SSS.Application.Job.JobSetting.Manager
         }
 
         /// <summary>
-        ///     获取参数,根据JToken（json文件的内容）
+        /// 获取JobKey
         /// </summary>
-        /// <param name="result"></param>
+        /// <param name="job_name"></param>
+        /// <param name="job_group"></param>
         /// <returns></returns>
-        private JobDataMap GetJobDataMap(JToken result)
+        private JobKey GetJobKey(string job_name, string job_group)
         {
-            var data = new JobDataMap();
-
-            if (result == null) return data;
-
-            foreach (var val in result)
-            {
-                var name = val["Name"].ToString();
-
-                switch (val["Type"].ToString())
-                {
-                    case "String":
-                        data.Add(name, val["Value"].ToString());
-                        break;
-                    case "Int":
-                        data.Add(name, Convert.ToInt32(val["Value"]));
-                        break;
-                    case "Double":
-                        data.Add(name, Convert.ToDouble(val["Value"]));
-                        break;
-                    case "Bool":
-                        data.Add(name, Convert.ToBoolean(val["Value"]));
-                        break;
-                    default:
-                        data.Add(name, val["Value"].ToJson());
-                        break;
-                }
-            }
-
-            return data;
+            return JobKey.Create(job_name, job_group);
         }
 
-        #endregion
+        /// <summary>
+        /// 获取TriggerKey
+        /// </summary>
+        /// <param name="job_name"></param>
+        /// <param name="job_group"></param>
+        /// <returns></returns>
+        private TriggerKey GetTriggerKey(string job_name, string job_group)
+        {
+            return new TriggerKey(job_name, job_group);
+        }
+
+        /// <summary>
+        /// 获取触发器状态
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        private TriggerState GetTriggerState(TriggerKey key)
+        {
+            return _scheduler.GetTriggerState(key).Result;
+        }
+
+        #endregion 私有方法，特殊处理
 
         #region 启动、关闭
 
         /// <summary>
-        ///     初始化
-        /// </summary>
-        /// <returns></returns>
-        private async Task Init()
-        {
-            //2、通过调度工厂获得调度器
-            _scheduler = await _schedulerFactory.GetScheduler();
-            _scheduler.JobFactory = _jobFactory; //  替换默认工厂
-
-            //3、开启调度器
-            await _scheduler.Start();
-        }
-
-        /// <summary>
-        ///     开始
+        /// 开始
         /// </summary>
         /// <returns></returns>
         public async Task<string> Start()
@@ -431,7 +425,7 @@ namespace SSS.Application.Job.JobSetting.Manager
         }
 
         /// <summary>
-        ///     结束
+        /// 结束
         /// </summary>
         public void Stop()
         {
@@ -443,6 +437,20 @@ namespace SSS.Application.Job.JobSetting.Manager
             _logger.LogCritical("------任务调度关闭------");
         }
 
-        #endregion
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <returns></returns>
+        private async Task Init()
+        {
+            //2、通过调度工厂获得调度器
+            _scheduler = await _schedulerFactory.GetScheduler();
+            _scheduler.JobFactory = _jobFactory; //  替换默认工厂
+
+            //3、开启调度器
+            await _scheduler.Start();
+        }
+
+        #endregion 启动、关闭
     }
 }

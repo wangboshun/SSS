@@ -76,26 +76,14 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
             return Repository.SaveChanges() > 0 ? Mapper.Map<UserGroupOutputDto>(model) : null;
         }
 
-        public Pages<List<UserGroupOutputDto>> GetListUserGroup(UserGroupInputDto input)
-        {
-            return GetPage(input);
-        }
-
         public bool DeleteUserGroup(string id)
         {
             return Repository.Remove(id, true);
         }
 
-        /// <summary>
-        ///     根据用户Id或名称，遍历关联用户组
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public Pages<List<UserGroupOutputDto>> GetUserGroupByUser(UserInfoInputDto input)
+        public Pages<List<UserGroupOutputDto>> GetListUserGroup(UserGroupInputDto input)
         {
-            var data = _userGroupRepository.GetUserGroupByUser(input.id, input.username, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<UserGroupOutputDto>>(data.items.MapperToOutPut<UserGroupOutputDto>()?.ToList(), data.count);
-
+            return GetPage(input);
         }
 
         public Pages<List<UserGroupOutputDto>> GetUserGroupByPowerGroup(PowerGroupInputDto input)
@@ -105,13 +93,24 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
         }
 
         /// <summary>
-        ///     根据角色组Id或名称，遍历关联用户组
+        /// 根据角色组Id或名称，遍历关联用户组
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         public Pages<List<UserGroupOutputDto>> GetUserGroupByRoleGroup(RoleGroupInputDto input)
         {
             var data = _userGroupRepository.GetUserGroupByRoleGroup(input.id, input.rolegroupname, input.parentid, input.pageindex, input.pagesize);
+            return new Pages<List<UserGroupOutputDto>>(data.items.MapperToOutPut<UserGroupOutputDto>()?.ToList(), data.count);
+        }
+
+        /// <summary>
+        /// 根据用户Id或名称，遍历关联用户组
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public Pages<List<UserGroupOutputDto>> GetUserGroupByUser(UserInfoInputDto input)
+        {
+            var data = _userGroupRepository.GetUserGroupByUser(input.id, input.username, input.parentid, input.pageindex, input.pagesize);
             return new Pages<List<UserGroupOutputDto>>(data.items.MapperToOutPut<UserGroupOutputDto>()?.ToList(), data.count);
         }
     }
