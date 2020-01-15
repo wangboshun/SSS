@@ -21,11 +21,12 @@ using System.Linq;
 namespace SSS.Application.System.Job.JobInfo.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IJobInfoService))]
-    public class JobInfoService : QueryService<SSS.Domain.System.Job.JobInfo.JobInfo, JobInfoInputDto, JobInfoOutputDto>, IJobInfoService
+    public class JobInfoService : QueryService<Domain.System.Job.JobInfo.JobInfo, JobInfoInputDto, JobInfoOutputDto>,
+        IJobInfoService
     {
-        private readonly ISchedulerFactory _schedulerFactory;
         private readonly IJobInfoRepository _jobInfoRepository;
         private readonly IJobManager _jobManager;
+        private readonly ISchedulerFactory _schedulerFactory;
 
         public JobInfoService(IMapper mapper,
             IJobInfoRepository repository,
@@ -47,7 +48,7 @@ namespace SSS.Application.System.Job.JobInfo.Service
         }
 
         /// <summary>
-        /// 恢复Job
+        ///     恢复Job
         /// </summary>
         /// <param name="input"></param>
         public bool ResumeJob(JobInfoInputDto input)
@@ -63,7 +64,7 @@ namespace SSS.Application.System.Job.JobInfo.Service
         }
 
         /// <summary>
-        /// 暂停Job
+        ///     暂停Job
         /// </summary>
         /// <param name="input"></param>
         public bool PauseJob(JobInfoInputDto input)
@@ -79,11 +80,10 @@ namespace SSS.Application.System.Job.JobInfo.Service
             job.UpdateTime = DateTime.Now;
             _jobInfoRepository.Update(job);
             return _jobInfoRepository.SaveChanges() > 0;
-
         }
 
         /// <summary>
-        /// 修改Job
+        ///     修改Job
         /// </summary>
         /// <param name="input"></param>
         public bool UpdateJob(JobInfoInputDto input)
@@ -99,7 +99,7 @@ namespace SSS.Application.System.Job.JobInfo.Service
         }
 
         /// <summary>
-        /// 删除Job
+        ///     删除Job
         /// </summary>
         /// <param name="input"></param>
         public bool DeleteJob(JobInfoInputDto input)
@@ -118,15 +118,17 @@ namespace SSS.Application.System.Job.JobInfo.Service
         }
 
         /// <summary>
-        /// 添加Job
+        ///     添加Job
         /// </summary>
         /// <param name="input"></param>
         public bool AddJob(JobInfoInputDto input)
         {
-            var job = _jobInfoRepository.Get(x => x.JobName.Equals(input.jobname) && x.JobGroup.Equals(input.jobgroup), true);
+            var job = _jobInfoRepository.Get(x => x.JobName.Equals(input.jobname) && x.JobGroup.Equals(input.jobgroup),
+                true);
             if (job == null) return false;
 
-            var result = _jobManager.AddJob(input.jobname, input.jobgroup, input.jobcron, job.JobValue, job.JobClass).Result;
+            var result = _jobManager.AddJob(input.jobname, input.jobgroup, input.jobcron, job.JobValue, job.JobClass)
+                .Result;
             var trigger_state = _jobManager.GeTriggerState(input.jobname, input.jobgroup);
             if (trigger_state != TriggerState.Normal || trigger_state != TriggerState.Paused) return false;
             job.JobCron = input.jobcron;
@@ -139,7 +141,7 @@ namespace SSS.Application.System.Job.JobInfo.Service
         }
 
         /// <summary>
-        /// 获取Job
+        ///     获取Job
         /// </summary>
         /// <param name="input"></param>
         public JobInfoOutputDto GetJob(JobInfoInputDto input)

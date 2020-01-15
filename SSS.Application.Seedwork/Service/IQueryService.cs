@@ -17,7 +17,7 @@ namespace SSS.Application.Seedwork.Service
 
         Pages<List<TOutput>> GetPageBySql(string sql, int pageindex = 0, int pagesize = 10);
 
-        Pages<List<TOutput>> GetPageBySql(string sql, Expression<Func<TEntity, bool>> predicate, int pageindex = 0, int pagesize = 10);
+        Pages<List<TOutput>> GetPageBySql(string sql, Expression<Func<TEntity, bool>> predicate, int pageindex = 0,int pagesize = 10);
 
         Pages<List<TOutput>> GetPage(TInput input);
 
@@ -26,7 +26,7 @@ namespace SSS.Application.Seedwork.Service
         bool Delete(string id);
 
         /// <summary>
-        /// 获取父级
+        ///     获取父级
         /// </summary>
         /// <param name="parentid"></param>
         /// <returns></returns>

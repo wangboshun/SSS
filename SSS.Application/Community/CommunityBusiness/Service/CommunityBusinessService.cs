@@ -24,6 +24,7 @@ namespace SSS.Application.Community.CommunityBusiness.Service
     public class CommunityBusinessService : QueryService<SSS.Domain.Community.CommunityBusiness.CommunityBusiness, CommunityBusinessInputDto, CommunityBusinessOutputDto>, ICommunityBusinessService
     {
         private readonly ICommunityBusinessRelationRepository _communityBusinessRelationRepository;
+
         public CommunityBusinessService(IMapper mapper,
             ICommunityBusinessRepository repository,
             IErrorHandler error,
@@ -51,7 +52,7 @@ namespace SSS.Application.Community.CommunityBusiness.Service
             }
 
             input.id = Guid.NewGuid().ToString();
-            var model = Mapper.Map<SSS.Domain.Community.CommunityBusiness.CommunityBusiness>(input);
+            var model = Mapper.Map<Domain.Community.CommunityBusiness.CommunityBusiness>(input);
             model.CreateTime = DateTime.Now;
             Repository.Add(model);
             return Repository.SaveChanges() > 0 ? Mapper.Map<CommunityBusinessOutputDto>(model) : null;
@@ -66,7 +67,7 @@ namespace SSS.Application.Community.CommunityBusiness.Service
                 return false;
             }
 
-            var model = Mapper.Map<SSS.Domain.Community.CommunityBusiness.CommunityBusiness>(input);
+            var model = Mapper.Map<Domain.Community.CommunityBusiness.CommunityBusiness>(input);
             var data = Repository.Have(model.Id);
             if (!data)
             {
@@ -83,7 +84,8 @@ namespace SSS.Application.Community.CommunityBusiness.Service
         {
             var data = _communityBusinessRelationRepository.GetListCommunityBusinessRelation(input.id, input.name);
 
-            return new Pages<List<CommunityBusinessOutputDto>>(data.items.MapperToOutPut<CommunityBusinessOutputDto>()?.ToList(), data.count);
+            return new Pages<List<CommunityBusinessOutputDto>>(
+                data.items.MapperToOutPut<CommunityBusinessOutputDto>()?.ToList(), data.count);
         }
 
         public Pages<List<CommunityBusinessOutputDto>> GetListCommunityBusiness(CommunityBusinessInputDto input)

@@ -7,7 +7,7 @@ namespace SSS.Infrastructure.Util.Lambda
 {
     /// <summary>
     ///     Expression表达式扩展操作类
-    /// 调用方法：repository.GetAll().AsExpandable().Where(predicate)
+    ///     调用方法：repository.GetAll().AsExpandable().Where(predicate)
     /// </summary>
     public static class ExpressionEx
     {
@@ -71,8 +71,7 @@ namespace SSS.Infrastructure.Util.Lambda
 
             protected override Expression VisitParameter(ParameterExpression node)
             {
-                ParameterExpression replacement;
-                if (_map.TryGetValue(node, out replacement))
+                if (_map.TryGetValue(node, out var replacement))
                     node = replacement;
                 return base.VisitParameter(node);
             }

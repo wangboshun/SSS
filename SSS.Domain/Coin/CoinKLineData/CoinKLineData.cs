@@ -6,8 +6,6 @@ namespace SSS.Domain.Coin.CoinKLineData
 {
     public class CoinKLineData : Entity
     {
-
-
         public string Coin { set; get; }
 
         public int TimeType { set; get; }

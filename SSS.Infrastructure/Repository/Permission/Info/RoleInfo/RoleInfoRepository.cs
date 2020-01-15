@@ -14,7 +14,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.RoleInfo
     [DIService(ServiceLifetime.Scoped, typeof(IRoleInfoRepository))]
     public class RoleInfoRepository : Repository<Domain.Permission.Info.RoleInfo.RoleInfo>, IRoleInfoRepository
     {
-        private static string field = "r";
+        private static readonly string field = "r";
 
         public readonly List<RoleInfoTreeOutputDto> Tree;
 
@@ -24,7 +24,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.RoleInfo
         }
 
         /// <summary>
-        /// 获取角色下的所有下级
+        ///     获取角色下的所有下级
         /// </summary>
         /// <param name="roleid"></param>
         /// <returns></returns>
@@ -36,41 +36,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.RoleInfo
         }
 
         /// <summary>
-        /// 根据Parent获取子节点 
+        ///     根据角色组Id或名称，遍历关联角色
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="node"></param>
-        /// <param name="id"></param>
-        /// GetParent(DbSet.ToList(), null, input.id);
-        private void GetParent(List<Domain.Permission.Info.RoleInfo.RoleInfo> source, RoleInfoTreeOutputDto node, string id)
-        {
-            List<Domain.Permission.Info.RoleInfo.RoleInfo> list = source.Where(x => x.ParentId == id && x.IsDelete == 0).ToList();
-            foreach (var item in list)
-            {
-                RoleInfoTreeOutputDto model = new RoleInfoTreeOutputDto
-                {
-                    id = item.Id,
-                    createtime = item.CreateTime,
-                    rolename = item.RoleName,
-                    parentid = item.ParentId
-                };
-
-                GetParent(source, model, item.Id);
-
-                if (node == null)
-                    Tree.Add(model);
-                else
-                    node.Item.Add(model);
-            }
-        }
-
-        /// <summary>
-        /// 根据角色组Id或名称，遍历关联角色
-        /// </summary> 
         /// <returns></returns>
-        public Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>> GetRoleByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        public Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>> GetRoleByRoleGroup(string rolegroupid,
+            string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string sql = @"SELECT {0}   FROM
+            var sql = @"SELECT {0}   FROM
 	                RoleInfo AS r
 	                INNER JOIN RoleGroupRelation AS rgr ON r.id = rgr.RoleId
 	                INNER JOIN RoleGroup AS rg ON rgr.RoleGroupId = rg.Id 
@@ -92,12 +64,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.RoleInfo
         }
 
         /// <summary>
-        /// 根据权限组Id或名称，遍历关联角色
-        /// </summary> 
+        ///     根据权限组Id或名称，遍历关联角色
+        /// </summary>
         /// <returns></returns>
-        public Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>> GetRoleByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        public Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>> GetRoleByPowerGroup(string powergroupid,
+            string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string sql = @"SELECT {0}   FROM
+            var sql = @"SELECT {0}   FROM
 	                RoleInfo AS r
 	                INNER JOIN RoleGroupRelation AS rgr ON r.Id = rgr.RoleId 
 	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rgr.RoleGroupId
@@ -121,12 +94,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.RoleInfo
         }
 
         /// <summary>
-        /// 根据用户组Id或名称，遍历关联角色
-        /// </summary> 
+        ///     根据用户组Id或名称，遍历关联角色
+        /// </summary>
         /// <returns></returns>
-        public Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>> GetRoleByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        public Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>> GetRoleByUserGroup(string usergroupid,
+            string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string sql = @"SELECT {0}   FROM
+            var sql = @"SELECT {0}   FROM
 	                RoleInfo AS r
 	                INNER JOIN RoleGroupRelation AS rgr ON r.Id = rgr.RoleId
 	                INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ugrgr.RoleGroupId = rgr.RoleGroupId
@@ -150,12 +124,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.RoleInfo
         }
 
         /// <summary>
-        ///  根据用户Id或名称，遍历关联角色
-        /// </summary> 
+        ///     根据用户Id或名称，遍历关联角色
+        /// </summary>
         /// <returns></returns>
-        public Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>> GetRoleByUser(string userid, string usename, string parentid = "", int pageindex = 0, int pagesize = 0)
+        public Pages<IEnumerable<Domain.Permission.Info.RoleInfo.RoleInfo>> GetRoleByUser(string userid, string usename,
+            string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string sql = @"SELECT {0}   FROM
+            var sql = @"SELECT {0}   FROM
 	                RoleInfo AS r
 	                INNER JOIN RoleGroupRelation AS rgr ON r.Id = rgr.RoleId
 	                INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ugrgr.RoleGroupId = rgr.RoleGroupId
@@ -179,6 +154,36 @@ namespace SSS.Infrastructure.Repository.Permission.Info.RoleInfo
                 sql += $" AND u.ParentId='{parentid}'";
 
             return GetPage(sql, field, pageindex, pagesize);
+        }
+
+        /// <summary>
+        ///     根据Parent获取子节点
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="node"></param>
+        /// <param name="id"></param>
+        /// GetParent(DbSet.ToList(), null, input.id);
+        private void GetParent(List<Domain.Permission.Info.RoleInfo.RoleInfo> source, RoleInfoTreeOutputDto node,
+            string id)
+        {
+            var list = source.Where(x => x.ParentId == id && x.IsDelete == 0).ToList();
+            foreach (var item in list)
+            {
+                var model = new RoleInfoTreeOutputDto
+                {
+                    id = item.Id,
+                    createtime = item.CreateTime,
+                    rolename = item.RoleName,
+                    parentid = item.ParentId
+                };
+
+                GetParent(source, model, item.Id);
+
+                if (node == null)
+                    Tree.Add(model);
+                else
+                    node.Item.Add(model);
+            }
         }
     }
 }

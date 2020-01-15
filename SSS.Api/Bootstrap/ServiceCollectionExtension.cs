@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using Autofac;
+
+using AutoMapper;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -6,9 +8,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
 using SSS.Api.Seedwork.ServiceCollection;
+using SSS.Application.Seedwork.Service;
+using SSS.Domain.Seedwork.Repository;
 using SSS.Infrastructure.Seedwork.Cache.Memcached;
 using SSS.Infrastructure.Seedwork.Cache.MemoryCache;
 using SSS.Infrastructure.Seedwork.Cache.Redis;
+using SSS.Infrastructure.Seedwork.Repository;
 using SSS.Infrastructure.Util.Enum;
 
 using Swashbuckle.AspNetCore.Filters;
@@ -49,6 +54,32 @@ namespace SSS.Api.Bootstrap
         }
 
         /// <summary>
+        /// AddAutoFacService
+        /// </summary>
+        /// <param name="builder"></param>
+        public static void AddAutoFacService(this ContainerBuilder builder)
+        {
+            // Sdk
+            builder.AutoFacRegisterService("SSS.DigitalCurrency");
+
+            // Domain  
+            builder.AutoFacRegisterService("SSS.Domain.Seedwork");
+            builder.AutoFacRegisterService("SSS.Domain");
+
+            // Infra 
+            builder.AutoFacRegisterService("SSS.Infrastructure.Seedwork");
+            builder.AutoFacRegisterService("SSS.Infrastructure");
+
+            // Application
+            builder.AutoFacRegisterService("SSS.Application.Seedwork");
+            builder.AutoFacRegisterService("SSS.Application.Job");
+            builder.AutoFacRegisterService("SSS.Application");
+
+            builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>)).InstancePerLifetimeScope();
+            builder.RegisterGeneric(typeof(QueryService<,,>)).As(typeof(IQueryService<,,>)).InstancePerLifetimeScope();
+        }
+
+        /// <summary>
         ///     AutoMapper
         /// </summary>
         /// <param name="services"></param>
@@ -77,7 +108,6 @@ namespace SSS.Api.Bootstrap
             {
                 //遍历版本号
                 foreach (ApiVersions item in Enum.GetValues(typeof(ApiVersions)))
-                {
                     options.SwaggerDoc(item.ToString(), new OpenApiInfo
                     {
                         Version = item.ToString(),
@@ -85,7 +115,6 @@ namespace SSS.Api.Bootstrap
                         Description = item.GetDescription() + "---说明文档",
                         Contact = new OpenApiContact { Name = "WBS", Email = "512742341@qq.com" }
                     });
-                }
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -102,16 +131,15 @@ namespace SSS.Api.Bootstrap
                 options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
                 {
                     Description = "授权:Bearer +token",
-                    Name = "Authorization",//jwt默认的参数名称
-                    In = ParameterLocation.Header,//jwt默认存放Authorization信息的位置(请求头中)
+                    Name = "Authorization", //jwt默认的参数名称
+                    In = ParameterLocation.Header, //jwt默认存放Authorization信息的位置(请求头中)
                     Type = SecuritySchemeType.ApiKey
                 });
-
             });
         }
 
         /// <summary>
-        /// ApiVersion
+        ///     ApiVersion
         /// </summary>
         /// <param name="services"></param>
         public static void AddApiVersion(this IServiceCollection services)

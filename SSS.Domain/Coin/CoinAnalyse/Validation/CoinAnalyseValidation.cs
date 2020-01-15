@@ -12,25 +12,13 @@ namespace SSS.Domain.Coin.CoinAnalyse.Validation
     {
         public CoinAnalyseAddValidation()
         {
-            RuleSet("Insert", () =>
-            {
+            RuleSet("Insert", () => { });
 
-            });
+            RuleSet("Delete", () => { });
 
-            RuleSet("Delete", () =>
-            {
+            RuleSet("Update", () => { });
 
-            });
-
-            RuleSet("Update", () =>
-            {
-
-            });
-
-            RuleSet("Select", () =>
-            {
-
-            });
+            RuleSet("Select", () => { });
         }
     }
 }

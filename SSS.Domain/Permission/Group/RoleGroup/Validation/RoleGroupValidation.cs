@@ -12,25 +12,13 @@ namespace SSS.Domain.Permission.Group.RoleGroup.Validation
     {
         public RoleGroupAddValidation()
         {
-            RuleSet("Insert", () =>
-            {
-                RuleFor(x => x.rolegroupname).NotNull().WithMessage("角色组名称不能为空!");
-            });
+            RuleSet("Insert", () => { RuleFor(x => x.rolegroupname).NotNull().WithMessage("角色组名称不能为空!"); });
 
-            RuleSet("Delete", () =>
-            {
+            RuleSet("Delete", () => { });
 
-            });
+            RuleSet("Update", () => { });
 
-            RuleSet("Update", () =>
-            {
-
-            });
-
-            RuleSet("Select", () =>
-            {
-
-            });
+            RuleSet("Select", () => { });
         }
     }
 }

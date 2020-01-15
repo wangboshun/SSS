@@ -1,11 +1,12 @@
-﻿using FluentValidation.AspNetCore;
+﻿using Autofac;
+
+using FluentValidation.AspNetCore;
 
 using HealthChecks.UI.Client;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -33,8 +34,6 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
-
-using DateTimeConverter = SSS.Api.Seedwork.Json.DateTimeConverter;
 
 namespace SSS.Api
 {
@@ -119,7 +118,7 @@ namespace SSS.Api
             }).AddEntityFramework();
 
             //注入 Quartz调度类 
-            services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();//注册ISchedulerFactory的实例。
+            services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>(); //注册ISchedulerFactory的实例。
 
             services.AddHealthChecksUI().AddHealthChecks().AddCheck<RandomHealthCheck>("random");
 
@@ -145,11 +144,20 @@ namespace SSS.Api
         }
 
         /// <summary>
-        /// Configure
+        ///     ConfigureContainer
+        /// </summary>
+        /// <param name="builder"></param>
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            //builder.AddAutoFacService(); 
+        }
+
+        /// <summary>
+        ///     Configure
         /// </summary>
         /// <param name="app"></param>
         /// <param name="_httpContextFactory"></param>
-        /// <param name="env"></param> 
+        /// <param name="env"></param>
         /// <param name="appLifetime"></param>
         public void Configure(IApplicationBuilder app, IHttpContextFactory _httpContextFactory, IHostEnvironment env, IHostApplicationLifetime appLifetime)
         {
@@ -211,7 +219,7 @@ namespace SSS.Api
             //执行路由
             app.UseEndpoints(config =>
             {
-                config.MapHealthChecks("healthz", new HealthCheckOptions()
+                config.MapHealthChecks("healthz", new HealthCheckOptions
                 {
                     Predicate = _ => true,
                     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
@@ -224,6 +232,7 @@ namespace SSS.Api
             appLifetime.ApplicationStarted.Register(() =>
             {
                 IocEx.Instance = app.ApplicationServices;
+                //IocEx.Container = app.ApplicationServices.GetAutofacRoot();
                 job_service.Start().Wait();
                 //网站启动完成执行
             });
@@ -261,7 +270,7 @@ namespace SSS.Api
         /// <param name="app"></param>
         private void UseDefaultStaticFile(IApplicationBuilder app)
         {
-            string contentRoot = Directory.GetCurrentDirectory();
+            var contentRoot = Directory.GetCurrentDirectory();
             IFileProvider fileProvider = new PhysicalFileProvider(
                 Path.Combine(contentRoot, "File"));
 

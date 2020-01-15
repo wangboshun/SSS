@@ -4,7 +4,7 @@
     {
         public Pages(ListEntity data, int count)
         {
-            this.items = data;
+            items = data;
             this.count = count;
         }
 

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 
-using SSS.Infrastructure.Util.Http;
+using SSS.Infrastructure.Util.DI;
 
 using System.Collections;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace SSS.Infrastructure.Util.Mapper
 {
     public static class MapperEx
     {
-        private static IMapper mapper = (IMapper)HttpContextService.Current.RequestServices.GetService(typeof(IMapper));
+        private static readonly IMapper mapper = (IMapper)IocEx.Instance.GetService(typeof(IMapper));
 
         public static IQueryable<TOutput> MapperToOutPut<TOutput>(this IEnumerable data) where TOutput : class
         {

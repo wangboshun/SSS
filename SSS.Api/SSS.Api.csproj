@@ -63,6 +63,8 @@
     <ProjectReference Include="..\SSS.Application.Job\SSS.Application.Job.csproj" />
     <ProjectReference Include="..\SSS.Application.Seedwork\SSS.Application.Seedwork.csproj" />
     <ProjectReference Include="..\SSS.Application\SSS.Application.csproj" />
+    <ProjectReference Include="..\SSS.Domain.Seedwork\SSS.Domain.Seedwork.csproj" />
+    <ProjectReference Include="..\SSS.Infrastructure\SSS.Infrastructure.csproj" />
   </ItemGroup>
  
   <ItemGroup>

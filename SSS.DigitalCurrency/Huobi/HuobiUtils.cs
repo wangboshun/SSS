@@ -33,22 +33,22 @@ namespace SSS.DigitalCurrency.Huobi
         /// <returns></returns>
         public List<CoinSymbols> GetAllCoin()
         {
-            List<CoinSymbols> list = new List<CoinSymbols>();
+            var list = new List<CoinSymbols>();
 
             try
             {
-                WebClient http = new WebClient();
+                var http = new WebClient();
 
-                string result = http.DownloadString("https://api.huobiasia.vip/v1/common/symbols");
+                var result = http.DownloadString("https://api.huobiasia.vip/v1/common/symbols");
 
-                JObject json_root = (JObject)JsonConvert.DeserializeObject(result);
+                var json_root = (JObject)JsonConvert.DeserializeObject(result);
 
                 var json_data = json_root["data"];
 
                 foreach (var item in json_data)
                     if (item.Value<string>("quote-currency").Contains("usdt"))
                     {
-                        CoinSymbols s = new CoinSymbols
+                        var s = new CoinSymbols
                         {
                             base_currency = item["base-currency"]?.ToString(),
                             quote_currency = item["quote-currency"]?.ToString()
@@ -75,12 +75,12 @@ namespace SSS.DigitalCurrency.Huobi
         {
             try
             {
-                WebClient http = new WebClient();
+                var http = new WebClient();
                 var result = http.DownloadString($"https://api.huobiasia.vip/market/history/kline?period={time}&size={size}&symbol={coin + quote}");
 
                 if (string.IsNullOrWhiteSpace(result)) return null;
 
-                JObject jobject = JObject.Parse(result);
+                var jobject = JObject.Parse(result);
 
                 var json = jobject?["data"];
 
@@ -116,7 +116,7 @@ namespace SSS.DigitalCurrency.Huobi
         {
             try
             {
-                WebClient http = new WebClient();
+                var http = new WebClient();
                 //return http.DownloadString($"https://api.huobi.pro/market/history/kline?period={time}&size={size}&symbol={coin}");
                 string url = $"{JsonConfig.GetSectionValue("TradeConfig:Api:Huobi")}/market/history/kline?period={time}&size={size}&symbol={coin}";
                 return http.DownloadString(url);
@@ -127,6 +127,5 @@ namespace SSS.DigitalCurrency.Huobi
                 throw;
             }
         }
-
     }
 }

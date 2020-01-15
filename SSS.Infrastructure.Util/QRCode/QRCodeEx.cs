@@ -30,10 +30,10 @@ namespace SSS.Infrastructure.Util.QRCode
         /// <returns></returns>
         public Bitmap GetQRCode(string content, int size)
         {
-            QRCodeGenerator generator = new QRCodeGenerator();
-            QRCodeData codedata = generator.CreateQrCode(content, QRCodeGenerator.ECCLevel.M, true);
-            QRCoder.QRCode qrcode = new QRCoder.QRCode(codedata);
-            Bitmap img = qrcode.GetGraphic(size);
+            var generator = new QRCodeGenerator();
+            var codedata = generator.CreateQrCode(content, QRCodeGenerator.ECCLevel.M, true);
+            var qrcode = new QRCoder.QRCode(codedata);
+            var img = qrcode.GetGraphic(size);
             return img;
         }
     }

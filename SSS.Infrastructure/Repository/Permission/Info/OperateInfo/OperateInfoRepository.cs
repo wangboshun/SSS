@@ -12,9 +12,10 @@ using System.Linq;
 namespace SSS.Infrastructure.Repository.Permission.Info.OperateInfo
 {
     [DIService(ServiceLifetime.Scoped, typeof(IOperateInfoRepository))]
-    public class OperateInfoRepository : Repository<Domain.Permission.Info.OperateInfo.OperateInfo>, IOperateInfoRepository
+    public class OperateInfoRepository : Repository<Domain.Permission.Info.OperateInfo.OperateInfo>,
+        IOperateInfoRepository
     {
-        private static string field = "o";
+        private static readonly string field = "o";
 
         public readonly List<OperateInfoTreeOutputDto> Tree;
 
@@ -24,7 +25,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.OperateInfo
         }
 
         /// <summary>
-        /// 获取操作下的所有下级
+        ///     获取操作下的所有下级
         /// </summary>
         /// <param name="operateid"></param>
         /// <returns></returns>
@@ -36,41 +37,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.OperateInfo
         }
 
         /// <summary>
-        /// 根据Parent获取子节点  方法1
+        ///     根据权限组Id或名称，遍历关联操作
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="node"></param>
-        /// <param name="id"></param>
-        /// GetParent(DbSet.ToList(), null, input.id);
-        private void GetParent(List<Domain.Permission.Info.OperateInfo.OperateInfo> source, OperateInfoTreeOutputDto node, string id)
-        {
-            List<Domain.Permission.Info.OperateInfo.OperateInfo> list = source.Where(x => x.ParentId == id && x.IsDelete == 0).ToList();
-            foreach (var item in list)
-            {
-                OperateInfoTreeOutputDto model = new OperateInfoTreeOutputDto
-                {
-                    id = item.Id,
-                    createtime = item.CreateTime,
-                    operatename = item.OperateName,
-                    parentid = item.ParentId
-                };
-
-                GetParent(source, model, item.Id);
-
-                if (node == null)
-                    Tree.Add(model);
-                else
-                    node.Item.Add(model);
-            }
-        }
-
-        /// <summary>
-        ///根据权限组Id或名称，遍历关联操作
-        /// </summary> 
         /// <returns></returns>
-        public Pages<IEnumerable<Domain.Permission.Info.OperateInfo.OperateInfo>> GetOperateByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        public Pages<IEnumerable<Domain.Permission.Info.OperateInfo.OperateInfo>> GetOperateByPowerGroup(
+            string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string sql = @"SELECT  {0}  FROM
+            var sql = @"SELECT  {0}  FROM
 	           	OperateInfo AS o
 	            INNER JOIN PowerGroupOperateRelation AS pgor ON o.Id = pgor.OperateId
 	            INNER JOIN PowerGroup AS pg ON pgor.PowerGroupId = pg.Id 
@@ -92,12 +65,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.OperateInfo
         }
 
         /// <summary>
-        ///根据用户Id或名称，遍历关联操作
-        /// </summary> 
+        ///     根据用户Id或名称，遍历关联操作
+        /// </summary>
         /// <returns></returns>
-        public Pages<IEnumerable<Domain.Permission.Info.OperateInfo.OperateInfo>> GetOperateByUser(string userid, string username, string parentid = "", int pageindex = 0, int pagesize = 0)
+        public Pages<IEnumerable<Domain.Permission.Info.OperateInfo.OperateInfo>> GetOperateByUser(string userid,
+            string username, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string sql = @"SELECT  {0}  FROM
+            var sql = @"SELECT  {0}  FROM
 	           		UserInfo AS u
 	                INNER JOIN UserGroupRelation AS ugr ON u.id = ugr.UserId
 	                INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ugrgr.UserGroupId = ugr.UserGroupId
@@ -125,12 +99,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.OperateInfo
         }
 
         /// <summary>
-        /// 根据用户组Id或名称，遍历关联操作
-        /// </summary> 
+        ///     根据用户组Id或名称，遍历关联操作
+        /// </summary>
         /// <returns></returns>
-        public Pages<IEnumerable<Domain.Permission.Info.OperateInfo.OperateInfo>> GetOperateByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        public Pages<IEnumerable<Domain.Permission.Info.OperateInfo.OperateInfo>> GetOperateByUserGroup(
+            string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string sql = @"SELECT  {0}  FROM
+            var sql = @"SELECT  {0}  FROM
 	                UserGroup AS ug
 	                INNER JOIN UserGroupRelation AS ugr ON ug.id = ugr.UserGroupId
 	                INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ugrgr.UserGroupId = ugr.UserGroupId
@@ -158,12 +133,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.OperateInfo
         }
 
         /// <summary>
-        /// 根据角色组Id或名称，遍历关联操作
-        /// </summary> 
+        ///     根据角色组Id或名称，遍历关联操作
+        /// </summary>
         /// <returns></returns>
-        public Pages<IEnumerable<Domain.Permission.Info.OperateInfo.OperateInfo>> GetOperateByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        public Pages<IEnumerable<Domain.Permission.Info.OperateInfo.OperateInfo>> GetOperateByRoleGroup(
+            string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string sql = @"SELECT  {0}  FROM
+            var sql = @"SELECT  {0}  FROM
 	                RoleGroup AS rg
 	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rg.Id
 	                INNER JOIN PowerGroupOperateRelation AS pgopr ON pgopr.PowerGroupId = rgpgr.PowerGroupId
@@ -184,6 +160,36 @@ namespace SSS.Infrastructure.Repository.Permission.Info.OperateInfo
                 sql += $" AND rg.ParentId='{parentid}'";
 
             return GetPage(sql, field, pageindex, pagesize);
+        }
+
+        /// <summary>
+        ///     根据Parent获取子节点  方法1
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="node"></param>
+        /// <param name="id"></param>
+        /// GetParent(DbSet.ToList(), null, input.id);
+        private void GetParent(List<Domain.Permission.Info.OperateInfo.OperateInfo> source,
+            OperateInfoTreeOutputDto node, string id)
+        {
+            var list = source.Where(x => x.ParentId == id && x.IsDelete == 0).ToList();
+            foreach (var item in list)
+            {
+                var model = new OperateInfoTreeOutputDto
+                {
+                    id = item.Id,
+                    createtime = item.CreateTime,
+                    operatename = item.OperateName,
+                    parentid = item.ParentId
+                };
+
+                GetParent(source, model, item.Id);
+
+                if (node == null)
+                    Tree.Add(model);
+                else
+                    node.Item.Add(model);
+            }
         }
     }
 }

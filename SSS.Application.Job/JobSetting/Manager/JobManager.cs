@@ -26,18 +26,18 @@ using System.Threading.Tasks;
 namespace SSS.Application.Job.JobSetting.Manager
 {
     /// <summary>
-    /// JobStartup启动类
+    ///     JobStartup启动类
     /// </summary>
     [DIService(ServiceLifetime.Singleton, typeof(IJobManager))]
     public class JobManager : IJobManager
     {
+        private readonly IJobFactory _jobFactory;
         private readonly ILogger<JobManager> _logger;
         private readonly ISchedulerFactory _schedulerFactory;
-        private readonly IJobFactory _jobFactory;
         private IScheduler _scheduler;
 
         /// <summary>
-        /// JobStartup
+        ///     JobStartup
         /// </summary>
         /// <param name="jobFactory"></param>
         /// <param name="logger"></param>
@@ -55,12 +55,12 @@ namespace SSS.Application.Job.JobSetting.Manager
         #region Job CURD
 
         /// <summary>
-        /// 恢复Job
-        /// </summary> 
+        ///     恢复Job
+        /// </summary>
         public async Task ResumeJob(string job_name, string job_group)
         {
-            JobKey key = GetJobKey(job_name, job_group);
-            TriggerKey trigger = GetTriggerKey(job_name, job_group);
+            var key = GetJobKey(job_name, job_group);
+            var trigger = GetTriggerKey(job_name, job_group);
             var status = GetTriggerState(trigger);
             if (status == TriggerState.Normal)
                 return;
@@ -69,12 +69,12 @@ namespace SSS.Application.Job.JobSetting.Manager
         }
 
         /// <summary>
-        /// 暂停Job
-        /// </summary> 
+        ///     暂停Job
+        /// </summary>
         public async Task PauseJob(string job_name, string job_group)
         {
-            JobKey key = GetJobKey(job_name, job_group);
-            TriggerKey trigger = GetTriggerKey(job_name, job_group);
+            var key = GetJobKey(job_name, job_group);
+            var trigger = GetTriggerKey(job_name, job_group);
             var status = GetTriggerState(trigger);
             if (status == TriggerState.Paused)
                 return;
@@ -83,22 +83,22 @@ namespace SSS.Application.Job.JobSetting.Manager
         }
 
         /// <summary>
-        /// 添加job
+        ///     添加job
         /// </summary>
         /// <param name="job_name"></param>
         /// <param name="job_group"></param>
         /// <returns></returns>
-        public async Task<bool> AddJob(string job_name, string job_group, string job_cron, string job_value, string job_class_str)
+        public async Task<bool> AddJob(string job_name, string job_group, string job_cron, string job_value,string job_class_str)
         {
             new SqlSugarClient(
-                new ConnectionConfig()
+                new ConnectionConfig
                 {
                     ConnectionString = JsonConfig.GetSectionValue("ConnectionStrings:MYSQLConnection"),
                     DbType = DbType.MySql,
                     IsAutoCloseConnection = true
                 });
 
-            JobDataMap data = GetJobDataMapByStr(job_value);
+            var data = GetJobDataMapByStr(job_value);
             var jobclass = Type.GetType(job_class_str);
 
             //4、创建任务
@@ -126,14 +126,14 @@ namespace SSS.Application.Job.JobSetting.Manager
         }
 
         /// <summary>
-        /// 删除job
+        ///     删除job
         /// </summary>
         /// <param name="job_name"></param>
         /// <param name="job_group"></param>
         /// <returns></returns>
         public async Task<bool> DeleteJob(string job_name, string job_group)
         {
-            JobKey key = GetJobKey(job_name, job_group);
+            var key = GetJobKey(job_name, job_group);
             //TriggerKey trigger = GetTriggerKey(job_name, job_group);
             //await _scheduler.PauseJob(key);
             //await _scheduler.UnscheduleJob(trigger);
@@ -142,48 +142,48 @@ namespace SSS.Application.Job.JobSetting.Manager
         }
 
         /// <summary>
-        /// 修改Job
-        /// </summary> 
+        ///     修改Job
+        /// </summary>
         public async Task UpdateJob(string job_name, string job_group, string job_cron)
         {
-            TriggerKey key = GetTriggerKey(job_name, job_group);
+            var key = GetTriggerKey(job_name, job_group);
             ICronTrigger cron = new CronTriggerImpl(job_name, job_group, job_name, job_group, job_cron);
             await _scheduler.RescheduleJob(key, cron);
         }
 
         /// <summary>
-        /// 查看Job信息
+        ///     查看Job信息
         /// </summary>
         /// <param name="job_name"></param>
         /// <param name="job_group"></param>
         /// <returns></returns>
         public IJobDetail GetJobDetail(string job_name, string job_group)
         {
-            JobKey key = GetJobKey(job_name, job_group);
+            var key = GetJobKey(job_name, job_group);
             return _scheduler.GetJobDetail(key).Result;
         }
 
         /// <summary>
-        /// 查看Trigger信息
+        ///     查看Trigger信息
         /// </summary>
         /// <param name="job_name"></param>
         /// <param name="job_group"></param>
         /// <returns></returns>
         public ITrigger GetTrigger(string job_name, string job_group)
         {
-            TriggerKey key = GetTriggerKey(job_name, job_group);
+            var key = GetTriggerKey(job_name, job_group);
             return _scheduler.GetTrigger(key).Result;
         }
 
         /// <summary>
-        /// 获取Trigger状态
+        ///     获取Trigger状态
         /// </summary>
         /// <param name="job_name"></param>
         /// <param name="job_group"></param>
         /// <returns></returns>
         public TriggerState GeTriggerState(string job_name, string job_group)
         {
-            TriggerKey key = GetTriggerKey(job_name, job_group);
+            var key = GetTriggerKey(job_name, job_group);
             return _scheduler.GetTriggerState(key).Result;
         }
 
@@ -192,7 +192,7 @@ namespace SSS.Application.Job.JobSetting.Manager
         #region 私有方法，特殊处理
 
         /// <summary>
-        /// 添加Job监听
+        ///     添加Job监听
         /// </summary>
         /// <param name="detail"></param>
         private void AddListener(IJobDetail detail)
@@ -203,7 +203,7 @@ namespace SSS.Application.Job.JobSetting.Manager
         }
 
         /// <summary>
-        /// 获取触发器状态
+        ///     获取触发器状态
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
@@ -213,7 +213,7 @@ namespace SSS.Application.Job.JobSetting.Manager
         }
 
         /// <summary>
-        /// 获取JobKey
+        ///     获取JobKey
         /// </summary>
         /// <param name="job_name"></param>
         /// <param name="job_group"></param>
@@ -224,7 +224,7 @@ namespace SSS.Application.Job.JobSetting.Manager
         }
 
         /// <summary>
-        /// 获取TriggerKey
+        ///     获取TriggerKey
         /// </summary>
         /// <param name="job_name"></param>
         /// <param name="job_group"></param>
@@ -235,7 +235,7 @@ namespace SSS.Application.Job.JobSetting.Manager
         }
 
         /// <summary>
-        /// 获取参数,根据字符串（数据库存储的内容）
+        ///     获取参数,根据字符串（数据库存储的内容）
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
@@ -243,7 +243,7 @@ namespace SSS.Application.Job.JobSetting.Manager
         {
             var result = JObject.Parse(str);
 
-            JobDataMap data = new JobDataMap();
+            var data = new JobDataMap();
 
             if (result != null)
                 foreach (var val in result.Children())
@@ -274,13 +274,13 @@ namespace SSS.Application.Job.JobSetting.Manager
         }
 
         /// <summary>
-        /// 获取参数,根据JToken（json文件的内容）
+        ///     获取参数,根据JToken（json文件的内容）
         /// </summary>
         /// <param name="result"></param>
         /// <returns></returns>
         private JobDataMap GetJobDataMap(JToken result)
         {
-            JobDataMap data = new JobDataMap();
+            var data = new JobDataMap();
 
             if (result == null) return data;
 
@@ -316,7 +316,7 @@ namespace SSS.Application.Job.JobSetting.Manager
         #region 启动、关闭
 
         /// <summary>
-        /// 初始化
+        ///     初始化
         /// </summary>
         /// <returns></returns>
         private async Task Init()
@@ -330,19 +330,19 @@ namespace SSS.Application.Job.JobSetting.Manager
         }
 
         /// <summary>
-        /// 开始
+        ///     开始
         /// </summary>
         /// <returns></returns>
         public async Task<string> Start()
         {
             try
             {
-                string file = RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+                var file = RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
                     ? Directory.GetCurrentDirectory() + "//job.json"
                     : Directory.GetCurrentDirectory() + "\\job.json";
 
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                var json = IO.ReadAllText(file, System.Text.Encoding.GetEncoding("GB2312"));
+                var json = IO.ReadAllText(file, Encoding.GetEncoding("GB2312"));
                 if (string.IsNullOrWhiteSpace(json))
                 {
                     _logger.LogError("------JobManager 任务配置文件没有内容------");
@@ -358,8 +358,8 @@ namespace SSS.Application.Job.JobSetting.Manager
 
                 var result = jobject["JobConfig"];
 
-                SqlSugarClient db = new SqlSugarClient(
-                    new ConnectionConfig()
+                var db = new SqlSugarClient(
+                    new ConnectionConfig
                     {
                         ConnectionString = JsonConfig.GetSectionValue("ConnectionStrings:MYSQLConnection"),
                         DbType = DbType.MySql,
@@ -368,7 +368,7 @@ namespace SSS.Application.Job.JobSetting.Manager
 
                 foreach (var item in result)
                 {
-                    var type_str = item["JobClass"].ToString();  //类型字符串
+                    var type_str = item["JobClass"].ToString(); //类型字符串
                     var job_name = item["JobName"].ToString(); //任务名
                     var job_group = item["JobGroup"].ToString(); //任务组
                     var job_cron = item["JobCron"].ToString(); //Cron
@@ -376,9 +376,9 @@ namespace SSS.Application.Job.JobSetting.Manager
                     var job_status = item["JobStatus"]; //状态
 
                     if (string.IsNullOrWhiteSpace(job_name) ||
-                       string.IsNullOrWhiteSpace(job_cron) ||
-                       string.IsNullOrWhiteSpace(type_str) ||
-                       string.IsNullOrWhiteSpace(job_group))
+                        string.IsNullOrWhiteSpace(job_cron) ||
+                        string.IsNullOrWhiteSpace(type_str) ||
+                        string.IsNullOrWhiteSpace(job_group))
                         continue;
 
                     var job = db.Queryable<JobInfo>().Where(x => x.JobName.Equals(job_name) && x.JobGroup.Equals(job_group))?.First();
@@ -391,7 +391,7 @@ namespace SSS.Application.Job.JobSetting.Manager
                     if (job_class == null)
                         continue;
 
-                    JobDataMap data = GetJobDataMap(value_result);
+                    var data = GetJobDataMap(value_result);
 
                     //4、创建任务
                     var job_detail = JobBuilder.Create(job_class).WithIdentity(job_name, job_group).UsingJobData(data).Build();
@@ -431,21 +431,18 @@ namespace SSS.Application.Job.JobSetting.Manager
         }
 
         /// <summary>
-        /// 结束
+        ///     结束
         /// </summary>
         public void Stop()
         {
-            if (_scheduler == null)
-            {
-                return;
-            }
+            if (_scheduler == null) return;
 
-            if (_scheduler.Shutdown(waitForJobsToComplete: true).Wait(30000))
+            if (_scheduler.Shutdown(true).Wait(30000))
                 _scheduler = null;
 
             _logger.LogCritical("------任务调度关闭------");
         }
 
-        #endregion 
+        #endregion
     }
 }

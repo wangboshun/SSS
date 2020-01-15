@@ -46,9 +46,7 @@ namespace SSS.Infrastructure.Util.ID
 
         public static Snowflake Instance()
         {
-            if (snowflake == null)
-                snowflake = new Snowflake();
-            return snowflake;
+            return snowflake ??= new Snowflake();
         }
 
         private void Snowflakes(long machineId, long datacenterId)
@@ -73,7 +71,8 @@ namespace SSS.Infrastructure.Util.ID
         private static long GetTimestamp()
         {
             //让他2000年开始
-            return (long)(System.DateTime.UtcNow - new System.DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds;
+            return (long)(System.DateTime.UtcNow - new System.DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc))
+                .TotalMilliseconds;
         }
 
         /// <summary>
@@ -83,8 +82,8 @@ namespace SSS.Infrastructure.Util.ID
         /// <returns></returns>
         private static long GetNextTimestamp(long lastTimestamp)
         {
-            long timestamp = GetTimestamp();
-            int count = 0;
+            var timestamp = GetTimestamp();
+            var count = 0;
             while (timestamp <= lastTimestamp) //这里获取新的时间,可能会有错,这算法与comb一样对机器时间的要求很严格
             {
                 count++;
@@ -105,7 +104,7 @@ namespace SSS.Infrastructure.Util.ID
         {
             lock (syncRoot)
             {
-                long timestamp = GetTimestamp();
+                var timestamp = GetTimestamp();
                 if (lastTimestamp == timestamp)
                 {
                     //同一微妙中生成ID
@@ -122,10 +121,10 @@ namespace SSS.Infrastructure.Util.ID
 
                 if (timestamp < lastTimestamp) throw new Exception("时间戳比上一次生成ID时时间戳还小，故异常");
                 lastTimestamp = timestamp; //把当前时间戳保存为最后生成ID的时间戳
-                long Id = ((timestamp - twepoch) << (int)timestampLeftShift)
-                          | (datacenterId << (int)datacenterIdShift)
-                          | (machineId << (int)machineIdShift)
-                          | sequence;
+                var Id = ((timestamp - twepoch) << (int)timestampLeftShift)
+                         | (datacenterId << (int)datacenterIdShift)
+                         | (machineId << (int)machineIdShift)
+                         | sequence;
                 return Id;
             }
         }

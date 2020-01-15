@@ -12,6 +12,11 @@ namespace SSS.Domain.Permission.Info.PowerInfo.Dto
 
     public class PowerInfoTreeOutputDto
     {
+        public PowerInfoTreeOutputDto()
+        {
+            Item = new List<PowerInfoTreeOutputDto>();
+        }
+
         public string id { get; set; }
 
         public string powername { get; set; }
@@ -21,10 +26,5 @@ namespace SSS.Domain.Permission.Info.PowerInfo.Dto
         public DateTime createtime { get; set; }
 
         public List<PowerInfoTreeOutputDto> Item { get; set; }
-
-        public PowerInfoTreeOutputDto()
-        {
-            Item = new List<PowerInfoTreeOutputDto>();
-        }
     }
 }

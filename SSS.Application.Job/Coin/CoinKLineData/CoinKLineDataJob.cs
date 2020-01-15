@@ -6,6 +6,8 @@ using Newtonsoft.Json.Linq;
 using Polly;
 
 using Quartz;
+using Quartz.Impl;
+using Quartz.Impl.Triggers;
 
 using SSS.Application.Job.JobSetting.Extension;
 using SSS.DigitalCurrency.Domain;
@@ -28,10 +30,10 @@ namespace SSS.Application.Job.Coin.CoinKLineData
     [DIService(ServiceLifetime.Singleton, typeof(CoinKLineDataJob))]
     public class CoinKLineDataJob : IJob
     {
+        private static readonly object _lock = new object();
         private readonly HuobiUtils _huobi;
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _scopeFactory;
-        private static object _lock = new object();
 
         public CoinKLineDataJob(ILogger<CoinKLineDataJob> logger, HuobiUtils huobi, IServiceScopeFactory scopeFactory)
         {
@@ -50,13 +52,13 @@ namespace SSS.Application.Job.Coin.CoinKLineData
         {
             lock (_lock)
             {
-                var trigger = (Quartz.Impl.Triggers.CronTriggerImpl)((Quartz.Impl.JobExecutionContextImpl)context).Trigger;
+                var trigger = (CronTriggerImpl)((JobExecutionContextImpl)context).Trigger;
                 try
                 {
-                    Stopwatch watch = new Stopwatch();
+                    var watch = new Stopwatch();
                     watch.Start();
 
-                    string[] coin_array = JsonConfig.GetSectionValue("TradeConfig:Coin").Split(',');
+                    var coin_array = JsonConfig.GetSectionValue("TradeConfig:Coin").Split(',');
                     Parallel.ForEach(coin_array, AddKLineData);
 
                     watch.Stop();
@@ -86,16 +88,20 @@ namespace SSS.Application.Job.Coin.CoinKLineData
 
                 foreach (CoinTime time in Enum.GetValues(typeof(CoinTime)))
                 {
-                    var max = db_context.CoinKLineData.Where(x => x.Coin.Equals(coin) && x.IsDelete == 0 && x.TimeType == (int)time && x.Platform == (int)Platform.Huobi).OrderByDescending(x => x.DataTime).FirstOrDefault();
-                    int size = 2000;
+                    var max = db_context.CoinKLineData.Where(x => x.Coin.Equals(coin) &&
+ 						x.IsDelete == 0 &&
+						x.TimeType == (int)time &&
+                        x.Platform == (int)Platform.Huobi).OrderByDescending(x => x.DataTime)
+                        .FirstOrDefault();
+                    var size = 2000;
                     if (max != null)
                         size = GetSize(max.DataTime, time);
 
-                    string kline = "";
+                    var kline = "";
 
                     var retry = Policy.Handle<WebException>().Retry(3, (ex, count, text) =>
                     {
-                        _logger.LogError(new EventId(ex.HResult), ex, $"---CoinKLineDataJob GetKLine Exception,进行重试 {count}次---");
+                        _logger.LogError(new EventId(ex.HResult), ex,$"---CoinKLineDataJob GetKLine Exception,进行重试 {count}次---");
                         Thread.Sleep(100);
                     });
 
@@ -106,7 +112,7 @@ namespace SSS.Application.Job.Coin.CoinKLineData
 
                     if (string.IsNullOrWhiteSpace(kline)) continue;
 
-                    JObject jobject = JObject.Parse(kline);
+                    var jobject = JObject.Parse(kline);
 
                     var json = jobject?["data"];
                     if (json == null) continue;
@@ -134,17 +140,19 @@ namespace SSS.Application.Job.Coin.CoinKLineData
                         old_datatime.Add(data_time);
                         list.Add(model);
                     }
+
                     var old_list = db_context.CoinKLineData.Where(x => old_datatime.Contains(x.DataTime) &&
-                                                                   x.TimeType == (int)time &&
-                                                                   x.Coin.Equals(coin) &&
-                                                                   x.Platform == (int)Platform.Huobi &&
-                                                                   x.IsDelete == 0).ToList();
+                                                                       x.TimeType == (int)time &&
+                                                                       x.Coin.Equals(coin) &&
+                                                                       x.Platform == (int)Platform.Huobi &&
+                                                                       x.IsDelete == 0).ToList();
 
                     if (old_list.Count > 0)
                         db_context.CoinKLineData.RemoveRange(old_list);
 
                     new_list.AddRange(list);
                 }
+
                 db_context.CoinKLineData.AddRange(new_list);
                 db_context.SaveChanges();
             }
@@ -156,7 +164,7 @@ namespace SSS.Application.Job.Coin.CoinKLineData
 
         private int GetSize(DateTime datatime, CoinTime timetype)
         {
-            int number = 0;
+            var number = 0;
             switch (timetype)
             {
                 case CoinTime.Time_1min:

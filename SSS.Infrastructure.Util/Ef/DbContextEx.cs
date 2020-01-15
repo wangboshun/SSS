@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Reflection;
 
 namespace SSS.Infrastructure.Util.Ef
 {
@@ -13,8 +12,8 @@ namespace SSS.Infrastructure.Util.Ef
     {
         public static int Count(this DatabaseFacade facade, string sql, params object[] parameters)
         {
-            DbCommand cmd = CreateCommand(facade, sql, out DbConnection conn, parameters);
-            int count = Convert.ToInt32(cmd.ExecuteScalar());
+            var cmd = CreateCommand(facade, sql, out var conn, parameters);
+            var count = Convert.ToInt32(cmd.ExecuteScalar());
             conn.Close();
             return count;
         }
@@ -32,10 +31,10 @@ namespace SSS.Infrastructure.Util.Ef
 
         private static DbCommand CreateCommand(DatabaseFacade facade, string sql, out DbConnection dbConn, params object[] parameters)
         {
-            DbConnection conn = facade.GetDbConnection();
+            var conn = facade.GetDbConnection();
             dbConn = conn;
             conn.Open();
-            DbCommand cmd = conn.CreateCommand();
+            var cmd = conn.CreateCommand();
 
             cmd.CommandText = sql;
             CombineParams(ref cmd, parameters);
@@ -44,9 +43,9 @@ namespace SSS.Infrastructure.Util.Ef
 
         public static DataTable SqlQuery(this DatabaseFacade facade, string sql, params object[] parameters)
         {
-            DbCommand cmd = CreateCommand(facade, sql, out DbConnection conn, parameters);
-            DbDataReader reader = cmd.ExecuteReader();
-            DataTable dt = new DataTable();
+            var cmd = CreateCommand(facade, sql, out var conn, parameters);
+            var reader = cmd.ExecuteReader();
+            var dt = new DataTable();
             dt.Load(reader);
             reader.Close();
             conn.Close();
@@ -55,12 +54,12 @@ namespace SSS.Infrastructure.Util.Ef
 
         public static IEnumerable<T> SqlQuery<T>(this DatabaseFacade facade, string sql, params object[] parameters) where T : class, new()
         {
-            DataTable dt = SqlQuery(facade, sql, parameters);
+            var dt = SqlQuery(facade, sql, parameters);
             return dt.ToEnumerable<T>();
         }
 
         /// <summary>
-        /// DataTable转List
+        ///     DataTable转List
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="dt"></param>
@@ -71,21 +70,21 @@ namespace SSS.Infrastructure.Util.Ef
             {
                 if (dt == null || dt.Rows.Count == 0)
                     return null;
-                List<T> ts = new List<T>();
+                var ts = new List<T>();
                 string tempName;
                 foreach (DataRow dr in dt.Rows)
                 {
-                    T t = new T();
+                    var t = new T();
                     // 获得此模型的公共属性  
-                    PropertyInfo[] propertys = t.GetType().GetProperties();
-                    foreach (PropertyInfo pi in propertys)
+                    var propertys = t.GetType().GetProperties();
+                    foreach (var pi in propertys)
                     {
                         tempName = pi.Name;
                         if (dt.Columns.Contains(tempName))
                         {
                             if (!pi.CanWrite)
                                 continue;
-                            object value = dr[tempName];
+                            var value = dr[tempName];
                             if (value is DBNull)
                                 continue;
                             switch (pi.PropertyType.Name.ToLower())

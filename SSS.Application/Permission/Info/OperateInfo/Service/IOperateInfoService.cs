@@ -19,11 +19,12 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
         /// <param name="operateid"></param>
         /// <returns></returns>
         List<OperateInfoTreeOutputDto> GetChildrenById(string operateid);
+
         bool DeleteOperateInfo(string id);
         Pages<List<OperateInfoOutputDto>> GetListOperateInfo(OperateInfoInputDto input);
 
         /// <summary>
-        /// 根据权限组Id或名称，遍历关联操作
+        ///     根据权限组Id或名称，遍历关联操作
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>

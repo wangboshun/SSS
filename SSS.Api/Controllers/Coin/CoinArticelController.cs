@@ -8,7 +8,7 @@ using SSS.Domain.Coin.CoinArticel.Dto;
 namespace SSS.Api.Controllers.Coin
 {
     /// <summary>
-    /// 币币新闻
+    ///     币币新闻
     /// </summary>
     [ApiVersion("3.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -20,7 +20,7 @@ namespace SSS.Api.Controllers.Coin
         private readonly ICoinArticelService _service;
 
         /// <summary>
-        ///  币币新闻
+        ///     币币新闻
         /// </summary>
         /// <param name="service">ICoinArticelService</param>
         public CoinArticelController(ICoinArticelService service)
@@ -29,7 +29,7 @@ namespace SSS.Api.Controllers.Coin
         }
 
         /// <summary>
-        ///    获取所有信息列表
+        ///     获取所有信息列表
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns>
@@ -53,7 +53,7 @@ namespace SSS.Api.Controllers.Coin
         }
 
         /// <summary>
-        /// 新闻详情
+        ///     新闻详情
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -65,7 +65,7 @@ namespace SSS.Api.Controllers.Coin
         }
 
         /// <summary>
-        ///  添加新闻
+        ///     添加新闻
         /// </summary>
         /// <param name="input">CoinArticelInputDto</param>
         /// <returns></returns>
@@ -74,7 +74,6 @@ namespace SSS.Api.Controllers.Coin
         {
             _service.AddCoinArticel(input);
             return AddResponse(input);
-
         }
     }
 }

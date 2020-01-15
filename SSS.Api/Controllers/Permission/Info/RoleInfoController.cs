@@ -12,8 +12,8 @@ using SSS.Domain.Permission.Info.UserInfo.Dto;
 namespace SSS.Api.Controllers.Permission.Info
 {
     /// <summary>
-    /// 角色信息
-    /// </summary> 
+    ///     角色信息
+    /// </summary>
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
@@ -24,7 +24,7 @@ namespace SSS.Api.Controllers.Permission.Info
         private readonly IRoleInfoService _service;
 
         /// <summary>
-        /// 角色信息
+        ///     角色信息
         /// </summary>
         /// <param name="service">IRoleInfoService</param>
         public RoleInfoController(IRoleInfoService service)
@@ -57,22 +57,22 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
-        /// 添加角色信息
+        ///     添加角色信息
         /// </summary>
         /// <param name="input">角色名称</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpPost("add")]
-        public IActionResult AddRoleInfo([FromBody]RoleInfoInputDto input)
+        public IActionResult AddRoleInfo([FromBody] RoleInfoInputDto input)
         {
             var result = _service.AddRoleInfo(input);
             return AddResponse(result);
         }
 
         /// <summary>
-        /// 删除角色信息
+        ///     删除角色信息
         /// </summary>
         /// <param name="id">id</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public IActionResult DeletePowerInfo(string id)
         {
@@ -81,48 +81,48 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
-        /// 根据角色组Id或名称，遍历关联角色
+        ///     根据角色组Id或名称，遍历关联角色
         /// </summary>
         /// <param name="input">角色组Id或名称</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("get_role_by_rolegroup")]
-        public IActionResult GetRoleByRoleGroup([FromQuery]RoleGroupInputDto input)
+        public IActionResult GetRoleByRoleGroup([FromQuery] RoleGroupInputDto input)
         {
             var result = _service.GetRoleByRoleGroup(input);
             return PageResponse(result);
         }
 
         /// <summary>
-        /// 根据权限组Id或名称，遍历关联角色
+        ///     根据权限组Id或名称，遍历关联角色
         /// </summary>
         /// <param name="input">权限组Id或名称</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("get_role_by_powergroup")]
-        public IActionResult GetRoleByPowerGroup([FromQuery]PowerGroupInputDto input)
+        public IActionResult GetRoleByPowerGroup([FromQuery] PowerGroupInputDto input)
         {
             var result = _service.GetRoleByPowerGroup(input);
             return PageResponse(result);
         }
 
         /// <summary>
-        /// 根据用户组Id或名称，遍历关联角色
+        ///     根据用户组Id或名称，遍历关联角色
         /// </summary>
         /// <param name="input">用户组Id或名称</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("get_role_by_usergroup")]
-        public IActionResult GetRoleByUserGroup([FromQuery]UserGroupInputDto input)
+        public IActionResult GetRoleByUserGroup([FromQuery] UserGroupInputDto input)
         {
             var result = _service.GetRoleByUserGroup(input);
             return PageResponse(result);
         }
 
         /// <summary>
-        /// 根据用户Id或名称，遍历关联角色
+        ///     根据用户Id或名称，遍历关联角色
         /// </summary>
         /// <param name="input">用户Id或名称</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("get_role_by_user")]
-        public IActionResult GetRoleByUser([FromQuery]UserInfoInputDto input)
+        public IActionResult GetRoleByUser([FromQuery] UserInfoInputDto input)
         {
             var result = _service.GetRoleByUser(input);
             return PageResponse(result);

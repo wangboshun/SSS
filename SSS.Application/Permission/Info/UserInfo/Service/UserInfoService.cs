@@ -42,14 +42,14 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
     {
         private readonly MemoryCacheEx _memorycache;
         private readonly IMenuInfoRepository _menuInfoRepository;
-        private readonly IRoleInfoRepository _roleInfoRepository;
-        private readonly IUserInfoRepository _userinfoRepository;
+        private readonly IOperateInfoRepository _operateInfoRepository;
+        private readonly IPowerGroupRepository _powerGroupRepository;
         private readonly IPowerInfoRepository _powerInfoRepository;
         private readonly IRoleGroupRepository _roleGroupRepository;
-        private readonly IUserGroupRepository _userGroupRepository;
-        private readonly IPowerGroupRepository _powerGroupRepository;
-        private readonly IOperateInfoRepository _operateInfoRepository;
+        private readonly IRoleInfoRepository _roleInfoRepository;
         private readonly IUserGroupRelationRepository _userGroupRelationRepository;
+        private readonly IUserGroupRepository _userGroupRepository;
+        private readonly IUserInfoRepository _userinfoRepository;
 
         public UserInfoService(IMapper mapper,
             IUserInfoRepository repository,
@@ -89,19 +89,26 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
             if (user == null)
                 return new { error = "用户不存在" };
 
-            var usergroup = _userGroupRepository.GetUserGroupByUser(user.Id, user.UserName).items.MapperToOutPut<UserGroupOutputDto>();
+            var usergroup = _userGroupRepository.GetUserGroupByUser(user.Id, user.UserName).items
+                .MapperToOutPut<UserGroupOutputDto>();
 
-            var rolegroup = _roleGroupRepository.GetRoleGroupByUser(user.Id, user.UserName).items.MapperToOutPut<RoleGroupOutputDto>();
+            var rolegroup = _roleGroupRepository.GetRoleGroupByUser(user.Id, user.UserName).items
+                .MapperToOutPut<RoleGroupOutputDto>();
 
-            var powergroup = _powerGroupRepository.GetPowerGroupByUser(user.Id, user.UserName).items.MapperToOutPut<PowerGroupOutputDto>();
+            var powergroup = _powerGroupRepository.GetPowerGroupByUser(user.Id, user.UserName).items
+                .MapperToOutPut<PowerGroupOutputDto>();
 
-            var role = _roleInfoRepository.GetRoleByUser(user.Id, user.UserName).items.MapperToOutPut<RoleInfoOutputDto>();
+            var role = _roleInfoRepository.GetRoleByUser(user.Id, user.UserName).items
+                .MapperToOutPut<RoleInfoOutputDto>();
 
-            var power = _powerInfoRepository.GetPowerByUser(user.Id, user.UserName).items.MapperToOutPut<PowerInfoOutputDto>();
+            var power = _powerInfoRepository.GetPowerByUser(user.Id, user.UserName).items
+                .MapperToOutPut<PowerInfoOutputDto>();
 
-            var menu = _menuInfoRepository.GetMenuByUser(user.Id, user.UserName).items.MapperToOutPut<MenuInfoOutputDto>();
+            var menu = _menuInfoRepository.GetMenuByUser(user.Id, user.UserName).items
+                .MapperToOutPut<MenuInfoOutputDto>();
 
-            var operate = _operateInfoRepository.GetOperateByUser(user.Id, user.UserName).items.MapperToOutPut<OperateInfoOutputDto>();
+            var operate = _operateInfoRepository.GetOperateByUser(user.Id, user.UserName).items
+                .MapperToOutPut<OperateInfoOutputDto>();
 
             return new
             {
@@ -191,14 +198,21 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         /// <returns></returns>
         public UserInfoOutputDto GetByUserName(UserInfoInputDto input)
         {
-            var result = Get(x => x.UserName.Equals(input.username) && x.PassWord.Equals(input.password));
-            if (result == null)
+            var result = Validator.Validate(input, ruleSet: "Select");
+            if (!result.IsValid)
+            {
+                Error.Execute(result);
+                return null;
+            }
+
+            var user = Get(x => x.UserName.Equals(input.username) && x.PassWord.Equals(input.password));
+            if (user == null)
             {
                 Error.Execute("账户密码错误！");
                 return null;
             }
 
-            var userinfo = Mapper.Map<UserInfoOutputDto>(result);
+            var userinfo = Mapper.Map<UserInfoOutputDto>(user);
             _memorycache.Set("AuthUserInfo_" + userinfo.id, userinfo, 60 * 24);
             return userinfo;
         }
@@ -217,7 +231,8 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         {
             var data = _userinfoRepository.GetUserByUserGroup(input.id, input.usergroupname, input.parentid,
                 input.pageindex, input.pagesize);
-            return new Pages<List<UserInfoOutputDto>>(data.items.MapperToOutPut<UserInfoOutputDto>()?.ToList(), data.count);
+            return new Pages<List<UserInfoOutputDto>>(data.items.MapperToOutPut<UserInfoOutputDto>()?.ToList(),
+                data.count);
         }
 
         /// <summary>
@@ -229,7 +244,8 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         {
             var data = _userinfoRepository.GetUserByPowerGroup(input.id, input.powergroupname, input.parentid,
                 input.pageindex, input.pagesize);
-            return new Pages<List<UserInfoOutputDto>>(data.items.MapperToOutPut<UserInfoOutputDto>()?.ToList(), data.count);
+            return new Pages<List<UserInfoOutputDto>>(data.items.MapperToOutPut<UserInfoOutputDto>()?.ToList(),
+                data.count);
         }
 
         /// <summary>
@@ -241,7 +257,8 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         {
             var data = _userinfoRepository.GetUserByRoleGroup(input.id, input.rolegroupname, input.parentid,
                 input.pageindex, input.pagesize);
-            return new Pages<List<UserInfoOutputDto>>(data.items.MapperToOutPut<UserInfoOutputDto>()?.ToList(), data.count);
+            return new Pages<List<UserInfoOutputDto>>(data.items.MapperToOutPut<UserInfoOutputDto>()?.ToList(),
+                data.count);
         }
     }
 }

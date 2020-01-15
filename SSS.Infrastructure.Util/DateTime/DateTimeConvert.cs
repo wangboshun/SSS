@@ -11,9 +11,9 @@ namespace SSS.Infrastructure.Util.DateTime
         /// <returns></returns>
         public static System.DateTime ConvertIntDateTime(double val)
         {
-            System.DateTime dtStart = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1));
-            long lTime = long.Parse(val.ToString() + "0000000");
-            TimeSpan toNow = new TimeSpan(lTime);
+            var dtStart = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1));
+            var lTime = long.Parse(val + "0000000");
+            var toNow = new TimeSpan(lTime);
             return dtStart.Add(toNow);
         }
 
@@ -24,9 +24,9 @@ namespace SSS.Infrastructure.Util.DateTime
         /// <returns></returns>
         public static System.DateTime ConvertDateTime(string val)
         {
-            System.DateTime dtStart = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1));
-            long lTime = long.Parse(val.ToString() + "0000000");
-            TimeSpan toNow = new TimeSpan(lTime);
+            var dtStart = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1));
+            var lTime = long.Parse(val + "0000000");
+            var toNow = new TimeSpan(lTime);
             return dtStart.Add(toNow);
         }
 
@@ -38,10 +38,10 @@ namespace SSS.Infrastructure.Util.DateTime
         /// <returns></returns>
         public static string ConvertIntDateTimeToString(string val, string format = "yyyy-MM-dd HH:mm:ss")
         {
-            System.DateTime dateTimeStart = TimeZoneInfo.ConvertTimeToUtc(new System.DateTime(1970, 1, 1));
-            long lTime = long.Parse(val + "0000000");
-            TimeSpan toNow = new TimeSpan(lTime);
-            System.DateTime now = dateTimeStart.Add(toNow);
+            var dateTimeStart = TimeZoneInfo.ConvertTimeToUtc(new System.DateTime(1970, 1, 1));
+            var lTime = long.Parse(val + "0000000");
+            var toNow = new TimeSpan(lTime);
+            var now = dateTimeStart.Add(toNow);
             return now.ToString(format);
         }
 
@@ -75,9 +75,9 @@ namespace SSS.Infrastructure.Util.DateTime
         public static long ConvertDateTimeInt(System.DateTime time)
         {
             //double intResult = 0;
-            System.DateTime startTime = TimeZoneInfo.ConvertTimeToUtc(new System.DateTime(1970, 1, 1, 0, 0, 0, 0));
+            var startTime = TimeZoneInfo.ConvertTimeToUtc(new System.DateTime(1970, 1, 1, 0, 0, 0, 0));
             //intResult = (time- startTime).TotalMilliseconds;
-            long t = (time.Ticks - startTime.Ticks) / 10000; //除10000调整为13位
+            var t = (time.Ticks - startTime.Ticks) / 10000; //除10000调整为13位
             return t;
         }
     }

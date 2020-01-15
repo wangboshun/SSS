@@ -10,6 +10,7 @@ using SSS.Domain.Permission.Group.RoleGroup.Dto;
 using SSS.Domain.Permission.Group.UserGroup.Dto;
 using SSS.Domain.Permission.Info.PowerInfo.Dto;
 using SSS.Domain.Permission.Info.UserInfo.Dto;
+using SSS.Domain.Permission.Relation.PowerGroupRelation;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.PowerGroup;
@@ -29,9 +30,9 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
         QueryService<Domain.Permission.Info.PowerInfo.PowerInfo, PowerInfoInputDto, PowerInfoOutputDto>,
         IPowerInfoService
     {
-        private readonly IPowerInfoRepository _powerInfoRepository;
-        private readonly IPowerGroupRepository _powerGroupRepository;
         private readonly IPowerGroupRelationRepository _powerGroupRelationRepository;
+        private readonly IPowerGroupRepository _powerGroupRepository;
+        private readonly IPowerInfoRepository _powerInfoRepository;
 
         public PowerInfoService(IMapper mapper,
             IPowerInfoRepository repository,
@@ -63,7 +64,7 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
             {
                 var powergroup = _powerGroupRepository.Get(x => x.Id.Equals(input.powergroupid));
                 if (powergroup != null)
-                    _powerGroupRelationRepository.Add(new Domain.Permission.Relation.PowerGroupRelation.PowerGroupRelation()
+                    _powerGroupRelationRepository.Add(new PowerGroupRelation
                     {
                         CreateTime = DateTime.Now,
                         Id = Guid.NewGuid().ToString(),
@@ -84,7 +85,7 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
 
         public bool DeletePowerInfo(string id)
         {
-            Repository.Remove(id, false);
+            Repository.Remove(id);
             _powerGroupRelationRepository.Remove(x => x.PowerId.Equals(id));
             return Repository.SaveChanges() > 0;
         }

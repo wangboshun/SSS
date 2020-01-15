@@ -8,10 +8,8 @@ namespace SSS.Infrastructure.Util.Log
     {
         public static ILogger CreateLogger<T>()
         {
-            ILoggerFactory loggerFactory = new LoggerFactory();
-            loggerFactory.AddNLog();
+            ILoggerFactory loggerFactory = new LoggerFactory().AddNLog();
             return loggerFactory.CreateLogger<T>();
         }
-
     }
 }

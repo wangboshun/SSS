@@ -19,28 +19,28 @@ namespace SSS.Application.Permission.Info.PowerInfo.Service
         bool DeletePowerInfo(string id);
 
         /// <summary>
-        /// 根据权限组Id或名称，遍历关联权限
+        ///     根据权限组Id或名称，遍历关联权限
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         Pages<List<PowerInfoOutputDto>> GetPowerByPowerGroup(PowerGroupInputDto input);
 
         /// <summary>
-        /// 根据角色组Id或名称，遍历关联权限
+        ///     根据角色组Id或名称，遍历关联权限
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         Pages<List<PowerInfoOutputDto>> GetPowerByRoleGroup(RoleGroupInputDto input);
 
         /// <summary>
-        /// 根据用户组Id或名称，遍历关联权限
+        ///     根据用户组Id或名称，遍历关联权限
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         Pages<List<PowerInfoOutputDto>> GetPowerByUserGroup(UserGroupInputDto input);
 
         /// <summary>
-        /// 根据用户Id或名称，遍历关联权限
+        ///     根据用户Id或名称，遍历关联权限
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>

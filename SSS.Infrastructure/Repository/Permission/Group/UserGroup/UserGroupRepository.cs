@@ -10,21 +10,21 @@ using System.Collections.Generic;
 namespace SSS.Infrastructure.Repository.Permission.Group.UserGroup
 {
     [DIService(ServiceLifetime.Scoped, typeof(IUserGroupRepository))]
-    public class UserGroupRepository : Repository<SSS.Domain.Permission.Group.UserGroup.UserGroup>, IUserGroupRepository
+    public class UserGroupRepository : Repository<Domain.Permission.Group.UserGroup.UserGroup>, IUserGroupRepository
     {
-        private static string field = "ug";
+        private static readonly string field = "ug";
 
         public UserGroupRepository(PermissionDbContext context) : base(context)
         {
         }
 
         /// <summary>
-        /// 根据用户Id或名称，遍历关联用户组
-        /// </summary> 
+        ///     根据用户Id或名称，遍历关联用户组
+        /// </summary>
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Group.UserGroup.UserGroup>> GetUserGroupByUser(string userid, string username, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string sql = @"SELECT {0}  FROM
+            var sql = @"SELECT {0}  FROM
 	               	UserInfo AS u
 	                INNER JOIN UserGroupRelation AS ugr ON u.id = ugr.UserId
 	                INNER JOIN UserGroup AS ug ON ugr.UserGroupId = ug.Id 
@@ -46,12 +46,12 @@ namespace SSS.Infrastructure.Repository.Permission.Group.UserGroup
         }
 
         /// <summary>
-        /// 根据权限组Id或名称，遍历关联用户组
-        /// </summary> 
+        ///     根据权限组Id或名称，遍历关联用户组
+        /// </summary>
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Group.UserGroup.UserGroup>> GetUserGroupByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string sql = @"SELECT {0} FROM
+            var sql = @"SELECT {0} FROM
 	               	UserGroup AS ug
 	                INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ugrgr.UserGroupId = ug.Id
 	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = ugrgr.RoleGroupId
@@ -75,12 +75,12 @@ namespace SSS.Infrastructure.Repository.Permission.Group.UserGroup
         }
 
         /// <summary>
-        /// 根据角色组Id或名称，遍历关联用户组
-        /// </summary> 
+        ///     根据角色组Id或名称，遍历关联用户组
+        /// </summary>
         /// <returns></returns>
         public Pages<IEnumerable<Domain.Permission.Group.UserGroup.UserGroup>> GetUserGroupByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string sql = @"SELECT {0} FROM
+            var sql = @"SELECT {0} FROM
 	               	UserGroup AS ug
 	                INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ugrgr.UserGroupId = ug.Id
 	                INNER JOIN RoleGroup AS rg ON ugrgr.RoleGroupId = rg.Id 

@@ -12,25 +12,13 @@ namespace SSS.Domain.System.Job.JobError.Validation
     {
         public JobErrorAddValidation()
         {
-            RuleSet("Insert", () =>
-            {
+            RuleSet("Insert", () => { });
 
-            });
+            RuleSet("Delete", () => { });
 
-            RuleSet("Delete", () =>
-            {
+            RuleSet("Update", () => { });
 
-            });
-
-            RuleSet("Update", () =>
-            {
-
-            });
-
-            RuleSet("Select", () =>
-            {
-
-            });
+            RuleSet("Select", () => { });
         }
     }
 }

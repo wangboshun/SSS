@@ -4,7 +4,6 @@ namespace SSS.Domain.Community.CommunityInfo
 {
     public class CommunityInfo : Entity
     {
-
         public string Name { set; get; }
 
         public string Phone { set; get; }

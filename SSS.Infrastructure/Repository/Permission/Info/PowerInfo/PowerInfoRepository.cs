@@ -14,7 +14,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
     [DIService(ServiceLifetime.Scoped, typeof(IPowerInfoRepository))]
     public class PowerInfoRepository : Repository<Domain.Permission.Info.PowerInfo.PowerInfo>, IPowerInfoRepository
     {
-        private static string field = "p";
+        private static readonly string field = "p";
 
         public readonly List<PowerInfoTreeOutputDto> Tree;
 
@@ -24,7 +24,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
         }
 
         /// <summary>
-        /// 获取菜单下的所有下级
+        ///     获取菜单下的所有下级
         /// </summary>
         /// <param name="menuid"></param>
         /// <returns></returns>
@@ -36,41 +36,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
         }
 
         /// <summary>
-        /// 根据Parent获取子节点  方法1
+        ///     根据用户Id或名称，遍历关联权限
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="node"></param>
-        /// <param name="id"></param>
-        /// GetParent(DbSet.ToList(), null, input.id);
-        private void GetParent(List<Domain.Permission.Info.PowerInfo.PowerInfo> source, PowerInfoTreeOutputDto node, string id)
-        {
-            List<Domain.Permission.Info.PowerInfo.PowerInfo> list = source.Where(x => x.ParentId == id && x.IsDelete == 0).ToList();
-            foreach (var item in list)
-            {
-                PowerInfoTreeOutputDto model = new PowerInfoTreeOutputDto
-                {
-                    id = item.Id,
-                    createtime = item.CreateTime,
-                    powername = item.PowerName,
-                    parentid = item.ParentId
-                };
-
-                GetParent(source, model, item.Id);
-
-                if (node == null)
-                    Tree.Add(model);
-                else
-                    node.Item.Add(model);
-            }
-        }
-
-        /// <summary>
-        /// 根据用户Id或名称，遍历关联权限
-        /// </summary> 
         /// <returns></returns>
-        public Pages<IEnumerable<Domain.Permission.Info.PowerInfo.PowerInfo>> GetPowerByUser(string userid, string username, string parentid = "", int pageindex = 0, int pagesize = 0)
+        public Pages<IEnumerable<Domain.Permission.Info.PowerInfo.PowerInfo>> GetPowerByUser(string userid,
+            string username, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string sql = @" SELECT {0} FROM
+            var sql = @" SELECT {0} FROM
 	                UserInfo AS u
 	                INNER JOIN UserGroupRelation AS ugr ON u.id = ugr.UserId
 	                INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ugrgr.UserGroupId = ugr.UserGroupId
@@ -98,12 +70,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
         }
 
         /// <summary>
-        /// 根据用户组Id或名称，遍历关联权限
-        /// </summary> 
+        ///     根据用户组Id或名称，遍历关联权限
+        /// </summary>
         /// <returns></returns>
-        public Pages<IEnumerable<Domain.Permission.Info.PowerInfo.PowerInfo>> GetPowerByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        public Pages<IEnumerable<Domain.Permission.Info.PowerInfo.PowerInfo>> GetPowerByUserGroup(string usergroupid,
+            string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string sql = @" SELECT {0} FROM
+            var sql = @" SELECT {0} FROM
 	                PowerInfo AS p
 	                INNER JOIN PowerGroupRelation AS pgr ON p.Id = pgr.PowerId
 	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.PowerGroupId = pgr.PowerGroupId
@@ -129,12 +102,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
         }
 
         /// <summary>
-        /// 根据权限组Id或名称，遍历关联权限
-        /// </summary> 
+        ///     根据权限组Id或名称，遍历关联权限
+        /// </summary>
         /// <returns></returns>
-        public Pages<IEnumerable<Domain.Permission.Info.PowerInfo.PowerInfo>> GetPowerByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        public Pages<IEnumerable<Domain.Permission.Info.PowerInfo.PowerInfo>> GetPowerByPowerGroup(string powergroupid,
+            string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string sql = @"SELECT {0}  FROM
+            var sql = @"SELECT {0}  FROM
 	                PowerInfo AS p
 	                INNER JOIN PowerGroupRelation AS pgr ON p.id=pgr.PowerId
 	                INNER JOIN PowerGroup AS pg ON pgr.PowerGroupId=pg.Id 
@@ -156,12 +130,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
         }
 
         /// <summary>
-        /// 根据角色组Id或名称，遍历关联权限
-        /// </summary> 
+        ///     根据角色组Id或名称，遍历关联权限
+        /// </summary>
         /// <returns></returns>
-        public Pages<IEnumerable<Domain.Permission.Info.PowerInfo.PowerInfo>> GetPowerByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        public Pages<IEnumerable<Domain.Permission.Info.PowerInfo.PowerInfo>> GetPowerByRoleGroup(string rolegroupid,
+            string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string sql = @"SELECT {0} FROM 
+            var sql = @"SELECT {0} FROM 
                     RoleGroup AS rg
 	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rg.Id = rgpgr.RoleGroupId 
 	                INNER JOIN PowerGroupRelation AS pgr ON pgr.PowerGroupId = rgpgr.PowerGroupId
@@ -182,6 +157,36 @@ namespace SSS.Infrastructure.Repository.Permission.Info.PowerInfo
                 sql += $" AND rg.ParentId='{parentid}'";
 
             return GetPage(sql, field, pageindex, pagesize);
+        }
+
+        /// <summary>
+        ///     根据Parent获取子节点  方法1
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="node"></param>
+        /// <param name="id"></param>
+        /// GetParent(DbSet.ToList(), null, input.id);
+        private void GetParent(List<Domain.Permission.Info.PowerInfo.PowerInfo> source, PowerInfoTreeOutputDto node,
+            string id)
+        {
+            var list = source.Where(x => x.ParentId == id && x.IsDelete == 0).ToList();
+            foreach (var item in list)
+            {
+                var model = new PowerInfoTreeOutputDto
+                {
+                    id = item.Id,
+                    createtime = item.CreateTime,
+                    powername = item.PowerName,
+                    parentid = item.ParentId
+                };
+
+                GetParent(source, model, item.Id);
+
+                if (node == null)
+                    Tree.Add(model);
+                else
+                    node.Item.Add(model);
+            }
         }
     }
 }

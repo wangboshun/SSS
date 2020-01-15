@@ -14,7 +14,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.UserInfo
     [DIService(ServiceLifetime.Scoped, typeof(IUserInfoRepository))]
     public class UserInfoRepository : Repository<Domain.Permission.Info.UserInfo.UserInfo>, IUserInfoRepository
     {
-        private static string field = "u";
+        private static readonly string field = "u";
 
         public readonly List<UserInfoTreeOutputDto> Tree;
 
@@ -24,7 +24,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.UserInfo
         }
 
         /// <summary>
-        /// 获取用户下的所有下级
+        ///     获取用户下的所有下级
         /// </summary>
         /// <param name="userid"></param>
         /// <returns></returns>
@@ -36,90 +36,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.UserInfo
         }
 
         /// <summary>
-        /// 根据Parent获取子节点  方法1
+        ///     根据用户组Id或名称，遍历关联用户
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="node"></param>
-        /// <param name="id"></param>
-        /// GetParent(DbSet.ToList(), null, input.id);
-        private void GetParent(List<Domain.Permission.Info.UserInfo.UserInfo> source, UserInfoTreeOutputDto node, string id)
-        {
-            List<Domain.Permission.Info.UserInfo.UserInfo> list = source.Where(x => x.ParentId == id && x.IsDelete == 0).ToList();
-            foreach (var item in list)
-            {
-                UserInfoTreeOutputDto model = new UserInfoTreeOutputDto
-                {
-                    id = item.Id,
-                    createtime = item.CreateTime,
-                    username = item.UserName,
-                    parentid = item.ParentId
-                };
-
-                GetParent(source, model, item.Id);
-
-                if (node == null)
-                    Tree.Add(model);
-                else
-                    node.Item.Add(model);
-            }
-        }
-
-        /// <summary>
-        ///  根据Parent获取子节点  方法2-1
-        /// </summary>
-        /// <param name="originalList"></param>
         /// <returns></returns>
-        public static List<UserInfoTreeOutputDto> CreateNewTree(List<Domain.Permission.Info.UserInfo.UserInfo> originalList)
+        public Pages<IEnumerable<Domain.Permission.Info.UserInfo.UserInfo>> GetUserByUserGroup(string usergroupid,
+            string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            List<UserInfoTreeOutputDto> nodes = originalList.Where(v => v.ParentId == "0" && v.IsDelete == 0).
-                Select(x => new UserInfoTreeOutputDto()
-                {
-                    id = x.Id,
-                    username = x.UserName,
-                    parentid = x.ParentId,
-                    createtime = x.CreateTime,
-                    Item = new List<UserInfoTreeOutputDto>()
-                }).ToList();
-
-            foreach (UserInfoTreeOutputDto node in nodes)
-            {
-                node.Item = GetAllLeaves(node, originalList);
-            }
-            return nodes;
-        }
-
-        /// <summary>
-        ///  根据Parent获取子节点  方法2-2
-        /// </summary>
-        /// <param name="val"></param>
-        /// <param name="originalList"></param>
-        /// <returns></returns>
-        public static List<UserInfoTreeOutputDto> GetAllLeaves(UserInfoTreeOutputDto val, List<Domain.Permission.Info.UserInfo.UserInfo> originalList)
-        {
-            List<UserInfoTreeOutputDto> nodes = originalList.Where(v => v.ParentId == val.id && v.IsDelete == 0).
-                Select(x => new UserInfoTreeOutputDto()
-                {
-                    id = x.Id,
-                    username = x.UserName,
-                    parentid = x.ParentId,
-                    createtime = x.CreateTime,
-                    Item = new List<UserInfoTreeOutputDto>()
-                }).ToList();
-
-            foreach (UserInfoTreeOutputDto node in nodes)
-            {
-                node.Item = GetAllLeaves(node, originalList);
-            }
-            return nodes;
-        }
-
-        /// <summary>
-        /// 根据用户组Id或名称，遍历关联用户
-        /// </summary> 
-        /// <returns></returns>
-        public Pages<IEnumerable<Domain.Permission.Info.UserInfo.UserInfo>> GetUserByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
-        {
-            string sql = @"SELECT {0}   FROM
+            var sql = @"SELECT {0}   FROM
 	                UserInfo AS u
 	                INNER JOIN UserGroupRelation AS ugr ON u.id = ugr.UserId
 	                INNER JOIN UserGroup AS ur ON ugr.UserGroupId = ur.Id 
@@ -141,12 +64,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.UserInfo
         }
 
         /// <summary>
-        ///  根据权限组Id或名称，遍历关联用户
-        /// </summary> 
+        ///     根据权限组Id或名称，遍历关联用户
+        /// </summary>
         /// <returns></returns>
-        public Pages<IEnumerable<Domain.Permission.Info.UserInfo.UserInfo>> GetUserByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        public Pages<IEnumerable<Domain.Permission.Info.UserInfo.UserInfo>> GetUserByPowerGroup(string powergroupid,
+            string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string sql = @"SELECT {0}   FROM
+            var sql = @"SELECT {0}   FROM
 	                	UserInfo AS u
 	                    INNER JOIN UserGroupRelation AS ugr ON u.id = ugr.UserId
 	                    INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ugrgr.UserGroupId = ugr.UserGroupId
@@ -172,12 +96,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.UserInfo
         }
 
         /// <summary>
-        /// 根据角色组Id或名称，遍历关联用户
-        /// </summary> 
+        ///     根据角色组Id或名称，遍历关联用户
+        /// </summary>
         /// <returns></returns>
-        public Pages<IEnumerable<Domain.Permission.Info.UserInfo.UserInfo>> GetUserByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        public Pages<IEnumerable<Domain.Permission.Info.UserInfo.UserInfo>> GetUserByRoleGroup(string rolegroupid,
+            string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string sql = @"SELECT {0}   FROM
+            var sql = @"SELECT {0}   FROM
 	                UserInfo AS u
 	                INNER JOIN UserGroupRelation AS ugr ON u.id = ugr.UserId 
 	                INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ugrgr.UserGroupId = ugr.UserGroupId
@@ -201,12 +126,88 @@ namespace SSS.Infrastructure.Repository.Permission.Info.UserInfo
         }
 
         /// <summary>
-        /// 根据角色Id或名称，遍历关联用户
-        /// </summary> 
-        /// <returns></returns>
-        public Pages<IEnumerable<Domain.Permission.Info.UserInfo.UserInfo>> GetUserByRole(string roleid, string rolename, string parentid = "", int pageindex = 0, int pagesize = 0)
+        ///     根据Parent获取子节点  方法1
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="node"></param>
+        /// <param name="id"></param>
+        /// GetParent(DbSet.ToList(), null, input.id);
+        private void GetParent(List<Domain.Permission.Info.UserInfo.UserInfo> source, UserInfoTreeOutputDto node,
+            string id)
         {
-            string sql = @"SELECT {0}   FROM
+            var list = source.Where(x => x.ParentId == id && x.IsDelete == 0).ToList();
+            foreach (var item in list)
+            {
+                var model = new UserInfoTreeOutputDto
+                {
+                    id = item.Id,
+                    createtime = item.CreateTime,
+                    username = item.UserName,
+                    parentid = item.ParentId
+                };
+
+                GetParent(source, model, item.Id);
+
+                if (node == null)
+                    Tree.Add(model);
+                else
+                    node.Item.Add(model);
+            }
+        }
+
+        /// <summary>
+        ///     根据Parent获取子节点  方法2-1
+        /// </summary>
+        /// <param name="originalList"></param>
+        /// <returns></returns>
+        public static List<UserInfoTreeOutputDto> CreateNewTree(
+            List<Domain.Permission.Info.UserInfo.UserInfo> originalList)
+        {
+            var nodes = originalList.Where(v => v.ParentId == "0" && v.IsDelete == 0).Select(x =>
+                new UserInfoTreeOutputDto
+                {
+                    id = x.Id,
+                    username = x.UserName,
+                    parentid = x.ParentId,
+                    createtime = x.CreateTime,
+                    Item = new List<UserInfoTreeOutputDto>()
+                }).ToList();
+
+            foreach (var node in nodes) node.Item = GetAllLeaves(node, originalList);
+            return nodes;
+        }
+
+        /// <summary>
+        ///     根据Parent获取子节点  方法2-2
+        /// </summary>
+        /// <param name="val"></param>
+        /// <param name="originalList"></param>
+        /// <returns></returns>
+        public static List<UserInfoTreeOutputDto> GetAllLeaves(UserInfoTreeOutputDto val,
+            List<Domain.Permission.Info.UserInfo.UserInfo> originalList)
+        {
+            var nodes = originalList.Where(v => v.ParentId == val.id && v.IsDelete == 0).Select(x =>
+                new UserInfoTreeOutputDto
+                {
+                    id = x.Id,
+                    username = x.UserName,
+                    parentid = x.ParentId,
+                    createtime = x.CreateTime,
+                    Item = new List<UserInfoTreeOutputDto>()
+                }).ToList();
+
+            foreach (var node in nodes) node.Item = GetAllLeaves(node, originalList);
+            return nodes;
+        }
+
+        /// <summary>
+        ///     根据角色Id或名称，遍历关联用户
+        /// </summary>
+        /// <returns></returns>
+        public Pages<IEnumerable<Domain.Permission.Info.UserInfo.UserInfo>> GetUserByRole(string roleid,
+            string rolename, string parentid = "", int pageindex = 0, int pagesize = 0)
+        {
+            var sql = @"SELECT {0}   FROM
 	                UserInfo AS u
 	                INNER JOIN UserGroupRelation AS ugr ON u.id = ugr.UserId 
 	                INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ugrgr.UserGroupId = ugr.UserGroupId 

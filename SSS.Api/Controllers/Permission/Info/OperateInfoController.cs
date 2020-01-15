@@ -9,8 +9,8 @@ using SSS.Domain.Permission.Info.OperateInfo.Dto;
 namespace SSS.Api.Controllers.Permission.Info
 {
     /// <summary>
-    /// 操作信息
-    /// </summary> 
+    ///     操作信息
+    /// </summary>
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
@@ -21,7 +21,7 @@ namespace SSS.Api.Controllers.Permission.Info
         private readonly IOperateInfoService _service;
 
         /// <summary>
-        /// 操作信息
+        ///     操作信息
         /// </summary>
         /// <param name="service">IOperateInfoService</param>
         public OperateInfoController(IOperateInfoService service)
@@ -42,22 +42,22 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
-        /// 添加操作
+        ///     添加操作
         /// </summary>
         /// <param name="input">操作名称</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpPost("add")]
-        public IActionResult AddOperateInfo([FromBody]OperateInfoInputDto input)
+        public IActionResult AddOperateInfo([FromBody] OperateInfoInputDto input)
         {
             var result = _service.AddOperateInfo(input);
             return AddResponse(result);
         }
 
         /// <summary>
-        /// 删除操作信息
+        ///     删除操作信息
         /// </summary>
         /// <param name="id">id</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public IActionResult DeleteOperateInfo(string id)
         {
@@ -78,12 +78,12 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
-        /// 根据权限组Id或名称，遍历关联操作
+        ///     根据权限组Id或名称，遍历关联操作
         /// </summary>
         /// <param name="input">权限组Id或名称</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("get_operate_by_powergroup")]
-        public IActionResult GetOperateByPowerGroup([FromQuery]PowerGroupInputDto input)
+        public IActionResult GetOperateByPowerGroup([FromQuery] PowerGroupInputDto input)
         {
             var result = _service.GetOperateByPowerGroup(input);
             return PageResponse(result);

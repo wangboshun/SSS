@@ -14,7 +14,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.MenuInfo
     [DIService(ServiceLifetime.Scoped, typeof(IMenuInfoRepository))]
     public class MenuInfoRepository : Repository<Domain.Permission.Info.MenuInfo.MenuInfo>, IMenuInfoRepository
     {
-        private static string field = "m";
+        private static readonly string field = "m";
 
         public readonly List<MenuInfoTreeOutputDto> Tree;
 
@@ -24,7 +24,7 @@ namespace SSS.Infrastructure.Repository.Permission.Info.MenuInfo
         }
 
         /// <summary>
-        /// 获取菜单下的所有下级
+        ///     获取菜单下的所有下级
         /// </summary>
         /// <param name="menuid"></param>
         /// <returns></returns>
@@ -36,42 +36,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.MenuInfo
         }
 
         /// <summary>
-        /// 根据Parent获取子节点  方法1
+        ///     根据权限组Id或名称，遍历关联菜单
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="node"></param>
-        /// <param name="id"></param>
-        /// GetParent(DbSet.ToList(), null, input.id);
-        private void GetParent(List<Domain.Permission.Info.MenuInfo.MenuInfo> source, MenuInfoTreeOutputDto node, string id)
-        {
-            List<Domain.Permission.Info.MenuInfo.MenuInfo> list = source.Where(x => x.ParentId == id && x.IsDelete == 0).ToList();
-            foreach (var item in list)
-            {
-                MenuInfoTreeOutputDto model = new MenuInfoTreeOutputDto
-                {
-                    id = item.Id,
-                    createtime = item.CreateTime,
-                    menuname = item.MenuName,
-                    menuurl = item.MenuUrl,
-                    parentid = item.ParentId
-                };
-
-                GetParent(source, model, item.Id);
-
-                if (node == null)
-                    Tree.Add(model);
-                else
-                    node.Item.Add(model);
-            }
-        }
-
-        /// <summary>
-        ///根据权限组Id或名称，遍历关联菜单
-        /// </summary> 
         /// <returns></returns>
-        public Pages<IEnumerable<Domain.Permission.Info.MenuInfo.MenuInfo>> GetMenuByPowerGroup(string powergroupid, string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        public Pages<IEnumerable<Domain.Permission.Info.MenuInfo.MenuInfo>> GetMenuByPowerGroup(string powergroupid,
+            string powergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string sql = @"SELECT  {0}  FROM
+            var sql = @"SELECT  {0}  FROM
 	            MenuInfo AS m
 	            INNER JOIN PowerGroupMenuRelation AS pgmr ON m.Id = pgmr.MenuId
 	            INNER JOIN PowerGroup AS pg ON pgmr.PowerGroupId = pg.Id 
@@ -93,12 +64,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.MenuInfo
         }
 
         /// <summary>
-        /// 根据用户Id或名称，遍历关联菜单
-        /// </summary> 
+        ///     根据用户Id或名称，遍历关联菜单
+        /// </summary>
         /// <returns></returns>
-        public Pages<IEnumerable<Domain.Permission.Info.MenuInfo.MenuInfo>> GetMenuByUser(string userid, string username, string parentid = "", int pageindex = 0, int pagesize = 0)
+        public Pages<IEnumerable<Domain.Permission.Info.MenuInfo.MenuInfo>> GetMenuByUser(string userid,
+            string username, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string sql = @"SELECT  {0}  FROM
+            var sql = @"SELECT  {0}  FROM
 	           		UserInfo AS u
 	                INNER JOIN UserGroupRelation AS ugr ON u.id = ugr.UserId
 	                INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ugrgr.UserGroupId = ugr.UserGroupId
@@ -126,12 +98,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.MenuInfo
         }
 
         /// <summary>
-        /// 根据用户组Id或名称，遍历关联菜单
-        /// </summary> 
+        ///     根据用户组Id或名称，遍历关联菜单
+        /// </summary>
         /// <returns></returns>
-        public Pages<IEnumerable<Domain.Permission.Info.MenuInfo.MenuInfo>> GetMenuByUserGroup(string usergroupid, string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        public Pages<IEnumerable<Domain.Permission.Info.MenuInfo.MenuInfo>> GetMenuByUserGroup(string usergroupid,
+            string usergroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string sql = @"SELECT  {0}  FROM
+            var sql = @"SELECT  {0}  FROM
 	                UserGroup AS ug
 	                INNER JOIN UserGroupRelation AS ugr ON ugr.UserGroupId = ug.id
 	                INNER JOIN UserGroupRoleGroupRelation AS ugrgr ON ugrgr.UserGroupId = ugr.UserGroupId
@@ -159,12 +132,13 @@ namespace SSS.Infrastructure.Repository.Permission.Info.MenuInfo
         }
 
         /// <summary>
-        /// 根据角色组Id或名称，遍历关联菜单
-        /// </summary> 
+        ///     根据角色组Id或名称，遍历关联菜单
+        /// </summary>
         /// <returns></returns>
-        public Pages<IEnumerable<Domain.Permission.Info.MenuInfo.MenuInfo>> GetMenuByRoleGroup(string rolegroupid, string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
+        public Pages<IEnumerable<Domain.Permission.Info.MenuInfo.MenuInfo>> GetMenuByRoleGroup(string rolegroupid,
+            string rolegroupname, string parentid = "", int pageindex = 0, int pagesize = 0)
         {
-            string sql = @"SELECT  {0}  FROM
+            var sql = @"SELECT  {0}  FROM
 	                RoleGroup AS rg
 	                INNER JOIN RoleGroupPowerGroupRelation AS rgpgr ON rgpgr.RoleGroupId = rg.Id
 	                INNER JOIN PowerGroupMenuRelation AS pgomr ON pgomr.PowerGroupId = rgpgr.PowerGroupId
@@ -185,6 +159,37 @@ namespace SSS.Infrastructure.Repository.Permission.Info.MenuInfo
                 sql += $" AND rg.ParentId='{parentid}'";
 
             return GetPage(sql, field, pageindex, pagesize);
+        }
+
+        /// <summary>
+        ///     根据Parent获取子节点  方法1
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="node"></param>
+        /// <param name="id"></param>
+        /// GetParent(DbSet.ToList(), null, input.id);
+        private void GetParent(List<Domain.Permission.Info.MenuInfo.MenuInfo> source, MenuInfoTreeOutputDto node,
+            string id)
+        {
+            var list = source.Where(x => x.ParentId == id && x.IsDelete == 0).ToList();
+            foreach (var item in list)
+            {
+                var model = new MenuInfoTreeOutputDto
+                {
+                    id = item.Id,
+                    createtime = item.CreateTime,
+                    menuname = item.MenuName,
+                    menuurl = item.MenuUrl,
+                    parentid = item.ParentId
+                };
+
+                GetParent(source, model, item.Id);
+
+                if (node == null)
+                    Tree.Add(model);
+                else
+                    node.Item.Add(model);
+            }
         }
     }
 }

@@ -12,25 +12,13 @@ namespace SSS.Domain.Permission.Group.PowerGroup.Validation
     {
         public PowerGroupAddValidation()
         {
-            RuleSet("Insert", () =>
-            {
-                RuleFor(x => x.powergroupname).NotNull().WithMessage("权限组名称不能为空!");
-            });
+            RuleSet("Insert", () => { RuleFor(x => x.powergroupname).NotNull().WithMessage("权限组名称不能为空!"); });
 
-            RuleSet("Delete", () =>
-            {
+            RuleSet("Delete", () => { });
 
-            });
+            RuleSet("Update", () => { });
 
-            RuleSet("Update", () =>
-            {
-
-            });
-
-            RuleSet("Select", () =>
-            {
-
-            });
+            RuleSet("Select", () => { });
         }
     }
 }

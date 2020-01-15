@@ -10,9 +10,7 @@ namespace SSS.Infrastructure.Util.ID
 
         public static RandomId Instance()
         {
-            if (randomid == null)
-                randomid = new RandomId();
-            return randomid;
+            return randomid ??= new RandomId();
         }
 
         public string GetId(int len = 8)
@@ -26,9 +24,9 @@ namespace SSS.Infrastructure.Util.ID
                     'U', 'V', 'W', 'X', 'Y', 'Z'
                 };
 
-                StringBuilder str = new StringBuilder();
-                Random rd = new Random();
-                for (int i = 0; i < len; i++)
+                var str = new StringBuilder();
+                var rd = new Random();
+                for (var i = 0; i < len; i++)
                     str.Append(constant[rd.Next(constant.Length)]);
 
                 return str.ToString();

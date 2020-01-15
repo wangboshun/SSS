@@ -12,25 +12,13 @@ namespace SSS.Domain.Permission.Relation.PowerGroupOperateRelation.Validation
     {
         public PowerGroupOperateRelationAddValidation()
         {
-            RuleSet("Insert", () =>
-            {
+            RuleSet("Insert", () => { });
 
-            });
+            RuleSet("Delete", () => { });
 
-            RuleSet("Delete", () =>
-            {
+            RuleSet("Update", () => { });
 
-            });
-
-            RuleSet("Update", () =>
-            {
-
-            });
-
-            RuleSet("Select", () =>
-            {
-
-            });
+            RuleSet("Select", () => { });
         }
     }
 }

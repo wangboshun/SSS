@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Logging;
 
 using Quartz;
+using Quartz.Impl;
+using Quartz.Impl.Triggers;
 
 using SSS.Domain.System.Job.JobError;
 using SSS.Domain.System.Job.JobInfo;
@@ -19,12 +21,12 @@ namespace SSS.Application.Job.JobSetting.Listener
 {
     public class JobListener : IJobListener
     {
-        private static object _lock = new object();
+        private static readonly object _lock = new object();
 
         public string Name { set; get; }
 
         /// <summary>
-        /// Scheduler在JobDetail即将被执行，但又被TriggerListerner否决时会调用该方法
+        ///     Scheduler在JobDetail即将被执行，但又被TriggerListerner否决时会调用该方法
         /// </summary>
         /// <param name="context"></param>
         /// <param name="cancellationToken"></param>
@@ -35,7 +37,7 @@ namespace SSS.Application.Job.JobSetting.Listener
         }
 
         /// <summary>
-        /// Scheduler在JobDetail将要被执行时调用这个方法。
+        ///     Scheduler在JobDetail将要被执行时调用这个方法。
         /// </summary>
         /// <param name="context"></param>
         /// <param name="cancellationToken"></param>
@@ -46,28 +48,28 @@ namespace SSS.Application.Job.JobSetting.Listener
         }
 
         /// <summary>
-        /// Scheduler在JobDetail被执行之后调用这个方法
+        ///     Scheduler在JobDetail被执行之后调用这个方法
         /// </summary>
         /// <param name="context"></param>
         /// <param name="jobException"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task JobWasExecuted(IJobExecutionContext context, JobExecutionException jobException, CancellationToken cancellationToken = default)
+        public Task JobWasExecuted(IJobExecutionContext context, JobExecutionException jobException,CancellationToken cancellationToken = default)
         {
             try
             {
                 lock (_lock)
                 {
-                    var trigger = (Quartz.Impl.Triggers.CronTriggerImpl)((Quartz.Impl.JobExecutionContextImpl)context).Trigger;
+                    var trigger = (CronTriggerImpl)((JobExecutionContextImpl)context).Trigger;
                     var result = context.Scheduler.Context.Get(trigger.FullName + "_Result"); /*返回结果*/
-                    var exception = context.Scheduler.Context.Get(trigger.FullName + "_Exception");  /*异常信息*/
+                    var exception = context.Scheduler.Context.Get(trigger.FullName + "_Exception"); /*异常信息*/
                     var time = context.Scheduler.Context.Get(trigger.FullName + "_Time"); /* 耗时*/
 
-                    var scopeFactory= IocEx.Instance.GetRequiredService<IServiceScopeFactory>();
+                    var scopeFactory = IocEx.Instance.GetRequiredService<IServiceScopeFactory>();
                     using var scope = scopeFactory.CreateScope();
                     using var db_context = scope.ServiceProvider.GetRequiredService<SystemDbContext>();
-                     
-                    var job = db_context.JobInfo.FirstOrDefault(x => x.JobName.Equals(trigger.Name) && x.JobGroup.Equals(trigger.JobGroup) && x.IsDelete == 0);
+
+                    var job = db_context.JobInfo.FirstOrDefault(x =>x.JobName.Equals(trigger.Name) && x.JobGroup.Equals(trigger.JobGroup) && x.IsDelete == 0);
 
                     if (job == null)
                     {

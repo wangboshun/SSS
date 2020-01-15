@@ -25,25 +25,25 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
         bool DeleteRoleInfo(string id);
 
         /// <summary>
-        /// 根据角色组Id或名称，遍历关联角色
+        ///     根据角色组Id或名称，遍历关联角色
         /// </summary>
         /// <param name="input"></param>
         Pages<List<RoleInfoOutputDto>> GetRoleByRoleGroup(RoleGroupInputDto input);
 
         /// <summary>
-        /// 根据权限组Id或名称，遍历关联角色
+        ///     根据权限组Id或名称，遍历关联角色
         /// </summary>
         /// <param name="input"></param>
         Pages<List<RoleInfoOutputDto>> GetRoleByPowerGroup(PowerGroupInputDto input);
 
         /// <summary>
-        /// 根据用户组Id或名称，遍历关联角色
+        ///     根据用户组Id或名称，遍历关联角色
         /// </summary>
         /// <param name="input"></param>
         Pages<List<RoleInfoOutputDto>> GetRoleByUserGroup(UserGroupInputDto input);
 
         /// <summary>
-        /// 根据用户Id或名称，遍历关联角色
+        ///     根据用户Id或名称，遍历关联角色
         /// </summary>
         /// <param name="input"></param>
         Pages<List<RoleInfoOutputDto>> GetRoleByUser(UserInfoInputDto input);

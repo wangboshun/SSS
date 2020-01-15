@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using SSS.Infrastructure.Util.Attribute;
-using SSS.Infrastructure.Util.Http;
+using SSS.Infrastructure.Util.DI;
 
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SSS.Domain.Seedwork.ErrorHandler
 {
-    [DIService(ServiceLifetime.Scoped, typeof(IErrorHandler))]
+    [DIService(ServiceLifetime.Singleton, typeof(IErrorHandler))]
     public class ErrorHandler : IErrorHandler
     {
         private readonly ILogger _logger;
@@ -22,7 +22,7 @@ namespace SSS.Domain.Seedwork.ErrorHandler
         public ErrorHandler()
         {
             _notice = new List<ValidationFailure>();
-            _logger = (ILogger)HttpContextService.Current.RequestServices.GetService(typeof(ILogger<ErrorHandler>));
+            _logger = IocEx.Instance.GetService<ILogger<ErrorHandler>>();
         }
 
         public Task Execute(ValidationResult message)

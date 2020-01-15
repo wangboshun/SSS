@@ -5,6 +5,8 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 using Quartz;
+using Quartz.Impl;
+using Quartz.Impl.Triggers;
 
 using SSS.Application.Job.JobSetting.Extension;
 using SSS.Domain.Coin.CoinInfo;
@@ -27,10 +29,10 @@ namespace SSS.Application.Job.Coin.CoinInfo
     [DIService(ServiceLifetime.Singleton, typeof(CoinInfoJob))]
     public class CoinInfoJob : IJob
     {
+        private static readonly object _lock = new object();
         private readonly IHostEnvironment _env;
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _scopeFactory;
-        private static readonly object _lock = new object();
 
         public CoinInfoJob(ILogger<CoinInfoJob> logger, IServiceScopeFactory scopeFactory, IHostEnvironment env)
         {
@@ -49,10 +51,10 @@ namespace SSS.Application.Job.Coin.CoinInfo
         {
             lock (_lock)
             {
-                var trigger = (Quartz.Impl.Triggers.CronTriggerImpl)((Quartz.Impl.JobExecutionContextImpl)context).Trigger;
+                var trigger = (CronTriggerImpl)((JobExecutionContextImpl)context).Trigger;
                 try
                 {
-                    Stopwatch watch = new Stopwatch();
+                    var watch = new Stopwatch();
                     watch.Start();
 
                     GetCoinInfo();
@@ -80,7 +82,7 @@ namespace SSS.Application.Job.Coin.CoinInfo
         {
             try
             {
-                WebClient web = new WebClient();
+                var web = new WebClient();
                 var json = web.DownloadString("https://fxhapi.feixiaohao.com/public/v1/ticker?start=0&limit=10000");
                 var data = JsonConvert.DeserializeObject<List<CoinJson>>(json);
 
@@ -90,7 +92,7 @@ namespace SSS.Application.Job.Coin.CoinInfo
 
                 var list = new List<Domain.Coin.CoinInfo.CoinInfo>();
 
-                Parallel.ForEach(data, (item) =>
+                Parallel.ForEach(data, item =>
                 {
                     if (source.Any(x => x.Name.Equals(item.name)))
                         return;
@@ -132,12 +134,12 @@ namespace SSS.Application.Job.Coin.CoinInfo
         {
             try
             {
-                WebClient web = new WebClient();
-                string filepath = RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+                var web = new WebClient();
+                var filepath = RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
                     ? _env.ContentRootPath + "//File//coin//"
                     : _env.ContentRootPath + "\\File\\coin\\";
 
-                string filename = filepath + coin + ".png";
+                var filename = filepath + coin + ".png";
 
                 if (!File.Exists(filename))
                     web.DownloadFile(url, filename);
@@ -160,14 +162,14 @@ namespace SSS.Application.Job.Coin.CoinInfo
         {
             try
             {
-                WebClient web = new WebClient();
-                byte[] bytes = web.DownloadData(url);
-                using MemoryStream ms = new MemoryStream(bytes);
-                Image img = Image.FromStream(ms);
-                Bitmap bmp = new Bitmap(img);
-                using MemoryStream stream = new MemoryStream();
+                var web = new WebClient();
+                var bytes = web.DownloadData(url);
+                using var ms = new MemoryStream(bytes);
+                var img = Image.FromStream(ms);
+                var bmp = new Bitmap(img);
+                using var stream = new MemoryStream();
                 bmp.Save(stream, ImageFormat.Jpeg);
-                byte[] arr = new byte[stream.Length];
+                var arr = new byte[stream.Length];
                 stream.Position = 0;
                 stream.Read(arr, 0, (int)stream.Length);
                 stream.Close();

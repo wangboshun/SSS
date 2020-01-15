@@ -14,6 +14,11 @@ namespace SSS.Domain.Permission.Info.OperateInfo
 
     public class OperateInfoTreeOutputDto
     {
+        public OperateInfoTreeOutputDto()
+        {
+            Item = new List<OperateInfoTreeOutputDto>();
+        }
+
         public string id { get; set; }
 
         public string operatename { get; set; }
@@ -23,10 +28,5 @@ namespace SSS.Domain.Permission.Info.OperateInfo
         public DateTime createtime { get; set; }
 
         public List<OperateInfoTreeOutputDto> Item { get; set; }
-
-        public OperateInfoTreeOutputDto()
-        {
-            Item = new List<OperateInfoTreeOutputDto>();
-        }
     }
 }

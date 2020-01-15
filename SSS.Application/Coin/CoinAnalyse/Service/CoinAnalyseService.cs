@@ -56,7 +56,7 @@ namespace SSS.Application.Coin.CoinAnalyse.Service
 
         public Pages<List<CoinAnalyseOutputDto>> GetListCoinAnalyse(CoinAnalyseInputDto input)
         {
-            int count = 0;
+            var count = 0;
             var data = _repository.GetPageOrderByAsc(input, ref count);
             var list = data.MapperToOutPut<CoinAnalyseOutputDto>()?.ToList();
 
@@ -66,7 +66,6 @@ namespace SSS.Application.Coin.CoinAnalyse.Service
                 item.Logo = _coininforepository.Get(x => x.Coin.Equals(item.Coin.Replace("-USDT", "")))?.RomteLogo;
 
             return new Pages<List<CoinAnalyseOutputDto>>(list, count);
-
         }
     }
 }

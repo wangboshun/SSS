@@ -19,25 +19,25 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
         bool DeleteRoleGroup(string id);
 
         /// <summary>
-        /// 根据角色Id或名称，遍历关联角色组
+        ///     根据角色Id或名称，遍历关联角色组
         /// </summary>
         /// <param name="input"></param>
         Pages<List<RoleGroupOutputDto>> GetRoleGroupByRole(RoleInfoInputDto input);
 
         /// <summary>
-        /// 根据权限组Id或名称，遍历关联角色组
+        ///     根据权限组Id或名称，遍历关联角色组
         /// </summary>
         /// <param name="input"></param>
         Pages<List<RoleGroupOutputDto>> GetRoleGroupByPowerGroup(PowerGroupInputDto input);
 
         /// <summary>
-        /// 根据用户组Id或名称，遍历关联角色组
+        ///     根据用户组Id或名称，遍历关联角色组
         /// </summary>
         /// <param name="input"></param>
         Pages<List<RoleGroupOutputDto>> GetRoleGroupByUserGroup(UserGroupInputDto input);
 
         /// <summary>
-        /// 根据用户Id或名称，遍历关联角色组
+        ///     根据用户Id或名称，遍历关联角色组
         /// </summary>
         /// <param name="input"></param>
         Pages<List<RoleGroupOutputDto>> GetRoleGroupByUser(UserInfoInputDto input);

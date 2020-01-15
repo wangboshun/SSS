@@ -10,8 +10,8 @@ using SSS.Domain.Seedwork.Model;
 using SSS.Domain.Seedwork.Repository;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Util.Attribute;
+using SSS.Infrastructure.Util.DI;
 using SSS.Infrastructure.Util.Ef;
-using SSS.Infrastructure.Util.Http;
 using SSS.Infrastructure.Util.Lambda;
 
 using System;
@@ -23,7 +23,7 @@ using System.Linq.Expressions;
 namespace SSS.Infrastructure.Seedwork.Repository
 {
     [DIService(ServiceLifetime.Scoped, typeof(IRepository<>))]
-    public partial class Repository<TEntity> : IRepository<TEntity>
+    public class Repository<TEntity> : IRepository<TEntity>
         where TEntity : Entity, new()
     {
         private readonly IErrorHandler _error;
@@ -35,9 +35,8 @@ namespace SSS.Infrastructure.Seedwork.Repository
         {
             Db = context;
             DbSet = Db.Set<TEntity>();
-            _error = (IErrorHandler)HttpContextService.Current.RequestServices.GetService(typeof(IErrorHandler));
-            _logger = (ILogger)HttpContextService.Current.RequestServices.GetService(
-                typeof(ILogger<Repository<TEntity>>));
+            _error = IocEx.Instance.GetService<IErrorHandler>();
+            _logger = IocEx.Instance.GetService<ILogger<Repository<TEntity>>>();
         }
 
         #region 添加
@@ -45,56 +44,6 @@ namespace SSS.Infrastructure.Seedwork.Repository
         public virtual bool Add(TEntity obj, bool save = false)
         {
             DbSet.Add(obj);
-            if (save)
-                return SaveChanges() > 0;
-            return false;
-        }
-
-        #endregion
-
-        #region 删除
-
-        /// <summary>
-        ///     删除
-        /// </summary>
-        /// <param name="id">Id</param>
-        /// <param name="save">是否保存  默认否</param>
-        public virtual bool Remove(string id, bool save = false)
-        {
-            var model = Get(id);
-            if (model == null)
-            {
-                //_error.Execute("数据不存在或已删除,删除失败！");
-                return false;
-            }
-
-            model.IsDelete = 1;
-            Update(model);
-            if (save)
-                return SaveChanges() > 0;
-            return false;
-        }
-
-        /// <summary>
-        ///     删除 Lambda删除
-        /// </summary>
-        /// <param name="predicate">Lambda表达式</param>
-        /// <param name="save">是否保存  默认否</param>
-        public virtual bool Remove(Expression<Func<TEntity, bool>> predicate, bool save = false,
-            bool have_delete = false)
-        {
-            if (!have_delete)
-                predicate = predicate.And(x => x.IsDelete == 0);
-
-            var model = Get(predicate);
-            if (model == null)
-            {
-                //_error.Execute("数据不存在或已删除,删除失败！");
-                return false;
-            }
-
-            model.IsDelete = 1;
-            Update(model);
             if (save)
                 return SaveChanges() > 0;
             return false;
@@ -123,10 +72,71 @@ namespace SSS.Infrastructure.Seedwork.Repository
 
         #endregion
 
+        #region Execute
+
+        /// <summary>
+        ///     执行sql
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        public virtual int Execute(string sql, params DbParameter[] parameter)
+        {
+            return Db.Database.ExecuteSqlRaw(sql);
+        }
+
+        #endregion
+
+        #region 删除
+
+        /// <summary>
+        ///     删除
+        /// </summary>
+        /// <param name="id">Id</param>
+        /// <param name="save">是否保存  默认否</param>
+        public virtual bool Remove(string id, bool save = false)
+        {
+            var model = Get(id);
+            if (model == null)
+                //_error.Execute("数据不存在或已删除,删除失败！");
+                return false;
+
+            model.IsDelete = 1;
+            Update(model);
+            if (save)
+                return SaveChanges() > 0;
+            return false;
+        }
+
+        /// <summary>
+        ///     删除 Lambda删除
+        /// </summary>
+        /// <param name="predicate">Lambda表达式</param>
+        /// <param name="save">是否保存  默认否</param>
+        public virtual bool Remove(Expression<Func<TEntity, bool>> predicate, bool save = false,
+            bool have_delete = false)
+        {
+            if (!have_delete)
+                predicate = predicate.And(x => x.IsDelete == 0);
+
+            var model = Get(predicate);
+            if (model == null)
+                //_error.Execute("数据不存在或已删除,删除失败！");
+                return false;
+
+            model.IsDelete = 1;
+            Update(model);
+            if (save)
+                return SaveChanges() > 0;
+            return false;
+        }
+
+        #endregion
+
         #region 查询
 
         /// <summary>
-        ///     Id查询 
+        ///     Id查询
         /// </summary>
         /// <param name="id">Id</param>
         /// <returns></returns>
@@ -152,7 +162,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         }
 
         /// <summary>
-        /// 是否存在
+        ///     是否存在
         /// </summary>
         /// <param name="id"></param>
         /// <param name="have_delete"></param>
@@ -163,7 +173,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         }
 
         /// <summary>
-        /// 是否存在  Lambda表达式
+        ///     是否存在  Lambda表达式
         /// </summary>
         /// <param name="predicate">Lambda表达式</param>
         /// <returns></returns>
@@ -301,7 +311,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         }
 
         /// <summary>
-        /// sql分页查询，用于联表查询
+        ///     sql分页查询，用于联表查询
         /// </summary>
         /// <typeparam name="TEntity">返回类型</typeparam>
         /// <param name="sql">sql</param>
@@ -311,11 +321,11 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// <returns></returns>
         public Pages<IEnumerable<TEntity>> GetPage(string sql, string field, int pageindex, int pagesize)
         {
-            int count = Db.Database.Count(string.Format(sql, $" count( DISTINCT {field}.Id ) "));
+            var count = Db.Database.Count(string.Format(sql, $" count( DISTINCT {field}.Id ) "));
 
             if (pageindex > 0 && pagesize > 0)
             {
-                string limit = " limit {1},{2} ";
+                var limit = " limit {1},{2} ";
                 var data = Db.Database.SqlQuery<TEntity>(string.Format(sql + limit, $" DISTINCT {field}.* ",
                     pageindex == 1 ? 0 : pageindex * pagesize + 1, pagesize));
                 return new Pages<IEnumerable<TEntity>>(data, count);
@@ -369,30 +379,12 @@ namespace SSS.Infrastructure.Seedwork.Repository
                 predicate = predicate.And(x => x.IsDelete == 0);
 
             var list = DbSet.Where(predicate);
-            foreach (TEntity item in list)
-            {
-                item.IsDelete = 1;
-            }
+            foreach (var item in list) item.IsDelete = 1;
 
             DbSet.UpdateRange(list);
             if (save)
                 return SaveChanges() > 0;
             return false;
-        }
-
-        #endregion
-
-        #region Execute
-
-        /// <summary>
-        /// 执行sql
-        /// </summary>
-        /// <param name="sql"></param>
-        /// <param name="parameter"></param>
-        /// <returns></returns>
-        public virtual int Execute(string sql, params DbParameter[] parameter)
-        {
-            return Db.Database.ExecuteSqlRaw(sql);
         }
 
         #endregion
@@ -433,14 +425,14 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// <returns></returns>
         private object[] GeneratorParameter(params DbParameter[] parameter)
         {
-            List<object> sqlparameter = new List<object>();
+            var sqlparameter = new List<object>();
 
             foreach (var item in parameter)
             {
-                JObject json = JObject.FromObject(item);
+                var json = JObject.FromObject(item);
                 foreach (var data in json)
                 {
-                    string type = data.Value.Type.ToString();
+                    var type = data.Value.Type.ToString();
                     switch (type)
                     {
                         case "String":
@@ -464,10 +456,10 @@ namespace SSS.Infrastructure.Seedwork.Repository
 
     [DIService(ServiceLifetime.Scoped, typeof(IRepository<,,>))]
     public abstract class Repository<TEntity, TInput, TOutput> : Repository<TEntity>,
-            IRepository<TEntity, TInput, TOutput>
-            where TEntity : Entity, new()
-            where TInput : InputDtoBase
-            where TOutput : OutputDtoBase
+        IRepository<TEntity, TInput, TOutput>
+        where TEntity : Entity, new()
+        where TInput : InputDtoBase
+        where TOutput : OutputDtoBase
     {
         public Repository(DbContextBase context) : base(context)
         {

@@ -14,5 +14,5 @@
   <ItemGroup>
     <ProjectReference Include="..\SSS.Infrastructure.Util\SSS.Infrastructure.Util.csproj" />
   </ItemGroup>
-  
+
 </Project>

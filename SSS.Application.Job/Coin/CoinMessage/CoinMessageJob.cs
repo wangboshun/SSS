@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using Quartz;
+using Quartz.Impl;
+using Quartz.Impl.Triggers;
 
 using SSS.Application.Job.JobSetting.Extension;
 using SSS.Infrastructure.Seedwork.DbContext;
@@ -20,8 +22,8 @@ namespace SSS.Application.Job.Coin.CoinMessage
     [DIService(ServiceLifetime.Singleton, typeof(CoinMessageJob))]
     public class CoinMessageJob : IJob
     {
+        private static readonly object _lock = new object();
         private readonly ILogger _logger;
-        private static object _lock = new object();
         private readonly IServiceScopeFactory _scopeFactory;
 
         public CoinMessageJob(ILogger<CoinMessageJob> logger, IServiceScopeFactory scopeFactory)
@@ -40,10 +42,10 @@ namespace SSS.Application.Job.Coin.CoinMessage
         {
             lock (_lock)
             {
-                var trigger = (Quartz.Impl.Triggers.CronTriggerImpl)((Quartz.Impl.JobExecutionContextImpl)context).Trigger;
+                var trigger = (CronTriggerImpl)((JobExecutionContextImpl)context).Trigger;
                 try
                 {
-                    Stopwatch watch = new Stopwatch();
+                    var watch = new Stopwatch();
                     watch.Start();
 
                     GetCoinMessage();
@@ -76,11 +78,11 @@ namespace SSS.Application.Job.Coin.CoinMessage
                 using var db_context = scope.ServiceProvider.GetRequiredService<CoinDbContext>();
                 var source = db_context.CoinMessage.ToList();
 
-                for (int i = 0; i < 10; i++)
+                for (var i = 0; i < 10; i++)
                 {
-                    HtmlWeb htmlWeb = new HtmlWeb();
+                    var htmlWeb = new HtmlWeb();
 
-                    HtmlDocument document = htmlWeb.Load("http://www.biknow.com/?pageNum=" + i);
+                    var document = htmlWeb.Load("http://www.biknow.com/?pageNum=" + i);
 
                     var node = document.DocumentNode.SelectNodes("//div[@class='list']//div[@class='list_con']//div[@class='box']");
                     if (node == null)
@@ -88,11 +90,11 @@ namespace SSS.Application.Job.Coin.CoinMessage
 
                     foreach (var item in node)
                     {
-                        string title = item.SelectSingleNode(".//lable").InnerText.Trim();
-                        string calendar = item.SelectSingleNode(".//div[@class='time']").InnerText.Trim();
-                        int first = title.IndexOf("(");
-                        int last = title.IndexOf(")");
-                        string coin = title.Substring(first + 1, last - (first + 1)).Trim().ToUpper();
+                        var title = item.SelectSingleNode(".//lable").InnerText.Trim();
+                        var calendar = item.SelectSingleNode(".//div[@class='time']").InnerText.Trim();
+                        var first = title.IndexOf("(");
+                        var last = title.IndexOf(")");
+                        var coin = title.Substring(first + 1, last - (first + 1)).Trim().ToUpper();
 
                         if (source.Any(x => x.Coin.Equals(coin) && x.Calendar.Contains(calendar)))
                             continue;

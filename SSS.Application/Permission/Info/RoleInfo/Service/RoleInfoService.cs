@@ -29,9 +29,9 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
     public class RoleInfoService :
         QueryService<Domain.Permission.Info.RoleInfo.RoleInfo, RoleInfoInputDto, RoleInfoOutputDto>, IRoleInfoService
     {
-        private readonly IRoleInfoRepository _roleInfoRepository;
-        private readonly IRoleGroupRepository _roleGroupRepository;
         private readonly IRoleGroupRelationRepository _roleGroupRelationRepository;
+        private readonly IRoleGroupRepository _roleGroupRepository;
+        private readonly IRoleInfoRepository _roleInfoRepository;
 
         public RoleInfoService(IMapper mapper,
             IRoleInfoRepository repository,
@@ -70,7 +70,7 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
             {
                 var rolegroup = _roleGroupRepository.Get(x => x.Id.Equals(input.rolegroupid));
                 if (rolegroup != null)
-                    _roleGroupRelationRepository.Add(new RoleGroupRelation()
+                    _roleGroupRelationRepository.Add(new RoleGroupRelation
                     {
                         CreateTime = DateTime.Now,
                         Id = Guid.NewGuid().ToString(),
@@ -86,7 +86,7 @@ namespace SSS.Application.Permission.Info.RoleInfo.Service
 
         public bool DeleteRoleInfo(string id)
         {
-            Repository.Remove(id, false);
+            Repository.Remove(id);
             _roleGroupRelationRepository.Remove(x => x.RoleId.Equals(id));
             return Repository.SaveChanges() > 0;
         }

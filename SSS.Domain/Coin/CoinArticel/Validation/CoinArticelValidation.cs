@@ -12,20 +12,11 @@ namespace SSS.Domain.Coin.CoinArticel.Validation
     {
         public CoinArticelValidation()
         {
-            RuleSet("Insert", () =>
-            {
-                RuleFor(x => x.id).NotNull().WithMessage("ID不能为空");
-            });
+            RuleSet("Insert", () => { RuleFor(x => x.id).NotNull().WithMessage("ID不能为空"); });
 
-            RuleSet("Delete", () =>
-            {
+            RuleSet("Delete", () => { });
 
-            });
-
-            RuleSet("Update", () =>
-            {
-
-            });
+            RuleSet("Update", () => { });
 
             RuleSet("Select", () => { });
         }

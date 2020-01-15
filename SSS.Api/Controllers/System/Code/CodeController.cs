@@ -10,9 +10,9 @@ using System.Runtime.InteropServices;
 
 namespace SSS.Api.Controllers.System.Code
 {
-    /// <summary>	
-    /// 代码生成	
-    /// </summary>	
+    /// <summary>
+    ///     代码生成
+    /// </summary>
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
@@ -23,7 +23,7 @@ namespace SSS.Api.Controllers.System.Code
         private readonly IGeneratorCodeService _generatorCodeService;
 
         /// <summary>
-        /// 代码生成
+        ///     代码生成
         /// </summary>
         /// <param name="env"></param>
         /// <param name="generatorCodeService"></param>
@@ -34,19 +34,19 @@ namespace SSS.Api.Controllers.System.Code
             _generatorCodeService = generatorCodeService;
         }
 
-        /// <summary>	
-        /// 主页	
-        /// </summary>	
-        /// <returns></returns>	
+        /// <summary>
+        ///     主页
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("index")]
         public ContentResult Index()
         {
-            string html = "";
-            string filepath = RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+            var html = "";
+            var filepath = RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
                 ? current_path + "//codegenerator.html"
                 : current_path + "\\codegenerator.html";
 
-            using (StreamReader sr = new StreamReader(filepath))
+            using (var sr = new StreamReader(filepath))
             {
                 html = sr.ReadToEnd();
             }
@@ -59,10 +59,10 @@ namespace SSS.Api.Controllers.System.Code
             };
         }
 
-        /// <summary>	
-        /// 生成操作	
-        /// </summary>	
-        /// <returns></returns>	
+        /// <summary>
+        ///     生成操作
+        /// </summary>
+        /// <returns></returns>
         [HttpPost("createcode")]
         public IActionResult CreateCode()
         {

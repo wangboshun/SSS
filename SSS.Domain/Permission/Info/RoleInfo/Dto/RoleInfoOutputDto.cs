@@ -12,6 +12,11 @@ namespace SSS.Domain.Permission.Info.RoleInfo.Dto
 
     public class RoleInfoTreeOutputDto
     {
+        public RoleInfoTreeOutputDto()
+        {
+            Item = new List<RoleInfoTreeOutputDto>();
+        }
+
         public string id { get; set; }
 
         public string rolename { get; set; }
@@ -21,10 +26,5 @@ namespace SSS.Domain.Permission.Info.RoleInfo.Dto
         public DateTime createtime { get; set; }
 
         public List<RoleInfoTreeOutputDto> Item { get; set; }
-
-        public RoleInfoTreeOutputDto()
-        {
-            Item = new List<RoleInfoTreeOutputDto>();
-        }
     }
 }

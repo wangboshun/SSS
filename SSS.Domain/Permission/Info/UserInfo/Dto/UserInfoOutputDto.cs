@@ -12,6 +12,11 @@ namespace SSS.Domain.Permission.Info.UserInfo.Dto
 
     public class UserInfoTreeOutputDto
     {
+        public UserInfoTreeOutputDto()
+        {
+            Item = new List<UserInfoTreeOutputDto>();
+        }
+
         public string id { get; set; }
 
         public string username { get; set; }
@@ -21,10 +26,5 @@ namespace SSS.Domain.Permission.Info.UserInfo.Dto
         public DateTime createtime { get; set; }
 
         public List<UserInfoTreeOutputDto> Item { get; set; }
-
-        public UserInfoTreeOutputDto()
-        {
-            Item = new List<UserInfoTreeOutputDto>();
-        }
     }
 }

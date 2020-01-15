@@ -8,8 +8,8 @@ using SSS.Domain.Coin.CoinAnalyse.Dto;
 namespace SSS.Api.Controllers.Coin
 {
     /// <summary>
-    /// 币币分析
-    /// </summary> 
+    ///     币币分析
+    /// </summary>
     [ApiVersion("3.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
@@ -20,7 +20,7 @@ namespace SSS.Api.Controllers.Coin
         private readonly ICoinAnalyseService _service;
 
         /// <summary>
-        /// 币币分析
+        ///     币币分析
         /// </summary>
         /// <param name="service">ICoinAnalyseService</param>
         public CoinAnalyseController(ICoinAnalyseService service)
@@ -29,24 +29,24 @@ namespace SSS.Api.Controllers.Coin
         }
 
         /// <summary>
-        /// 获取所有分析列表
+        ///     获取所有分析列表
         /// </summary>
         /// <param name="input">input</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("getlist")]
-        public IActionResult GetList([FromQuery]CoinAnalyseInputDto input)
+        public IActionResult GetList([FromQuery] CoinAnalyseInputDto input)
         {
             var result = _service.GetListCoinAnalyse(input);
             return PageResponse(result);
         }
 
         /// <summary>
-        /// 添加
+        ///     添加
         /// </summary>
         /// <param name="input">CoinAnalyseInputDto</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpPost("add")]
-        public IActionResult AddCoinAnalyse([FromBody]CoinAnalyseInputDto input)
+        public IActionResult AddCoinAnalyse([FromBody] CoinAnalyseInputDto input)
         {
             _service.AddCoinAnalyse(input);
             return AddResponse(input);

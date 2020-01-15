@@ -5,6 +5,8 @@ using Microsoft.Extensions.Logging;
 using Polly;
 
 using Quartz;
+using Quartz.Impl;
+using Quartz.Impl.Triggers;
 
 using SSS.Application.Job.JobSetting.Extension;
 using SSS.DigitalCurrency.Domain;
@@ -52,32 +54,32 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
         {
             lock (_lock)
             {
-                var trigger = (Quartz.Impl.Triggers.CronTriggerImpl)((Quartz.Impl.JobExecutionContextImpl)context).Trigger;
+                var trigger = (CronTriggerImpl)((JobExecutionContextImpl)context).Trigger;
                 try
                 {
-                    Stopwatch watch = new Stopwatch();
+                    var watch = new Stopwatch();
                     watch.Start();
                     var coin_array = _huobi.GetAllCoin();
 
-                    Parallel.ForEach(coin_array, (item) =>
+                    Parallel.ForEach(coin_array, item =>
                     {
                         List<Domain.Coin.CoinKLineData.CoinKLineData> kline = null;
 
                         var retry = Policy.Handle<WebException>().Retry(3, (ex, count, text) =>
                         {
-                            _logger.LogError(new EventId(ex.HResult), ex, $"---CoinAnalyseJob GetKLine Exception,进行重试 {count}次---");
+                            _logger.LogError(new EventId(ex.HResult), ex,$"---CoinAnalyseJob GetKLine Exception,进行重试 {count}次---");
                             Thread.Sleep(100);
                         });
 
                         retry.Execute(() =>
                         {
-                            kline = _huobi.GetKLine(item.base_currency, item.quote_currency, CoinTime.Time_1day.ToString().Split('_')[1], 2000);
+                            kline = _huobi.GetKLine(item.base_currency, item.quote_currency,CoinTime.Time_1day.ToString().Split('_')[1], 2000);
                         });
 
                         if (kline == null)
                             return;
 
-                        string coin = item.base_currency + "-" + item.quote_currency;
+                        var coin = item.base_currency + "-" + item.quote_currency;
 
                         Average(coin, kline, CoinTime.Time_1day);
                         MACD(coin, kline, CoinTime.Time_1day);
@@ -139,7 +141,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
                     TotalDesc(list, Kdj);
                     TotalDesc(list, Fast);
 
-                    List<string> removecoin = new List<string>();
+                    var removecoin = new List<string>();
                     list = list.GroupBy(c => c.Coin).Select(c => c.First()).ToList();
                     var temp_list_coin = new List<Domain.Coin.CoinAnalyse.CoinAnalyse>();
 
@@ -167,7 +169,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
 
                     if (!temp_list_coin.Any()) return;
                     db_context.Database.ExecuteSqlRaw("UPDATE CoinAnalyse SET IsDelete=1 where IndicatorType=0 ");
-                    string sql = @"UPDATE CoinAnalyse SET IsDelete=1 where Coin in ('{0}')";
+                    var sql = @"UPDATE CoinAnalyse SET IsDelete=1 where Coin in ('{0}')";
                     sql = string.Format(sql, string.Join("','", removecoin.ToArray()));
                     db_context.Database.ExecuteSqlRaw(sql);
                     db_context.CoinAnalyse.AddRange(temp_list_coin);
@@ -205,7 +207,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
         {
             try
             {
-                Console.WriteLine($"---{ coin} Average---");
+                Console.WriteLine($"---{coin} Average---");
 
                 if (kline == null)
                     return;
@@ -216,7 +218,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
                 var data60 = _indicator.SMA(kline, 60);
 
                 //获取时间段
-                string typename = GetTimeType(type);
+                var typename = GetTimeType(type);
 
                 if (data5.Count > 0 && data10.Count > 0 && data5.First().Item2 > data10.First().Item2)
                 {
@@ -258,13 +260,13 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
                     model.CloseRange = model.Close / model.Open - 1;
                     list_coin.Add(model);
                 }
+
                 Console.WriteLine("---Average  SaveChanges---");
             }
             catch (Exception ex)
             {
                 _logger.LogError(new EventId(ex.HResult), ex, "---Average---");
             }
-            return;
         }
 
         #endregion
@@ -275,7 +277,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
         {
             try
             {
-                Console.WriteLine($"---{ coin} MACD---");
+                Console.WriteLine($"---{coin} MACD---");
 
                 if (kline == null || kline.Count < 1)
                     return;
@@ -286,7 +288,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
                     return;
 
                 //获取时间段
-                string typename = GetTimeType(type);
+                var typename = GetTimeType(type);
 
                 var model = new Domain.Coin.CoinAnalyse.CoinAnalyse
                 {
@@ -324,16 +326,16 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
         {
             try
             {
-                Console.WriteLine($"---{ coin} KDJ---");
+                Console.WriteLine($"---{coin} KDJ---");
 
                 if (kline == null || kline.Count < 1)
                     return;
 
                 var kdj = _indicator.KDJ(kline);
                 //获取时间段
-                string typename = GetTimeType(type);
+                var typename = GetTimeType(type);
 
-                string desc = $"【{typename}级别,KDJ金叉】";
+                var desc = $"【{typename}级别,KDJ金叉】";
 
                 //J值大于K值
                 if (kdj.Count < 1 || kdj.FirstOrDefault()?.Item4 < kdj.FirstOrDefault()?.Item2)
@@ -389,7 +391,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
         /// <returns></returns>
         public string GetLogo(string coin)
         {
-            string logo = "https://s1.bqiapp.com/coin/20181030_72_png/bitcoin_200_200.png?v=1566978037";
+            var logo = "https://s1.bqiapp.com/coin/20181030_72_png/bitcoin_200_200.png?v=1566978037";
             try
             {
                 using var scope = _scopeFactory.CreateScope();

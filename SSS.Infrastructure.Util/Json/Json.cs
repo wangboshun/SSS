@@ -24,7 +24,7 @@ namespace SSS.Infrastructure.Util.Json
 
         public static dynamic GetJsonValue(this string json, string key)
         {
-            JObject obj = JObject.Parse(json);
+            var obj = JObject.Parse(json);
             return obj[key];
         }
 
@@ -42,7 +42,7 @@ namespace SSS.Infrastructure.Util.Json
             IEnumerator enumerator = jToken.GetEnumerator();
             while (enumerator.MoveNext())
             {
-                JToken jc = (JToken)enumerator.Current;
+                var jc = (JToken)enumerator.Current;
                 if (jc is JObject || ((JProperty)jc).Value is JObject) return GetJsonValue(jc.Children(), key);
 
                 if (((JProperty)jc).Name == key) return ((JProperty)jc).Value;

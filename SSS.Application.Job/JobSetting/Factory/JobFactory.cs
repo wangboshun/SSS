@@ -9,9 +9,8 @@ using System;
 
 namespace SSS.Application.Job.JobSetting.Factory
 {
-
     /// <summary>
-    /// JobFactory
+    ///     JobFactory
     /// </summary>
     [DIService(ServiceLifetime.Singleton, typeof(IJobFactory))]
     public class JobFactory : IJobFactory
@@ -19,7 +18,7 @@ namespace SSS.Application.Job.JobSetting.Factory
         private readonly IServiceProvider _serviceProvider;
 
         /// <summary>
-        /// JobFactory
+        ///     JobFactory
         /// </summary>
         /// <param name="serviceProvider"></param>
         public JobFactory(IServiceProvider serviceProvider)
@@ -36,7 +35,6 @@ namespace SSS.Application.Job.JobSetting.Factory
         {
             var disposable = job as IDisposable;
             disposable?.Dispose();
-
         }
     }
 }

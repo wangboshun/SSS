@@ -8,8 +8,8 @@ using SSS.Domain.Coin.CoinTrade.Dto;
 namespace SSS.Api.Controllers.Coin
 {
     /// <summary>
-    /// 币币账单
-    /// </summary> 
+    ///     币币账单
+    /// </summary>
     [ApiVersion("3.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
@@ -20,7 +20,7 @@ namespace SSS.Api.Controllers.Coin
         private readonly ICoinTradeService _service;
 
         /// <summary>
-        /// 币币账单
+        ///     币币账单
         /// </summary>
         /// <param name="service">ICoinTradeService</param>
         public CoinTradeController(ICoinTradeService service)
@@ -29,24 +29,24 @@ namespace SSS.Api.Controllers.Coin
         }
 
         /// <summary>
-        /// 获取所有账单列表
+        ///     获取所有账单列表
         /// </summary>
         /// <param name="input">input</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("getlist")]
-        public IActionResult GetList([FromQuery]CoinTradeInputDto input)
+        public IActionResult GetList([FromQuery] CoinTradeInputDto input)
         {
             var result = _service.GetListCoinTrade(input);
             return PageResponse(result);
         }
 
         /// <summary>
-        /// 添加账单
+        ///     添加账单
         /// </summary>
         /// <param name="input">CoinTradeInputDto</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpPost("add")]
-        public IActionResult AddCoinTrade([FromBody]CoinTradeInputDto input)
+        public IActionResult AddCoinTrade([FromBody] CoinTradeInputDto input)
         {
             _service.AddCoinTrade(input);
             return AddResponse(input);

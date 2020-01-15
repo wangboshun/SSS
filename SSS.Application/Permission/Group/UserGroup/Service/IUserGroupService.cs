@@ -19,21 +19,21 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
         bool DeleteUserGroup(string id);
 
         /// <summary>
-        ///  根据用户Id或名称，遍历关联用户组
+        ///     根据用户Id或名称，遍历关联用户组
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         Pages<List<UserGroupOutputDto>> GetUserGroupByUser(UserInfoInputDto input);
 
         /// <summary>
-        ///  根据权限组Id或名称，遍历关联用户组
+        ///     根据权限组Id或名称，遍历关联用户组
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         Pages<List<UserGroupOutputDto>> GetUserGroupByPowerGroup(PowerGroupInputDto input);
 
         /// <summary>
-        ///  根据角色组Id或名称，遍历关联用户组
+        ///     根据角色组Id或名称，遍历关联用户组
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>

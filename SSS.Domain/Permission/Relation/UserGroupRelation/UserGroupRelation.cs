@@ -7,6 +7,5 @@ namespace SSS.Domain.Permission.Relation.UserGroupRelation
         public string UserId { set; get; }
 
         public string UserGroupId { set; get; }
-
     }
 }

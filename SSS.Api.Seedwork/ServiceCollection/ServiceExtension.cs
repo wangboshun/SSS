@@ -1,9 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Autofac;
+
+using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Infrastructure.Util.Attribute;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -11,34 +12,7 @@ namespace SSS.Api.Seedwork.ServiceCollection
 {
     public static class ServiceExtension
     {
-        #region 自动注册服务
-
-        /// <summary>
-        ///     自动注册服务
-        /// </summary>
-        /// <param name="services">注册服务的集合（向其中注册）</param>
-        /// <param name="ImplementationType">要注册的类型</param>
-        public static void AutoRegisterService(this IServiceCollection services, Type ImplementationType)
-        {
-            //获取类型的 UseDIAttribute 属性 对应的对象
-            DIServiceAttribute attr =
-                ImplementationType.GetCustomAttribute(typeof(DIServiceAttribute)) as DIServiceAttribute;
-            ////获取类实现的所有接口
-            //Type[] types = ImplementationType.GetInterfaces();
-            List<Type> types = attr.GetTargetTypes();
-            var lifetime = attr.Lifetime;
-            //遍历类实现的每一个接口
-            foreach (var t in types)
-            {
-                //将类注册为接口的实现-----但是存在一个问题，就是担心 如果一个类实现了IDisposible接口 担心这个类变成了这个接口的实现
-                ServiceDescriptor serviceDescriptor = new ServiceDescriptor(t, ImplementationType, lifetime);
-                services.Add(serviceDescriptor);
-            }
-        }
-
-        #endregion
-
-        #region 将程序集中的所有符合条件的类型全部注册到 IServiceCollection中 
+        #region 将程序集中的所有符合条件的类型全部注册到 IServiceCollection中
 
         /// <summary>
         ///     将程序集中的所有符合条件的类型全部注册到 IServiceCollection 中
@@ -49,13 +23,13 @@ namespace SSS.Api.Seedwork.ServiceCollection
             string AassemblyName)
         {
             //根据程序集的名字 获取程序集中所有的类型
-            Type[] types = Assembly.Load(AassemblyName).GetTypes();
+            var types = Assembly.Load(AassemblyName).GetTypes();
 
             //过滤上述程序集 首先按照传进来的条件进行过滤 接着要求Type必须是类，而且不能是抽象类
-            IEnumerable<Type> list = types.Where(t => t.IsClass && !t.IsAbstract);
+            var list = types.Where(t => t.IsClass && !t.IsAbstract);
             foreach (var item in list)
             {
-                IEnumerable<Attribute> attrs = item.GetCustomAttributes();
+                var attrs = item.GetCustomAttributes();
                 //遍历类的所有特性
                 foreach (var attr in attrs)
                     //如果在其特性中发现特性是 UseDIAttribute 特性 就将这个类注册到DI容器中去
@@ -63,6 +37,71 @@ namespace SSS.Api.Seedwork.ServiceCollection
                     if (attr is DIServiceAttribute)
                     {
                         services.AutoRegisterService(item);
+                        break;
+                    }
+            }
+        }
+
+        #endregion
+
+        #region 自动注册服务
+
+        /// <summary>
+        ///     自动注册服务
+        /// </summary>
+        /// <param name="services">注册服务的集合（向其中注册）</param>
+        /// <param name="ImplementationType">要注册的类型</param>
+        public static void AutoRegisterService(this IServiceCollection services, Type ImplementationType)
+        {
+            //获取类型的 UseDIAttribute 属性 对应的对象
+            var attr =ImplementationType.GetCustomAttribute(typeof(DIServiceAttribute)) as DIServiceAttribute;
+            ////获取类实现的所有接口
+            //Type[] types = ImplementationType.GetInterfaces();
+            var types = attr.GetTargetTypes();
+            var lifetime = attr.Lifetime;
+            //遍历类实现的每一个接口
+            foreach (var t in types)
+            {
+                //将类注册为接口的实现-----但是存在一个问题，就是担心 如果一个类实现了IDisposible接口 担心这个类变成了这个接口的实现
+                var serviceDescriptor = new ServiceDescriptor(t, ImplementationType, lifetime);
+                services.Add(serviceDescriptor);
+            }
+        }
+
+        public static void AutoFacRegisterService(this ContainerBuilder builder, string AassemblyName)
+        {
+            var types = Assembly.Load(AassemblyName).GetTypes().Where(t => t.IsClass &&
+                                                                           !t.IsAbstract &&
+                                                                           !t.Name.Equals("Repository`1") &&
+                                                                           !t.Name.Equals("QueryService`3") &&
+                                                                           !t.Name.Equals("<>c"));
+
+            foreach (var item in types)
+            {
+                var attrs = item.GetCustomAttributes();
+                foreach (var attr in attrs)
+                    if (attr is DIServiceAttribute)
+                    {
+                        var value = item.GetCustomAttribute(typeof(DIServiceAttribute)) as DIServiceAttribute;
+                        var type = value.GetTargetTypes();
+                        foreach (var t in type)
+                        {
+                            Console.WriteLine($"{item.FullName}   {t.FullName}   {value.Lifetime}");
+
+                            switch (value.Lifetime)
+                            {
+                                case ServiceLifetime.Scoped:
+                                    builder.RegisterType(item).As(t).InstancePerLifetimeScope();
+                                    break;
+                                case ServiceLifetime.Singleton:
+                                    builder.RegisterType(item).As(t).SingleInstance();
+                                    break;
+                                case ServiceLifetime.Transient:
+                                    builder.RegisterType(item).As(t).InstancePerDependency();
+                                    break;
+                            }
+                        }
+
                         break;
                     }
             }

@@ -13,7 +13,7 @@ using System.Linq;
 namespace SSS.Infrastructure.Repository.System.Job.JobInfo
 {
     [DIService(ServiceLifetime.Scoped, typeof(IJobInfoRepository))]
-    public class JobInfoRepository : Repository<SSS.Domain.System.Job.JobInfo.JobInfo>, IJobInfoRepository
+    public class JobInfoRepository : Repository<Domain.System.Job.JobInfo.JobInfo>, IJobInfoRepository
     {
         public JobInfoRepository(SystemDbContext context) : base(context)
         {
@@ -21,14 +21,15 @@ namespace SSS.Infrastructure.Repository.System.Job.JobInfo
 
         public Pages<List<JobInfoOutputDto>> GetJobDetail(string job_name, string job_group, int pageindex, int pagesize)
         {
-            string filed = "i.*,IF (e.ErrorCount != 0, e.ErrorCount,0) AS errorcount ";
-            string sql = @"SELECT {0} FROM  JobInfo AS i  LEFT JOIN ( SELECT JobId,COUNT(*) AS errorcount FROM JobError GROUP BY JobId ) AS e ON i.Id = e.JobId   ";
+            var filed = "i.*,IF (e.ErrorCount != 0, e.ErrorCount,0) AS errorcount ";
+            var sql =
+                @"SELECT {0} FROM  JobInfo AS i  LEFT JOIN ( SELECT JobId,COUNT(*) AS errorcount FROM JobError GROUP BY JobId ) AS e ON i.Id = e.JobId   ";
 
-            string where = $"  WHERE  i.JobName = '{job_name}'   AND i.JobGroup =  '{job_group}' ";
+            var where = $"  WHERE  i.JobName = '{job_name}'   AND i.JobGroup =  '{job_group}' ";
             if (!string.IsNullOrWhiteSpace(job_name) && !string.IsNullOrWhiteSpace(job_group))
                 sql += where;
 
-            int count = Db.Database.Count(string.Format(sql, " count(*) ", job_name, job_group));
+            var count = Db.Database.Count(string.Format(sql, " count(*) ", job_name, job_group));
 
             sql += " GROUP BY i.Id ";
             if (pageindex > 0 && pagesize > 0)
@@ -37,6 +38,7 @@ namespace SSS.Infrastructure.Repository.System.Job.JobInfo
                 var data = Db.Database.SqlQuery<JobInfoOutputDto>(string.Format(sql, filed)).ToList();
                 return new Pages<List<JobInfoOutputDto>>(data, count);
             }
+
             {
                 var data = Db.Database.SqlQuery<JobInfoOutputDto>(string.Format(sql, filed)).ToList();
                 return new Pages<List<JobInfoOutputDto>>(data, count);

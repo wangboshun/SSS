@@ -1,6 +1,5 @@
 using SSS.Domain.Seedwork.Model;
 
-
 namespace SSS.Domain.Coin.CoinMessage
 {
     public class CoinMessage : Entity

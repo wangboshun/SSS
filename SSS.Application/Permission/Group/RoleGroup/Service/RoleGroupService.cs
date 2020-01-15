@@ -30,9 +30,9 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
         QueryService<Domain.Permission.Group.RoleGroup.RoleGroup, RoleGroupInputDto, RoleGroupOutputDto>,
         IRoleGroupService
     {
-        private readonly IRoleGroupRepository _roleGroupRepository;
         private readonly IPowerGroupRepository _powerGroupRepository;
         private readonly IRoleGroupPowerGroupRelationRepository _roleGroupPowerGroupRelationRepository;
+        private readonly IRoleGroupRepository _roleGroupRepository;
 
         public RoleGroupService(IMapper mapper,
             IRoleGroupRepository repository,
@@ -65,8 +65,7 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
             {
                 var powergroup = _powerGroupRepository.Get(input.powergroupid);
                 if (powergroup != null)
-                {
-                    _roleGroupPowerGroupRelationRepository.Add(new RoleGroupPowerGroupRelation()
+                    _roleGroupPowerGroupRelationRepository.Add(new RoleGroupPowerGroupRelation
                     {
                         CreateTime = DateTime.Now,
                         Id = Guid.NewGuid().ToString(),
@@ -74,7 +73,6 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
                         PowerGroupId = powergroup.Id,
                         RoleGroupId = model.Id
                     });
-                }
             }
 
             return Repository.SaveChanges() > 0 ? Mapper.Map<RoleGroupOutputDto>(model) : null;
@@ -91,7 +89,7 @@ namespace SSS.Application.Permission.Group.RoleGroup.Service
         }
 
         /// <summary>
-        /// 根据权限Id或名称，遍历关联角色组
+        ///     根据权限Id或名称，遍历关联角色组
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>

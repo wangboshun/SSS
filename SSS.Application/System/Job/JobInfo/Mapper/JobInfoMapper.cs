@@ -1,14 +1,16 @@
+using AutoMapper;
+
 using SSS.Domain.System.Job.JobInfo.Dto;
 
 namespace SSS.Application.System.Job.JobInfo.Mapper
 {
-    public class JobInfoProfile : AutoMapper.Profile
+    public class JobInfoProfile : Profile
     {
         public JobInfoProfile()
         {
-            CreateMap<SSS.Domain.System.Job.JobInfo.JobInfo, JobInfoOutputDto>();
+            CreateMap<Domain.System.Job.JobInfo.JobInfo, JobInfoOutputDto>();
 
-            CreateMap<JobInfoInputDto, SSS.Domain.System.Job.JobInfo.JobInfo>();
+            CreateMap<JobInfoInputDto, Domain.System.Job.JobInfo.JobInfo>();
         }
     }
 }

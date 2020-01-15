@@ -12,25 +12,13 @@ namespace SSS.Domain.Permission.Info.PowerInfo.Validation
     {
         public PowerInfoAddValidation()
         {
-            RuleSet("Insert", () =>
-            {
-                RuleFor(x => x.powername).NotNull().WithMessage("权限名称不能为空");
-            });
+            RuleSet("Insert", () => { RuleFor(x => x.powername).NotNull().WithMessage("权限名称不能为空"); });
 
-            RuleSet("Delete", () =>
-            {
+            RuleSet("Delete", () => { });
 
-            });
+            RuleSet("Update", () => { });
 
-            RuleSet("Update", () =>
-            {
-
-            });
-
-            RuleSet("Select", () =>
-            {
-
-            });
+            RuleSet("Select", () => { });
         }
     }
 }

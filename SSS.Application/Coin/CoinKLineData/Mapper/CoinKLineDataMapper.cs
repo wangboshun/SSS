@@ -1,14 +1,16 @@
+using AutoMapper;
+
 using SSS.Domain.Coin.CoinKLineData.Dto;
 
 namespace SSS.Application.Coin.CoinKLineData.Mapper
 {
-    public class CoinKLineDataProfile : AutoMapper.Profile
+    public class CoinKLineDataProfile : Profile
     {
         public CoinKLineDataProfile()
         {
-            CreateMap<SSS.Domain.Coin.CoinKLineData.CoinKLineData, CoinKLineDataOutputDto>();
+            CreateMap<Domain.Coin.CoinKLineData.CoinKLineData, CoinKLineDataOutputDto>();
 
-            CreateMap<CoinKLineDataInputDto, SSS.Domain.Coin.CoinKLineData.CoinKLineData>();
+            CreateMap<CoinKLineDataInputDto, Domain.Coin.CoinKLineData.CoinKLineData>();
         }
     }
 }

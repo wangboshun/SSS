@@ -68,7 +68,7 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
-        /// 用户登录
+        ///     用户登录
         /// </summary>
         /// <param name="input">账号、密码</param>
         /// <returns></returns>
@@ -80,7 +80,7 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
-        ///  添加用户
+        ///     添加用户
         /// </summary>
         /// <param name="input">账号、密码</param>
         /// <returns></returns>
@@ -92,10 +92,10 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
-        /// 删除用户信息
+        ///     删除用户信息
         /// </summary>
         /// <param name="id">id</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public IActionResult DeleteUserInfo(string id)
         {
@@ -104,36 +104,36 @@ namespace SSS.Api.Controllers.Permission.Info
         }
 
         /// <summary>
-        /// 根据用户组Id或名称，遍历关联用户
+        ///     根据用户组Id或名称，遍历关联用户
         /// </summary>
         /// <param name="input">用户组Id或名称</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("get_user_by_usergroup")]
-        public IActionResult GetUserByUserGroup([FromQuery]UserGroupInputDto input)
+        public IActionResult GetUserByUserGroup([FromQuery] UserGroupInputDto input)
         {
             var result = _service.GetUserByUserGroup(input);
             return PageResponse(result);
         }
 
         /// <summary>
-        /// 根据权限组Id或名称，遍历关联用户
+        ///     根据权限组Id或名称，遍历关联用户
         /// </summary>
         /// <param name="input">权限组Id或名称</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("get_user_by_powergroup")]
-        public IActionResult GetUserByPowerGroup([FromQuery]PowerGroupInputDto input)
+        public IActionResult GetUserByPowerGroup([FromQuery] PowerGroupInputDto input)
         {
             var result = _service.GetUserByPowerGroup(input);
             return PageResponse(result);
         }
 
         /// <summary>
-        /// 根据角色组Id或名称，遍历关联用户
+        ///     根据角色组Id或名称，遍历关联用户
         /// </summary>
         /// <param name="input">角色组Id或名称</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("get_user_by_rolegroup")]
-        public IActionResult GetUserByRoleGroup([FromQuery]RoleGroupInputDto input)
+        public IActionResult GetUserByRoleGroup([FromQuery] RoleGroupInputDto input)
         {
             var result = _service.GetUserByRoleGroup(input);
             return PageResponse(result);

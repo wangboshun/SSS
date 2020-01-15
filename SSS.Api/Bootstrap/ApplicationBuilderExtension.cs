@@ -43,7 +43,7 @@ namespace SSS.Api.Bootstrap
         }
 
         /// <summary>
-        /// 注入RedisCache
+        ///     注入RedisCache
         /// </summary>
         /// <param name="app"></param>
         /// <param name="options"></param>
@@ -60,7 +60,7 @@ namespace SSS.Api.Bootstrap
         }
 
         /// <summary>
-        /// 注入Memcached
+        ///     注入Memcached
         /// </summary>
         /// <param name="app"></param>
         /// <param name="options"></param>

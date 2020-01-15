@@ -30,6 +30,6 @@ namespace SSS.Infrastructure.Seedwork.DbContext
 
         public DbSet<CoinKLineData> CoinKLineData { set; get; }
 
-        #endregion 
+        #endregion
     }
 }

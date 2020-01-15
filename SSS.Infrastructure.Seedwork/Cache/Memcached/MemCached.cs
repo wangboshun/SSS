@@ -61,7 +61,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.Memcached
         /// <param name="minute">minute</param>
         public void StringSet(string key, string value, double minute)
         {
-            TimeSpan time = TimeSpan.FromMinutes(minute);
+            var time = TimeSpan.FromMinutes(minute);
             _memcache.SetAsync(key, value, time);
         }
 

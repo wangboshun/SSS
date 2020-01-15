@@ -2,11 +2,13 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using SSS.Domain.Permission.Info.UserInfo.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
+using SSS.Infrastructure.Util.DI;
 using SSS.Infrastructure.Util.Http;
 
 using System.Collections.Generic;
@@ -57,10 +59,7 @@ namespace SSS.Api.Seedwork.Controller
                 UserInfo = userinfo;
         }
 
-        protected IEnumerable<ValidationFailure> Notice
-        {
-            get => _error.GetNotice();
-        }
+        protected IEnumerable<ValidationFailure> Notice => _error.GetNotice();
 
         protected bool IsValidOperation()
         {
@@ -68,7 +67,7 @@ namespace SSS.Api.Seedwork.Controller
         }
 
         /// <summary>
-        /// 增加
+        ///     增加
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="data"></param>
@@ -81,33 +80,33 @@ namespace SSS.Api.Seedwork.Controller
         }
 
         /// <summary>
-        /// 删除
+        ///     删除
         /// </summary>
         /// <param name="data"></param>
         /// <param name="status"></param>
         /// <returns></returns>
         protected IActionResult DeleteResponse(object data, bool status)
         {
-            if (data != null & status)
+            if ((data != null) & status)
                 return ApiResponse(data, true, "删除成功", 200);
             return ApiResponse(data, false, "删除失败", 204);
         }
 
         /// <summary>
-        /// 修改
+        ///     修改
         /// </summary>
         /// <param name="data"></param>
         /// <param name="status"></param>
         /// <returns></returns>
         protected IActionResult UpdateResponse(object data, bool status)
         {
-            if (data != null & status)
+            if ((data != null) & status)
                 return ApiResponse(data, true, "修改成功", 200);
             return ApiResponse(data, false, "修改失败", 204);
         }
 
         /// <summary>
-        ///分页 
+        ///     分页
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="data"></param>
@@ -118,14 +117,14 @@ namespace SSS.Api.Seedwork.Controller
             {
                 if (data.count > 0)
                     return ApiResponse(data, true, "获取分页成功", 200);
-                else
-                    return ApiResponse(null, true, "分页数据为空", 200);
+                return ApiResponse(null, true, "分页数据为空", 200);
             }
+
             return ApiResponse(null, false, "获取分页失败", 204);
         }
 
         /// <summary>
-        /// 基础
+        ///     基础
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="data"></param>
@@ -138,7 +137,7 @@ namespace SSS.Api.Seedwork.Controller
         }
 
         /// <summary>
-        /// 其他
+        ///     其他
         /// </summary>
         /// <param name="status"></param>
         /// <returns></returns>
@@ -162,11 +161,11 @@ namespace SSS.Api.Seedwork.Controller
             if (IsValidOperation())
             {
                 if (data == null)
-                    return Accepted(new { status = false, data = "", message = message, code = code });
+                    return Accepted(new { status = false, data = "", message, code });
                 return Ok(new { status, data, message, code });
             }
 
-            return BadRequest(new { status = false, data = "", message = Notice.Select(n => n.ErrorMessage), code = code });
+            return BadRequest(new { status = false, data = "", message = Notice.Select(n => n.ErrorMessage), code });
         }
     }
 }

@@ -12,25 +12,13 @@ namespace SSS.Domain.Community.CommunityBusiness.Validation
     {
         public CommunityBusinessAddValidation()
         {
-            RuleSet("Insert", () =>
-            {
-                RuleFor(x => x.name).NotNull().WithMessage("请填写业务名称");
-            });
+            RuleSet("Insert", () => { RuleFor(x => x.name).NotNull().WithMessage("请填写业务名称"); });
 
-            RuleSet("Delete", () =>
-            {
+            RuleSet("Delete", () => { });
 
-            });
+            RuleSet("Update", () => { });
 
-            RuleSet("Update", () =>
-            {
-
-            });
-
-            RuleSet("Select", () =>
-            {
-
-            });
+            RuleSet("Select", () => { });
         }
     }
 }

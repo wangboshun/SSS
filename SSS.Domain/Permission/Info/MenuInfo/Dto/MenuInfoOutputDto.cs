@@ -10,8 +10,14 @@ namespace SSS.Domain.Permission.Info.MenuInfo.Dto
         public string menuurl { set; get; }
         public string menuname { get; set; }
     }
+
     public class MenuInfoTreeOutputDto
     {
+        public MenuInfoTreeOutputDto()
+        {
+            Item = new List<MenuInfoTreeOutputDto>();
+        }
+
         public string id { get; set; }
 
         public string menuname { get; set; }
@@ -22,10 +28,5 @@ namespace SSS.Domain.Permission.Info.MenuInfo.Dto
         public DateTime createtime { get; set; }
 
         public List<MenuInfoTreeOutputDto> Item { get; set; }
-
-        public MenuInfoTreeOutputDto()
-        {
-            Item = new List<MenuInfoTreeOutputDto>();
-        }
     }
 }

@@ -30,9 +30,9 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
         IOperateInfoService
     {
         private readonly IOperateInfoRepository _operateInfoRepository;
-        private readonly IPowerInfoRepository _powerInfoRepository;
-        private readonly IPowerGroupRepository _powerGroupRepository;
         private readonly IPowerGroupOperateRelationRepository _powerGroupOperateRelationRepository;
+        private readonly IPowerGroupRepository _powerGroupRepository;
+        private readonly IPowerInfoRepository _powerInfoRepository;
 
         public OperateInfoService(IMapper mapper,
             IOperateInfoRepository repository,
@@ -73,7 +73,7 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
             {
                 var powergroup = _powerGroupRepository.Get(x => x.Id.Equals(input.powergroupid));
                 if (powergroup != null)
-                    _powerGroupOperateRelationRepository.Add(new PowerGroupOperateRelation()
+                    _powerGroupOperateRelationRepository.Add(new PowerGroupOperateRelation
                     {
                         CreateTime = DateTime.Now,
                         Id = Guid.NewGuid().ToString(),
@@ -89,7 +89,7 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
 
         public bool DeleteOperateInfo(string id)
         {
-            Repository.Remove(id, false);
+            Repository.Remove(id);
             _powerGroupOperateRelationRepository.Remove(x => x.OperateId.Equals(id));
             return Repository.SaveChanges() > 0;
         }
@@ -110,7 +110,7 @@ namespace SSS.Application.Permission.Info.OperateInfo.Service
         }
 
         /// <summary>
-        /// 根据权限组Id或名称，遍历关联操作
+        ///     根据权限组Id或名称，遍历关联操作
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>

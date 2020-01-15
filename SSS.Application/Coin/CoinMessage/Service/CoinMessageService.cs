@@ -56,7 +56,7 @@ namespace SSS.Application.Coin.CoinMessage.Service
 
         public Pages<List<CoinMessageOutputDto>> GetListCoinMessage(CoinMessageInputDto input)
         {
-            int count = 0;
+            var count = 0;
             var data = _coinmessagerepository.GetPageOrderByAsc(input, ref count);
             var list = data.MapperToOutPut<CoinMessageOutputDto>()?.ToList();
             if (list == null) return null;
@@ -65,7 +65,6 @@ namespace SSS.Application.Coin.CoinMessage.Service
                 item.Logo = _coininforepository.Get(x => x.Coin.Equals(item.Coin))?.RomteLogo;
 
             return new Pages<List<CoinMessageOutputDto>>(list, count);
-
         }
     }
 }

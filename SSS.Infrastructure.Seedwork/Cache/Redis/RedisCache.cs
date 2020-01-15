@@ -59,7 +59,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.Redis
             return Convert.ToInt32(_db.Execute("DBSIZE").ToString());
         }
 
-        #region String操作        
+        #region String操作
 
         public void StringSet(string key, string value)
         {
@@ -74,7 +74,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.Redis
         /// <param name="minute">minute</param>
         public void StringSet(string key, string value, double minute)
         {
-            TimeSpan time = TimeSpan.FromMinutes(minute);
+            var time = TimeSpan.FromMinutes(minute);
             _db.StringSet(key, value, time);
         }
 
@@ -85,7 +85,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.Redis
 
         #endregion
 
-        #region List操作        
+        #region List操作
 
         public void ListSet<T>(string key, List<T> value)
         {
@@ -99,7 +99,7 @@ namespace SSS.Infrastructure.Seedwork.Cache.Redis
             if (data == null || data.Length < 1)
                 return null;
 
-            List<T> result = new List<T>();
+            var result = new List<T>();
             foreach (var item in data)
                 result.Add(JsonConvert.DeserializeObject<T>(item));
 
@@ -111,7 +111,6 @@ namespace SSS.Infrastructure.Seedwork.Cache.Redis
             var data = _db.ListGetByIndex(key, index);
             return JsonConvert.DeserializeObject<T>(data);
         }
-
 
         #endregion
     }

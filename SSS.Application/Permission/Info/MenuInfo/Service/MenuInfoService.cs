@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SSS.Application.Seedwork.Service;
 using SSS.Domain.Permission.Group.PowerGroup.Dto;
 using SSS.Domain.Permission.Info.MenuInfo.Dto;
+using SSS.Domain.Permission.Relation.PowerGroupMenuRelation;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
 using SSS.Infrastructure.Repository.Permission.Group.PowerGroup;
@@ -22,11 +23,11 @@ using System.Linq;
 namespace SSS.Application.Permission.Info.MenuInfo.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IMenuInfoService))]
-    public class MenuInfoService : QueryService<Domain.Permission.Info.MenuInfo.MenuInfo, MenuInfoInputDto, MenuInfoOutputDto>, IMenuInfoService
+    public class MenuInfoService :QueryService<Domain.Permission.Info.MenuInfo.MenuInfo, MenuInfoInputDto, MenuInfoOutputDto>, IMenuInfoService
     {
         private readonly IMenuInfoRepository _menuInfoRepository;
-        private readonly IPowerGroupRepository _powerGroupRepository;
         private readonly IPowerGroupMenuRelationRepository _powerGroupMenuRelationRepository;
+        private readonly IPowerGroupRepository _powerGroupRepository;
 
         public MenuInfoService(IMapper mapper,
             IMenuInfoRepository repository,
@@ -68,7 +69,7 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
             {
                 var powergroup = _powerGroupRepository.Get(input.powergroupid);
                 if (powergroup != null)
-                    _powerGroupMenuRelationRepository.Add(new Domain.Permission.Relation.PowerGroupMenuRelation.PowerGroupMenuRelation
+                    _powerGroupMenuRelationRepository.Add(new PowerGroupMenuRelation
                     {
                         CreateTime = DateTime.Now,
                         Id = Guid.NewGuid().ToString(),
@@ -98,7 +99,7 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
                 return false;
             }
 
-            if (!AddParentId(menu.ParentId, input.parentid, out string parentid))
+            if (!AddParentId(menu.ParentId, input.parentid, out var parentid))
                 return false;
 
             menu.MenuName = input.menuname;
@@ -114,7 +115,8 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
                 {
                     //如果没有映射关系，增加
                     if (pgmr == null)
-                        _powerGroupMenuRelationRepository.Add(new Domain.Permission.Relation.PowerGroupMenuRelation.PowerGroupMenuRelation
+                    {
+                        _powerGroupMenuRelationRepository.Add(new PowerGroupMenuRelation
                         {
                             CreateTime = DateTime.Now,
                             Id = Guid.NewGuid().ToString(),
@@ -122,6 +124,7 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
                             PowerGroupId = powergroup.Id,
                             IsDelete = 0
                         });
+                    }
                     else
                     {
                         //如果不等于现有映射PowerGroupId，更新
@@ -158,7 +161,7 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
 
         public bool DeleteMenuInfo(string id)
         {
-            Repository.Remove(id, false);
+            Repository.Remove(id);
             _powerGroupMenuRelationRepository.Remove(x => x.MenuId.Equals(id));
             return Repository.SaveChanges() > 0;
         }
@@ -174,14 +177,14 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
         }
 
         /// <summary>
-        /// 根据权限组Id或名称，遍历关联菜单
+        ///     根据权限组Id或名称，遍历关联菜单
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         public Pages<List<MenuInfoOutputDto>> GetMenuByPowerGroup(PowerGroupInputDto input)
         {
-            var data = _menuInfoRepository.GetMenuByPowerGroup(input.id, input.powergroupname, input.parentid, input.pageindex, input.pagesize);
-            return new Pages<List<MenuInfoOutputDto>>(data.items.MapperToOutPut<MenuInfoOutputDto>()?.ToList(), data.count);
+            var data = _menuInfoRepository.GetMenuByPowerGroup(input.id, input.powergroupname, input.parentid,input.pageindex, input.pagesize);
+            return new Pages<List<MenuInfoOutputDto>>(data.items.MapperToOutPut<MenuInfoOutputDto>()?.ToList(),data.count);
         }
 
         public Pages<List<MenuInfoOutputDto>> GetListMenuInfo(MenuInfoInputDto input)

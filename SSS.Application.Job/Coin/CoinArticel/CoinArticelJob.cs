@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
 using Quartz;
+using Quartz.Impl;
+using Quartz.Impl.Triggers;
 
 using SSS.Application.Job.JobSetting.Extension;
 using SSS.Infrastructure.Seedwork.DbContext;
@@ -25,15 +27,16 @@ namespace SSS.Application.Job.Coin.CoinArticel
     [DIService(ServiceLifetime.Singleton, typeof(CoinArticelJob))]
     public class CoinArticelJob : IJob
     {
+        private static readonly object _lock = new object();
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _scopeFactory;
-        private static readonly object _lock = new object();
 
         public CoinArticelJob(ILogger<CoinArticelJob> logger, IServiceScopeFactory scopeFactory)
         {
             _logger = logger;
             _scopeFactory = scopeFactory;
         }
+
         public Task Execute(IJobExecutionContext context)
         {
             _logger.LogInformation("-----------------CoinArticelJob----------------------");
@@ -44,16 +47,16 @@ namespace SSS.Application.Job.Coin.CoinArticel
         {
             lock (_lock)
             {
-                var trigger = (Quartz.Impl.Triggers.CronTriggerImpl)((Quartz.Impl.JobExecutionContextImpl)context).Trigger;
+                var trigger = (CronTriggerImpl)((JobExecutionContextImpl)context).Trigger;
                 try
                 {
-                    Stopwatch watch = new Stopwatch();
+                    var watch = new Stopwatch();
                     watch.Start();
 
-                    Task t1 = Task.Factory.StartNew(GetNotice);
-                    Task t2 = Task.Factory.StartNew(GetPolicy);
-                    Task t3 = Task.Factory.StartNew(GetNews);
-                    Task t4 = Task.Factory.StartNew(GetQuickNews);
+                    var t1 = Task.Factory.StartNew(GetNotice);
+                    var t2 = Task.Factory.StartNew(GetPolicy);
+                    var t3 = Task.Factory.StartNew(GetNews);
+                    var t4 = Task.Factory.StartNew(GetQuickNews);
                     Task.WaitAll(t1, t2, t3, t4);
 
                     watch.Stop();
@@ -82,12 +85,12 @@ namespace SSS.Application.Job.Coin.CoinArticel
             Console.WriteLine("---GetNotice---");
             try
             {
-                WebClient web = new WebClient();
-                string json = web.DownloadString("https://api.jinse.com/v4/live/list?limit=50&reading=false&source=web&sort=5&flag=down&id=0");
+                var web = new WebClient();
+                var json = web.DownloadString("https://api.jinse.com/v4/live/list?limit=50&reading=false&source=web&sort=5&flag=down&id=0");
                 JToken data = json.GetJsonValue("list");
-                List<JToken> token = new List<JToken>(); // data.First.Last.AsJEnumerable().Values();
+                var token = new List<JToken>(); // data.First.Last.AsJEnumerable().Values();
 
-                for (int i = 0; i < data.Count(); i++)
+                for (var i = 0; i < data.Count(); i++)
                 {
                     var temp = data[i].Last.AsJEnumerable().Values().ToList();
                     token.AddRange(temp);
@@ -99,7 +102,7 @@ namespace SSS.Application.Job.Coin.CoinArticel
 
                 var list = new List<Domain.Coin.CoinArticel.CoinArticel>();
 
-                Parallel.ForEach(token, (item) =>
+                Parallel.ForEach(token, item =>
                 {
                     var title = GetTitleByContent(item["content"].ToString());
 
@@ -146,8 +149,8 @@ namespace SSS.Application.Job.Coin.CoinArticel
             Console.WriteLine("---GetPolicy---");
             try
             {
-                WebClient web = new WebClient();
-                string json = web.DownloadString("https://api.jinse.com/v6/information/list?catelogue_key=zhengce&limit=50&information_id=0&flag=down&version=9.9.9");
+                var web = new WebClient();
+                var json = web.DownloadString("https://api.jinse.com/v6/information/list?catelogue_key=zhengce&limit=50&information_id=0&flag=down&version=9.9.9");
                 JToken data = json.GetJsonValue("list");
 
                 using var scope = _scopeFactory.CreateScope();
@@ -157,9 +160,9 @@ namespace SSS.Application.Job.Coin.CoinArticel
 
                 var list = new List<Domain.Coin.CoinArticel.CoinArticel>();
 
-                Parallel.ForEach(data.AsJEnumerable(), (item) =>
+                Parallel.ForEach(data.AsJEnumerable(), item =>
                 {
-                    string title = GetTitle(item["title"].ToString());
+                    var title = GetTitle(item["title"].ToString());
 
                     if (source.Any(x => x.Title.Equals(title)))
                         return;
@@ -204,12 +207,12 @@ namespace SSS.Application.Job.Coin.CoinArticel
             Console.WriteLine("---GetQuickNews---");
             try
             {
-                WebClient web = new WebClient();
-                string json = web.DownloadString("https://api.jinse.com/v4/live/list?reading=false&sort=7&flag=down&id=0&limit=50");
+                var web = new WebClient();
+                var json = web.DownloadString("https://api.jinse.com/v4/live/list?reading=false&sort=7&flag=down&id=0&limit=50");
                 JToken data = json.GetJsonValue("list");
-                List<JToken> token = new List<JToken>(); // data.First.Last.AsJEnumerable().Values();
+                var token = new List<JToken>(); // data.First.Last.AsJEnumerable().Values();
 
-                for (int i = 0; i < data.Count(); i++)
+                for (var i = 0; i < data.Count(); i++)
                 {
                     var temp = data[i].Last.AsJEnumerable().Values().ToList();
                     token.AddRange(temp);
@@ -221,7 +224,7 @@ namespace SSS.Application.Job.Coin.CoinArticel
 
                 var list = new List<Domain.Coin.CoinArticel.CoinArticel>();
 
-                Parallel.ForEach(token, (item) =>
+                Parallel.ForEach(token, item =>
                 {
                     var title = GetTitleByContent(item["content"].ToString());
 
@@ -269,8 +272,8 @@ namespace SSS.Application.Job.Coin.CoinArticel
             Console.WriteLine("---GetNews---");
             try
             {
-                WebClient web = new WebClient();
-                string json = web.DownloadString("https://api.jinse.com/v6/information/list?catelogue_key=news&limit=50&information_id=0&flag=down&version=9.9.9");
+                var web = new WebClient();
+                var json = web.DownloadString("https://api.jinse.com/v6/information/list?catelogue_key=news&limit=50&information_id=0&flag=down&version=9.9.9");
                 JToken data = json.GetJsonValue("list");
 
                 using var scope = _scopeFactory.CreateScope();
@@ -280,9 +283,9 @@ namespace SSS.Application.Job.Coin.CoinArticel
 
                 var list = new List<Domain.Coin.CoinArticel.CoinArticel>();
 
-                Parallel.ForEach(data.AsJEnumerable(), (item) =>
+                Parallel.ForEach(data.AsJEnumerable(), item =>
                 {
-                    string title = GetTitle(item["title"].ToString());
+                    var title = GetTitle(item["title"].ToString());
 
                     if (source.Any(x => x.Title.Equals(title)))
                         return;
@@ -323,11 +326,12 @@ namespace SSS.Application.Job.Coin.CoinArticel
         {
             try
             {
-                HtmlWeb htmlWeb = new HtmlWeb();
+                var htmlWeb = new HtmlWeb();
 
-                HtmlDocument document = htmlWeb.Load(token["topic_url"].ToString());
+                var document = htmlWeb.Load(token["topic_url"].ToString());
 
-                HtmlNode node = document.DocumentNode.SelectSingleNode("//div[@class='js-article-detail']") ?? document.DocumentNode.SelectSingleNode("//div[@class='js-article']");
+                var node = document.DocumentNode.SelectSingleNode("//div[@class='js-article-detail']") ??
+                           document.DocumentNode.SelectSingleNode("//div[@class='js-article']");
 
                 if (node != null)
                 {
@@ -339,7 +343,7 @@ namespace SSS.Application.Job.Coin.CoinArticel
                 }
 
                 model.CreateTime = DateTimeConvert.ConvertDateTime(token["published_at"].ToString());
-                string logo = "http://pic.51yuansu.com/pic3/cover/02/61/11/59fc30d0b8598_610.jpg";
+                var logo = "http://pic.51yuansu.com/pic3/cover/02/61/11/59fc30d0b8598_610.jpg";
                 if (!string.IsNullOrWhiteSpace(token["thumbnail_pic"].ToString()))
                     logo = token["thumbnail_pic"].ToString();
 
@@ -363,9 +367,9 @@ namespace SSS.Application.Job.Coin.CoinArticel
         /// <returns></returns>
         private string GetTitleByContent(string content)
         {
-            int first = content.IndexOf(" | ");
+            var first = content.IndexOf(" | ");
 
-            int second = content.IndexOf("】");
+            var second = content.IndexOf("】");
             return content.Substring(first + 2, second - 5).Trim();
         }
 
@@ -376,13 +380,12 @@ namespace SSS.Application.Job.Coin.CoinArticel
         /// <returns></returns>
         public string GetTitle(string title)
         {
-            if (title.IndexOf("金色") > -1 && (title.IndexOf("丨") > -1 || title.IndexOf("|") > -1))
-            {
-                int index = title.IndexOf("丨");
-                if (index < 0)
-                    index = title.IndexOf("|");
-                title = title.Substring(index + 1);
-            }
+            if (title.IndexOf("金色") <= -1 || (title.IndexOf("丨") <= -1 && title.IndexOf("|") <= -1))
+                return title.Trim();
+            var index = title.IndexOf("丨");
+            if (index < 0)
+                index = title.IndexOf("|");
+            title = title.Substring(index + 1);
 
             return title.Trim();
         }
@@ -394,10 +397,10 @@ namespace SSS.Application.Job.Coin.CoinArticel
         /// <returns></returns>
         private string GetDetail(string content)
         {
-            int second = content.IndexOf("】");
+            var second = content.IndexOf("】");
             return content.Substring(second + 1);
         }
 
-        #endregion 
+        #endregion
     }
 }

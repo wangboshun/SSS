@@ -29,8 +29,8 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
         QueryService<Domain.Permission.Group.UserGroup.UserGroup, UserGroupInputDto, UserGroupOutputDto>,
         IUserGroupService
     {
-        private readonly IUserGroupRepository _userGroupRepository;
         private readonly IRoleGroupRepository _roleGroupRepository;
+        private readonly IUserGroupRepository _userGroupRepository;
         private readonly IUserGroupRoleGroupRelationRepository _userGroupRoleGroupRelationRepository;
 
         public UserGroupService(IMapper mapper,
@@ -65,8 +65,7 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
                 var rolegroup = _roleGroupRepository.Get(input.rolegroupid);
 
                 if (rolegroup != null)
-                {
-                    _userGroupRoleGroupRelationRepository.Add(new UserGroupRoleGroupRelation()
+                    _userGroupRoleGroupRelationRepository.Add(new UserGroupRoleGroupRelation
                     {
                         CreateTime = DateTime.Now,
                         Id = Guid.NewGuid().ToString(),
@@ -74,7 +73,6 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
                         RoleGroupId = rolegroup.Id,
                         UserGroupId = model.Id
                     });
-                }
             }
 
             return Repository.SaveChanges() > 0 ? Mapper.Map<UserGroupOutputDto>(model) : null;
@@ -91,7 +89,7 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
         }
 
         /// <summary>
-        /// 根据用户Id或名称，遍历关联用户组
+        ///     根据用户Id或名称，遍历关联用户组
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -109,7 +107,7 @@ namespace SSS.Application.Permission.Group.UserGroup.Service
         }
 
         /// <summary>
-        /// 根据角色组Id或名称，遍历关联用户组
+        ///     根据角色组Id或名称，遍历关联用户组
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>

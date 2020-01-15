@@ -40,21 +40,21 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         bool DeleteUserInfo(string id);
 
         /// <summary>
-        /// 根据用户组Id或名称，遍历关联用户
+        ///     根据用户组Id或名称，遍历关联用户
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         Pages<List<UserInfoOutputDto>> GetUserByUserGroup(UserGroupInputDto input);
 
         /// <summary>
-        /// 根据权限组Id或名称，遍历关联用户
+        ///     根据权限组Id或名称，遍历关联用户
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         Pages<List<UserInfoOutputDto>> GetUserByPowerGroup(PowerGroupInputDto input);
 
         /// <summary>
-        /// 根据角色组Id或名称，遍历关联用户
+        ///     根据角色组Id或名称，遍历关联用户
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>

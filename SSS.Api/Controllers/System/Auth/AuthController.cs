@@ -12,8 +12,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace SSS.Api.Controllers.System
+namespace SSS.Api.Controllers.System.Auth
 {
+    /// <summary>
+    /// AuthController
+    /// </summary>
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     [ApiVersion("1.0")]
@@ -22,13 +25,17 @@ namespace SSS.Api.Controllers.System
     {
         private readonly IUserInfoService _service;
 
+        /// <summary>
+        /// AuthController
+        /// </summary>
+        /// <param name="service"></param>
         public AuthController(IUserInfoService service)
         {
             _service = service;
         }
 
         /// <summary>
-        /// 授权
+        ///     授权
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -41,11 +48,11 @@ namespace SSS.Api.Controllers.System
                 return ApiResponse(null, false, "登录失败", 204);
 
             var claims = new[]
-               {
-                    new Claim(JwtRegisteredClaimNames.Nbf,$"{new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds()}") ,
-                    new Claim (JwtRegisteredClaimNames.Exp,$"{new DateTimeOffset(DateTime.Now.AddMinutes(1)).ToUnixTimeSeconds()}"),
-                    new Claim(ClaimTypes.Name, input.username)
-                };
+            {
+                new Claim(JwtRegisteredClaimNames.Nbf,$"{new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds()}") ,
+                new Claim (JwtRegisteredClaimNames.Exp,$"{new DateTimeOffset(DateTime.Now.AddMinutes(1)).ToUnixTimeSeconds()}"),
+                new Claim(ClaimTypes.Name, input.username)
+            };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JsonConfig.GetSectionValue("Auth:SecurityKey")));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

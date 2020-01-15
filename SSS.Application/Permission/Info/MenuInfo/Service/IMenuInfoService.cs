@@ -14,6 +14,7 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
         bool UpdateMenuInfo(MenuInfoInputDto input);
         bool DeleteMenuInfo(string id);
         Pages<List<MenuInfoOutputDto>> GetListMenuInfo(MenuInfoInputDto input);
+
         /// <summary>
         ///     获取菜单下的所有下级
         /// </summary>
@@ -22,7 +23,7 @@ namespace SSS.Application.Permission.Info.MenuInfo.Service
         List<MenuInfoTreeOutputDto> GetChildren(string menuid);
 
         /// <summary>
-        /// 根据权限组Id或名称，遍历关联菜单
+        ///     根据权限组Id或名称，遍历关联菜单
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>

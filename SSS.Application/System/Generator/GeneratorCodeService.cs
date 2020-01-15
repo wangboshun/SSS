@@ -21,10 +21,10 @@ namespace SSS.Application.System.Generator
     public class GeneratorCodeService : IGeneratorCodeService
     {
         private static string current_path;
-        private readonly IHostEnvironment _env;
         private static string namespace_name;
         private static string namespace_path;
         private static string class_name;
+        private readonly IHostEnvironment _env;
         private readonly ILogger _logger;
 
         public GeneratorCodeService(IHostEnvironment env, ILogger<GeneratorCodeService> logger)
@@ -35,7 +35,7 @@ namespace SSS.Application.System.Generator
         }
 
         /// <summary>
-        /// 生成代码
+        ///     生成代码
         /// </summary>
         /// <param name="class_name_str"></param>
         /// <param name="namespace_name_str"></param>
@@ -56,11 +56,13 @@ namespace SSS.Application.System.Generator
 
                     if (namespace_name_str.Contains("."))
                     {
-                        string[] array = namespace_name_str.Split(".");
+                        var array = namespace_name_str.Split(".");
                         namespace_path = "\\" + array[0] + "\\" + array[1];
                     }
                     else
+                    {
                         namespace_path = "\\" + namespace_name_str;
+                    }
                 }
 
                 var list = JsonConvert.DeserializeObject<List<Field>>(fields_str);
@@ -90,19 +92,22 @@ namespace SSS.Application.System.Generator
             }
         }
 
-        /// <summary>	
-        ///     1	
-        /// </summary>	 
+        /// <summary>
+        ///     1
+        /// </summary>
         public bool Generator_Domain()
         {
             try
             {
-                var TemplateInputDto_Read_Path = current_path + "\\Template\\Template_Domain\\Dto\\TemplateInputDto.txt";
-                var TemplateOutputDto_Read_Path = current_path + "\\Template\\Template_Domain\\Dto\\TemplateOutputDto.txt";
+                var TemplateInputDto_Read_Path =
+                    current_path + "\\Template\\Template_Domain\\Dto\\TemplateInputDto.txt";
+                var TemplateOutputDto_Read_Path =
+                    current_path + "\\Template\\Template_Domain\\Dto\\TemplateOutputDto.txt";
                 var Template_Read_Path = current_path + "\\Template\\Template_Domain\\Template.txt";
-                var TemplateValidation_Read_Path = current_path + "\\Template\\Template_Domain\\Validation\\TemplateValidation.txt";
+                var TemplateValidation_Read_Path =
+                    current_path + "\\Template\\Template_Domain\\Validation\\TemplateValidation.txt";
 
-                string TemplateInputDto_Content = IO.ReadAllText(TemplateInputDto_Read_Path);
+                var TemplateInputDto_Content = IO.ReadAllText(TemplateInputDto_Read_Path);
                 TemplateInputDto_Content = TemplateInputDto_Content.Replace("Template", class_name);
                 if (!string.IsNullOrWhiteSpace(namespace_name))
                     TemplateInputDto_Content = TemplateInputDto_Content.Replace("NameSpace", namespace_name);
@@ -110,7 +115,7 @@ namespace SSS.Application.System.Generator
                     TemplateInputDto_Content = TemplateInputDto_Content.Replace(".NameSpace", "");
 
 
-                string TemplateOutputDto_Content = IO.ReadAllText(TemplateOutputDto_Read_Path);
+                var TemplateOutputDto_Content = IO.ReadAllText(TemplateOutputDto_Read_Path);
                 TemplateOutputDto_Content = TemplateOutputDto_Content.Replace("Template", class_name);
                 if (!string.IsNullOrWhiteSpace(namespace_name))
                     TemplateOutputDto_Content = TemplateOutputDto_Content.Replace("NameSpace", namespace_name);
@@ -118,7 +123,7 @@ namespace SSS.Application.System.Generator
                     TemplateOutputDto_Content = TemplateOutputDto_Content.Replace(".NameSpace", "");
 
 
-                string Template_Content = IO.ReadAllText(Template_Read_Path);
+                var Template_Content = IO.ReadAllText(Template_Read_Path);
                 Template_Content = Template_Content.Replace("Template", class_name);
                 if (!string.IsNullOrWhiteSpace(namespace_name))
                     Template_Content = Template_Content.Replace("NameSpace", namespace_name);
@@ -126,7 +131,7 @@ namespace SSS.Application.System.Generator
                     Template_Content = Template_Content.Replace(".NameSpace", "");
 
 
-                string TemplateValidation_Content = IO.ReadAllText(TemplateValidation_Read_Path);
+                var TemplateValidation_Content = IO.ReadAllText(TemplateValidation_Read_Path);
                 TemplateValidation_Content = TemplateValidation_Content.Replace("Template", class_name);
                 if (!string.IsNullOrWhiteSpace(namespace_name))
                     TemplateValidation_Content = TemplateValidation_Content.Replace("NameSpace", namespace_name);
@@ -136,10 +141,13 @@ namespace SSS.Application.System.Generator
                 Directory.SetCurrentDirectory(Directory.GetParent(current_path).FullName);
                 var parent_path = Directory.GetCurrentDirectory();
 
-                var TemplateInputDto_Write_Path = parent_path + $"\\SSS.Domain{namespace_path}\\{class_name}\\Dto\\{class_name}InputDto.cs";
-                var TemplateOutputDto_Write_Path = parent_path + $"\\SSS.Domain{namespace_path}\\{class_name}\\Dto\\{class_name}OutputDto.cs";
+                var TemplateInputDto_Write_Path =
+                    parent_path + $"\\SSS.Domain{namespace_path}\\{class_name}\\Dto\\{class_name}InputDto.cs";
+                var TemplateOutputDto_Write_Path =
+                    parent_path + $"\\SSS.Domain{namespace_path}\\{class_name}\\Dto\\{class_name}OutputDto.cs";
                 var Template_Write_Path = parent_path + $"\\SSS.Domain{namespace_path}\\{class_name}\\{class_name}.cs";
-                var TemplateValidation_Write_Path = parent_path + $"\\SSS.Domain{namespace_path}\\{class_name}\\Validation\\{class_name}Validation.cs";
+                var TemplateValidation_Write_Path = parent_path +
+                                                    $"\\SSS.Domain{namespace_path}\\{class_name}\\Validation\\{class_name}Validation.cs";
 
                 IO.Write(TemplateInputDto_Write_Path, TemplateInputDto_Content);
                 IO.Write(TemplateOutputDto_Write_Path, TemplateOutputDto_Content);
@@ -155,9 +163,9 @@ namespace SSS.Application.System.Generator
             }
         }
 
-        /// <summary>	
-        ///     2	
-        /// </summary>	 
+        /// <summary>
+        ///     2
+        /// </summary>
         public bool Generator_Infrastructure()
         {
             try
@@ -167,7 +175,7 @@ namespace SSS.Application.System.Generator
                 var TemplateRepository_Read_Path =
                     current_path + "\\Template\\Template_Infrastructure\\TemplateRepository.txt";
 
-                string ITemplateRepository_Content = IO.ReadAllText(ITemplateRepository_Read_Path);
+                var ITemplateRepository_Content = IO.ReadAllText(ITemplateRepository_Read_Path);
                 ITemplateRepository_Content = ITemplateRepository_Content.Replace("Template", class_name);
                 if (!string.IsNullOrWhiteSpace(namespace_name))
                     ITemplateRepository_Content = ITemplateRepository_Content.Replace("NameSpace", namespace_name);
@@ -175,7 +183,7 @@ namespace SSS.Application.System.Generator
                     ITemplateRepository_Content = ITemplateRepository_Content.Replace(".NameSpace", "");
 
 
-                string TemplateRepository_Content = IO.ReadAllText(TemplateRepository_Read_Path);
+                var TemplateRepository_Content = IO.ReadAllText(TemplateRepository_Read_Path);
                 TemplateRepository_Content = TemplateRepository_Content.Replace("Template", class_name);
                 if (!string.IsNullOrWhiteSpace(namespace_name))
                     TemplateRepository_Content = TemplateRepository_Content.Replace("NameSpace", namespace_name);
@@ -204,21 +212,21 @@ namespace SSS.Application.System.Generator
             }
         }
 
-        /// <summary>	
-        ///     3	
-        /// </summary>	 
+        /// <summary>
+        ///     3
+        /// </summary>
         public bool Generator_Application()
         {
             try
             {
                 var TemplateProfile_Read_Path =
-                current_path + "\\Template\\Template_Application\\Mapper\\TemplateMapper.txt";
+                    current_path + "\\Template\\Template_Application\\Mapper\\TemplateMapper.txt";
                 var ITemplateService_Read_Path =
                     current_path + "\\Template\\Template_Application\\Service\\ITemplateService.txt";
                 var TemplateService_Read_Path =
                     current_path + "\\Template\\Template_Application\\Service\\TemplateService.txt";
 
-                string TemplateProfile_Content = IO.ReadAllText(TemplateProfile_Read_Path);
+                var TemplateProfile_Content = IO.ReadAllText(TemplateProfile_Read_Path);
                 TemplateProfile_Content = TemplateProfile_Content.Replace("Template", class_name);
                 if (!string.IsNullOrWhiteSpace(namespace_name))
                     TemplateProfile_Content = TemplateProfile_Content.Replace("NameSpace", namespace_name);
@@ -226,7 +234,7 @@ namespace SSS.Application.System.Generator
                     TemplateProfile_Content = TemplateProfile_Content.Replace(".NameSpace", "");
 
 
-                string ITemplateService_Content = IO.ReadAllText(ITemplateService_Read_Path);
+                var ITemplateService_Content = IO.ReadAllText(ITemplateService_Read_Path);
                 ITemplateService_Content = ITemplateService_Content.Replace("Template", class_name);
                 if (!string.IsNullOrWhiteSpace(namespace_name))
                     ITemplateService_Content = ITemplateService_Content.Replace("NameSpace", namespace_name);
@@ -234,7 +242,7 @@ namespace SSS.Application.System.Generator
                     ITemplateService_Content = ITemplateService_Content.Replace(".NameSpace", "");
 
 
-                string TemplateService_Content = IO.ReadAllText(TemplateService_Read_Path);
+                var TemplateService_Content = IO.ReadAllText(TemplateService_Read_Path);
                 TemplateService_Content = TemplateService_Content.Replace("Template", class_name);
                 if (!string.IsNullOrWhiteSpace(namespace_name))
                     TemplateService_Content = TemplateService_Content.Replace("NameSpace", namespace_name);
@@ -245,9 +253,12 @@ namespace SSS.Application.System.Generator
                 Directory.SetCurrentDirectory(Directory.GetParent(current_path).FullName);
                 var parent_path = Directory.GetCurrentDirectory();
 
-                var TemplateProfile_Write_Path = parent_path + $"\\SSS.Application{namespace_path}\\{class_name}\\Mapper\\{class_name}Mapper.cs";
-                var ITemplateService_Write_Path = parent_path + $"\\SSS.Application{namespace_path}\\{class_name}\\Service\\I{class_name}Service.cs";
-                var TemplateService_Write_Path = parent_path + $"\\SSS.Application{namespace_path}\\{class_name}\\Service\\{class_name}Service.cs";
+                var TemplateProfile_Write_Path = parent_path +
+                                                 $"\\SSS.Application{namespace_path}\\{class_name}\\Mapper\\{class_name}Mapper.cs";
+                var ITemplateService_Write_Path = parent_path +
+                                                  $"\\SSS.Application{namespace_path}\\{class_name}\\Service\\I{class_name}Service.cs";
+                var TemplateService_Write_Path = parent_path +
+                                                 $"\\SSS.Application{namespace_path}\\{class_name}\\Service\\{class_name}Service.cs";
 
                 IO.Write(TemplateProfile_Write_Path, TemplateProfile_Content);
                 IO.Write(ITemplateService_Write_Path, ITemplateService_Content);
@@ -261,17 +272,18 @@ namespace SSS.Application.System.Generator
             }
         }
 
-        /// <summary>	
-        ///     4	
-        /// </summary>	 
+        /// <summary>
+        ///     4
+        /// </summary>
         public bool Generator_Api()
         {
             try
             {
                 var TemplateController_Read_Path = current_path + "\\Template\\Template_Api\\TemplateController.txt";
-                var TemplateController_Write_Path = current_path + $"\\Controllers{namespace_path}\\{class_name}Controller.cs";
+                var TemplateController_Write_Path =
+                    current_path + $"\\Controllers{namespace_path}\\{class_name}Controller.cs";
 
-                string TemplateController_Content = IO.ReadAllText(TemplateController_Read_Path);
+                var TemplateController_Content = IO.ReadAllText(TemplateController_Read_Path);
                 TemplateController_Content = TemplateController_Content.Replace("Template", class_name);
                 if (!string.IsNullOrWhiteSpace(namespace_name))
                     TemplateController_Content = TemplateController_Content.Replace("NameSpace", namespace_name);
@@ -289,10 +301,10 @@ namespace SSS.Application.System.Generator
             }
         }
 
-        /// <summary>	
-        /// 5 填充类字段信息	
-        /// </summary>	  
-        /// <param name="fields"></param>	
+        /// <summary>
+        ///     5 填充类字段信息
+        /// </summary>
+        /// <param name="fields"></param>
         public bool AppendField(List<Field> fields)
         {
             try
@@ -302,17 +314,17 @@ namespace SSS.Application.System.Generator
 
                 var Class_Path = parent_path + $"\\SSS.Domain{namespace_path}\\{class_name}\\{class_name}.cs";
 
-                StringBuilder str = new StringBuilder();
+                var str = new StringBuilder();
                 foreach (var item in fields)
                 {
-                    string content = "        public " + item.field_type + " " +
-                                     Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(item.field_name) +
-                                     " { set; get; }";
+                    var content = "        public " + item.field_type + " " +
+                                  Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(item.field_name) +
+                                  " { set; get; }";
                     str.Append("\r\n\r\n" + content);
                 }
 
-                string Class_Content = IO.ReadAllText(Class_Path);
-                int position = Class_Content.LastIndexOf("}") - 8;
+                var Class_Content = IO.ReadAllText(Class_Path);
+                var position = Class_Content.LastIndexOf("}") - 8;
                 Class_Content = Class_Content.Insert(position, str.ToString());
                 IO.Write(Class_Path, Class_Content);
 

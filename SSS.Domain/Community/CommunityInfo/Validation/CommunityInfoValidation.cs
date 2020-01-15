@@ -12,25 +12,13 @@ namespace SSS.Domain.Community.CommunityInfo.Validation
     {
         public CommunityInfoAddValidation()
         {
-            RuleSet("Insert", () =>
-            {
-                RuleFor(x => x.name).NotNull().WithMessage("请填写社区名称");
-            });
+            RuleSet("Insert", () => { RuleFor(x => x.name).NotNull().WithMessage("请填写社区名称"); });
 
-            RuleSet("Delete", () =>
-            {
+            RuleSet("Delete", () => { });
 
-            });
+            RuleSet("Update", () => { RuleFor(x => x.name).NotNull().WithMessage("请填写社区名称"); });
 
-            RuleSet("Update", () =>
-            {
-                RuleFor(x => x.name).NotNull().WithMessage("请填写社区名称");
-            });
-
-            RuleSet("Select", () =>
-            {
-
-            });
+            RuleSet("Select", () => { });
         }
     }
 }

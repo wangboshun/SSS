@@ -24,6 +24,7 @@ namespace SSS.Infrastructure.Seedwork.DbContext
         public DbSet<CommunityBusiness> CommunityBusiness { get; set; }
         public DbSet<CommunityBusinessRelation> CommunityBusinessRelation { get; set; }
         public DbSet<UserCommunityRelation> UserCommunityRelation { get; set; }
-        #endregion 
+
+        #endregion
     }
 }

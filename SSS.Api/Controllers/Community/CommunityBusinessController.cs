@@ -9,8 +9,8 @@ using SSS.Domain.Community.CommunityInfo.Dto;
 namespace SSS.Api.Controllers.Community
 {
     /// <summary>
-    /// 社区服务业务类型
-    /// </summary> 
+    ///     社区服务业务类型
+    /// </summary>
     [ApiVersion("4.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
@@ -21,7 +21,7 @@ namespace SSS.Api.Controllers.Community
         private readonly ICommunityBusinessService _service;
 
         /// <summary>
-        /// 社区服务业务类型
+        ///     社区服务业务类型
         /// </summary>
         /// <param name="service">ICommunityBusinessService</param>
         public CommunityBusinessController(ICommunityBusinessService service)
@@ -30,34 +30,34 @@ namespace SSS.Api.Controllers.Community
         }
 
         /// <summary>
-        /// 获取所有业务类型列表
+        ///     获取所有业务类型列表
         /// </summary>
         /// <param name="input">input</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("getlist")]
-        public IActionResult GetList([FromQuery]CommunityBusinessInputDto input)
+        public IActionResult GetList([FromQuery] CommunityBusinessInputDto input)
         {
             var result = _service.GetListCommunityBusiness(input);
             return PageResponse(result);
         }
 
         /// <summary>
-        /// 根据社区获取承接业务
+        ///     根据社区获取承接业务
         /// </summary>
         /// <param name="input">input</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("get_communitybusiness_by_community")]
-        public IActionResult GetCommunityBusinessByCommunity([FromQuery]CommunityInfoInputDto input)
+        public IActionResult GetCommunityBusinessByCommunity([FromQuery] CommunityInfoInputDto input)
         {
             var result = _service.GetCommunityBusinessByCommunity(input);
             return PageResponse(result);
         }
 
         /// <summary>
-        /// 获取数据
+        ///     获取数据
         /// </summary>
         /// <param name="id">id</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("{id}")]
         public IActionResult GetCommunityBusiness(string id)
         {
@@ -66,10 +66,10 @@ namespace SSS.Api.Controllers.Community
         }
 
         /// <summary>
-        /// 删除数据
+        ///     删除数据
         /// </summary>
         /// <param name="id">id</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public IActionResult DeleteCommunityBusiness(string id)
         {
@@ -78,24 +78,24 @@ namespace SSS.Api.Controllers.Community
         }
 
         /// <summary>
-        /// 修改数据
+        ///     修改数据
         /// </summary>
         /// <param name="input">input</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpPost("update")]
-        public IActionResult DeleteCommunityInfo([FromBody]CommunityBusinessInputDto input)
+        public IActionResult DeleteCommunityInfo([FromBody] CommunityBusinessInputDto input)
         {
             var result = _service.UpdateCommunityBusiness(input);
             return UpdateResponse(input, result);
         }
 
         /// <summary>
-        /// 添加业务类型
+        ///     添加业务类型
         /// </summary>
         /// <param name="input">CommunityBusinessInputDto</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpPost("add")]
-        public IActionResult AddCommunityBusiness([FromBody]CommunityBusinessInputDto input)
+        public IActionResult AddCommunityBusiness([FromBody] CommunityBusinessInputDto input)
         {
             var result = _service.AddCommunityBusiness(input);
             return AddResponse(result);

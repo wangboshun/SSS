@@ -25,7 +25,6 @@ namespace SSS.Application.Coin.CoinKLineData.Service
             IValidator<CoinKLineDataInputDto> validator) :
             base(mapper, repository, error, validator)
         {
-
         }
 
         public CoinKLineDataOutputDto AddCoinKLineData(CoinKLineDataInputDto input)
@@ -38,7 +37,7 @@ namespace SSS.Application.Coin.CoinKLineData.Service
             }
 
             input.id = Guid.NewGuid().ToString();
-            var model = Mapper.Map<SSS.Domain.Coin.CoinKLineData.CoinKLineData>(input);
+            var model = Mapper.Map<Domain.Coin.CoinKLineData.CoinKLineData>(input);
             model.CreateTime = DateTime.Now;
             Repository.Add(model);
             return Repository.SaveChanges() > 0 ? Mapper.Map<CoinKLineDataOutputDto>(model) : null;
