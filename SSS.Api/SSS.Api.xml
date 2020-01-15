@@ -4,27 +4,27 @@
         <name>SSS.Api</name>
     </assembly>
     <members>
-        <member name="T:ApiVersions">
+        <member name="T:SSS.Api.Bootstrap.ApiVersions">
             <summary>
                 版本号
             </summary>
         </member>
-        <member name="F:ApiVersions.v1">
+        <member name="F:SSS.Api.Bootstrap.ApiVersions.v1">
             <summary>
             v1 版本
             </summary>
         </member>
-        <member name="F:ApiVersions.v2">
+        <member name="F:SSS.Api.Bootstrap.ApiVersions.v2">
             <summary>
             v2 版本
             </summary>
         </member>
-        <member name="F:ApiVersions.v3">
+        <member name="F:SSS.Api.Bootstrap.ApiVersions.v3">
             <summary>
             v3 版本
             </summary>
         </member>
-        <member name="F:ApiVersions.v4">
+        <member name="F:SSS.Api.Bootstrap.ApiVersions.v4">
             <summary>
             v4 版本
             </summary>

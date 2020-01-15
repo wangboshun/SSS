@@ -1,7 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
 using SSS.Domain.Coin.CoinArticel.Dto;
-using SSS.Infrastructure.Repository.CoinArticel;
 using SSS.Infrastructure.Seedwork.DbContext;
 using SSS.Infrastructure.Seedwork.Repository;
 using SSS.Infrastructure.Util.Attribute;

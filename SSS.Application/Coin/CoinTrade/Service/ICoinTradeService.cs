@@ -6,8 +6,7 @@ using System.Collections.Generic;
 
 namespace SSS.Application.Coin.CoinTrade.Service
 {
-    public interface
-        ICoinTradeService : IQueryService<Domain.Coin.CoinTrade.CoinTrade, CoinTradeInputDto, CoinTradeOutputDto>
+    public interface ICoinTradeService : IQueryService<Domain.Coin.CoinTrade.CoinTrade, CoinTradeInputDto, CoinTradeOutputDto>
     {
         CoinTradeOutputDto AddCoinTrade(CoinTradeInputDto input);
 

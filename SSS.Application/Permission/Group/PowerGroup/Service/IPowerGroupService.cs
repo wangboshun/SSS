@@ -12,8 +12,7 @@ using System.Collections.Generic;
 
 namespace SSS.Application.Permission.Group.PowerGroup.Service
 {
-    public interface IPowerGroupService : IQueryService<Domain.Permission.Group.PowerGroup.PowerGroup,
-        PowerGroupInputDto, PowerGroupOutputDto>
+    public interface IPowerGroupService : IQueryService<Domain.Permission.Group.PowerGroup.PowerGroup, PowerGroupInputDto, PowerGroupOutputDto>
     {
         PowerGroupOutputDto AddPowerGroup(PowerGroupInputDto input);
 

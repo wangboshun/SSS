@@ -8,8 +8,7 @@ using System.Collections.Generic;
 
 namespace SSS.Application.Permission.Info.OperateInfo.Service
 {
-    public interface IOperateInfoService : IQueryService<Domain.Permission.Info.OperateInfo.OperateInfo,
-        OperateInfoInputDto, OperateInfoOutputDto>
+    public interface IOperateInfoService : IQueryService<Domain.Permission.Info.OperateInfo.OperateInfo, OperateInfoInputDto, OperateInfoOutputDto>
     {
         OperateInfoOutputDto AddOperateInfo(OperateInfoInputDto input);
 

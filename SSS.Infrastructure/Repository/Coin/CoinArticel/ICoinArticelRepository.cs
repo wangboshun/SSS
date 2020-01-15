@@ -1,9 +1,8 @@
+using System.Collections.Generic;
 using SSS.Domain.Coin.CoinArticel.Dto;
 using SSS.Domain.Seedwork.Repository;
 
-using System.Collections.Generic;
-
-namespace SSS.Infrastructure.Repository.CoinArticel
+namespace SSS.Infrastructure.Repository.Coin.CoinArticel
 {
     public interface ICoinArticelRepository : IRepository<Domain.Coin.CoinArticel.CoinArticel>
     {

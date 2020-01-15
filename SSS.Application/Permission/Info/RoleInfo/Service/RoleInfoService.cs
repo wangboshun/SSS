@@ -26,8 +26,7 @@ using System.Linq;
 namespace SSS.Application.Permission.Info.RoleInfo.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IRoleInfoService))]
-    public class RoleInfoService :
-        QueryService<Domain.Permission.Info.RoleInfo.RoleInfo, RoleInfoInputDto, RoleInfoOutputDto>, IRoleInfoService
+    public class RoleInfoService : QueryService<Domain.Permission.Info.RoleInfo.RoleInfo, RoleInfoInputDto, RoleInfoOutputDto>, IRoleInfoService
     {
         private readonly IRoleGroupRelationRepository _roleGroupRelationRepository;
         private readonly IRoleGroupRepository _roleGroupRepository;

@@ -8,20 +8,18 @@ using SSS.Application.Seedwork.Service;
 using SSS.Domain.Coin.CoinArticel.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
-using SSS.Infrastructure.Repository.CoinArticel;
 using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.Mapper;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SSS.Infrastructure.Repository.Coin.CoinArticel;
 
 namespace SSS.Application.Coin.CoinArticel.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(ICoinArticelService))]
-    public class CoinArticelService :
-        QueryService<Domain.Coin.CoinArticel.CoinArticel, CoinArticelInputDto, CoinArticelOutputDto>,
-        ICoinArticelService
+    public class CoinArticelService : QueryService<Domain.Coin.CoinArticel.CoinArticel, CoinArticelInputDto, CoinArticelOutputDto>, ICoinArticelService
     {
         private readonly ICoinArticelRepository _repository;
 

@@ -7,8 +7,7 @@ using System.Collections.Generic;
 
 namespace SSS.Application.Permission.Info.MenuInfo.Service
 {
-    public interface IMenuInfoService : IQueryService<Domain.Permission.Info.MenuInfo.MenuInfo, MenuInfoInputDto,
-        MenuInfoOutputDto>
+    public interface IMenuInfoService : IQueryService<Domain.Permission.Info.MenuInfo.MenuInfo, MenuInfoInputDto, MenuInfoOutputDto>
     {
         MenuInfoOutputDto AddMenuInfo(MenuInfoInputDto input);
         bool UpdateMenuInfo(MenuInfoInputDto input);

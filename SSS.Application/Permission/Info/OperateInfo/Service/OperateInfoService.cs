@@ -25,9 +25,7 @@ using System.Linq;
 namespace SSS.Application.Permission.Info.OperateInfo.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IOperateInfoService))]
-    public class OperateInfoService :
-        QueryService<Domain.Permission.Info.OperateInfo.OperateInfo, OperateInfoInputDto, OperateInfoOutputDto>,
-        IOperateInfoService
+    public class OperateInfoService : QueryService<Domain.Permission.Info.OperateInfo.OperateInfo, OperateInfoInputDto, OperateInfoOutputDto>, IOperateInfoService
     {
         private readonly IOperateInfoRepository _operateInfoRepository;
         private readonly IPowerGroupOperateRelationRepository _powerGroupOperateRelationRepository;

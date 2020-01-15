@@ -9,8 +9,7 @@ using System.Collections.Generic;
 
 namespace SSS.Application.Permission.Info.UserInfo.Service
 {
-    public interface IUserInfoService : IQueryService<Domain.Permission.Info.UserInfo.UserInfo, UserInfoInputDto,
-        UserInfoOutputDto>
+    public interface IUserInfoService : IQueryService<Domain.Permission.Info.UserInfo.UserInfo, UserInfoInputDto, UserInfoOutputDto>
     {
         UserInfoOutputDto AddUserInfo(UserInfoInputDto input);
         UserInfoOutputDto GetByUserName(UserInfoInputDto input);

@@ -25,9 +25,7 @@ using System.Linq;
 namespace SSS.Application.Permission.Group.PowerGroup.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IPowerGroupService))]
-    public class PowerGroupService :
-        QueryService<Domain.Permission.Group.PowerGroup.PowerGroup, PowerGroupInputDto, PowerGroupOutputDto>,
-        IPowerGroupService
+    public class PowerGroupService : QueryService<Domain.Permission.Group.PowerGroup.PowerGroup, PowerGroupInputDto, PowerGroupOutputDto>, IPowerGroupService
     {
         private readonly IPowerGroupRepository _powerGroupRepository;
 

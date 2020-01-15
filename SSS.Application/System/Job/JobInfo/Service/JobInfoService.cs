@@ -21,8 +21,7 @@ using System.Linq;
 namespace SSS.Application.System.Job.JobInfo.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(IJobInfoService))]
-    public class JobInfoService : QueryService<Domain.System.Job.JobInfo.JobInfo, JobInfoInputDto, JobInfoOutputDto>,
-        IJobInfoService
+    public class JobInfoService : QueryService<Domain.System.Job.JobInfo.JobInfo, JobInfoInputDto, JobInfoOutputDto>, IJobInfoService
     {
         private readonly IJobInfoRepository _jobInfoRepository;
         private readonly IJobManager _jobManager;

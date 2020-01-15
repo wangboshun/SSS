@@ -9,8 +9,7 @@ using System.Collections.Generic;
 
 namespace SSS.Application.Permission.Group.UserGroup.Service
 {
-    public interface IUserGroupService : IQueryService<Domain.Permission.Group.UserGroup.UserGroup, UserGroupInputDto,
-        UserGroupOutputDto>
+    public interface IUserGroupService : IQueryService<Domain.Permission.Group.UserGroup.UserGroup, UserGroupInputDto, UserGroupOutputDto>
     {
         UserGroupOutputDto AddUserGroup(UserGroupInputDto input);
 

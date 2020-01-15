@@ -81,7 +81,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
 
                         var coin = item.base_currency + "-" + item.quote_currency;
 
-                        Average(coin, kline, CoinTime.Time_1day);
+                        SMA(coin, kline, CoinTime.Time_1day);
                         MACD(coin, kline, CoinTime.Time_1day);
                         KDJ(coin, kline, CoinTime.Time_1day);
                     });
@@ -183,8 +183,7 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
             }
         }
 
-        private void TotalDesc(List<Domain.Coin.CoinAnalyse.CoinAnalyse> list,
-            List<Domain.Coin.CoinAnalyse.CoinAnalyse> source)
+        private void TotalDesc(List<Domain.Coin.CoinAnalyse.CoinAnalyse> list,List<Domain.Coin.CoinAnalyse.CoinAnalyse> source)
         {
             foreach (var item in source)
             {
@@ -203,11 +202,11 @@ namespace SSS.Application.Job.Coin.CoinAnalyse
         /// <summary>
         ///     均线系统
         /// </summary>
-        public void Average(string coin, List<Domain.Coin.CoinKLineData.CoinKLineData> kline, CoinTime type)
+        public void SMA(string coin, List<Domain.Coin.CoinKLineData.CoinKLineData> kline, CoinTime type)
         {
             try
             {
-                Console.WriteLine($"---{coin} Average---");
+                Console.WriteLine($"---{coin} SMA---");
 
                 if (kline == null)
                     return;

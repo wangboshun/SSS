@@ -7,8 +7,7 @@ using System.Collections.Generic;
 
 namespace SSS.Application.Community.CommunityInfo.Service
 {
-    public interface ICommunityInfoService : IQueryService<Domain.Community.CommunityInfo.CommunityInfo,
-        CommunityInfoInputDto, CommunityInfoOutputDto>
+    public interface ICommunityInfoService : IQueryService<Domain.Community.CommunityInfo.CommunityInfo, CommunityInfoInputDto, CommunityInfoOutputDto>
     {
         CommunityInfoOutputDto AddCommunityInfo(CommunityInfoInputDto input);
         bool UpdateCommunityInfo(CommunityInfoInputDto input);

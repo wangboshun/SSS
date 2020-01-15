@@ -17,8 +17,7 @@ using System.Collections.Generic;
 namespace SSS.Application.Coin.CoinTrade.Service
 {
     [DIService(ServiceLifetime.Scoped, typeof(ICoinTradeService))]
-    public class CoinTradeService :
-        QueryService<Domain.Coin.CoinTrade.CoinTrade, CoinTradeInputDto, CoinTradeOutputDto>, ICoinTradeService
+    public class CoinTradeService : QueryService<Domain.Coin.CoinTrade.CoinTrade, CoinTradeInputDto, CoinTradeOutputDto>, ICoinTradeService
     {
         public CoinTradeService(IMapper mapper,
             ICoinTradeRepository repository,
