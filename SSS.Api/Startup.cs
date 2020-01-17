@@ -43,6 +43,11 @@ namespace SSS.Api
     public class Startup
     {
         /// <summary>
+        /// Configuration
+        /// </summary>
+        public IConfiguration Configuration { get; }
+
+        /// <summary>
         /// Startup
         /// </summary>
         /// <param name="configuration">IConfiguration</param>
@@ -50,13 +55,6 @@ namespace SSS.Api
         {
             Configuration = configuration;
         }
-
-        /// <summary>
-        /// Configuration
-        /// </summary>
-        public IConfiguration Configuration { get; }
-
-       
 
         /// <summary>
         /// ConfigureContainer
@@ -211,7 +209,7 @@ namespace SSS.Api
             //路由
             app.UseRouting();
 
-            //开启认证
+            //开启认证 必须放在Routing和Endpoints中间
             app.UseAuthentication();
 
             //开启授权 必须放在Routing和Endpoints中间

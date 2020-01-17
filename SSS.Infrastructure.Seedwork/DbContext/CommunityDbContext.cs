@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using SSS.Domain.Community.CommunityBusiness;
 using SSS.Domain.Community.CommunityBusinessRelation;
 using SSS.Domain.Community.CommunityInfo;
+using SSS.Domain.Community.CommunityTask;
 using SSS.Domain.Community.UserCommunityRelation;
 using SSS.Infrastructure.Util.Attribute;
 
@@ -18,13 +19,13 @@ namespace SSS.Infrastructure.Seedwork.DbContext
         {
         }
 
-        #region Coin
-
-        public DbSet<CommunityBusiness> CommunityBusiness { get; set; }
-        public DbSet<CommunityBusinessRelation> CommunityBusinessRelation { get; set; }
+        #region Community
         public DbSet<CommunityInfo> CommunityInfo { get; set; }
+        public DbSet<CommunityTask> CommunityTask { set; get; }
+        public DbSet<CommunityBusiness> CommunityBusiness { get; set; }
         public DbSet<UserCommunityRelation> UserCommunityRelation { get; set; }
+        public DbSet<CommunityBusinessRelation> CommunityBusinessRelation { get; set; }
 
-        #endregion Coin
+        #endregion Community
     }
 }

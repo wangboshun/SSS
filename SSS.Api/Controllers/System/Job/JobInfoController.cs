@@ -69,7 +69,7 @@ namespace SSS.Api.Controllers.System.Job
         /// </summary>
         /// <param name="input">input</param>
         /// <returns></returns>
-        [HttpGet("getlist")] 
+        [HttpGet("getlist")]
         public IActionResult GetList([FromQuery] JobInfoInputDto input)
         {
             var result = _service.GetListJobInfo(input);
