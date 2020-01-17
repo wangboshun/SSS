@@ -145,7 +145,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
             if (have_delete)
                 return DbSet.Find(id);
 
-            return DbSet.AsNoTracking().FirstOrDefault(x => x.Id.Equals(id) && x.IsDelete == 0);
+            return DbSet.FirstOrDefault(x => x.Id.Equals(id) && x.IsDelete == 0);
         }
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
             if (!have_delete)
                 predicate = predicate.And(x => x.IsDelete == 0);
 
-            return DbSet.AsNoTracking().FirstOrDefault(predicate);
+            return DbSet.FirstOrDefault(predicate);
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// <returns></returns>
         public virtual IQueryable<TEntity> GetAll()
         {
-            return DbSet.AsNoTracking().OrderByDescending(x => x.CreateTime);
+            return DbSet.OrderByDescending(x => x.CreateTime);
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
             if (!have_delete)
                 predicate = predicate.And(x => x.IsDelete == 0);
 
-            return DbSet.AsNoTracking().Where(predicate).OrderByDescending(x => x.CreateTime);
+            return DbSet.Where(predicate).OrderByDescending(x => x.CreateTime);
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// <returns></returns>
         public virtual IQueryable<TEntity> GetBySql(string sql)
         {
-            return DbSet.FromSqlRaw(sql).AsNoTracking();
+            return DbSet.FromSqlRaw(sql);
         }
 
         /// <summary>
@@ -201,7 +201,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         /// <returns></returns>
         public virtual IQueryable<TEntity> GetBySql(string sql, params DbParameter[] parameter)
         {
-            return DbSet.FromSqlRaw(sql, GeneratorParameter(parameter)).AsNoTracking();
+            return DbSet.FromSqlRaw(sql, GeneratorParameter(parameter));
         }
 
         /// <summary>
@@ -216,7 +216,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
             if (!have_delete)
                 predicate = predicate.And(x => x.IsDelete == 0);
 
-            return DbSet.FromSqlRaw(sql).AsNoTracking().Where(predicate);
+            return DbSet.FromSqlRaw(sql).Where(predicate);
         }
 
         /// <summary>
@@ -231,7 +231,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         {
             var data = GetBySql(sql);
             count = data.Count();
-            return data.AsNoTracking().OrderByDescending(x => x.CreateTime).Skip(pagesize * pageindex).Take(pagesize);
+            return data.OrderByDescending(x => x.CreateTime).Skip(pagesize * pageindex).Take(pagesize);
         }
 
         /// <summary>
@@ -251,7 +251,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
 
             var data = GetBySql(sql, predicate);
             count = data.Count();
-            return data.AsNoTracking().OrderByDescending(x => x.CreateTime).Skip(pagesize * pageindex).Take(pagesize);
+            return data.OrderByDescending(x => x.CreateTime).Skip(pagesize * pageindex).Take(pagesize);
         }
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
         public IQueryable<TEntity> GetPage(int pageindex, int pagesize, ref int count)
         {
             count = DbSet.Count();
-            return DbSet.AsNoTracking().OrderByDescending(x => x.CreateTime).Skip(pagesize * pageindex).Take(pagesize);
+            return DbSet.OrderByDescending(x => x.CreateTime).Skip(pagesize * pageindex).Take(pagesize);
         }
 
         /// <summary>
@@ -282,7 +282,7 @@ namespace SSS.Infrastructure.Seedwork.Repository
                 predicate = predicate.And(x => x.IsDelete == 0);
 
             count = DbSet.Where(predicate).Count();
-            return DbSet.AsNoTracking().OrderByDescending(x => x.CreateTime).Where(predicate).Skip(pagesize * pageindex)
+            return DbSet.OrderByDescending(x => x.CreateTime).Where(predicate).Skip(pagesize * pageindex)
                 .Take(pagesize);
         }
 

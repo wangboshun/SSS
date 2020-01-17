@@ -8,12 +8,11 @@ using Quartz.Impl.Matchers;
 using Quartz.Impl.Triggers;
 using Quartz.Spi;
 
-using SqlSugar;
-
 using SSS.Application.Job.JobSetting.Listener;
 using SSS.Domain.System.Job.JobInfo;
+using SSS.Infrastructure.Repository.System.Job.JobInfo;
 using SSS.Infrastructure.Util.Attribute;
-using SSS.Infrastructure.Util.Config;
+using SSS.Infrastructure.Util.DI;
 using SSS.Infrastructure.Util.IO;
 using SSS.Infrastructure.Util.Json;
 
@@ -62,14 +61,6 @@ namespace SSS.Application.Job.JobSetting.Manager
         /// <returns></returns>
         public async Task<bool> AddJob(string job_name, string job_group, string job_cron, string job_value, string job_class_str)
         {
-            new SqlSugarClient(
-                new ConnectionConfig
-                {
-                    ConnectionString = JsonConfig.GetSectionValue("ConnectionStrings:MYSQLConnection"),
-                    DbType = DbType.MySql,
-                    IsAutoCloseConnection = true
-                });
-
             var data = GetJobDataMapByStr(job_value);
             var jobclass = Type.GetType(job_class_str);
 
@@ -352,13 +343,7 @@ namespace SSS.Application.Job.JobSetting.Manager
 
                 var result = jobject["JobConfig"];
 
-                var db = new SqlSugarClient(
-                    new ConnectionConfig
-                    {
-                        ConnectionString = JsonConfig.GetSectionValue("ConnectionStrings:MYSQLConnection"),
-                        DbType = DbType.MySql,
-                        IsAutoCloseConnection = true
-                    });
+                var jobinfo_repository = IocEx.Instance.GetService<IJobInfoRepository>();
 
                 foreach (var item in result)
                 {
@@ -375,7 +360,7 @@ namespace SSS.Application.Job.JobSetting.Manager
                         string.IsNullOrWhiteSpace(job_group))
                         continue;
 
-                    var job = db.Queryable<JobInfo>().Where(x => x.JobName.Equals(job_name) && x.JobGroup.Equals(job_group))?.First();
+                    var job = jobinfo_repository.Get(x => x.JobName.Equals(job_name) && x.JobGroup.Equals(job_group));
 
                     //如果是删除状态
                     if (job != null && job.JobStatus == (int)TriggerState.None)

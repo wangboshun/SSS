@@ -7,13 +7,13 @@ using Quartz.Impl.Triggers;
 
 using SSS.Domain.System.Job.JobError;
 using SSS.Domain.System.Job.JobInfo;
-using SSS.Infrastructure.Seedwork.DbContext;
+using SSS.Infrastructure.Repository.System.Job.JobError;
+using SSS.Infrastructure.Repository.System.Job.JobInfo;
 using SSS.Infrastructure.Util.DI;
 using SSS.Infrastructure.Util.Json;
 using SSS.Infrastructure.Util.Log;
 
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -59,17 +59,14 @@ namespace SSS.Application.Job.JobSetting.Listener
             try
             {
                 lock (_lock)
-                {
-                    var trigger = (CronTriggerImpl)((JobExecutionContextImpl)context).Trigger;
+                {var trigger = (CronTriggerImpl)((JobExecutionContextImpl)context).Trigger;
                     var result = context.Scheduler.Context.Get(trigger.FullName + "_Result"); /*返回结果*/
                     var exception = context.Scheduler.Context.Get(trigger.FullName + "_Exception"); /*异常信息*/
                     var time = context.Scheduler.Context.Get(trigger.FullName + "_Time"); /* 耗时*/
+                     
+                    var jobinfo_repository = IocEx.Instance.GetService<IJobInfoRepository>();
 
-                    var scopeFactory = IocEx.Instance.GetRequiredService<IServiceScopeFactory>();
-                    using var scope = scopeFactory.CreateScope();
-                    using var db_context = scope.ServiceProvider.GetRequiredService<SystemDbContext>();
-
-                    var job = db_context.JobInfo.FirstOrDefault(x => x.JobName.Equals(trigger.Name) && x.JobGroup.Equals(trigger.JobGroup) && x.IsDelete == 0);
+                    var job = jobinfo_repository.Get(x => x.JobName.Equals(trigger.Name) && x.JobGroup.Equals(trigger.JobGroup) && x.IsDelete == 0);
 
                     if (job == null)
                     {
@@ -90,7 +87,7 @@ namespace SSS.Application.Job.JobSetting.Listener
                             JobStartTime = trigger.StartTimeUtc.LocalDateTime,
                             JobNextTime = trigger.GetNextFireTimeUtc().GetValueOrDefault().LocalDateTime
                         };
-                        db_context.JobInfo.Add(job);
+                        jobinfo_repository.Add(job, true);
                     }
                     else
                     {
@@ -102,12 +99,13 @@ namespace SSS.Application.Job.JobSetting.Listener
                         job.JobNextTime = trigger.GetNextFireTimeUtc().GetValueOrDefault().LocalDateTime;
                         job.UpdateTime = DateTime.Now;
                         job.JobResult = result.ToJson();
-                        db_context.JobInfo.Update(job);
+                        jobinfo_repository.Update(job, true);
                     }
 
                     //记录错误
                     if (exception != null)
                     {
+                        var joberror_repository = IocEx.Instance.GetService<IJobErrorRepository>();
                         var error = new JobError
                         {
                             Id = Guid.NewGuid().ToString(),
@@ -118,10 +116,8 @@ namespace SSS.Application.Job.JobSetting.Listener
                             Message = exception.ToJson()
                         };
 
-                        db_context.JobError.Add(error);
+                        joberror_repository.Add(error, true);
                     }
-
-                    db_context.SaveChanges();
 
                     ApplicationLog.CreateLogger<JobListener>().LogInformation($"任务监听：{job.ToJson()}");
                     return Task.CompletedTask;
