@@ -135,7 +135,7 @@ namespace SSS.Api.Controllers.Permission.Info
         [HttpPost("login")]
         public IActionResult Login([FromBody] UserInfoInputDto input)
         {
-            var result = _service.GetByUserName(input);
+            var result = _service.Login(input);
             return ApiResponse(result);
         }
     }

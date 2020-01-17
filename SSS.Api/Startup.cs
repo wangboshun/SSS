@@ -56,97 +56,7 @@ namespace SSS.Api
         /// </summary>
         public IConfiguration Configuration { get; }
 
-        /// <summary>
-        /// Configure
-        /// </summary>
-        /// <param name="app"></param>
-        /// <param name="_httpContextFactory"></param>
-        /// <param name="env"></param>
-        /// <param name="appLifetime"></param>
-        public void Configure(IApplicationBuilder app, IHttpContextFactory _httpContextFactory, IHostEnvironment env, IHostApplicationLifetime appLifetime)
-        {
-            if (env.IsDevelopment())
-                app.UseDeveloperExceptionPage();
-            else
-                app.UseHsts();
-
-            //跨域
-            app.UseHttpsRedirection().UseCors(options =>
-            {
-                options.AllowAnyOrigin();
-                options.AllowAnyMethod();
-                options.AllowAnyHeader();
-            });
-
-            //跨域
-            app.UseCors(options =>
-            {
-                options.AllowAnyHeader();
-                options.AllowAnyMethod();
-                options.AllowAnyOrigin();
-                //options.AllowCredentials();
-            });
-
-            //异常拦截
-            app.UseApiException();
-
-            //Url重定向
-            app.UseMiddleware<UrlsMiddleware>();
-
-            //拦截登录
-            //app.UseMiddleware<LoginMiddleware>();
-
-            //http上下文
-            app.UseHttpContext();
-
-            //MiniProfiler
-            app.UseMiniProfiler();
-
-            //Swagger
-            Swagger(app);
-
-            //跨域
-            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
-
-            //Https
-            app.UseHttpsRedirection();
-
-            //自定义文件浏览
-            UseDefaultStaticFile(app);
-
-            //路由
-            app.UseRouting();
-
-            //Jwt验证，必须放在Routing和Endpoints中间
-            app.UseAuthorization();
-
-            //执行路由
-            app.UseEndpoints(config =>
-            {
-                config.MapHealthChecks("healthz", new HealthCheckOptions
-                {
-                    Predicate = _ => true,
-                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                });
-                config.MapHealthChecksUI();
-                config.MapDefaultControllerRoute();
-            });
-
-            var job_service = app.ApplicationServices.GetRequiredService<IJobManager>();
-            appLifetime.ApplicationStarted.Register(() =>
-            {
-                IocEx.Instance = app.ApplicationServices;
-                //IocEx.Container = app.ApplicationServices.GetAutofacRoot();
-                job_service.Start().Wait();
-                //网站启动完成执行
-            });
-
-            appLifetime.ApplicationStopped.Register(() =>
-            {
-                job_service.Stop();
-                //网站停止完成执行
-            });
-        }
+       
 
         /// <summary>
         /// ConfigureContainer
@@ -241,6 +151,98 @@ namespace SSS.Api
                 });
 
             services.AddControllers();
+        }
+
+        /// <summary>
+        /// Configure
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="_httpContextFactory"></param>
+        /// <param name="env"></param>
+        /// <param name="appLifetime"></param>
+        public void Configure(IApplicationBuilder app, IHttpContextFactory _httpContextFactory, IHostEnvironment env, IHostApplicationLifetime appLifetime)
+        {
+            if (env.IsDevelopment())
+                app.UseDeveloperExceptionPage();
+            else
+                app.UseHsts();
+
+            //跨域
+            app.UseHttpsRedirection().UseCors(options =>
+            {
+                options.AllowAnyOrigin();
+                options.AllowAnyMethod();
+                options.AllowAnyHeader();
+            });
+
+            //跨域
+            app.UseCors(options =>
+            {
+                options.AllowAnyHeader();
+                options.AllowAnyMethod();
+                options.AllowAnyOrigin();
+                //options.AllowCredentials();
+            });
+
+            //异常拦截
+            app.UseApiException();
+
+            //Url重定向
+            app.UseMiddleware<UrlsMiddleware>();
+
+            //拦截登录
+            //app.UseMiddleware<LoginMiddleware>();
+
+            //MiniProfiler
+            app.UseMiniProfiler();
+
+            //Swagger
+            Swagger(app);
+
+            //跨域
+            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
+
+            //Https
+            app.UseHttpsRedirection();
+
+            //自定义文件浏览
+            UseDefaultStaticFile(app);
+
+            //路由
+            app.UseRouting();
+
+            //开启认证
+            app.UseAuthentication();
+
+            //开启授权 必须放在Routing和Endpoints中间
+            app.UseAuthorization();
+
+            //执行路由
+            app.UseEndpoints(config =>
+            {
+                config.MapHealthChecks("healthz", new HealthCheckOptions
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
+                config.MapHealthChecksUI();
+                config.MapDefaultControllerRoute();
+            });
+
+            var job_service = app.ApplicationServices.GetRequiredService<IJobManager>();
+            appLifetime.ApplicationStarted.Register(() =>
+            {
+                IocEx.Instance = app.ApplicationServices;
+                //IocEx.Container = app.ApplicationServices.GetAutofacRoot();
+                job_service.Start().Wait();
+                //网站启动完成执行
+            });
+
+            appLifetime.ApplicationStopped.Register(() =>
+            {
+                job_service.Stop();
+                //网站停止完成执行
+            });
         }
 
         /// <summary>

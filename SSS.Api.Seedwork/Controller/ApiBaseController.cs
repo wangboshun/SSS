@@ -1,13 +1,15 @@
 ﻿using FluentValidation.Results;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using SSS.Domain.Permission.Info.UserInfo.Dto;
 using SSS.Domain.Seedwork.ErrorHandler;
 using SSS.Domain.Seedwork.Model;
-using SSS.Infrastructure.Util.Http;
+using SSS.Infrastructure.Util.DI;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -45,14 +47,16 @@ namespace SSS.Api.Seedwork.Controller
         private readonly IErrorHandler _error;
         private readonly ILogger _logger;
         private readonly IMemoryCache _memorycache;
+        private readonly IHttpContextAccessor _accessor;
 
         public ApiBaseController()
         {
-            _memorycache = (IMemoryCache)HttpContextService.Current.RequestServices.GetService(typeof(IMemoryCache));
-            _logger = (ILogger)HttpContextService.Current.RequestServices.GetService(typeof(ILogger<ApiBaseController>));
-            _error = (IErrorHandler)HttpContextService.Current.RequestServices.GetService(typeof(IErrorHandler));
+            _memorycache = IocEx.Instance.GetService<IMemoryCache>();
+            _logger = IocEx.Instance.GetService<ILogger<ApiBaseController>>();
+            _error = IocEx.Instance.GetService<IErrorHandler>();
+            _accessor = IocEx.Instance.GetService<IHttpContextAccessor>();
 
-            var userinfo = _memorycache.Get<UserInfoOutputDto>("AuthUserInfo_" + HttpContextService.Current.Request.Headers["Auth"]);
+            var userinfo = _memorycache.Get<UserInfoOutputDto>("AuthUserInfo_" + _accessor.HttpContext.Request.Headers["Auth"]);
             if (userinfo != null && UserInfo == null)
                 UserInfo = userinfo;
         }

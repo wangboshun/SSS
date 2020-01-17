@@ -43,14 +43,14 @@ namespace SSS.Api.Controllers.System.Auth
         [HttpPost("auth")]
         public IActionResult Auth([FromBody] UserInfoInputDto input)
         {
-            var result = _service.GetByUserName(input);
+            var result = _service.Login(input);
             if (result == null)
                 return ApiResponse(null, false, "登录失败", 204);
 
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Nbf,$"{new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds()}") ,
-                new Claim (JwtRegisteredClaimNames.Exp,$"{new DateTimeOffset(DateTime.Now.AddMinutes(1)).ToUnixTimeSeconds()}"),
+                new Claim (JwtRegisteredClaimNames.Exp,$"{new DateTimeOffset(DateTime.Now.AddDays(1)).ToUnixTimeSeconds()}"),
                 new Claim(ClaimTypes.Name, input.username)
             };
 
@@ -60,7 +60,7 @@ namespace SSS.Api.Controllers.System.Auth
                 issuer: JsonConfig.GetSectionValue("Auth:Domain"),
                 audience: JsonConfig.GetSectionValue("Auth:Domain"),
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(1),
+                expires: DateTime.Now.AddDays(1),
                 signingCredentials: creds);
 
             return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });

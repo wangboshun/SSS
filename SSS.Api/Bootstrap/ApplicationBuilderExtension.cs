@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 using SSS.Api.Seedwork.Middleware;
 using SSS.Infrastructure.Seedwork.Cache.Redis;
-using SSS.Infrastructure.Util.Http;
 
 using System;
 
@@ -24,22 +20,6 @@ namespace SSS.Api.Bootstrap
         public static IApplicationBuilder UseApiException(this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<ApiExceptionMiddleware>();
-        }
-
-        /// <summary>
-        /// 注入HttpContext
-        /// </summary>
-        /// <param name="app"></param>
-        /// <returns></returns>
-        public static IApplicationBuilder UseHttpContext(this IApplicationBuilder app)
-        {
-            //获取HtppContext实例
-            var httpContextAccessor = app.ApplicationServices.GetRequiredService<IHttpContextAccessor>();
-            //获取IHostingEnvironment实例
-            var hostingEnvironment = app.ApplicationServices.GetRequiredService<IHostEnvironment>();
-            //注入实例
-            HttpContextService.Configure(httpContextAccessor, hostingEnvironment);
-            return app;
         }
 
         /// <summary>

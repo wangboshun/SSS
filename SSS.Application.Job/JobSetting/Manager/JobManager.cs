@@ -9,7 +9,6 @@ using Quartz.Impl.Triggers;
 using Quartz.Spi;
 
 using SSS.Application.Job.JobSetting.Listener;
-using SSS.Domain.System.Job.JobInfo;
 using SSS.Infrastructure.Repository.System.Job.JobInfo;
 using SSS.Infrastructure.Util.Attribute;
 using SSS.Infrastructure.Util.DI;

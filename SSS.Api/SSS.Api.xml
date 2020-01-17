@@ -41,13 +41,6 @@
             <param name="builder"></param>
             <returns></returns>
         </member>
-        <member name="M:SSS.Api.Bootstrap.ApplicationBuilderExtension.UseHttpContext(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
-            <summary>
-            注入HttpContext
-            </summary>
-            <param name="app"></param>
-            <returns></returns>
-        </member>
         <member name="M:SSS.Api.Bootstrap.ApplicationBuilderExtension.UseMemCached(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.Action{SSS.Infrastructure.Seedwork.Cache.Redis.MemCachedOptions})">
             <summary>
             注入Memcached
@@ -1124,15 +1117,6 @@
             Configuration
             </summary>
         </member>
-        <member name="M:SSS.Api.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Http.IHttpContextFactory,Microsoft.Extensions.Hosting.IHostEnvironment,Microsoft.Extensions.Hosting.IHostApplicationLifetime)">
-            <summary>
-            Configure
-            </summary>
-            <param name="app"></param>
-            <param name="_httpContextFactory"></param>
-            <param name="env"></param>
-            <param name="appLifetime"></param>
-        </member>
         <member name="M:SSS.Api.Startup.ConfigureContainer(Autofac.ContainerBuilder)">
             <summary>
             ConfigureContainer
@@ -1144,6 +1128,15 @@
             ConfigureServices
             </summary>
             <param name="services">IServiceCollection</param>
+        </member>
+        <member name="M:SSS.Api.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Http.IHttpContextFactory,Microsoft.Extensions.Hosting.IHostEnvironment,Microsoft.Extensions.Hosting.IHostApplicationLifetime)">
+            <summary>
+            Configure
+            </summary>
+            <param name="app"></param>
+            <param name="_httpContextFactory"></param>
+            <param name="env"></param>
+            <param name="appLifetime"></param>
         </member>
         <member name="M:SSS.Api.Startup.Swagger(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
             <summary>

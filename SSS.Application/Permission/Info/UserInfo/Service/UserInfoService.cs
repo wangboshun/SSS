@@ -140,7 +140,7 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public UserInfoOutputDto GetByUserName(UserInfoInputDto input)
+        public UserInfoOutputDto Login(UserInfoInputDto input)
         {
             var result = Validator.Validate(input, ruleSet: "Select");
             if (!result.IsValid)

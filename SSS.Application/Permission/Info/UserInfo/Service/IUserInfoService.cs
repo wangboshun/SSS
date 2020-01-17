@@ -22,7 +22,7 @@ namespace SSS.Application.Permission.Info.UserInfo.Service
         /// <returns></returns>
         bool DeleteUserPermission(string userid);
 
-        UserInfoOutputDto GetByUserName(UserInfoInputDto input);
+        UserInfoOutputDto Login(UserInfoInputDto input);
 
         /// <summary>
         /// 获取用户下的所有下级

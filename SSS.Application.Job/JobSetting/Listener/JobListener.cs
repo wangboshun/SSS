@@ -59,11 +59,12 @@ namespace SSS.Application.Job.JobSetting.Listener
             try
             {
                 lock (_lock)
-                {var trigger = (CronTriggerImpl)((JobExecutionContextImpl)context).Trigger;
+                {
+                    var trigger = (CronTriggerImpl)((JobExecutionContextImpl)context).Trigger;
                     var result = context.Scheduler.Context.Get(trigger.FullName + "_Result"); /*返回结果*/
                     var exception = context.Scheduler.Context.Get(trigger.FullName + "_Exception"); /*异常信息*/
                     var time = context.Scheduler.Context.Get(trigger.FullName + "_Time"); /* 耗时*/
-                     
+
                     var jobinfo_repository = IocEx.Instance.GetService<IJobInfoRepository>();
 
                     var job = jobinfo_repository.Get(x => x.JobName.Equals(trigger.Name) && x.JobGroup.Equals(trigger.JobGroup) && x.IsDelete == 0);
