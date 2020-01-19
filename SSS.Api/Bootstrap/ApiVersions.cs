@@ -25,6 +25,6 @@ namespace SSS.Api.Bootstrap
         /// <summary>
         /// v4 版本
         /// </summary>
-        [Description("社区接口")] v4 = 4 
+        [Description("社区接口")] v4 = 4
     }
 }

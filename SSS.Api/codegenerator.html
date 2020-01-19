@@ -72,7 +72,7 @@
 
 <script type="text/javascript">
 
-    $(function() {
+    $(function () {
 
     });
 
@@ -94,7 +94,7 @@
         var namespace_name = $("#namespace_name").val();
         var array = [];
 
-        $('.field').each(function(key, value) {
+        $('.field').each(function (key, value) {
             let field_name = $(this).find("input").val();
             let field_type = $(this).find("select").val();
             array.push({ "field_name": field_name, "field_type": field_type });
@@ -105,10 +105,10 @@
             type: 'post',
             data: { namespace_name: namespace_name, class_name: class_name, fields: JSON.stringify(array) },
             contentType: 'application/x-www-form-urlencoded',
-            success: function(a, b, c) {
+            success: function (a, b, c) {
                 debugger;
             },
-            error: function(a, b, c) {
+            error: function (a, b, c) {
                 debugger;
             }
         });

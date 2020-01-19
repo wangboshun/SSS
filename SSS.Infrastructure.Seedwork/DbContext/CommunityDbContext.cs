@@ -20,6 +20,7 @@ namespace SSS.Infrastructure.Seedwork.DbContext
         }
 
         #region Community
+
         public DbSet<CommunityInfo> CommunityInfo { get; set; }
         public DbSet<CommunityTask> CommunityTask { set; get; }
         public DbSet<CommunityBusiness> CommunityBusiness { get; set; }

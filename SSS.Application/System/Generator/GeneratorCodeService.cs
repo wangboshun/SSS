@@ -114,7 +114,6 @@ namespace SSS.Application.System.Generator
                 else
                     TemplateInputDto_Content = TemplateInputDto_Content.Replace(".NameSpace", "");
 
-
                 var TemplateOutputDto_Content = IO.ReadAllText(TemplateOutputDto_Read_Path);
                 TemplateOutputDto_Content = TemplateOutputDto_Content.Replace("Template", class_name);
                 if (!string.IsNullOrWhiteSpace(namespace_name))
@@ -122,14 +121,12 @@ namespace SSS.Application.System.Generator
                 else
                     TemplateOutputDto_Content = TemplateOutputDto_Content.Replace(".NameSpace", "");
 
-
                 var Template_Content = IO.ReadAllText(Template_Read_Path);
                 Template_Content = Template_Content.Replace("Template", class_name);
                 if (!string.IsNullOrWhiteSpace(namespace_name))
                     Template_Content = Template_Content.Replace("NameSpace", namespace_name);
                 else
                     Template_Content = Template_Content.Replace(".NameSpace", "");
-
 
                 var TemplateValidation_Content = IO.ReadAllText(TemplateValidation_Read_Path);
                 TemplateValidation_Content = TemplateValidation_Content.Replace("Template", class_name);
@@ -182,14 +179,12 @@ namespace SSS.Application.System.Generator
                 else
                     ITemplateRepository_Content = ITemplateRepository_Content.Replace(".NameSpace", "");
 
-
                 var TemplateRepository_Content = IO.ReadAllText(TemplateRepository_Read_Path);
                 TemplateRepository_Content = TemplateRepository_Content.Replace("Template", class_name);
                 if (!string.IsNullOrWhiteSpace(namespace_name))
                     TemplateRepository_Content = TemplateRepository_Content.Replace("NameSpace", namespace_name);
                 else
                     TemplateRepository_Content = TemplateRepository_Content.Replace(".NameSpace", "");
-
 
                 Directory.SetCurrentDirectory(Directory.GetParent(current_path).FullName);
                 var parent_path = Directory.GetCurrentDirectory();
@@ -233,7 +228,6 @@ namespace SSS.Application.System.Generator
                 else
                     TemplateProfile_Content = TemplateProfile_Content.Replace(".NameSpace", "");
 
-
                 var ITemplateService_Content = IO.ReadAllText(ITemplateService_Read_Path);
                 ITemplateService_Content = ITemplateService_Content.Replace("Template", class_name);
                 if (!string.IsNullOrWhiteSpace(namespace_name))
@@ -241,14 +235,12 @@ namespace SSS.Application.System.Generator
                 else
                     ITemplateService_Content = ITemplateService_Content.Replace(".NameSpace", "");
 
-
                 var TemplateService_Content = IO.ReadAllText(TemplateService_Read_Path);
                 TemplateService_Content = TemplateService_Content.Replace("Template", class_name);
                 if (!string.IsNullOrWhiteSpace(namespace_name))
                     TemplateService_Content = TemplateService_Content.Replace("NameSpace", namespace_name);
                 else
                     TemplateService_Content = TemplateService_Content.Replace(".NameSpace", "");
-
 
                 Directory.SetCurrentDirectory(Directory.GetParent(current_path).FullName);
                 var parent_path = Directory.GetCurrentDirectory();

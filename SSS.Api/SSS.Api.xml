@@ -425,7 +425,7 @@
         <member name="T:SSS.Api.Controllers.Community.CommunityTaskController">
             <summary>
             任务发布
-            </summary> 
+            </summary>
         </member>
         <member name="M:SSS.Api.Controllers.Community.CommunityTaskController.#ctor(SSS.Application.Community.CommunityTask.Service.ICommunityTaskService)">
             <summary>
@@ -438,28 +438,28 @@
             GetList
             </summary>
             <param name="input">input</param>
-            <returns></returns> 
+            <returns></returns>
         </member>
         <member name="M:SSS.Api.Controllers.Community.CommunityTaskController.GetCommunityTask(System.String)">
             <summary>
             获取数据
             </summary>
             <param name="id">id</param>
-            <returns></returns> 
+            <returns></returns>
         </member>
         <member name="M:SSS.Api.Controllers.Community.CommunityTaskController.DeleteCommunityTask(System.String)">
             <summary>
             删除数据
             </summary>
             <param name="id">id</param>
-            <returns></returns> 
+            <returns></returns>
         </member>
         <member name="M:SSS.Api.Controllers.Community.CommunityTaskController.AddCommunityTask(SSS.Domain.Community.CommunityTask.Dto.CommunityTaskInputDto)">
             <summary>
             发布任务
             </summary>
             <param name="input">CommunityTaskInputDto</param>
-            <returns></returns> 
+            <returns></returns>
         </member>
         <member name="T:SSS.Api.Controllers.Permission.Group.PowerGroupController">
             <summary>

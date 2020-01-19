@@ -9,7 +9,7 @@ namespace SSS.Api.Controllers.Community
 {
     /// <summary>
     /// 任务发布
-    /// </summary> 
+    /// </summary>
     [ApiVersion("4.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
@@ -32,7 +32,7 @@ namespace SSS.Api.Controllers.Community
         /// GetList
         /// </summary>
         /// <param name="input">input</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("getlist")]
         public IActionResult GetList([FromQuery]CommunityTaskInputDto input)
         {
@@ -44,7 +44,7 @@ namespace SSS.Api.Controllers.Community
         /// 获取数据
         /// </summary>
         /// <param name="id">id</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpGet("{id}")]
         public IActionResult GetCommunityTask(string id)
         {
@@ -56,7 +56,7 @@ namespace SSS.Api.Controllers.Community
         /// 删除数据
         /// </summary>
         /// <param name="id">id</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public IActionResult DeleteCommunityTask(string id)
         {
@@ -68,7 +68,7 @@ namespace SSS.Api.Controllers.Community
         /// 发布任务
         /// </summary>
         /// <param name="input">任务信息</param>
-        /// <returns></returns> 
+        /// <returns></returns>
         [HttpPost("add")]
         public IActionResult AddCommunityTask([FromBody]CommunityTaskInputDto input)
         {

@@ -21,6 +21,7 @@ namespace SSS.Application.Community.CommunityTask.Service
     public class CommunityTaskService : QueryService<SSS.Domain.Community.CommunityTask.CommunityTask, CommunityTaskInputDto, CommunityTaskOutputDto>, ICommunityTaskService
     {
         private readonly ICommunityBusinessRepository _communityBusinessRepository;
+
         public CommunityTaskService(IMapper mapper,
             ICommunityTaskRepository repository,
             IErrorHandler error,
@@ -46,7 +47,7 @@ namespace SSS.Application.Community.CommunityTask.Service
                 Error.Execute("业务不存在！");
                 return null;
             }
-             
+
             input.id = Guid.NewGuid().ToString();
             var model = Mapper.Map<SSS.Domain.Community.CommunityTask.CommunityTask>(input);
             model.CreateTime = DateTime.Now;
