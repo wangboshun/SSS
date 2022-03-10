@@ -3,7 +3,7 @@ from db_base.base.db_type import db_typeEnum
 
 
 def get_data():
-    db = db_helper(host="192.168.1.1", port=3306, user="root", password="123456", db="wbs", db_type=db_typeEnum.MySQL)
+    db = db_helper(host="192.168.1.1", port=9000, user="default", password="123456", db="default", db_type=db_typeEnum.CK)
     with db.get_engine().connect() as connect:
         result = connect.execute("select * from Test1 Limit 10")
         for row in result:
@@ -26,6 +26,3 @@ def get_ddl(table: str):
     db.get_engine()
     column = db.get_ddl(table)
     print(column)
-
-
-get_ddl("Test1")
