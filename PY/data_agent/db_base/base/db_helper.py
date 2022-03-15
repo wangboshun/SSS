@@ -1,6 +1,5 @@
 from sqlalchemy import create_engine
 from sqlalchemy.engine import reflection
-from sqlalchemy.engine.mock import MockConnection
 
 from db_base.base.db_type import db_typeEnum
 
@@ -24,7 +23,7 @@ class db_helper:
         self.db_type = db_type
         self.engine = None
 
-    def get_engine(self) -> MockConnection:
+    def get_engine(self):
         """
         获取数据库链接
         :return: 数据库链接
