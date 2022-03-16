@@ -1,3 +1,6 @@
+from sqlalchemy import table, column
+from sqlalchemy.sql import select
+
 from db_base.base.db_helper import db_helper
 from db_base.base.db_type import db_typeEnum
 from db_base.consumers.convert_consumer import consumer_1
@@ -17,7 +20,7 @@ class db_read:
     def get_stream_data():
         db = db_helper(host="192.168.1.1", port=3306, user="root", password="123456", db="wbs", db_type=db_typeEnum.MySQL)
         with db.get_engine().connect() as connect:
-            result = connect.execution_options(stream_results=True).execute("select * from Test1 limit 10")
+            result = connect.execution_options(stream_results=True).execute("select * from Test1 ")
             a = 1
             for row in result:
                 a = a + 1
@@ -27,8 +30,18 @@ class db_read:
                 consumer_1.push(d)
 
     @staticmethod
-    def get_ddl(table: str):
-        db = db_helper(host="192.168.1.1", port=3306, user="root", password="123456", db="wbs", db_type=db_typeEnum.MySQL)
-        db.get_engine()
-        column = db.get_ddl(table)
-        print(column)
+    def get_data_v2():
+
+        # metadata_obj = MetaData()
+        # t1 = Table('Test1', metadata_obj,
+        #            Column('Id', String, primary_key=True),
+        #            Column('Name', String),
+        #            Column('TM', DateTime))
+
+        t1 = table("Test1", column("Id"), column("Name"), column("TM"))
+
+        db = db_helper(host="127.0.0.1", port=1433, user="sa", password="123456", db="wbs", db_type=db_typeEnum.MSSQL)
+        with db.get_engine().connect() as connect:
+            result = connect.execute(select([t1]).where(t1.c.TM > '2020-01-01 00:00:00').limit(10).offset(10).order_by(t1.c.TM.asc()))
+            for row in result:
+                print("Id:", row[t1.c.Id], "; Name:", row[t1.c.Name], "; TM:", row[t1.c.TM])

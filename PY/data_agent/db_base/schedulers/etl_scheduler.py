@@ -12,7 +12,7 @@ def run_scheduler():
     scheduler_1.consume()
 
 
-@boost('scheduler_1', broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM)
+@boost('scheduler_1', broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM,create_logger_file=False)
 def scheduler_1():
     print('scheduler_1 开始运行')
     db_read.get_stream_data()
