@@ -17,10 +17,10 @@ class db_read:
                 print(row)
 
     @staticmethod
-    def get_stream_data():
+    def get_stream_data(where_str: str):
         db = db_helper(host="192.168.1.1", port=3306, user="root", password="123456", db="wbs", db_type=db_typeEnum.MySQL)
         with db.get_engine().connect() as connect:
-            result = connect.execution_options(stream_results=True).execute("select * from Test1 ")
+            result = connect.execution_options(stream_results=True).execute(f"select * from Test1 {where_str}")
             a = 1
             for row in result:
                 a = a + 1

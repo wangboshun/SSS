@@ -1,6 +1,6 @@
-from db_base.read import db_read
-# from db_base.schedulers.etl_scheduler import run_scheduler
+
+import db_base.schedulers
+import db_base.consumers
 
 if __name__ == '__main__':
-    # run_scheduler()
-    db_read.get_data_v2()
+    print('hello world!')
