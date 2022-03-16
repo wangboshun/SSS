@@ -1,9 +1,10 @@
 # noinspection PyUnresolvedReferences
 import logging
 import os
+import socket
 # noinspection PyUnresolvedReferences
 from pathlib import Path  # noqa
-import socket
+
 from pythonjsonlogger.jsonlogger import JsonFormatter
 
 
@@ -66,7 +67,7 @@ if os.name == 'posix':  # linux非root用户和mac用户无法操作 /pythonlogs
     home_path = os.environ.get("HOME", '/')  # 这个是获取linux系统的当前用户的主目录，不需要亲自设置
     LOG_PATH = Path(home_path) / Path('logs')  # linux mac 权限很严格，非root权限不能在/pythonlogs写入，修改一下默认值。
 
-LOG_FILE_HANDLER_TYPE = 1  # 1 2 3 4 5
+LOG_FILE_HANDLER_TYPE = 2  # 1 2 3 4 5
 """
 LOG_FILE_HANDLER_TYPE 这个值可以设置为 1 2 3 4 5 四种值，
 1为使用多进程安全按日志文件大小切割的文件日志,这是本人实现的批量写入日志，减少操作文件锁次数，测试10进程快速写入文件，win上性能比第5种提高了100倍，linux提升5倍
@@ -112,4 +113,4 @@ FORMATTER_DICT = {
         f'({computer_ip},{computer_name})-[p%(process)d_t%(thread)d] %(asctime)s - %(name)s - "%(filename)s:%(lineno)d" - %(levelname)s - %(message)s', "%Y-%m-%d %H:%M:%S"),  # 对7改进，带进程和线程显示的日志模板以及ip和主机名。
 }
 
-FORMATTER_KIND = 5  # 如果get_logger不指定日志模板，则默认选择第几个模板
+FORMATTER_KIND = 11  # 如果get_logger不指定日志模板，则默认选择第几个模板

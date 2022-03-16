@@ -1,5 +1,4 @@
-from db_base.read import db_read
-
+from db_base.schedulers.etl_scheduler import run_scheduler
 
 if __name__ == '__main__':
-    db_read.get_stream_data()
+    run_scheduler()

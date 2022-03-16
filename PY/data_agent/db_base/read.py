@@ -18,8 +18,12 @@ class db_read:
         db = db_helper(host="192.168.1.1", port=3306, user="root", password="123456", db="wbs", db_type=db_typeEnum.MySQL)
         with db.get_engine().connect() as connect:
             result = connect.execution_options(stream_results=True).execute("select * from Test1 limit 10")
+            a = 1
             for row in result:
+                a = a + 1
                 d = dict(row)
+                d["index"] = a
+                print(f'发送数据：{a}')
                 consumer_1.push(d)
 
     @staticmethod

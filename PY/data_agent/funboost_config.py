@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pathlib import Path
+
 from funboost.constant import BrokerEnum, ConcurrentModeEnum
 from funboost.helpers import FunctionResultStatusPersistanceConfig
 from funboost.utils.simple_data_class import DataClassBase
@@ -10,9 +11,9 @@ from funboost.utils.simple_data_class import DataClassBase
 
 MONGO_CONNECT_URL = f'mongodb://192.168.6.133:27017'  # 如果有密码连接 'mongodb://myUserAdmin:8mwTdy1klnSYepNo@192.168.199.202:27016/admin'
 
-RABBITMQ_USER = 'rabbitmq_user'
-RABBITMQ_PASS = 'rabbitmq_pass'
-RABBITMQ_HOST = '127.0.0.1'
+RABBITMQ_USER = 'wbs'
+RABBITMQ_PASS = '123456'
+RABBITMQ_HOST = '111.67.207.174'
 RABBITMQ_PORT = 5672
 RABBITMQ_VIRTUAL_HOST = '/'  # my_host # 这个是rabbitmq的虚拟子host用户自己创建的，如果你想直接用rabbitmq的根host而不是使用虚拟子host，这里写 / 即可。
 
@@ -74,8 +75,8 @@ class BoostDecoratorDefaultParams(DataClassBase):
 
     log_level = 11
     logger_prefix = ''
-    create_logger_file = True
-    is_show_message_get_from_broker = False
+    create_logger_file = False
+    is_show_message_get_from_broker = True
     is_print_detail_exception = True
 
     msg_expire_senconds = 0
