@@ -7,7 +7,7 @@ class json_helper:
     json_config = None
 
     @classmethod
-    def __load_json__(self, file_path=None):
+    def __load_json__(cls, file_path=None):
         path = file_path
         if path is None:
             parent = os.path.dirname(os.path.realpath(__file__))
@@ -20,14 +20,14 @@ class json_helper:
                 pass
         with open(path) as json_file:
             try:
-                self.json_config = json.load(json_file)
+                cls.json_config = json.load(json_file)
             except:
-                self.json_config = {}
+                cls.json_config = {}
 
     @classmethod
-    def get_val(self, key: str, file_path=None):
-        if self.json_config is None:
-            self.__load_json__()
+    def get_val(cls, key: str, file_path=None):
+        if cls.json_config is None:
+            cls.__load_json__()
 
         array = key.split(':')
         path = "$"
@@ -36,4 +36,4 @@ class json_helper:
                 path = path + "." + i
         else:
             path = path + "." + key
-        return jsonpath.jsonpath(self.json_config, path)
+        return jsonpath.jsonpath(cls.json_config, path)
