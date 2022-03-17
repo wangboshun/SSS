@@ -344,3 +344,4 @@ healthchecksdb
 /SSS.WorkService/TimedHostedService2.cs
 /SSS.WorkService/TimedHostedService.cs
 /SSS_Data.db
+/PY/data_agent/logs
