@@ -26,7 +26,7 @@ class db_read:
                 a = a + 1
                 d = dict(row)
                 d["index"] = a
-                print(f'发送数据：{d}')
+                print(f'~~~~~~发送数据：{d}~~~~~~')
                 consumer_1.push(d)
 
     @staticmethod

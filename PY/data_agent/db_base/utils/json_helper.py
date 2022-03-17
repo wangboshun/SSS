@@ -27,7 +27,7 @@ class json_helper:
     @classmethod
     def get_val(cls, key: str, file_path=None):
         if cls.json_config is None:
-            cls.__load_json__()
+            cls.__load_json__(file_path)
 
         array = key.split(':')
         path = "$"
