@@ -1,27 +1,27 @@
 import datetime
-
-from funboost import boost, BrokerEnum, fsdf_background_scheduler
+from funboost import BrokerEnum, fsdf_background_scheduler, get_consumer
 
 from db_base.read import db_read
 from db_base.utils.redis_helper import redis_helper
 
 
 def init():
-    fsdf_background_scheduler.add_timing_publish_job(scheduler_1, 'cron', day_of_week='*', hour='*', minute='*', second='*/5')
-    # 启动定时
+    consumer = get_consumer('scheduler_1', consuming_function=scheduler_1, concurrent_mode=5, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM)
+    consumer.start_consuming_message()
+
+    fsdf_background_scheduler.add_timing_publish_job(id='scheduler_1', func=consumer, trigger='cron', day_of_week='*',
+                                                     hour='*', minute='*', second='*/5', kwargs={"job_name": 'scheduler_1'})
+
     fsdf_background_scheduler.start()
-    # 启动消费
-    scheduler_1.consume()
 
 
-@boost('scheduler_1', broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM, create_logger_file=False)
-def scheduler_1():
-    print('scheduler_1 开始运行')
-    tm = get_next_tm('scheduler_1')
+def scheduler_1(job_name):
+    print(f'{job_name} 开始运行')
+    tm = get_next_tm(job_name)
     where_str = f" where TM>'{tm[0]}' and TM<'{tm[1]}' "
     where_str = where_str + f" order by TM asc "
     db_read.get_stream_data(where_str)
-    update_next_tm('scheduler_1', tm[1])
+    update_next_tm(job_name, tm[1])
 
 
 def update_next_tm(job_name, next_tm):
