@@ -10,9 +10,9 @@ class redis_helper:
     def get_connect(cls):
         if redis_helper.redis_client is not None:
             return cls.redis_client
-        host = json_helper.get_val("REDIS:HOST")[0]
-        port = json_helper.get_val("REDIS:PORT")[0]
-        db = json_helper.get_val("REDIS:DB")[0]
-        password = json_helper.get_val("REDIS:PASSWORD")[0]
+        host = json_helper.get_val("REDIS:HOST")
+        port = json_helper.get_val("REDIS:PORT")
+        db = json_helper.get_val("REDIS:DB")
+        password = json_helper.get_val("REDIS:PASSWORD")
         cls.redis_client = redis.StrictRedis(host=host, port=port, db=db, password=password, decode_responses=True)
         return cls.redis_client

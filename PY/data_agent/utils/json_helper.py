@@ -36,4 +36,4 @@ class json_helper:
                 path = path + "." + i
         else:
             path = path + "." + key
-        return jsonpath.jsonpath(cls.json_config, path)
+        return jsonpath.jsonpath(cls.json_config, path)[0]

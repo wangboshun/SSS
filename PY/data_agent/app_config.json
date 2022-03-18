@@ -4,5 +4,22 @@
     "PORT": 6379,
     "DB": 10,
     "PASSWORD": "123456"
+  },
+  "SCHEDULERS": [
+    {
+      "NAME": "scheduler_one",
+      "FUNC": "scheduler_1",
+      "CRON": "* * * * * *"
+    },
+    {
+      "NAME": "scheduler_two",
+      "FUNC": "scheduler_2",
+      "CRON": "* * * * * *"
+    }
+  ],
+  "DB": {
+    "ECHO": 0,
+    "POOL_SIZE": 10,
+    "POOL_TIMEOUT": 30
   }
 }

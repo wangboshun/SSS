@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine import reflection
 
 from db_base.base.db_type import db_typeEnum
+from utils.json_helper import json_helper
 
 
 class db_helper:
@@ -22,6 +23,11 @@ class db_helper:
         self.password = password
         self.db_type = db_type
         self.engine = None
+        self.engine_dict = {'a': 'a'}
+
+        self.echo = json_helper.get_val('DB:ECHO')
+        self.pool_size = json_helper.get_val('DB:POOL_SIZE')
+        self.pool_timeout = json_helper.get_val('DB:POOL_TIMEOUT')
 
     def get_engine(self):
         """
@@ -41,7 +47,16 @@ class db_helper:
         else:
             raise Exception('不支持的数据库类型')
 
-        self.engine = create_engine(f'{provider}://{self.user}:{self.password}@{self.host}:{self.port}/{self.db}', echo=True, echo_pool=True)
+        connect_str = f'{provider}://{self.user}:{self.password}@{self.host}:{self.port}/{self.db}'
+        if connect_str in self.engine_dict:
+            return self.engine_dict[connect_str]
+
+        if self.echo == 1:
+            self.engine = create_engine(connect_str, echo=True, echo_pool=True, pool_size=self.pool_size, pool_timeout=self.pool_timeout, pool_recycle=-1)
+        else:
+            self.engine = create_engine(connect_str, pool_size=self.pool_size, pool_timeout=self.pool_timeout, pool_recycle=-1)
+
+        self.engine_dict[connect_str] = self.engine
         return self.engine
 
     def get_ddl(self, table: str):
