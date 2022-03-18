@@ -1,8 +1,9 @@
 import datetime
+
 from funboost import BrokerEnum, fsdf_background_scheduler, get_consumer
 
 from db_base.read import db_read
-from db_base.utils.redis_helper import redis_helper
+from utils.redis_helper import redis_helper
 
 
 def init():

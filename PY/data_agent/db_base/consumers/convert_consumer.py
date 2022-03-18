@@ -1,14 +1,13 @@
 import time
 
 from funboost import boost, BrokerEnum
-from nb_log import get_logger
 
 
 def init():
     consumer_1.consume()
 
 
-@boost('consumer_1', qps=1000, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM,create_logger_file=False)
+@boost('consumer_1', qps=1000, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM, create_logger_file=False)
 def consumer_1(data):
     print(f'------开始消费数据:{data}------')
     time.sleep(5)

@@ -1,5 +1,6 @@
 import json
 import os
+
 import jsonpath
 
 
@@ -11,7 +12,6 @@ class json_helper:
         path = file_path
         if path is None:
             parent = os.path.dirname(os.path.realpath(__file__))
-            parent = os.path.dirname(parent)
             parent = os.path.dirname(parent)
             path = os.path.join(parent, "app_config.json")
 

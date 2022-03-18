@@ -1,6 +1,6 @@
 import redis
 
-from db_base.utils.json_helper import json_helper
+from .json_helper import json_helper
 
 
 class redis_helper:
