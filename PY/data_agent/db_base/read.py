@@ -1,5 +1,5 @@
-from sqlalchemy import table, column, and_, text, desc, asc
-from sqlalchemy.sql import select
+from sqlalchemy import table, column, and_, text, desc, asc, func,select
+# from sqlalchemy.sql import select
 
 from db_base.base.db_helper import db_helper
 from db_base.base.db_type import db_typeEnum
@@ -20,11 +20,12 @@ class db_read:
     def get_stream_data(where_str: str):
         db = db_helper(host="192.168.1.1", port=3306, user="root", password="123456", db="wbs", db_type=db_typeEnum.MySQL)
         with db.get_engine().connect() as connect:
+            cnt = connect.execute(f"select count(*) from Test1 {where_str}")
             result = connect.execution_options(stream_results=True).execute(f"select * from Test1 {where_str}")
             for row in result:
                 d = dict(row)
                 print(f'~~~~~~发送数据：{d}~~~~~~')
-                consumer_1.push(d)
+                consumer_1.push(d, cnt)
 
     @staticmethod
     def get_data_v2(start: str, end: str, order_filed: str, order_type: str):
@@ -32,6 +33,13 @@ class db_read:
         db = db_helper(host="127.0.0.1", port=1433, user="sa", password="123456", db="wbs", db_type=db_typeEnum.MSSQL)
         with db.get_engine().connect() as connect:
             sql = select([t1]).where(and_(text(f"TM>'{start}'"), text(f"TM<'{end}'")))
+            # smt = select(func.count()).where(and_(text(f"TM>'{start}'"), text(f"TM<'{end}'"))).select_from(table('Test1', column('Id')))
+            # cnt = connect.execute(smt)
+
+            my_table = table('Test1', column('Id'))
+
+            stmt = select(func.count()).select_from(my_table)
+            cnt = connect.execute(stmt)
             if order_type == "desc":
                 sql = sql.order_by(desc(order_filed))
             elif order_type == "asc":
@@ -40,4 +48,5 @@ class db_read:
             for row in result:
                 d = dict(row)
                 print(f'~~~~~~发送数据：{d}~~~~~~')
-                consumer_2.push(d)
+                consumer_2.push(d, cnt)
+

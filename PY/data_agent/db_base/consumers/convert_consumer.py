@@ -9,7 +9,7 @@ def init():
 
 
 @boost('consumer_1', qps=1000, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM, create_logger_file=False)
-def consumer_1(data):
+def consumer_1(data, cnt):
     print(f'------consumer_1开始消费数据:{data}------')
     # time.sleep(5)
     db_write.insert_data_v1(data)
@@ -17,7 +17,7 @@ def consumer_1(data):
 
 
 @boost('consumer_2', qps=1000, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM, create_logger_file=False)
-def consumer_2(data):
+def consumer_2(data, cnt):
     print(f'------consumer_2开始消费数据:{data}------')
     # time.sleep(5)
     db_write.insert_data_v2(data)
