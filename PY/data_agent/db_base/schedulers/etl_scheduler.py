@@ -31,17 +31,17 @@ def init():
 def scheduler_1(job_name: str):
     print(f'{job_name} 开始运行')
     tm = get_next_tm(job_name)
-    where_str = f" where TM>'{tm[0]}' and TM<'{tm[1]}' "
-    where_str = where_str + f" order by TM asc "
-    db_read.get_stream_data(where_str)
+    where_str = f" TM>'{tm[0]}' and TM<'{tm[1]}' "
+    db_read.get_data_v1(where_str)
     update_next_tm(job_name, tm[1])
 
 
 def scheduler_2(job_name: str):
     print(f'{job_name} 开始运行')
-    tm = get_next_tm(job_name)
-    db_read.get_data_v2(tm[0], tm[1], 'TM', 'asc')
-    update_next_tm(job_name, tm[1])
+    # tm = get_next_tm(job_name)
+    # where_str = f" TM>'{tm[0]}' and TM<'{tm[1]}' "
+    # db_read.get_data_v2(where_str)
+    # update_next_tm(job_name, tm[1])
 
 
 def update_next_tm(job_name: str, next_tm: str):

@@ -1,8 +1,7 @@
-from sqlalchemy import create_engine
-from sqlalchemy.engine import reflection
+import pymysql
+import pymysql.cursors
 
 from db_base.base.db_type import db_typeEnum
-from utils.json_helper import json_helper
 
 
 class db_helper:
@@ -22,49 +21,95 @@ class db_helper:
         self.user = user
         self.password = password
         self.db_type = db_type
-        self.engine = None
-        self.engine_dict = {'a': 'a'}
+        self.connect = None
+        self.connect_dict = {'a': 'a'}
 
-        self.echo = json_helper.get_val('DB:ECHO')
-        self.pool_size = json_helper.get_val('DB:POOL_SIZE')
-        self.pool_timeout = json_helper.get_val('DB:POOL_TIMEOUT')
-
-    def get_engine(self):
+    def get_connect(self):
         """
         获取数据库链接
         :return: 数据库链接
         """
+
         if self.db_type == db_typeEnum.MySQL:
-            provider = 'mysql+pymysql'
-        elif self.db_type == db_typeEnum.CK:
-            provider = 'clickhouse+native'
-        elif self.db_type == db_typeEnum.PGSQL:
-            provider = 'postgresql'
-        elif self.db_type == db_typeEnum.SQLITE:
-            provider = 'sqlite'
-        elif self.db_type == db_typeEnum.MSSQL:
-            provider = 'mssql+pymssql'
+            self.connect = pymysql.connect(host=self.host,
+                                           port=self.port,
+                                           user=self.user,
+                                           password=self.password,
+                                           database=self.db)
         else:
             raise Exception('不支持的数据库类型')
 
-        connect_str = f'{provider}://{self.user}:{self.password}@{self.host}:{self.port}/{self.db}'
-        if connect_str in self.engine_dict:
-            return self.engine_dict[connect_str]
+        connect_str = self.connect.host_info + ':' + self.db
+        if connect_str in self.connect_dict:
+            return self.connect_dict[connect_str]
+        self.connect_dict[connect_str] = self.connect
+        return self.connect
 
-        if self.echo == 1:
-            self.engine = create_engine(connect_str, echo=True, echo_pool=True, pool_size=self.pool_size, pool_timeout=self.pool_timeout, pool_recycle=-1)
+    def get_count(self, table: str, field="*", where=''):
+        if self.connect is None:
+            self.get_connect()
+
+        where_str = 'WHERE'
+        if where != '':
+            where_str += ' ' + where
+
+        cu = self.connect.cursor()
+        cu.execute(f'select count({field}) as cnt  from {table} {where_str} ')
+        cnt = cu.fetchone()
+        return cnt[0]
+
+    def get_list_data(self, table: str, field="*", where='', order_by=''):
+        if self.connect is None:
+            self.get_connect()
+
+        where_str = ' WHERE'
+        if where != '':
+            where_str += ' ' + where
         else:
-            self.engine = create_engine(connect_str, pool_size=self.pool_size, pool_timeout=self.pool_timeout, pool_recycle=-1)
+            where_str = None
 
-        self.engine_dict[connect_str] = self.engine
-        return self.engine
+        cu = self.connect.cursor()
+        cu.execute(f'select {field} from {table} {where_str} {order_by}')
+        return cu.fetchall()
 
-    def get_ddl(self, table: str):
-        """
-        获取表结构
-        :param table: 表名
-        :return: 表结构
-        """
-        reflect = reflection.Inspector.from_engine(self.engine)
-        column = reflect.get_columns(table)
-        return column
+    def get_stream_data(self, table: str, field="*", where='', order_by=''):
+        if self.connect is None:
+            self.get_connect()
+
+        where_str = ' WHERE'
+        if where != '':
+            where_str += ' ' + where
+        else:
+            where_str = None
+
+        cu = self.connect.cursor(pymysql.cursors.SSDictCursor)
+        cu.execute(f'select {field} from {table} {where_str} {order_by}')
+        while True:
+            row = cu.fetchone()
+            if not row:
+                break
+            print(row)
+
+    def insert_data(self, table: str, data: dict):
+        if self.connect is None:
+            self.get_connect()
+        sql = f"INSERT INTO `{table}` "
+        field = '('
+        value = '('
+        for item in data:
+            field += item + ','
+            value += '%s,'
+        field = field[:-1] + ')'
+        value = value[:-1] + ')'
+        sql += field + ' VALUES ' + value
+        cu = self.connect.cursor()
+        cu.execute(sql, tuple(data.values()))
+        self.connect.commit()
+
+
+# h = db_helper(host="192.168.1.1", port=3306, user="root", password="123456", db="wbs", db_type=db_typeEnum.MySQL)
+# h.insert_data('Test1', {'Id': 112233, 'TM': '2022-12-12 12:12:12', 'Name': '张三'})
+# h.get_stream_data('Test1', where='Id=123')
+# for x in range(1, 100):
+#     c = h.get_count('Test1', 'Id', 'Id=123')
+#     print(c)
