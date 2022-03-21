@@ -45,45 +45,38 @@ class db_helper:
         self.connect_dict[connect_str] = self.connect
         return self.connect
 
-    def get_count(self, table: str, field="*", where=''):
+    @staticmethod
+    def __where__(where: dict):
+        where_str = ' WHERE '
+        if where is None:
+            return ''
+
+        for item in where:
+            where_str += f' {item}%s AND'
+        where_str = where_str[:-4]
+        return where_str
+
+    def __connect__(self):
         if self.connect is None:
             self.get_connect()
 
-        where_str = 'WHERE'
-        if where != '':
-            where_str += ' ' + where
-
+    def get_count(self, table: str, field="*", where=None):
+        self.__connect__()
         cu = self.connect.cursor()
-        cu.execute(f'select count({field}) as cnt  from {table} {where_str} ')
+        cu.execute(f'select count({field}) as cnt  from {table} {self.__where__(where)} ', tuple(where.values()))
         cnt = cu.fetchone()
         return cnt[0]
 
-    def get_list_data(self, table: str, field="*", where='', order_by=''):
-        if self.connect is None:
-            self.get_connect()
-
-        where_str = ' WHERE'
-        if where != '':
-            where_str += ' ' + where
-        else:
-            where_str = None
-
-        cu = self.connect.cursor()
-        cu.execute(f'select {field} from {table} {where_str} {order_by}')
+    def get_list_data(self, table: str, field="*", where=None, order_by=''):
+        self.__connect__()
+        cu = self.connect.cursor(pymysql.cursors.DictCursor)
+        cu.execute(f'select {field} from {table}  {self.__where__(where)}  {order_by}', tuple(where.values()))
         return cu.fetchall()
 
-    def get_stream_data(self, table: str, field="*", where='', order_by=''):
-        if self.connect is None:
-            self.get_connect()
-
-        where_str = ' WHERE'
-        if where != '':
-            where_str += ' ' + where
-        else:
-            where_str = None
-
+    def get_stream_data(self, table: str, field="*", where=None, order_by=''):
+        self.__connect__()
         cu = self.connect.cursor(pymysql.cursors.SSDictCursor)
-        cu.execute(f'select {field} from {table} {where_str} {order_by}')
+        cu.execute(f'select {field} from {table}  {self.__where__(where)}  {order_by}', tuple(where.values()))
         while True:
             row = cu.fetchone()
             if not row:
@@ -91,9 +84,8 @@ class db_helper:
             print(row)
 
     def insert_data(self, table: str, data: dict):
-        if self.connect is None:
-            self.get_connect()
-        sql = f"INSERT INTO `{table}` "
+        self.__connect__()
+        insert_sql = f"INSERT INTO `{table}` "
         field = '('
         value = '('
         for item in data:
@@ -101,15 +93,7 @@ class db_helper:
             value += '%s,'
         field = field[:-1] + ')'
         value = value[:-1] + ')'
-        sql += field + ' VALUES ' + value
+        insert_sql += field + ' VALUES ' + value
         cu = self.connect.cursor()
-        cu.execute(sql, tuple(data.values()))
+        cu.execute(insert_sql, tuple(data.values()))
         self.connect.commit()
-
-
-# h = db_helper(host="192.168.1.1", port=3306, user="root", password="123456", db="wbs", db_type=db_typeEnum.MySQL)
-# h.insert_data('Test1', {'Id': 112233, 'TM': '2022-12-12 12:12:12', 'Name': '张三'})
-# h.get_stream_data('Test1', where='Id=123')
-# for x in range(1, 100):
-#     c = h.get_count('Test1', 'Id', 'Id=123')
-#     print(c)

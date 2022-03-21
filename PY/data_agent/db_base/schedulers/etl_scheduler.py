@@ -31,8 +31,7 @@ def init():
 def scheduler_1(job_name: str):
     print(f'{job_name} 开始运行')
     tm = get_next_tm(job_name)
-    where_str = f" TM>'{tm[0]}' and TM<'{tm[1]}' "
-    db_read.get_data_v1(where_str)
+    db_read.get_data_v1('Test1', '*', {'TM>': tm[0], 'TM<': tm[1]})
     update_next_tm(job_name, tm[1])
 
 
