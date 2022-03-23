@@ -9,11 +9,17 @@
     {
       "NAME": "scheduler_one",
       "FUNC": "scheduler_1",
-      "CRON": "* * * * * *"
+      "CRON": "* * * * * *",
+      "STATUS": "ON"
     },
     {
       "NAME": "scheduler_two",
       "FUNC": "scheduler_2",
+      "CRON": "* * * * * *"
+    },
+    {
+      "NAME": "scheduler_three",
+      "FUNC": "scheduler_3",
       "CRON": "* * * * * *"
     }
   ],

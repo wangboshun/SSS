@@ -1,11 +1,10 @@
-import pymysql
-import pymysql.cursors
+import pymssql
 from dbutils.pooled_db import PooledDB
 
 from db_base.base.db_type import db_typeEnum
 
 
-class db_helper:
+class mssql_helper:
     def __init__(self, host: str, port: int, user: str, password: str, db: str, db_type: db_typeEnum):
         """
         构造链接
@@ -21,22 +20,17 @@ class db_helper:
         self.db = db
         self.user = user
         self.password = password
+        self.db_type = db_type
 
     def get_connect(self):
         """
         获取数据库链接
         :return: 数据库链接
         """
-        pool = PooledDB(
-            pymysql,
-            maxconnections=100,
-            host=self.host,
-            user=self.user,
-            port=self.port,
-            passwd=self.password,
-            db=self.db)
-
-        return pool.connection()
+        pool = PooledDB(pymssql, maxconnections=100, ping=2,
+                        host=self.host, port=self.port, user=self.user, password=self.password, database=self.db)
+        connect = pool.connection()
+        return connect
 
     @staticmethod
     def __where__(where: dict):
@@ -59,7 +53,7 @@ class db_helper:
 
     def get_list_data(self, table: str, field="*", where=None, order_by=''):
         connect = self.get_connect()
-        cu = connect.cursor(pymysql.cursors.DictCursor)
+        cu = connect.cursor(as_dict=True)
         cu.execute(f'select {field} from {table}  {self.__where__(where)}  {order_by}', tuple(where.values()))
         d = cu.fetchall()
         connect.close()
@@ -67,7 +61,7 @@ class db_helper:
 
     def get_stream_data(self, table: str, field="*", where=None, order_by=''):
         connect = self.get_connect()
-        cu = connect.cursor(pymysql.cursors.SSDictCursor)
+        cu = connect.cursor(as_dict=True)
         cu.execute(f'select {field} from {table}  {self.__where__(where)}  {order_by}', tuple(where.values()))
         while True:
             row = cu.fetchone()
@@ -77,7 +71,7 @@ class db_helper:
         connect.close()
 
     def insert_data(self, table: str, data: dict):
-        insert_sql = f"INSERT INTO `{table}` "
+        insert_sql = f"INSERT INTO [{table}] "
         field = '('
         value = '('
         for item in data:

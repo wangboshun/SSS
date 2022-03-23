@@ -18,9 +18,14 @@ def init():
         name = item['NAME']
         func = item['FUNC']
         if func == 'scheduler_1':
-            consumer = get_consumer(name, consuming_function=scheduler_1, concurrent_mode=5, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM)
+            pass
+            # consumer = get_consumer(name, consuming_function=scheduler_1, concurrent_mode=5, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM)
         elif func == 'scheduler_2':
-            consumer = get_consumer(name, consuming_function=scheduler_2, concurrent_mode=5, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM)
+            pass
+            # consumer = get_consumer(name, consuming_function=scheduler_2, concurrent_mode=5, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM)
+        elif func == 'scheduler_3':
+            consumer = get_consumer(name, consuming_function=scheduler_3, concurrent_mode=5, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM)
+
         if consumer is not None:
             consumer.start_consuming_message()
             fsdf_background_scheduler.add_timing_publish_job(id=name, func=consumer, trigger='cron', day_of_week='*',
@@ -29,6 +34,7 @@ def init():
 
 
 def scheduler_1(job_name: str):
+    pass
     print(f'{job_name} 开始运行')
     tm = get_next_tm(job_name)
     db_read.get_data_v1('Test1', '*', {'TM>': tm[0], 'TM<': tm[1]})
@@ -37,10 +43,16 @@ def scheduler_1(job_name: str):
 
 def scheduler_2(job_name: str):
     print(f'{job_name} 开始运行')
-    # tm = get_next_tm(job_name)
-    # where_str = f" TM>'{tm[0]}' and TM<'{tm[1]}' "
-    # db_read.get_data_v2(where_str)
-    # update_next_tm(job_name, tm[1])
+    tm = get_next_tm(job_name)
+    db_read.get_data_v2('Test1', '*', {'TM>': tm[0], 'TM<': tm[1]})
+    update_next_tm(job_name, tm[1])
+
+
+def scheduler_3(job_name: str):
+    print(f'{job_name} 开始运行')
+    tm = get_next_tm(job_name)
+    db_read.get_data_v3('Test1', '*', {'TM>': tm[0], 'TM<': tm[1]})
+    update_next_tm(job_name, tm[1])
 
 
 def update_next_tm(job_name: str, next_tm: str):
