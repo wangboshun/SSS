@@ -63,11 +63,12 @@ class mssql_helper:
         connect = self.get_connect()
         cu = connect.cursor(as_dict=True)
         cu.execute(f'select {field} from {table}  {self.__where__(where)}  {order_by}', tuple(where.values()))
-        while True:
-            row = cu.fetchone()
+        a = 1
+        for row in cu:
             if not row:
                 break
-            print(row)
+            a = a + 1
+            print(a, row)
         connect.close()
 
     def insert_data(self, table: str, data: dict):

@@ -5,8 +5,8 @@ from db_base.write import db_write
 
 def init():
     # consumer_1.consume()
-    # consumer_2.consume()
-    consumer_3.consume()
+    consumer_2.consume()
+    #consumer_3.consume()
 
 
 @boost('consumer_1', qps=1, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM, create_logger_file=False)

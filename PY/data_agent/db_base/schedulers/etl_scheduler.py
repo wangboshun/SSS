@@ -22,9 +22,10 @@ def init():
             # consumer = get_consumer(name, consuming_function=scheduler_1, concurrent_mode=5, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM)
         elif func == 'scheduler_2':
             pass
-            # consumer = get_consumer(name, consuming_function=scheduler_2, concurrent_mode=5, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM)
+            consumer = get_consumer(name, consuming_function=scheduler_2, concurrent_mode=5, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM)
         elif func == 'scheduler_3':
-            consumer = get_consumer(name, consuming_function=scheduler_3, concurrent_mode=5, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM)
+            pass
+            #consumer = get_consumer(name, consuming_function=scheduler_3, concurrent_mode=5, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM)
 
         if consumer is not None:
             consumer.start_consuming_message()
