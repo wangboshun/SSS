@@ -5,27 +5,36 @@
     "DB": 10,
     "PASSWORD": "123456"
   },
-  "SCHEDULERS": [
+  "QUEUE": [
     {
       "NAME": "scheduler_one",
-      "FUNC": "scheduler_1",
-      "CRON": "* * * * * *",
+      "PUB": "scheduler_1",
+      "SUB": "consumer_1",
+      "CRON": "*/30 * * * * *",
+      "TIMEOUT": 60,
+      "MODE": 5,
+      "QPS": 1,
       "STATUS": "ON"
     },
     {
       "NAME": "scheduler_two",
-      "FUNC": "scheduler_2",
-      "CRON": "* * * * * *"
+      "PUB": "scheduler_2",
+      "SUB": "consumer_2",
+      "CRON": "*/30 * * * * *",
+      "TIMEOUT": 60,
+      "MODE": 5,
+      "QPS": 1,
+      "STATUS": "OFF"
     },
     {
       "NAME": "scheduler_three",
-      "FUNC": "scheduler_3",
-      "CRON": "* * * * * *"
+      "PUB": "scheduler_3",
+      "SUB": "consumer_3",
+      "CRON": "*/30 * * * * *",
+      "TIMEOUT": 60,
+      "MODE": 5,
+      "QPS": 1,
+      "STATUS": "OFF"
     }
-  ],
-  "DB": {
-    "ECHO": 0,
-    "POOL_SIZE": 10,
-    "POOL_TIMEOUT": 30
-  }
+  ]
 }

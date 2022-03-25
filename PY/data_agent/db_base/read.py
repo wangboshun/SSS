@@ -2,7 +2,7 @@ from db_base.base.ck_helper import ck_helper
 from db_base.base.db_type import db_typeEnum
 from db_base.base.mssql_helper import mssql_helper
 from db_base.base.mysql_helper import mysql_helper
-from db_base.consumers.convert_consumer import consumer_1, consumer_2, consumer_3
+from db_base.consumers.convert_consumer import publish_data
 
 
 class db_read:
@@ -14,7 +14,8 @@ class db_read:
         cnt = db.get_count(table, field, where)
         for row in result:
             print(f'~~~~~~v1 发送数据：{row}~~~~~~')
-            consumer_1.push(row, cnt)
+            kwargs = {'data': row, 'cnt': cnt}
+            publish_data('consumer_1', **kwargs)
 
     @staticmethod
     def get_data_v2(table: str, field: str, where: dict):
@@ -23,7 +24,8 @@ class db_read:
         cnt = db.get_count(table, field, where)
         for row in result:
             print(f'~~~~~~v2 发送数据：{row}~~~~~~')
-            consumer_2.push(row, cnt)
+            kwargs = {'data': row, 'cnt': cnt}
+            publish_data('consumer_2', **kwargs)
 
     @staticmethod
     def get_data_v3(table: str, field: str, where: dict):
@@ -32,4 +34,5 @@ class db_read:
         cnt = db.get_count(table, field, where)
         for row in result:
             print(f'~~~~~~v3 发送数据：{row}~~~~~~')
-            consumer_3.push(row, cnt)
+            kwargs = {'data': row, 'cnt': cnt}
+            publish_data('consumer_3', **kwargs)
