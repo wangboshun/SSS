@@ -14,6 +14,7 @@
       "TIMEOUT": 60,
       "MODE": 5,
       "QPS": 1,
+      "LOG": "ON",
       "STATUS": "ON"
     },
     {
@@ -24,6 +25,7 @@
       "TIMEOUT": 60,
       "MODE": 5,
       "QPS": 1,
+      "LOG": "ON",
       "STATUS": "ON"
     },
     {
@@ -34,6 +36,7 @@
       "TIMEOUT": 60,
       "MODE": 5,
       "QPS": 1,
+      "LOG": "ON",
       "STATUS": "ON"
     }
   ]

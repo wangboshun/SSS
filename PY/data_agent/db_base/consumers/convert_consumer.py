@@ -19,10 +19,12 @@ def init():
         timeout = item['TIMEOUT']
         concurrent_mode = item['MODE']
         qps = item['QPS']
+        create_logger_file = item['LOG']
         if status != 'ON':
             continue
 
-        kwargs = {'create_logger_file': False, 'qps': qps, 'concurrent_mode': concurrent_mode, 'function_timeout': timeout, 'consuming_function': __get_func__(sub)}
+        create_logger_file = True if create_logger_file == 'ON' else False
+        kwargs = {'create_logger_file': create_logger_file, 'qps': qps, 'concurrent_mode': concurrent_mode, 'function_timeout': timeout, 'consuming_function': __get_func__(sub)}
         consumer = get_consumer(sub, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM, **kwargs)
 
         if consumer is not None:
