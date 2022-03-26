@@ -24,7 +24,7 @@
       "TIMEOUT": 60,
       "MODE": 5,
       "QPS": 1,
-      "STATUS": "OFF"
+      "STATUS": "ON"
     },
     {
       "NAME": "scheduler_three",
@@ -34,7 +34,7 @@
       "TIMEOUT": 60,
       "MODE": 5,
       "QPS": 1,
-      "STATUS": "OFF"
+      "STATUS": "ON"
     }
   ]
 }

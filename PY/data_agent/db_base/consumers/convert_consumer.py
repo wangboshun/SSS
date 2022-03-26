@@ -22,7 +22,7 @@ def init():
         if status != 'ON':
             continue
 
-        kwargs = {'qps': qps, 'concurrent_mode': concurrent_mode, 'function_timeout': timeout, 'consuming_function': __get_func__(sub)}
+        kwargs = {'create_logger_file': False, 'qps': qps, 'concurrent_mode': concurrent_mode, 'function_timeout': timeout, 'consuming_function': __get_func__(sub)}
         consumer = get_consumer(sub, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM, **kwargs)
 
         if consumer is not None:
