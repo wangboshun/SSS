@@ -8,8 +8,8 @@
   "QUEUE": [
     {
       "NAME": "scheduler_one",
-      "PUB": "scheduler_1",
-      "SUB": "consumer_1",
+      "PUB": "scheduler_11",
+      "SUB": "consumer_11",
       "CRON": "*/30 * * * * *",
       "TIMEOUT": 60,
       "MODE": 1,
@@ -19,19 +19,19 @@
     },
     {
       "NAME": "scheduler_two",
-      "PUB": "scheduler_2",
-      "SUB": "consumer_2",
+      "PUB": "scheduler_22",
+      "SUB": "consumer_22",
       "CRON": "*/30 * * * * *",
       "TIMEOUT": 60,
       "MODE": 1,
       "QPS": 1,
       "LOG": "OFF",
-      "STATUS": "OFF"
+      "STATUS": "ON"
     },
     {
       "NAME": "scheduler_three",
-      "PUB": "scheduler_3",
-      "SUB": "consumer_3",
+      "PUB": "scheduler_33",
+      "SUB": "consumer_33",
       "CRON": "*/30 * * * * *",
       "TIMEOUT": 60,
       "MODE": 1,

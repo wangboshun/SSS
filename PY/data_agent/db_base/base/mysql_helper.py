@@ -44,6 +44,12 @@ class mysql_helper:
         where_str = where_str[:-4]
         return where_str
 
+    @staticmethod
+    def __limit__(limit: int):
+        if limit == 0:
+            return ''
+        return f' LIMIT {limit} '
+
     def get_count(self, table: str, field="*", where=None):
         connect = self.get_connect()
         cu = connect.cursor()
@@ -52,18 +58,18 @@ class mysql_helper:
         connect.close()
         return cnt[0]
 
-    def get_list_data(self, table: str, field="*", where=None, order_by=''):
+    def get_list_data(self, table: str, field="*", where=None, order_by='', limit=0):
         connect = self.get_connect()
         cu = connect.cursor(pymysql.cursors.DictCursor)
-        cu.execute(f'select {field} from {table}  {self.__where__(where)}  {order_by}', tuple(where.values()))
+        cu.execute(f"select {field} from {table}  {self.__where__(where)}  {order_by}  {self.__limit__(limit)}", tuple(where.values()))
         d = cu.fetchall()
         connect.close()
         return d
 
-    def get_stream_data(self, table: str, field="*", where=None, order_by=''):
+    def get_stream_data(self, table: str, field="*", where=None, order_by='', limit=0):
         connect = self.get_connect()
         cu = connect.cursor(pymysql.cursors.SSDictCursor)
-        cu.execute(f'select {field} from {table}  {self.__where__(where)}  {order_by}', tuple(where.values()))
+        cu.execute(f'select {field} from {table}  {self.__where__(where)}  {order_by}  {self.__limit__(limit)}', tuple(where.values()))
         while True:
             row = cu.fetchone()
             if not row:

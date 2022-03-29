@@ -27,14 +27,14 @@ def init():
         kwargs = {'create_logger_file': create_logger_file, 'qps': qps, 'concurrent_mode': concurrent_mode, 'function_timeout': timeout}
         __boost = boost(sub, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM, **kwargs)(__get_func__(sub))
         consumer_dict[sub] = __boost
-        __boost.multi_process_start(len(json))
+        __boost.multi_process_start(len([elem for elem in json if elem['STATUS'] != 'OFF']))
 
 
 def __get_func__(name):
     func_dict = {
-        'consumer_1': consumer_1,
-        'consumer_2': consumer_2,
-        'consumer_3': consumer_3
+        'consumer_11': consumer_1,
+        'consumer_22': consumer_2,
+        'consumer_33': consumer_3
     }
     return func_dict.get(name)
 

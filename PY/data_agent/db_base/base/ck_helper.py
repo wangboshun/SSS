@@ -45,6 +45,12 @@ class ck_helper:
         where_str = where_str[:-4]
         return where_str
 
+    @staticmethod
+    def __limit__(limit: int):
+        if limit == 0:
+            return ''
+        return f' LIMIT {limit} '
+
     def get_count(self, table: str, field="*", where=None):
         connect = self.get_connect()
         cu = connect.cursor()
@@ -53,21 +59,21 @@ class ck_helper:
         connect.close()
         return cnt[0]
 
-    def get_list_data(self, table: str, field="*", where=None, order_by=''):
+    def get_list_data(self, table: str, field="*", where=None, order_by='', limit=0):
         connect = self.get_connect()
         cursor_kwargs = {'cursor_factory': DictCursor}
         cu = connect.cursor(**cursor_kwargs)
-        cu.execute(f'select {field} from {table}  {self.__where__(where)}  {order_by} ;', where)
+        cu.execute(f'select {field} from {table}  {self.__where__(where)}  {order_by}   {self.__limit__(limit)};', where)
         d = cu.fetchall()
         connect.close()
         return d
 
-    def get_stream_data(self, table: str, field="*", where=None, order_by=''):
+    def get_stream_data(self, table: str, field="*", where=None, order_by='', limit=0):
         connect = self.get_connect()
         cursor_kwargs = {'cursor_factory': DictCursor}
         cu = connect.cursor(**cursor_kwargs)
         cu.set_stream_results(True, 10000)
-        cu.execute(f'select {field} from {table}  {self.__where__(where)}  {order_by} ;', where)
+        cu.execute(f'select {field} from {table}  {self.__where__(where)}  {order_by}   {self.__limit__(limit)};', where)
         while True:
             row = cu.fetchone()
             if not row:

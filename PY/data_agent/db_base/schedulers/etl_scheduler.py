@@ -27,7 +27,7 @@ def init():
         create_logger_file = True if create_logger_file == 'ON' else False
         kwargs = {'create_logger_file': create_logger_file, 'concurrent_mode': concurrent_mode, 'function_timeout': timeout}
         __boost = boost(pub, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM, **kwargs)(__get_func__(pub))
-        __boost.multi_process_start(len(json))
+        __boost.multi_process_start(len([elem for elem in json if elem['STATUS'] != 'OFF']))
 
         cron = item['CRON']
         array = cron.split(' ')
@@ -41,9 +41,9 @@ def init():
 
 def __get_func__(name):
     func_dict = {
-        'scheduler_1': scheduler_1,
-        'scheduler_2': scheduler_2,
-        'scheduler_3': scheduler_3
+        'scheduler_11': scheduler_1,
+        'scheduler_22': scheduler_2,
+        'scheduler_33': scheduler_3
     }
     return func_dict.get(name)
 
