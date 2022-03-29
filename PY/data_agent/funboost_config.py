@@ -23,33 +23,6 @@ REDIS_PORT = 6379
 REDIS_DB = 7  # redis消息队列所在db，请不要在这个db放太多其他键值对
 REDIS_DB_FILTER_AND_RPC_RESULT = 8  # 如果函数做任务参数过滤 或者使用rpc获取结果，使用这个db，因为这个db的键值对多，和redis消息队列db分开
 
-NSQD_TCP_ADDRESSES = ['127.0.0.1:4150']
-NSQD_HTTP_CLIENT_HOST = '127.0.0.1'
-NSQD_HTTP_CLIENT_PORT = 4151
-
-KAFKA_BOOTSTRAP_SERVERS = ['127.0.0.1:9092']
-
-SQLACHEMY_ENGINE_URL = 'sqlite:////sqlachemy_queues/queues.db'
-
-# persist_quque中间件时候采用本机sqlite的方式，数据库文件生成的位置。如果linux账号在根目录没权限建文件夹，可以换文件夹。
-SQLLITE_QUEUES_PATH = '/sqllite_queues'
-
-TXT_FILE_PATH = Path(__file__).parent / 'txt_queues'  # 不建议使用这个txt模拟消息队列中间件，本地持久化优先选择 PERSIST_QUQUE 中间件。
-
-ROCKETMQ_NAMESRV_ADDR = '192.168.199.202:9876'
-
-MQTT_HOST = '127.0.0.1'
-MQTT_TCP_PORT = 1883
-
-HTTPSQS_HOST = '127.0.0.1'
-HTTPSQS_PORT = '1218'
-HTTPSQS_AUTH = '123456'
-
-NATS_URL = 'nats://192.168.6.134:4222'
-
-KOMBU_URL = 'redis://127.0.0.1:6379/0'
-# KOMBU_URL =  'sqla+sqlite:////dssf_kombu_sqlite.sqlite'  # 4个//// 代表磁盘根目录下生成一个文件。推荐绝对路径。3个///是相对路径。
-
 # $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 以上是中间件连接配置    $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 # nb_log包的第几个日志模板，内置了7个模板，可以在你当前项目根目录下的nb_log_config.py文件扩展模板。

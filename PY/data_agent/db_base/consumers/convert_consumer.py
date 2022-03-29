@@ -1,4 +1,4 @@
-from funboost import BrokerEnum, get_consumer
+from funboost import BrokerEnum, get_consumer, boost
 
 from db_base.write import db_write
 from utils.json_helper import json_helper
@@ -8,7 +8,7 @@ consumer_dict = {}
 
 def publish_data(name, **kwargs):
     if name in consumer_dict:
-        consumer_dict.get(name).publisher_of_same_queue.publish(kwargs)
+        consumer_dict.get(name).push(kwargs)
 
 
 def init():
@@ -24,12 +24,10 @@ def init():
             continue
 
         create_logger_file = True if create_logger_file == 'ON' else False
-        kwargs = {'create_logger_file': create_logger_file, 'qps': qps, 'concurrent_mode': concurrent_mode, 'function_timeout': timeout, 'consuming_function': __get_func__(sub)}
-        consumer = get_consumer(sub, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM, **kwargs)
-
-        if consumer is not None:
-            consumer_dict[sub] = consumer
-            consumer.start_consuming_message()
+        kwargs = {'create_logger_file': create_logger_file, 'qps': qps, 'concurrent_mode': concurrent_mode, 'function_timeout': timeout}
+        __boost = boost(sub, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM, **kwargs)(__get_func__(sub))
+        consumer_dict[sub] = __boost
+        __boost.multi_process_start(len(json))
 
 
 def __get_func__(name):

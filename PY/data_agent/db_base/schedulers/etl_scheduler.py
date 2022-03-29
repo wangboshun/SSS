@@ -1,6 +1,7 @@
 import datetime
 
-from funboost import BrokerEnum, fsdf_background_scheduler, get_consumer
+from funboost import BrokerEnum, fsdf_background_scheduler, boost
+import multiprocessing
 
 from db_base.read import db_read
 from utils.json_helper import json_helper
@@ -22,19 +23,19 @@ def init():
         create_logger_file = item['LOG']
         if status != 'ON':
             continue
-            
-        create_logger_file = True if create_logger_file == 'ON' else False
-        kwargs = {'create_logger_file': create_logger_file, 'concurrent_mode': concurrent_mode, 'function_timeout': timeout, 'consuming_function': __get_func__(pub)}
-        consumer = get_consumer(pub, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM, **kwargs)
 
-        if consumer is not None:
-            cron = item['CRON']
-            array = cron.split(' ')
-            fsdf_background_scheduler.add_timing_publish_job(id=job_name, func=consumer, trigger='cron',
-                                                             second=array[0], minute=array[1], hour=array[2],
-                                                             day=array[3], month=array[4], year=array[5],
-                                                             kwargs={"job_name": job_name})
-            consumer.start_consuming_message()
+        create_logger_file = True if create_logger_file == 'ON' else False
+        kwargs = {'create_logger_file': create_logger_file, 'concurrent_mode': concurrent_mode, 'function_timeout': timeout}
+        __boost = boost(pub, broker_kind=BrokerEnum.RABBITMQ_AMQPSTORM, **kwargs)(__get_func__(pub))
+        __boost.multi_process_start(len(json))
+
+        cron = item['CRON']
+        array = cron.split(' ')
+        fsdf_background_scheduler.add_timing_publish_job(id=job_name, func=__boost, trigger='cron',
+                                                         second=array[0], minute=array[1], hour=array[2],
+                                                         day=array[3], month=array[4], year=array[5],
+                                                         kwargs={"job_name": job_name})
+
     fsdf_background_scheduler.start()
 
 

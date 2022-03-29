@@ -12,9 +12,9 @@
       "SUB": "consumer_1",
       "CRON": "*/30 * * * * *",
       "TIMEOUT": 60,
-      "MODE": 5,
+      "MODE": 1,
       "QPS": 1,
-      "LOG": "ON",
+      "LOG": "OFF",
       "STATUS": "ON"
     },
     {
@@ -23,10 +23,10 @@
       "SUB": "consumer_2",
       "CRON": "*/30 * * * * *",
       "TIMEOUT": 60,
-      "MODE": 5,
+      "MODE": 1,
       "QPS": 1,
-      "LOG": "ON",
-      "STATUS": "ON"
+      "LOG": "OFF",
+      "STATUS": "OFF"
     },
     {
       "NAME": "scheduler_three",
@@ -34,10 +34,10 @@
       "SUB": "consumer_3",
       "CRON": "*/30 * * * * *",
       "TIMEOUT": 60,
-      "MODE": 5,
+      "MODE": 1,
       "QPS": 1,
-      "LOG": "ON",
-      "STATUS": "ON"
+      "LOG": "OFF",
+      "STATUS": "OFF"
     }
   ]
 }

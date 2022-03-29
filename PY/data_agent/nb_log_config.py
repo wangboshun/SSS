@@ -37,28 +37,13 @@ class JsonFormatterJumpAble(JsonFormatter):
             del log_record['for_segmentation_color']
 
 
-DING_TALK_TOKEN = '3dd0eexxxxxadab014bd604XXXXXXXXXXXX'  # 钉钉报警机器人
-
-EMAIL_HOST = ('smtp.sohu.com', 465)
-EMAIL_FROMADDR = 'aaa0509@sohu.com'  # 'matafyhotel-techl@matafy.com',
-EMAIL_TOADDRS = ('cccc.cheng@silknets.com', 'yan@dingtalk.com',)
-EMAIL_CREDENTIALS = ('aaa0509@sohu.com', 'abcdefg')
-
-ELASTIC_HOST = '127.0.0.1'
-ELASTIC_PORT = 9200
-
-KAFKA_BOOTSTRAP_SERVERS = ['192.168.199.202:9092']
-ALWAYS_ADD_KAFKA_HANDLER_IN_TEST_ENVIRONENT = False
-
-MONGO_URL = 'mongodb://myUserAdmin:mimamiama@127.0.0.1:27016/admin'
-
 DEFAULUT_USE_COLOR_HANDLER = True  # 是否默认使用有彩的日志。
 DISPLAY_BACKGROUD_COLOR_IN_CONSOLE = False  # 在控制台是否显示彩色块状的日志。为False则不使用大块的背景颜色。
 AUTO_PATCH_PRINT = True  # 是否自动打print的猴子补丁，如果打了猴子补丁，print自动变色和可点击跳转。
 SHOW_PYCHARM_COLOR_SETINGS = False  # 有的人很反感启动代码时候提示教你怎么优化pycahrm控制台颜色，可以把这里设置为False
 
 DEFAULT_ADD_MULTIPROCESSING_SAFE_ROATING_FILE_HANDLER = True  # 是否默认同时将日志记录到记log文件记事本中。
-LOG_FILE_SIZE = 100  # 单位是M,每个文件的切片大小，超过多少后就自动切割
+LOG_FILE_SIZE = 20  # 单位是M,每个文件的切片大小，超过多少后就自动切割
 LOG_FILE_BACKUP_COUNT = 3  # 对同一个日志文件，默认最多备份几个文件，超过就删除了。
 
 LOG_PATH = 'logs'  # 默认的日志文件夹,如果不写明磁盘名，则是项目代码所在磁盘的根目录下的/pythonlogs

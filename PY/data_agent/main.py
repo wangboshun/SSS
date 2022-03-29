@@ -4,7 +4,7 @@ from db_base.schedulers import schedulers_manager
 from utils.log_helper import log_helper
 
 if __name__ == '__main__':
-    consumers_manager.run()
+    # consumers_manager.run()
     schedulers_manager.run()
 
     log_helper.debug('绿色')
