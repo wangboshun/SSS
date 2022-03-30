@@ -61,7 +61,7 @@ class mysql_helper:
     def get_list_data(self, table: str, field="*", where=None, order_by='', limit=0):
         connect = self.get_connect()
         cu = connect.cursor(pymysql.cursors.DictCursor)
-        cu.execute(f"select {field} from {table}  {self.__where__(where)}  {order_by}  {self.__limit__(limit)}", tuple(where.values()))
+        cu.execute(f'select {field} from {table}  {self.__where__(where)}  {order_by}  {self.__limit__(limit)}', tuple(where.values()))
         d = cu.fetchall()
         connect.close()
         return d

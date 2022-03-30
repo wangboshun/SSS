@@ -1,6 +1,7 @@
 from funboost import BrokerEnum, get_consumer, boost
 
 from db_base.write import db_write
+from utils.check_helper import check_helper
 from utils.json_helper import json_helper
 
 consumer_dict = {}
@@ -42,6 +43,7 @@ def __get_func__(name):
 def consumer_1(data, cnt):
     print(f'------consumer_1开始消费数据:{data}------')
     db_write.insert_data_v1(data)
+    check_helper.isEmpty(data,'')
     print(f'######consumer_1消费数据完成:{data}######')
 
 
