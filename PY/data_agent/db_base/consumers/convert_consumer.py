@@ -41,19 +41,22 @@ def __get_func__(name):
 
 
 def consumer_1(data, cnt):
+    table = 'Test2'
     print(f'------consumer_1开始消费数据:{data}------')
-    db_write.insert_data_v1(data)
-    check_helper.isEmpty(data,'')
+    db_write.insert_data_v1(table, data)
+    check_helper.isEmpty(data, '')
     print(f'######consumer_1消费数据完成:{data}######')
 
 
 def consumer_2(data, cnt):
+    table = 'Test2'
     print(f'------consumer_2开始消费数据:{data}------')
-    db_write.insert_data_v2(data)
+    db_write.insert_data_v2(table, data)
     print(f'######consumer_2消费数据完成:{data}######')
 
 
 def consumer_3(data, cnt):
+    table = 'Test2'
     print(f'------consumer_3开始消费数据:{data}------')
-    db_write.insert_data_v3(data)
+    db_write.insert_data_v3(table, data)
     print(f'######consumer_3消费数据完成:{data}######')

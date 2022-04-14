@@ -92,3 +92,20 @@ class mysql_helper:
         cu.execute(insert_sql, tuple(data.values()))
         connect.commit()
         connect.close()
+
+    def insert_list_data(self, table: str, list_data: list):
+        connect = self.get_connect()
+        cu = connect.cursor()
+        for data in list_data:
+            insert_sql = f"INSERT INTO `{table}` "
+            field = '('
+            value = '('
+            for item in data:
+                field += item + ','
+                value += '%s,'
+            field = field[:-1] + ')'
+            value = value[:-1] + ')'
+            insert_sql += field + ' VALUES ' + value
+            cu.execute(insert_sql, tuple(data.values()))
+        connect.commit()
+        connect.close()

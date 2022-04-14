@@ -11,14 +11,14 @@ from funboost.utils.simple_data_class import DataClassBase
 
 MONGO_CONNECT_URL = f'mongodb://192.168.6.133:27017'  # 如果有密码连接 'mongodb://myUserAdmin:8mwTdy1klnSYepNo@192.168.199.202:27016/admin'
 
-RABBITMQ_USER = 'wbs'
-RABBITMQ_PASS = '123456'
-RABBITMQ_HOST = '111.67.207.174'
+RABBITMQ_USER = 'slw'
+RABBITMQ_PASS = 'slw123456.'
+RABBITMQ_HOST = '127.0.0.1'
 RABBITMQ_PORT = 5672
 RABBITMQ_VIRTUAL_HOST = '/'  # my_host # 这个是rabbitmq的虚拟子host用户自己创建的，如果你想直接用rabbitmq的根host而不是使用虚拟子host，这里写 / 即可。
 
 REDIS_HOST = '127.0.0.1'
-REDIS_PASSWORD = ''
+REDIS_PASSWORD = 'slw123456.'
 REDIS_PORT = 6379
 REDIS_DB = 7  # redis消息队列所在db，请不要在这个db放太多其他键值对
 REDIS_DB_FILTER_AND_RPC_RESULT = 8  # 如果函数做任务参数过滤 或者使用rpc获取结果，使用这个db，因为这个db的键值对多，和redis消息队列db分开
