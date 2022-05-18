@@ -28,16 +28,16 @@ public class App {
      * 获取数据  mysql
      */
     public static void getStreamData1() {
-        String connectStr = "jdbc:mysql://47.118.58.79:3306/test1?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+        String connectStr = "jdbc:mysql://127.0.0.1:3306/test1?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
         try {
 
             MysqlDataSource mysqlDataSource = new MysqlDataSource();
             mysqlDataSource.setURL(connectStr);
-            Connection connect = mysqlDataSource.getConnection("root", "Slw123456.");
+            Connection connect = mysqlDataSource.getConnection("root", "123456");
 
             /* JDBC直连
              Class.forName("com.mysql.cj.jdbc.Driver");
-             Connection connect = DriverManager.getConnection(connectStr, "root", "Slw123456.");
+             Connection connect = DriverManager.getConnection(connectStr, "root", "123456");
             */
 
             Statement stmt = connect.createStatement();
