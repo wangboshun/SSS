@@ -1,5 +1,7 @@
 package org.example;
 
+import cn.hutool.log.Log;
+import cn.hutool.log.LogFactory;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -17,6 +19,10 @@ public class CustomerData extends Thread {
         Gson g = new Gson();
         String json = g.toJson(list);
         long id = Thread.currentThread().getId();
-        System.out.println("Id:" + id + "--->" + json);
+
+        Log log = LogFactory.get();
+        log.info("Id:" + id + "--->" + json);
+
+//        System.out.println("Id:" + id + "--->" + json);
     }
 }
