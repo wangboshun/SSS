@@ -41,7 +41,7 @@ public class App {
             */
 
             Statement stmt = connect.createStatement();
-            ResultSet result = stmt.executeQuery("select * from Test1");
+            ResultSet result = stmt.executeQuery("select * from Test1 limit 1000");
             List<Map<String, Object>> list = new ArrayList<>();
             List<String> filedList = getField(result);
             while (result.next()) {
@@ -120,6 +120,58 @@ public class App {
         }
     }
 
+    /**
+     * 获取数据  mysql  大数据流获取
+     */
+    public static void insertData1() {
+        //URL连接时需要开启批处理、以及预编译
+        String connectStr = "jdbc:mysql://127.0.0.1:3306/test1?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&rewriteBatchedStatements=true";
+        try {
+            long begin = 1;
+            long end = begin + 200000;
+            MysqlDataSource mysqlDataSource = new MysqlDataSource();
+            mysqlDataSource.setURL(connectStr);
+            Connection connect = mysqlDataSource.getConnection("root", "123456");
+            String sql = "INSERT INTO test3 VALUES (?,?,?)";
+            PreparedStatement pstm = connect.prepareStatement(sql);
+
+            //开始总计时
+            long bTime1 = System.currentTimeMillis();
+            //循环10次，每次十万数据，一共1000万
+            for (int i = 0; i < 500; i++) {
+
+                //开启分段计时，计1W数据耗时
+                long bTime = System.currentTimeMillis();
+                //开始循环
+                while (begin < end) {
+                    //赋值
+                    pstm.setString(1, "" + begin);
+                    pstm.setDate(2, new java.sql.Date(System.currentTimeMillis()));
+                    pstm.setDouble(3, begin);
+                    //添加到同一个批处理中
+                    pstm.addBatch();
+                    begin++;
+                }
+                //执行批处理
+                pstm.executeBatch();
+
+                //边界值自增10W
+                end += 100000;
+                //关闭分段计时
+                long eTime = System.currentTimeMillis();
+                //输出
+                System.out.println("成功插入10W条数据耗时：" + (eTime - bTime));
+            }
+
+            long eTime1 = System.currentTimeMillis();
+            //输出
+            System.out.println("插入1000W数据共耗时：" + (eTime1 - bTime1));
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void Mybatis() throws IOException {
         InputStream is = Resources.getResourceAsStream("mybatis.xml");
         //获取SqlSessionFactoryBuilder
@@ -133,7 +185,10 @@ public class App {
         //测试功能
         //调用mapper接口的方法
         Test1 result = mapper.selectByPrimaryKey("100");
-        System.out.println( result.toString());
+        System.out.println(result.toString());
+
+        List<Test1> l=mapper.getListTest1("11");
+        int a=1;
     }
 
     /**

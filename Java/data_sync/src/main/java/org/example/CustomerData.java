@@ -22,7 +22,6 @@ public class CustomerData extends Thread {
 
         Log log = LogFactory.get();
         log.info("Id:" + id + "--->" + json);
-
-//        System.out.println("Id:" + id + "--->" + json);
+       System.out.println("Id:" + id + "--->" + json);
     }
 }
