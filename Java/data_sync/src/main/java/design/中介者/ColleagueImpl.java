@@ -4,21 +4,21 @@ public class ColleagueImpl extends Colleague {
 
     ColleagueImpl(String name, Mediator m) {
         super(name, m);
-        m.addColleague(this);
+//        m.addColleague(this);
     }
 
     @Override
     public void receive(String msg, String name) {
-        System.out.println(this.getName() + "接收" + name + "的消息，内容为：" + msg);
+        System.out.println("我" + this.getName() + " 被" + name + " 联系了， " + "信息为:" + msg );
     }
 
     @Override
     public void send(String msg, String... names) {
-        StringBuilder l = new StringBuilder();
-        for (String name : names) {
-            l.append(name).append(",");
+        System.out.print("我 " + this.getName() + " 向 ");
+        for (String n : names){
+            System.out.print(n + ",");
         }
-        System.out.println(this.getName() + "向" + l + "发送消息，内容为：" + msg);
-        this.getM().contact(msg, this, names);
+        System.out.println(" 发 " + msg + " 信息");
+        this.getM().contact(msg,this, names);
     }
 }

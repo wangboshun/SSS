@@ -8,12 +8,13 @@ class MediatorTest {
         Colleague c3=new ColleagueImpl("CCC",m);
         Colleague c4=new ColleagueImpl("DDD",m);
 
-//        m.addColleague(c1);
-//        m.addColleague(c2);
-//        m.addColleague(c3);
-//        m.addColleague(c4);
+        m.addColleague(c1);
+        m.addColleague(c2);
+        m.addColleague(c3);
+        m.addColleague(c4);
 
         c1.send("test",c2.getName(),c3.getName(),c4.getName());
         c2.send("test2",c3.getName(),c4.getName());
+        c3.send("test3",c3.getName(),c4.getName());
     }
 }

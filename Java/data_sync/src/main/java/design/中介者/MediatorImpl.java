@@ -9,7 +9,7 @@ public class MediatorImpl implements Mediator{
     public void contact(String msg, Colleague colleague, String... names) {
         for(String name: names){
             Colleague c=map.get(name);
-            c.receive(msg,c.getName());
+            c.receive(msg,colleague.getName());
         }
     }
 
