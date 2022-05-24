@@ -2,7 +2,7 @@ package design.建造者;
 
 import com.google.gson.Gson;
 
-class adminTest {
+class buildTest {
     public static void main(String[] args) {
         director a = new director();
 

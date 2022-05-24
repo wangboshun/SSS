@@ -8,7 +8,7 @@ class MediatorTest {
         ClassLeader c3=new ClassLeader_3(m);
 
         c1.send();
-        c2.send();
-        c3.send();
+//        c2.send();
+//        c3.send();
     }
 }
