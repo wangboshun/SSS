@@ -20,7 +20,7 @@ import java.util.Map;
 public class App {
     public static void main(String[] args) throws IOException {
         System.out.println("Hello World!");
-        Mybatis();
+        getStreamData3();
     }
 
 
@@ -104,6 +104,7 @@ public class App {
     public static void getStreamData3() {
         String connectStr = "jdbc:mysql://127.0.0.1:3306/test1?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
         try {
+            long startTime = System.currentTimeMillis();
             MysqlDataSource mysqlDataSource = new MysqlDataSource();
             mysqlDataSource.setURL(connectStr);
             Connection connect = mysqlDataSource.getConnection("root", "123456");
@@ -115,6 +116,8 @@ public class App {
                 num += 1;
                 System.out.println("num:" + num);
             }
+            long endTime = System.currentTimeMillis();
+            System.out.println("程序运行时间：" + (endTime - startTime)/1000 + "s");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -188,7 +191,6 @@ public class App {
         System.out.println(result.toString());
 
         List<Test1> l=mapper.getListTest1("11");
-        int a=1;
     }
 
     /**
