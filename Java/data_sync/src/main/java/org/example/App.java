@@ -124,7 +124,7 @@ public class App {
     }
 
     /**
-     * 获取数据  mysql  大数据流获取
+     * 获取数据  mysql  大数据流插入
      */
     public static void insertData1() {
         //URL连接时需要开启批处理、以及预编译
