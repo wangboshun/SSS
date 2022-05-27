@@ -8,11 +8,11 @@ import java.math.BigDecimal;
 public class oneAlgorithmHandler extends DataCheckHandler {
 
     public oneAlgorithmHandler() {
-        this.value = new BigDecimal(5);
+        this.currentValue=new BigDecimal("5");
     }
 
     @Override
     protected void addWarn(BigDecimal value, ErrorEnum error) {
-        System.out.println("已使用 oneAlgorithmHandler 判断为：" + error +" "+ this.value);
+        System.out.println("已使用 oneAlgorithmHandler 判断为：" +value+" " + error + " " + this.currentValue);
     }
 }

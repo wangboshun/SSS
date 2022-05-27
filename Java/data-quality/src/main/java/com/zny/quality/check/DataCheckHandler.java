@@ -3,33 +3,45 @@ package com.zny.quality.check;
 import java.math.BigDecimal;
 
 public abstract class DataCheckHandler {
-    public BigDecimal value;
-    private DataCheckHandler next;
+    public BigDecimal currentValue;
+    private DataCheckHandler nextHandler;
+    private DataCheckHandler prevHandler;
 
     public void setNextHandler(DataCheckHandler handler) {
-        this.next = handler;
+        this.nextHandler = handler;
+    }
+
+    public void setPreHandler(DataCheckHandler handler) {
+        this.prevHandler = handler;
     }
 
     protected void less(BigDecimal value) {
-        if (value.compareTo(this.value) < 0) {
+        if (value.compareTo(this.currentValue) < 0) {
             addWarn(value, ErrorEnum.LESS);
         } else {
-            if (next != null) {
-                next.less(value);
+            if (nextHandler != null) {
+                nextHandler.less(value);
             } else {
-                System.out.println("最后一级了");
+                System.out.println("没有可匹配的值");
             }
         }
     }
 
     protected void more(BigDecimal value) {
-        if (value.compareTo(this.value) > 0) {
-            addWarn(value, ErrorEnum.LESS);
-        } else {
-            if (next != null) {
-                next.more(value);
+        if (value.compareTo(this.currentValue) > 0) {
+            if (nextHandler != null) {
+                nextHandler.setPreHandler(this);
+                nextHandler.more(value);
             } else {
-                System.out.println("最后一级了");
+                System.out.println("没有可匹配的值");
+            }
+        } else {
+            if (prevHandler!= null){
+                this.currentValue = prevHandler.currentValue;
+                addWarn(value, ErrorEnum.MORE);
+            }
+            else{
+                System.out.println("没有可匹配的值");
             }
         }
     }

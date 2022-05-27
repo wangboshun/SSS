@@ -8,6 +8,6 @@ public class concreteHandler_2 extends handler{
 
     @Override
     protected void doSth(int day) {
-        System.out.println("concreteHandler_2 处理 day:"+day);
+        System.out.println("concreteHandler_2 处理 day:"+day+" "+maxDays);
     }
 }

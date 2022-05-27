@@ -8,9 +8,9 @@ class handlerTest {
         h1.setNextHandler(h2);
 
         h1.request(3);
-        h1.request(5);
-        h1.request(10);
-        h1.request(15);
+        h1.request(6);
+        h1.request(11);
+//        h1.request(15);
 
     }
 }
