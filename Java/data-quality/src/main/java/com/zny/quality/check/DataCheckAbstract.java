@@ -1,6 +1,6 @@
 package com.zny.quality.check;
 
-import com.zny.quality.msg.MsgObserver;
+import com.zny.quality.msg.MsgObserverInterface;
 import com.zny.quality.msg.MsgSubject;
 import com.zny.quality.msg.sink.RabbitMqObserverImpl;
 import com.zny.quality.msg.sink.RedisObserverImpl;
@@ -13,21 +13,18 @@ import java.math.BigDecimal;
 public abstract class DataCheckAbstract {
     protected abstract boolean execute(BigDecimal value, CompareEnum e);
 
-    private MsgSubject getMsgSubject() {
+    private void addWarn(BigDecimal currentValue, BigDecimal compareValue, CompareEnum e) {
+
+        String msg = "currentValue：" + currentValue + " " + "compareValue：" + compareValue + " " + e;
         MsgSubject subject = new MsgSubject();
 
-        MsgObserver observer = new RabbitMqObserverImpl();
+        MsgObserverInterface observer = new RabbitMqObserverImpl(msg);
         subject.addObserver(observer);
 
-        observer = new RedisObserverImpl();
+        observer = new RedisObserverImpl(msg);
         subject.addObserver(observer);
 
-        return subject;
-    }
-
-    private void addWarn(BigDecimal currentValue, BigDecimal compareValue, CompareEnum e) {
-        MsgSubject subject = getMsgSubject();
-        subject.sendMsg("currentValue：" + currentValue + " " + "compareValue：" + compareValue + " " + e);
+        subject.sendMsg();
     }
 
     /**

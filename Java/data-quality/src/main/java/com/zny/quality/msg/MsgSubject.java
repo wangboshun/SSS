@@ -6,7 +6,7 @@ package com.zny.quality.msg;
  */
 
 public class MsgSubject extends SubjectAbstract {
-    public void sendMsg(String msg) {
-        super.notifyObservers(msg);
+    public void sendMsg() {
+        super.notifyObservers();
     }
 }

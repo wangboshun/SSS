@@ -5,6 +5,6 @@ package com.zny.quality.msg;
  * Date:2022/5/30
  */
 
-public interface MsgObserver {
-    void sendMsg(String msg);
+public interface MsgObserverInterface extends Runnable {
+
 }

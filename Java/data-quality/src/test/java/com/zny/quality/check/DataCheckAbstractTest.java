@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 class DataCheckAbstractTest {
     @Test
@@ -41,5 +43,57 @@ class DataCheckAbstractTest {
         BigDecimal value = new BigDecimal("9");
         CheckInvoker invoker = new CheckInvoker(l);
         invoker.action(value, CompareEnum.LESS);
+
+        try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        System.out.println("结束");
+    }
+
+
+    @Test
+    void test3() throws InterruptedException {
+        CompletableFuture<String> f1 = CompletableFuture.supplyAsync(() -> {
+            System.out.println(Thread.currentThread() + "-f1");
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return "f1";
+        });
+        CompletableFuture<String> f2 = CompletableFuture.supplyAsync(() -> {
+            System.out.println(Thread.currentThread() + "-f2");
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return "f2";
+        });
+        CompletableFuture<String> f3 = CompletableFuture.supplyAsync(() -> {
+            System.out.println(Thread.currentThread() + "-f3");
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return "f3";
+        });
+
+        CompletableFuture.allOf(f1, f2, f3).thenApply((Integer) -> {
+            try {
+                System.out.println(Thread.currentThread() + f1.get()+f2.get()+f3.get());
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+            return 1;
+        });
+        Thread.sleep(10000);
+        System.out.println(Thread.currentThread() + " end");
+
     }
 }
