@@ -1,20 +1,20 @@
 package com.zny.quality.check;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author WBS
  */
 public class CheckInvoker {
-    public List<DataCheckAbstract> list = new ArrayList<>();
+    public Set<DataCheckAbstract> list =new HashSet<>();
 
     public CheckInvoker(DataCheckAbstract command) {
         this.list.add(command);
     }
 
-    public CheckInvoker(List<DataCheckAbstract> list) {
+    public CheckInvoker(Set<DataCheckAbstract> list) {
         this.list.addAll(list);
     }
 
@@ -25,5 +25,6 @@ public class CheckInvoker {
                 return;
             }
         }
+        System.out.println("数据正常");
     }
 }

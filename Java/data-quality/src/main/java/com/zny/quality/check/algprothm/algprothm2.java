@@ -8,12 +8,12 @@ import java.math.BigDecimal;
 /**
  * @author WBS
  */
-public class OneDataCheckImpl extends DataCheckAbstract {
+public class algprothm2 extends DataCheckAbstract {
 
     @Override
     public boolean execute(BigDecimal value, CompareEnum e) {
-        System.out.println("OneDataCheckImpl");
-        BigDecimal compareValue = new BigDecimal("5");
-       return super.compareTo(value, compareValue, e);
+        System.out.println("使用了【algprothm----2】算法");
+        BigDecimal compareValue = new BigDecimal("10");
+        return super.compareTo(value, compareValue, e);
     }
 }

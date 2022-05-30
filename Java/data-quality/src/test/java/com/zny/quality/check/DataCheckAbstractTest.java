@@ -1,27 +1,45 @@
 package com.zny.quality.check;
 
-import com.zny.quality.check.algprothm.OneDataCheckImpl;
-import com.zny.quality.check.algprothm.TwoDataCheckImpl;
+import cn.hutool.core.util.ClassUtil;
+import com.zny.quality.check.algprothm.algprothm1;
+import com.zny.quality.check.algprothm.algprothm2;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 class DataCheckAbstractTest {
     @Test
-    void name() {
+    void test1() {
+        BigDecimal value = new BigDecimal("8");
 
-        BigDecimal value = new BigDecimal("10");
+        DataCheckAbstract one = new algprothm1();
+        DataCheckAbstract two = new algprothm2();
 
-        DataCheckAbstract one = new OneDataCheckImpl();
-        DataCheckAbstract two = new TwoDataCheckImpl();
-
-        List<DataCheckAbstract> list = new ArrayList<>();
+        Set<DataCheckAbstract> list = new HashSet<>();
         list.add(one);
         list.add(two);
 
         CheckInvoker invoker = new CheckInvoker(list);
-        invoker.action(value,CompareEnum.GREATER);
+        invoker.action(value, CompareEnum.GREATER);
+    }
+
+    @Test
+    void test2() {
+        Set<Class<?>> list = ClassUtil.scanPackageBySuper(null, DataCheckAbstract.class);
+        Set<DataCheckAbstract> l = new HashSet<>();
+
+        for (Class<?> c : list) {
+            try {
+                l.add((DataCheckAbstract) Class.forName(c.getName()).getDeclaredConstructor().newInstance());
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+
+        BigDecimal value = new BigDecimal("9");
+        CheckInvoker invoker = new CheckInvoker(l);
+        invoker.action(value, CompareEnum.LESS);
     }
 }

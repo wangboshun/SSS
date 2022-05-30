@@ -10,6 +10,7 @@ public class MediatorImpl implements Mediator{
         for(String name: names){
             Colleague c=map.get(name);
             c.receive(msg,colleague.getName());
+
         }
     }
 

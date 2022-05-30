@@ -23,9 +23,6 @@ public enum CompareEnum {
     LESS_EQUAL,
 
     //等于
-    EQUAL,
-
-    //不等于
-    NO_EQUAL
+    EQUAL
 
 }
