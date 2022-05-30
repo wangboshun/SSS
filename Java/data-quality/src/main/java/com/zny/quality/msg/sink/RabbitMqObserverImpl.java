@@ -4,6 +4,7 @@ import com.zny.quality.msg.MsgObserverInterface;
 
 /**
  * Rabbitmq中间件
+ *
  * @author WBS
  * Date:2022/5/30
  */

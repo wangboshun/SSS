@@ -7,9 +7,10 @@ import java.sql.SQLException;
 
 /**
  * MySQL连接
+ *
  * @author WBS
  */
-public class MySqlConnection implements ConnectionStrategy{
+public class MySqlConnection implements ConnectionStrategy {
     /**
      * 完善连接字符串
      *

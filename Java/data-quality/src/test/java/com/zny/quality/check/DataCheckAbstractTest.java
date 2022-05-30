@@ -12,6 +12,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 class DataCheckAbstractTest {
+
+
+    /**
+     * 通过一般实例化添加算法
+     */
     @Test
     void test1() {
         BigDecimal value = new BigDecimal("8");
@@ -27,6 +32,10 @@ class DataCheckAbstractTest {
         invoker.action(value, CompareEnum.GREATER);
     }
 
+
+    /**
+     * 通过反射方式添加算法
+     */
     @Test
     void test2() {
         Set<Class<?>> list = ClassUtil.scanPackageBySuper(null, DataCheckAbstract.class);
@@ -86,7 +95,7 @@ class DataCheckAbstractTest {
 
         CompletableFuture.allOf(f1, f2, f3).thenApply((Integer) -> {
             try {
-                System.out.println(Thread.currentThread() + f1.get()+f2.get()+f3.get());
+                System.out.println(Thread.currentThread() + f1.get() + f2.get() + f3.get());
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }

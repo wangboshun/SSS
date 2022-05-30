@@ -14,6 +14,6 @@ public class algprothm2 extends DataCheckAbstract {
     public boolean execute(BigDecimal value, CompareEnum e) {
         System.out.println("使用了【algprothm----2】算法");
         BigDecimal compareValue = new BigDecimal("10");
-        return super.compareTo(value, compareValue, e);
+        return super.compare(value, compareValue, e);
     }
 }

@@ -4,6 +4,7 @@ import java.sql.Connection;
 
 /**
  * 连接工厂
+ *
  * @author WBS
  */
 public class ConnectFactory {
@@ -31,7 +32,7 @@ public class ConnectFactory {
         return strategy.getConnection(url, name, password);
     }
 
-    public Connection getConnection(String host, int port,String db, String name, String password) {
-        return strategy.getConnection(host, port,db, name, password);
+    public Connection getConnection(String host, int port, String db, String name, String password) {
+        return strategy.getConnection(host, port, db, name, password);
     }
 }

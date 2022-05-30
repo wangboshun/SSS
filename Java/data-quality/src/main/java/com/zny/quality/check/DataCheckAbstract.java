@@ -15,9 +15,10 @@ public abstract class DataCheckAbstract {
 
     /**
      * 添加告警
+     *
      * @param currentValue 当前值
      * @param compareValue 告警值
-     * @param e 状态
+     * @param e            状态
      */
     private void addWarn(BigDecimal currentValue, BigDecimal compareValue, CompareEnum e) {
 
@@ -39,7 +40,7 @@ public abstract class DataCheckAbstract {
      * @param e            对比方式
      * @return 对比状态
      */
-    protected boolean compareTo(BigDecimal currentValue, BigDecimal compareValue, CompareEnum e) {
+    protected boolean compare(BigDecimal currentValue, BigDecimal compareValue, CompareEnum e) {
         return switch (e) {
             case GREATER -> this.greater(currentValue, compareValue);
             case GREATER_EQUAL -> this.greaterEqual(currentValue, compareValue);
@@ -52,6 +53,7 @@ public abstract class DataCheckAbstract {
 
     /**
      * 小于对比
+     *
      * @param currentValue 当前值
      * @param compareValue 对比值
      * @return 状态
@@ -66,6 +68,7 @@ public abstract class DataCheckAbstract {
 
     /**
      * 小于等于对比
+     *
      * @param currentValue 当前值
      * @param compareValue 对比值
      * @return 状态
@@ -80,6 +83,7 @@ public abstract class DataCheckAbstract {
 
     /**
      * 大于对比
+     *
      * @param currentValue 当前值
      * @param compareValue 对比值
      * @return 状态
@@ -94,6 +98,7 @@ public abstract class DataCheckAbstract {
 
     /**
      * 大于等于对比
+     *
      * @param currentValue 当前值
      * @param compareValue 对比值
      * @return 状态
@@ -108,6 +113,7 @@ public abstract class DataCheckAbstract {
 
     /**
      * 等于对比
+     *
      * @param currentValue 当前值
      * @param compareValue 对比值
      * @return 状态
