@@ -3,6 +3,7 @@ package com.zny.quality.msg.sink;
 import com.zny.quality.msg.MsgObserverInterface;
 
 /**
+ * Redis中间件
  * @author WBS
  * Date:2022/5/30
  */

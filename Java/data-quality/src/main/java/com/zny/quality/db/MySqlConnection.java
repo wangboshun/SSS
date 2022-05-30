@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
+ * MySQL连接
  * @author WBS
  */
 public class MySqlConnection implements ConnectionStrategy{

@@ -3,6 +3,7 @@ package com.zny.quality.db;
 import java.sql.Connection;
 
 /**
+ * 连接工厂
  * @author WBS
  */
 public class ConnectFactory {

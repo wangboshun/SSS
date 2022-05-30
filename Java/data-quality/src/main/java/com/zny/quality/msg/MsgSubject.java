@@ -6,6 +6,10 @@ package com.zny.quality.msg;
  */
 
 public class MsgSubject extends SubjectAbstract {
+
+    /**
+     * 执行
+     */
     public void sendMsg() {
         super.notifyObservers();
     }

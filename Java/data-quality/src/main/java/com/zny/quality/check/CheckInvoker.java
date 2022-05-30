@@ -8,7 +8,7 @@ import java.util.Set;
  * @author WBS
  */
 public class CheckInvoker {
-    public Set<DataCheckAbstract> list =new HashSet<>();
+    public Set<DataCheckAbstract> list = new HashSet<>();
 
     public CheckInvoker(DataCheckAbstract command) {
         this.list.add(command);
@@ -18,6 +18,9 @@ public class CheckInvoker {
         this.list.addAll(list);
     }
 
+    /**
+     * 命令入口
+     */
     public void action(BigDecimal value, CompareEnum e) {
         for (DataCheckAbstract command : list) {
             boolean state = command.execute(value, e);

@@ -1,10 +1,10 @@
 package com.zny.quality.msg;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.zny.quality.utils.ThreadUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author WBS
@@ -14,28 +14,28 @@ import java.util.concurrent.*;
 public abstract class SubjectAbstract {
     private final List<MsgObserverInterface> list = new ArrayList<>();
 
+    /**
+     * 添加观察者
+     */
     public void addObserver(MsgObserverInterface observer) {
         list.add(observer);
     }
 
+    /**
+     * 删除观察者
+     */
     public void removeObserver(MsgObserverInterface observer) {
         list.remove(observer);
     }
 
+    /**
+     * 通知被观察者
+     */
     public void notifyObservers() {
         System.out.println("通知所有发信息中间件");
-
-        ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("Thread-pool-").build();
-        int processNum = Runtime.getRuntime().availableProcessors();
-        int corePoolSize = (int) (processNum / (1 - 0.2));
-        int maxPoolSize = (int) (processNum / (1 - 0.5));
-        long keepAliveTime = 60;
-        TimeUnit unit = TimeUnit.SECONDS;
-        BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
-        ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, unit, workQueue, threadFactory);
+        ThreadPoolExecutor executor = ThreadUtils.createThreadPool();
         for (MsgObserverInterface observer : list) {
             executor.execute(observer);
         }
-
     }
 }
