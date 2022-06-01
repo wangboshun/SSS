@@ -44,14 +44,20 @@ public abstract class AbstractDataCheck {
      * @return 对比状态
      */
     protected boolean compare(BigDecimal currentValue, BigDecimal compareValue, CompareEnum e) {
-        return switch (e) {
-            case GREATER -> this.greater(currentValue, compareValue);
-            case GREATER_EQUAL -> this.greaterEqual(currentValue, compareValue);
-            case LESS -> this.less(currentValue, compareValue);
-            case LESS_EQUAL -> this.lessEqual(currentValue, compareValue);
-            case EQUAL -> this.equal(currentValue, compareValue);
-            default -> throw new IllegalStateException("Unexpected value: " + e);
-        };
+        switch (e) {
+            case GREATER:
+                return this.greater(currentValue, compareValue);
+            case GREATER_EQUAL:
+                return this.greaterEqual(currentValue, compareValue);
+            case LESS:
+                return this.less(currentValue, compareValue);
+            case LESS_EQUAL:
+                return this.lessEqual(currentValue, compareValue);
+            case EQUAL:
+                return this.equal(currentValue, compareValue);
+            default:
+                return false;
+        }
     }
 
     /**

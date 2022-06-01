@@ -1,18 +1,16 @@
 package org.wbs.quality.db;
 
 import cn.hutool.core.util.ClassUtil;
+import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
 import org.wbs.quality.check.AbstractDataCheck;
 import org.wbs.quality.check.CheckInvoker;
 import org.wbs.quality.check.CompareEnum;
+import org.wbs.quality.utils.DbUtils;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.HashSet;
-import java.util.Set;
+import java.sql.*;
+import java.util.*;
 
 class ConnectFactoryTest {
 
@@ -21,13 +19,24 @@ class ConnectFactoryTest {
      */
     @Test
     void mysql() {
-        Connection connect = new ConnectFactory("MySql").getConnection("127.0.0.1", 3306, "test1", "root", "123456");
+        Connection connect = new DbFactory(SqlEnum.MYSQL, "127.0.0.1", 3306, "test1", "root", "123456").getConnection();
         try {
+
             Statement stmt = connect.createStatement();
             ResultSet result = stmt.executeQuery("select * from test1 limit 100 ");
+            ResultSetMetaData metaData = result.getMetaData();
+            List<Map<String, Object>> list = new ArrayList<>();
+
             while (result.next()) {
-                System.out.println(result.getString(1) + "  " + result.getString(2));
+                Map<String, Object> map = new HashMap<>();
+                for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                    String field = metaData.getColumnName(i);
+//                    map.put(field, DbUtils.getData(result, field));
+                }
+                System.out.println(map);
+                list.add(map);
             }
+            System.out.println(new Gson().toJson(list));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -38,7 +47,7 @@ class ConnectFactoryTest {
      */
     @Test
     void mssql() {
-        Connection connect = new ConnectFactory("MsSql").getConnection("127.0.0.1", 1433, "test1", "sa", "123456");
+        Connection connect = new DbFactory(SqlEnum.MSSQL, "127.0.0.1", 1433, "test1", "sa", "123456").getConnection();
         try {
             Statement stmt = connect.createStatement();
             ResultSet result = stmt.executeQuery("select  top 100  * from Test1 ");
@@ -52,7 +61,7 @@ class ConnectFactoryTest {
     }
 
 
-    void datacheckdata(BigDecimal value){
+    void datacheckdata(BigDecimal value) {
         Set<Class<?>> list = ClassUtil.scanPackageBySuper(null, AbstractDataCheck.class);
         Set<AbstractDataCheck> l = new HashSet<>();
 

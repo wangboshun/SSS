@@ -62,7 +62,7 @@ public class future {
             }
             return 10086;
         });
-        var r = future.whenComplete((result, error) -> {
+        CompletableFuture<Integer> r = future.whenComplete((result, error) -> {
             System.out.println("start---2");
             try {
                 Thread.sleep(2000);
@@ -97,7 +97,7 @@ public class future {
         });
 
         // 使用handle()方法接收list数据和error异常
-        var future2 = future.handle((list, error) -> {
+        CompletableFuture<Integer>  future2 = future.handle((list, error) -> {
             // 如果报错，就打印出异常
 //            error.printStackTrace();
             // 如果不报错，返回一个包含Integer的全新的CompletableFuture
@@ -128,7 +128,7 @@ public class future {
         }, executorService);
 
         // apply和handle差不多,少了一个error异常参数
-        var future2 = future.thenApply((list) -> {
+        CompletableFuture<Integer>  future2 = future.thenApply((list) -> {
             // 如果不报错，返回一个包含Integer的全新的CompletableFuture
             return list.size();
         });
@@ -154,7 +154,7 @@ public class future {
         });
 
         // accept没有返回值
-        var future2 = future.thenAccept((list) -> {
+        CompletableFuture<Void> future2 = future.thenAccept((list) -> {
           System.out.println("over");
         });
 
