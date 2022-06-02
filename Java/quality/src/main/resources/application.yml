@@ -26,3 +26,32 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/test1
     username: root
     password: 123456
+
+
+server:
+  port: 8080
+
+
+springdoc:
+  api-docs: #是否开启文档功能
+    enabled: true
+    #swagger后端请求地址
+    path: /api-docs
+  swagger-ui: #自定义swagger前端请求路径
+    path: /docs
+  #包扫描路径
+  packages-to-scan: org.wbs.quality.controller,org.wbs.quality.model
+  #这里定义了两个分组，可定义多个，也可以不定义
+  group-configs: #分组名
+    - group: test1
+      #按路径匹配
+      pathsToMatch: /api/test/**
+      #分组名
+    - group: test2
+      #按包路径匹配
+      packagesToScan: org.wbs.quality.controller
+
+logging:
+  config: classpath:log_config.xml
+  level:
+    org.wbs.quality: info
