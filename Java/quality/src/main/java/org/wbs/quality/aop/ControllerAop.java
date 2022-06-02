@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.wbs.quality.thread.ApiLogThread;
 import org.wbs.quality.utils.ThreadUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Component
 public class ControllerAop {
 
+    /**
+     * 控制器Aop
+     */
     @Pointcut("execution(public * org.wbs.quality.controller.*.*(..))")
     public void ControllerAop() {
     }
@@ -37,8 +41,8 @@ public class ControllerAop {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             HttpServletRequest request = attributes.getRequest();
             long spend = stopWatch.getTotalTimeMillis();
-            ThreadPoolExecutor executor = ThreadUtils.createThreadPool();
-            executor.execute(new ApiLog(pjd, request, result, spend));
+            ThreadPoolExecutor executor = ThreadUtils.createThreadPool("ControllerAop", 1);
+            executor.execute(new ApiLogThread(pjd, request, result, spend));
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }

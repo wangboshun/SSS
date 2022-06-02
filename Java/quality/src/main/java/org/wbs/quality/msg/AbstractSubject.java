@@ -34,7 +34,7 @@ public abstract class AbstractSubject {
      */
     public void notifyObservers() {
         System.out.println("通知所有发信息中间件");
-        ThreadPoolExecutor executor = ThreadUtils.createThreadPool();
+        ThreadPoolExecutor executor = ThreadUtils.createThreadPool("AbstractSubject");
         for (MsgObserver observer : list) {
             executor.execute(observer);
         }

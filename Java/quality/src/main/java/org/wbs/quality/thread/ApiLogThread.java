@@ -1,4 +1,4 @@
-package org.wbs.quality.aop;
+package org.wbs.quality.thread;
 
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
@@ -13,12 +13,12 @@ import java.util.Map;
 
 /**
  * @author WBS
- * Api日志
+ * Api日志线程
  * Date:2022/6/2
  */
 
 @Slf4j
-public class ApiLog implements Runnable {
+public class ApiLogThread implements Runnable {
 
     private final ProceedingJoinPoint pjd;
 
@@ -30,7 +30,7 @@ public class ApiLog implements Runnable {
 
     private final Logger logger= LoggerFactory.getLogger("ApiLog");
 
-    public ApiLog(ProceedingJoinPoint pjd, HttpServletRequest request, Object result, Long spend) {
+    public ApiLogThread(ProceedingJoinPoint pjd, HttpServletRequest request, Object result, Long spend) {
         this.pjd = pjd;
         this.request = request;
         this.result = result;
