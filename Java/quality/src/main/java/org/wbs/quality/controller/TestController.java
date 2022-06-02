@@ -25,21 +25,18 @@ public class TestController {
     @Operation(summary = "get请求", description = "get测试", responses = {@ApiResponse(description = "请求成功", content = @Content(mediaType = "application/json")), @ApiResponse(responseCode = "400", description = "返回400时候错误的原因")})
     @GetMapping(value = "/get")
     public String get() {
-        log.info("---get log----");
         return "get";
     }
 
     @Operation(summary = "post请求", description = "post测试", responses = {@ApiResponse(description = "请求成功", content = @Content(mediaType = "application/json")), @ApiResponse(responseCode = "400", description = "返回400时候错误的原因")})
     @PostMapping(value = "/post")
     public String post() {
-        log.info("---post log----");
         return "post";
     }
 
     @Operation(summary = "添加用户", description = "添加一个用户", parameters = {@Parameter(name = "name", description = "名称")})
     @PostMapping(value = "/add")
-    public String add(String name,Integer age) {
-        log.info("---add " + name + "   log----");
+    public String add(String name, Integer age) {
         return "添加：" + name + "成功";
     }
 }

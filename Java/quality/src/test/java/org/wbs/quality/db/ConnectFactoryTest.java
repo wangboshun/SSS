@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.wbs.quality.check.AbstractDataCheck;
 import org.wbs.quality.check.CheckInvoker;
 import org.wbs.quality.check.CompareEnum;
-import org.wbs.quality.utils.DbUtils;
 
 import java.math.BigDecimal;
 import java.sql.*;

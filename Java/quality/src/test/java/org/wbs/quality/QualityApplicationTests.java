@@ -1,16 +1,13 @@
 package org.wbs.quality;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.wbs.quality.dao.TestDao;
 import org.wbs.quality.model.Test1;
 import org.wbs.quality.model.YamlModelTest;
-import org.yaml.snakeyaml.Yaml;
 
 @SpringBootTest(classes = ApplicationMain.class)
 class QualityApplicationTests {
@@ -84,16 +81,16 @@ class QualityApplicationTests {
     }
 
     /*
-    * 封装类
-    * */
+     * 封装类
+     * */
     @Test
     public void test6() {
         System.out.println(test6.toString());
     }
 
     @Test
-    public void test7(){
-        Test1 m=testDao.getById("1");
+    public void test7() {
+        Test1 m = testDao.getById("1");
         System.out.println(m.toString());
     }
 }

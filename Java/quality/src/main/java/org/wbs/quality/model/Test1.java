@@ -1,10 +1,6 @@
 package org.wbs.quality.model;
 
-import cn.hutool.core.date.DateTime;
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.sql.Timestamp;
 
 /**
@@ -15,6 +11,8 @@ import java.sql.Timestamp;
 public class Test1 {
 
     public String Id;
+    public Timestamp TM;
+    public BigDecimal SJ;
 
     @Override
     public String toString() {
@@ -48,9 +46,5 @@ public class Test1 {
     public void setSJ(BigDecimal SJ) {
         this.SJ = SJ;
     }
-
-
-    public Timestamp TM;
-    public BigDecimal SJ;
 
 }

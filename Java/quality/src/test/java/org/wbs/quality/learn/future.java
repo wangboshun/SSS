@@ -21,10 +21,10 @@ public class future {
     void complete() throws InterruptedException {
 
         /*
-        * 其中supplyAsync用于有返回值的任务，runAsync则用于没有返回值的任务。
-        * Executor参数可以手动指定线程池，否则默认ForkJoinPool.commonPool()系统级公共线程池，
-        * 注意：这些线程都是Daemon线程，主线程结束Daemon线程不结束，只有JVM关闭时，生命周期终止。
-        * */
+         * 其中supplyAsync用于有返回值的任务，runAsync则用于没有返回值的任务。
+         * Executor参数可以手动指定线程池，否则默认ForkJoinPool.commonPool()系统级公共线程池，
+         * 注意：这些线程都是Daemon线程，主线程结束Daemon线程不结束，只有JVM关闭时，生命周期终止。
+         * */
 
         ExecutorService executorService = Executors.newCachedThreadPool();
         CompletableFuture<String> c = CompletableFuture.supplyAsync(new Supplier<String>() {
@@ -97,7 +97,7 @@ public class future {
         });
 
         // 使用handle()方法接收list数据和error异常
-        CompletableFuture<Integer>  future2 = future.handle((list, error) -> {
+        CompletableFuture<Integer> future2 = future.handle((list, error) -> {
             // 如果报错，就打印出异常
 //            error.printStackTrace();
             // 如果不报错，返回一个包含Integer的全新的CompletableFuture
@@ -128,7 +128,7 @@ public class future {
         }, executorService);
 
         // apply和handle差不多,少了一个error异常参数
-        CompletableFuture<Integer>  future2 = future.thenApply((list) -> {
+        CompletableFuture<Integer> future2 = future.thenApply((list) -> {
             // 如果不报错，返回一个包含Integer的全新的CompletableFuture
             return list.size();
         });
@@ -155,7 +155,7 @@ public class future {
 
         // accept没有返回值
         CompletableFuture<Void> future2 = future.thenAccept((list) -> {
-          System.out.println("over");
+            System.out.println("over");
         });
 
         try {
@@ -169,7 +169,7 @@ public class future {
     }
 
     @Test
-    public void future_compose(){
+    public void future_compose() {
         CompletableFuture<List<String>> total = CompletableFuture.supplyAsync(() -> {
             // 第一个任务获取美术课需要带的东西，返回一个list
             List<String> stuff = new ArrayList<>();
@@ -193,7 +193,7 @@ public class future {
     }
 
     @Test
-    public void future_combine(){
+    public void future_combine() {
         CompletableFuture<List<String>> painting = CompletableFuture.supplyAsync(() -> {
             // 第一个任务获取美术课需要带的东西，返回一个list
             List<String> stuff = new ArrayList<>();
@@ -221,7 +221,7 @@ public class future {
     }
 
     @Test
-    public void future_allOf(){
+    public void future_allOf() {
 
         CompletableFuture<Integer> future1 = CompletableFuture.supplyAsync(() -> {
             try {
@@ -240,7 +240,7 @@ public class future {
         CompletableFuture.allOf(future1, future2);
         System.out.println("主程序继续------");
         // 输出3
-        System.out.println(future1.join()+future2.join());
+        System.out.println(future1.join() + future2.join());
         System.out.println("计算完成------");
     }
 
@@ -251,8 +251,8 @@ public class future {
         CompletableFuture<Integer> future1 = CompletableFuture.supplyAsync(() -> {
             try {
                 //使用sleep()模拟耗时操作
-              Thread.sleep(2000);
-              System.out.println("over");
+                Thread.sleep(2000);
+                System.out.println("over");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
