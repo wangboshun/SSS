@@ -38,7 +38,7 @@ public class TestController {
 
     @Operation(summary = "添加用户", description = "添加一个用户", parameters = {@Parameter(name = "name", description = "名称")})
     @PostMapping(value = "/add")
-    public String add(String name) {
+    public String add(String name,Integer age) {
         log.info("---add " + name + "   log----");
         return "添加：" + name + "成功";
     }
