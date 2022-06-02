@@ -15,7 +15,7 @@
         <Prudent>true</Prudent>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <FileNamePattern>
-                Logs/%d{yyyy-MM-dd}/%d{yyyy-MM-dd}-info.log
+                Logs/%d{yyyy-MM-dd}/info-%d{yyyy-MM-dd-HH}.log
             </FileNamePattern>
             <maxHistory>7</maxHistory>
         </rollingPolicy>
@@ -35,7 +35,7 @@
         <Prudent>true</Prudent>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <FileNamePattern>
-                Logs/%d{yyyy-MM-dd}/%d{yyyy-MM-dd}-warn.log
+                Logs/%d{yyyy-MM-dd}/warn-%d{yyyy-MM-dd-HH}.log
             </FileNamePattern>
             <maxHistory>7</maxHistory>
         </rollingPolicy>
@@ -55,7 +55,7 @@
         <Prudent>true</Prudent>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <FileNamePattern>
-                Logs/%d{yyyy-MM-dd}/%d{yyyy-MM-dd}-error.log
+                Logs/%d{yyyy-MM-dd}/error-%d{yyyy-MM-dd-HH}.log
             </FileNamePattern>
             <maxHistory>7</maxHistory>
         </rollingPolicy>
@@ -76,7 +76,7 @@
         <Prudent>true</Prudent>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <FileNamePattern>
-                Logs/%d{yyyy-MM-dd}/%d{yyyy-MM-dd}-api.log
+                Logs/%d{yyyy-MM-dd}/api-%d{yyyy-MM-dd-HH}.log
             </FileNamePattern>
             <maxHistory>7</maxHistory>
         </rollingPolicy>
