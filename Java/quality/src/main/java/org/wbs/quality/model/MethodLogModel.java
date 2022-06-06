@@ -7,7 +7,13 @@ import java.util.Map;
  * Date:2022/6/6
  */
 
-public class ApiLogModel {
+public class MethodLogModel {
+    private String Name;
+    private Long Time;
+    private Object Result;
+    private Map<String, Object> Parameters;
+    private String attribute;
+
     public String getName() {
         return Name;
     }
@@ -32,30 +38,6 @@ public class ApiLogModel {
         Result = result;
     }
 
-    public String getClient() {
-        return Client;
-    }
-
-    public void setClient(String client) {
-        Client = client;
-    }
-
-    public String getUrl() {
-        return Url;
-    }
-
-    public void setUrl(String url) {
-        Url = url;
-    }
-
-    public String getMethod() {
-        return Method;
-    }
-
-    public void setMethod(String method) {
-        Method = method;
-    }
-
     public Map<String, Object> getParameters() {
         return Parameters;
     }
@@ -64,12 +46,11 @@ public class ApiLogModel {
         Parameters = parameters;
     }
 
-    private String Name;
-    private Long Time;
-    private Object Result;
-    private String Client;
-    private String Url;
-    private String Method;
-    private Map<String, Object> Parameters;
+    public String getAttribute() {
+        return attribute;
+    }
 
+    public void setAttribute(String attribute) {
+        this.attribute = attribute;
+    }
 }

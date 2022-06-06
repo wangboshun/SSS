@@ -22,17 +22,20 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class ControllerAop {
 
-    @Autowired
-    public ApiLogThread apiLogThread;
+    public final ApiLogThread apiLogThread;
+
+    public ControllerAop(ApiLogThread apiLogThread) {
+        this.apiLogThread = apiLogThread;
+    }
 
     /**
      * 控制器Aop
      */
     @Pointcut("execution(public * org.wbs.quality.controller.*.*(..))")
-    public void ControllerAop() {
+    public void aop() {
     }
 
-    @Around("ControllerAop()")
+    @Around("aop()")
     public Object aroundMethod(ProceedingJoinPoint pjd) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();

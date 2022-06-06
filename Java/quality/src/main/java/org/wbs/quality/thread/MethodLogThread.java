@@ -4,16 +4,15 @@ import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.wbs.quality.model.ApiLogModel;
+import org.wbs.quality.attribute.MethodAopAttribute;
+import org.wbs.quality.model.MethodLogModel;
 
-import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
@@ -29,11 +28,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Component
 @EnableScheduling
 @EnableAsync
-public class ApiLogThread {
+public class MethodLogThread {
 
-    final Logger logger = LoggerFactory.getLogger("ApiLog");
-
-    Queue<ApiLogModel> logQueue = new LinkedBlockingQueue<>();
+    Queue<MethodLogModel> logQueue = new LinkedBlockingQueue<>();
 
     /**
      * 延时5秒消费日志
@@ -45,22 +42,29 @@ public class ApiLogThread {
             System.out.println("没有日志任务");
         }
         while (!logQueue.isEmpty()) {
-            ApiLogModel model = logQueue.poll();
-            logger.info(new Gson().toJson(model));
+            MethodLogModel model = logQueue.poll();
+            log.info(new Gson().toJson(model));
         }
     }
 
     /**
      * 添加日志到消息队列
      *
-     * @param pjd     pjd
-     * @param request request
-     * @param result  result
-     * @param spend   spend
+     * @param pjd    pjd
+     * @param result result
+     * @param spend  spend
      */
 
-    public void addLog(ProceedingJoinPoint pjd, HttpServletRequest request, Object result, Long spend) {
-        ApiLogModel model = new ApiLogModel();
+    @Async
+    public void addLog(ProceedingJoinPoint pjd, Object result, Long spend) {
+        MethodLogModel model = new MethodLogModel();
+        MethodSignature signature = (MethodSignature) pjd.getSignature();
+        Method method = signature.getMethod();
+        MethodAopAttribute attribute = method.getAnnotation(MethodAopAttribute.class);
+        if (attribute != null) {
+            model.setAttribute(attribute.value());
+        }
+
         Object[] args = pjd.getArgs();
         String[] argNames = ((MethodSignature) pjd.getSignature()).getParameterNames();
         Map<String, Object> params = new HashMap<>(args.length);
@@ -71,9 +75,6 @@ public class ApiLogThread {
         model.setName(pjd.getSignature().getName());
         model.setTime(spend);
         model.setResult(result);
-        model.setClient(request.getRemoteHost() + ":" + request.getRemotePort());
-        model.setMethod(request.getMethod());
-        model.setUrl(request.getRequestURL().toString());
         logQueue.offer(model);
     }
 }

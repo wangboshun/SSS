@@ -11,37 +11,10 @@ import java.sql.Connection;
  * @author WBS
  */
 public class DbFactory {
+    private final Connection connection;
     private ConnectionStrategy strategy;
 
-    private Connection connection;
-
-    public DbFactory(SqlEnum type, String url) {
-        initConnection(type);
-        this.connection = strategy.getConnection(url);
-    }
-
-    public DbFactory(SqlEnum type, String url, String name, String password) {
-        initConnection(type);
-        this.connection = strategy.getConnection(url, name, password);
-    }
-
     public DbFactory(SqlEnum type, String host, int port, String db, String name, String password) {
-        initConnection(type);
-        this.connection = strategy.getConnection(host, port, db, name, password);
-    }
-
-    public Connection getConnection() {
-        return connection;
-    }
-
-    public void setConnection(Connection connection) {
-        this.connection = connection;
-    }
-
-    /**
-     * 初始化连接
-     */
-    private void initConnection(SqlEnum type) {
         switch (type) {
             case MYSQL:
                 strategy = new MySqlConnection();
@@ -52,5 +25,11 @@ public class DbFactory {
             default:
                 System.out.println("没有数据源");
         }
+        this.connection = strategy.getConnection(host, port, db, name, password);
     }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
 }
