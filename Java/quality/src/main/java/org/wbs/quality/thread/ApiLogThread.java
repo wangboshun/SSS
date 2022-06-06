@@ -6,10 +6,18 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+import org.wbs.quality.model.ApiLogModel;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author WBS
@@ -18,43 +26,51 @@ import java.util.Map;
  */
 
 @Slf4j
-public class ApiLogThread implements Runnable {
+@Component
+@EnableScheduling
+@EnableAsync
+public class ApiLogThread {
 
-    private final ProceedingJoinPoint pjd;
+    final Logger logger = LoggerFactory.getLogger("ApiLog");
 
-    private final HttpServletRequest request;
+    Queue<ApiLogModel> logQueue = new LinkedBlockingQueue<>();
 
-    private final Long spend;
-
-    private final Object result;
-
-    private final Logger logger= LoggerFactory.getLogger("ApiLog");
-
-    public ApiLogThread(ProceedingJoinPoint pjd, HttpServletRequest request, Object result, Long spend) {
-        this.pjd = pjd;
-        this.request = request;
-        this.result = result;
-        this.spend = spend;
+    @Async
+    @Scheduled(fixedDelay = 5000)
+    public void remove() {
+        if (logQueue.isEmpty()) {
+            System.out.println("没有日志任务");
+        }
+        while (!logQueue.isEmpty()) {
+            ApiLogModel model = logQueue.poll();
+            logger.info(new Gson().toJson(model));
+        }
     }
 
-    @Override
-    public void run() {
+    /**
+     * 添加日志到消息队列
+     *
+     * @param pjd     pjd
+     * @param request request
+     * @param result  result
+     * @param spend   spend
+     */
 
-        Object[] args = this.pjd.getArgs();
-        String[] argNames = ((MethodSignature) this.pjd.getSignature()).getParameterNames();
+    public void addLog(ProceedingJoinPoint pjd, HttpServletRequest request, Object result, Long spend) {
+        ApiLogModel model = new ApiLogModel();
+        Object[] args = pjd.getArgs();
+        String[] argNames = ((MethodSignature) pjd.getSignature()).getParameterNames();
         Map<String, Object> params = new HashMap<>(args.length);
         for (int i = 0; i < argNames.length; i++) {
             params.put(argNames[i], args[i]);
         }
-
-        Map<String, Object> json = new HashMap<>();
-        json.put("params", params);
-        json.put("name", this.pjd.getSignature().getName());
-        json.put("time", this.spend + " ms");
-        json.put("result", this.result);
-        json.put("client", this.request.getRemoteHost() + ":" + this.request.getRemotePort());
-        json.put("url", this.request.getRequestURL());
-        json.put("method", this.request.getMethod());
-        logger.info(new Gson().toJson(json));
+        model.Client = request.getRemoteHost() + ":" + request.getRemotePort();
+        model.Parameters = params;
+        model.Name = pjd.getSignature().getName();
+        model.Time = spend;
+        model.Method = request.getMethod();
+        model.Result = result;
+        model.Url = request.getRequestURL().toString();
+        logQueue.offer(model);
     }
 }

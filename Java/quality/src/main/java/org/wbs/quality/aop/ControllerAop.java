@@ -4,15 +4,14 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.wbs.quality.thread.ApiLogThread;
-import org.wbs.quality.utils.ThreadUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author WBS
@@ -22,6 +21,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Aspect
 @Component
 public class ControllerAop {
+
+    @Autowired
+    public ApiLogThread apiLogThread;
 
     /**
      * 控制器Aop
@@ -34,15 +36,14 @@ public class ControllerAop {
     public Object aroundMethod(ProceedingJoinPoint pjd) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        Object result = null;
+        Object result;
         try {
             result = pjd.proceed();
             stopWatch.stop();
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             HttpServletRequest request = attributes.getRequest();
             long spend = stopWatch.getTotalTimeMillis();
-            ThreadPoolExecutor executor = ThreadUtils.createThreadPool("ControllerAop", 1);
-            executor.execute(new ApiLogThread(pjd, request, result, spend));
+            apiLogThread.addLog(pjd, request, result, spend);
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
