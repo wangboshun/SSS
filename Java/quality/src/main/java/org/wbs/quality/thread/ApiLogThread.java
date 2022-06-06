@@ -35,6 +35,9 @@ public class ApiLogThread {
 
     Queue<ApiLogModel> logQueue = new LinkedBlockingQueue<>();
 
+    /**
+     * 延时5秒消费日志
+     */
     @Async
     @Scheduled(fixedDelay = 5000)
     public void remove() {

@@ -41,9 +41,13 @@ public class ControllerAop {
             result = pjd.proceed();
             stopWatch.stop();
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-            HttpServletRequest request = attributes.getRequest();
-            long spend = stopWatch.getTotalTimeMillis();
-            apiLogThread.addLog(pjd, request, result, spend);
+            HttpServletRequest request;
+            if (attributes != null) {
+                request = attributes.getRequest();
+                long spend = stopWatch.getTotalTimeMillis();
+                apiLogThread.addLog(pjd, request, result, spend);
+            }
+
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
