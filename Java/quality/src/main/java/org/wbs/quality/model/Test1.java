@@ -10,41 +10,21 @@ import java.sql.Timestamp;
 
 public class Test1 {
 
-    public String Id;
-    public Timestamp TM;
-    public BigDecimal SJ;
+    @lombok.Setter
+    @lombok.Getter
+    private String Id;
+
+    @lombok.Setter
+    @lombok.Getter
+    private Timestamp TM;
+
+    @lombok.Setter
+    @lombok.Getter
+    private BigDecimal SJ;
 
     @Override
     public String toString() {
-        return "Test1{" +
-                "Id='" + Id + '\'' +
-                ", TM=" + TM +
-                ", SJ=" + SJ +
-                '}';
-    }
-
-    public String getId() {
-        return Id;
-    }
-
-    public void setId(String id) {
-        Id = id;
-    }
-
-    public Timestamp getTM() {
-        return TM;
-    }
-
-    public void setTM(Timestamp TM) {
-        this.TM = TM;
-    }
-
-    public BigDecimal getSJ() {
-        return SJ;
-    }
-
-    public void setSJ(BigDecimal SJ) {
-        this.SJ = SJ;
+        return "Test1{" + "Id='" + Id + '\'' + ", TM=" + TM + ", SJ=" + SJ + '}';
     }
 
 }

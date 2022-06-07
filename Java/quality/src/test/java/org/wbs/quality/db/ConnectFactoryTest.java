@@ -3,9 +3,11 @@ package org.wbs.quality.db;
 import cn.hutool.core.util.ClassUtil;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
-import org.wbs.quality.check.AbstractDataCheck;
-import org.wbs.quality.check.CheckInvoker;
+import org.wbs.quality.business.check.DataCheckBase;
+import org.wbs.quality.business.check.CheckInvoker;
 import org.wbs.quality.check.CompareEnum;
+import org.wbs.quality.infra.db.DbFactory;
+import org.wbs.quality.infra.db.enums.SqlEnum;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -61,12 +63,12 @@ class ConnectFactoryTest {
 
 
     void datacheckdata(BigDecimal value) {
-        Set<Class<?>> list = ClassUtil.scanPackageBySuper(null, AbstractDataCheck.class);
-        Set<AbstractDataCheck> l = new HashSet<>();
+        Set<Class<?>> list = ClassUtil.scanPackageBySuper(null, DataCheckBase.class);
+        Set<DataCheckBase> l = new HashSet<>();
 
         for (Class<?> c : list) {
             try {
-                l.add((AbstractDataCheck) Class.forName(c.getName()).getDeclaredConstructor().newInstance());
+                l.add((DataCheckBase) Class.forName(c.getName()).getDeclaredConstructor().newInstance());
             } catch (Exception e) {
                 System.out.println(e);
             }

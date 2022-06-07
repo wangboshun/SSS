@@ -31,7 +31,7 @@ public class TestController {
     @Operation(summary = "get请求", description = "get测试", responses = {@ApiResponse(description = "请求成功", content = @Content(mediaType = "application/json")), @ApiResponse(responseCode = "400", description = "返回400时候错误的原因")})
     @GetMapping(value = "/get")
     public String get() {
-        Test1 t=dao.getById("100");
+        Test1 t = dao.getById("100");
         return "get";
     }
 

@@ -2,8 +2,10 @@ package org.wbs.quality.check;
 
 import cn.hutool.core.util.ClassUtil;
 import org.junit.jupiter.api.Test;
-import org.wbs.quality.check.algprothm.algprothm1;
-import org.wbs.quality.check.algprothm.algprothm2;
+import org.wbs.quality.business.check.CheckInvoker;
+import org.wbs.quality.business.check.DataCheckBase;
+import org.wbs.quality.business.check.algprothm.algprothm1;
+import org.wbs.quality.business.check.algprothm.algprothm2;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -21,10 +23,10 @@ class DataCheckAbstractTest {
     void test1() {
         BigDecimal value = new BigDecimal("8");
 
-        AbstractDataCheck one = new algprothm1();
-        AbstractDataCheck two = new algprothm2();
+        DataCheckBase one = new algprothm1();
+        DataCheckBase two = new algprothm2();
 
-        Set<AbstractDataCheck> list = new HashSet<>();
+        Set<DataCheckBase> list = new HashSet<>();
         list.add(one);
         list.add(two);
 
@@ -38,12 +40,12 @@ class DataCheckAbstractTest {
      */
     @Test
     void test2() {
-        Set<Class<?>> list = ClassUtil.scanPackageBySuper(null, AbstractDataCheck.class);
-        Set<AbstractDataCheck> l = new HashSet<>();
+        Set<Class<?>> list = ClassUtil.scanPackageBySuper(null, DataCheckBase.class);
+        Set<DataCheckBase> l = new HashSet<>();
 
         for (Class<?> c : list) {
             try {
-                l.add((AbstractDataCheck) Class.forName(c.getName()).getDeclaredConstructor().newInstance());
+                l.add((DataCheckBase) Class.forName(c.getName()).getDeclaredConstructor().newInstance());
             } catch (Exception e) {
                 System.out.println(e);
             }
