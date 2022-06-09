@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.wbs.quality.dao.TestDao;
+import org.wbs.quality.infra.utils.yaml.YamlUtils;
 import org.wbs.quality.model.Test1;
 import org.wbs.quality.model.YamlModelTest;
 
@@ -92,5 +93,16 @@ class QualityApplicationTests {
     public void test7() {
         Test1 m = testDao.getById("1");
         System.out.println(m.toString());
+    }
+
+    /*
+     * 根据帮助类获取yml配置，不需要装配注入
+     * */
+    @Test
+    public void test8() {
+        String v1 = YamlUtils.getString("test1[0].id");
+        String v2 = YamlUtils.getString("test1[0].name");
+        String v3 = YamlUtils.getString("test1[1].name");
+        System.out.println(v1 + " " + v2 + " " + v3);
     }
 }
