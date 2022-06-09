@@ -1,4 +1,4 @@
-package org.wbs.quality.infra.utils.redis;
+package org.wbs.quality.infra.utils;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;

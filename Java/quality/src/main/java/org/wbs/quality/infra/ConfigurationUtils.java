@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.wbs.quality.infra.utils.redis.RedisUtils;
-import org.wbs.quality.infra.utils.yaml.YamlUtils;
+import org.wbs.quality.infra.utils.RedisUtils;
+import org.wbs.quality.infra.utils.YamlUtils;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
@@ -21,6 +21,9 @@ import java.util.Properties;
 @Configuration
 public class ConfigurationUtils {
 
+    /**
+     * YAML注入
+     */
     @Bean("yamlConfig")
     public YamlUtils yamlConfig() {
         Resource app = new ClassPathResource("application.yml");
@@ -30,6 +33,9 @@ public class ConfigurationUtils {
         return new YamlUtils(properties);
     }
 
+    /**
+     * REDIS注入
+     */
     @Bean
     @DependsOn("yamlConfig")  //需要依赖yamlConfig
     public RedisUtils redisConfig() {

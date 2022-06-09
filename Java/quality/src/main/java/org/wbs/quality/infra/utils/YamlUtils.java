@@ -1,4 +1,4 @@
-package org.wbs.quality.infra.utils.yaml;
+package org.wbs.quality.infra.utils;
 
 import java.util.Properties;
 
