@@ -3,9 +3,9 @@ package org.wbs.quality.db;
 import cn.hutool.core.util.ClassUtil;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
-import org.wbs.quality.business.check.DataCheckBase;
 import org.wbs.quality.business.check.CheckInvoker;
-import org.wbs.quality.check.CompareEnum;
+import org.wbs.quality.business.check.DataCheckBase;
+import org.wbs.quality.business.check.enums.CompareEnum;
 import org.wbs.quality.infra.db.DbFactory;
 import org.wbs.quality.infra.db.enums.SqlEnum;
 

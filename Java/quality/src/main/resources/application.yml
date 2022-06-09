@@ -26,6 +26,12 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/test1
     username: root
     password: 123456
+  rabbitmq:
+    host: "47.118.58.79"
+    port: 5672
+    username: "slw"
+    password: "slw123456."
+    virtual-host: "/"
 
 
 server:
@@ -55,3 +61,11 @@ logging:
   config: classpath:log_config.xml
   level:
     org.wbs.quality: info
+
+
+rabbitmq:
+  host: "47.118.58.79"
+  port: 5672
+  vh: "/"
+  username: "slw"
+  password: "slw123456."

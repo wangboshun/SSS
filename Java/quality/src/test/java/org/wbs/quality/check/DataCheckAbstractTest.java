@@ -6,6 +6,7 @@ import org.wbs.quality.business.check.CheckInvoker;
 import org.wbs.quality.business.check.DataCheckBase;
 import org.wbs.quality.business.check.algprothm.algprothm1;
 import org.wbs.quality.business.check.algprothm.algprothm2;
+import org.wbs.quality.business.check.enums.CompareEnum;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
