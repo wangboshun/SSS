@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 
 
 /*
-* 需要先创建这个队列 不然报错
-* */
+ * 需要先创建这个队列 不然报错
+ * */
 @Component
 @RabbitListener(queues = "springboot-1")
 public class RabbitMqConsumer1 {

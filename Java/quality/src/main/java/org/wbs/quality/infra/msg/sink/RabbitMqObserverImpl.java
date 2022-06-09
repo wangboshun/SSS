@@ -1,7 +1,6 @@
 package org.wbs.quality.infra.msg.sink;
 
 
-import org.wbs.quality.ApplicationMain;
 import org.wbs.quality.infra.msg.MsgObserver;
 import org.wbs.quality.infra.utils.ContextUtils;
 import org.wbs.quality.infra.utils.RabbitMqUtils;

@@ -32,7 +32,11 @@ spring:
     username: "slw"
     password: "slw123456."
     virtual-host: "/"
-
+  redis:
+    host: "47.118.58.79"
+    port: 6379
+    password: "slw123456."
+    database: 5
 
 server:
   port: 8080
