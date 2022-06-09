@@ -14,6 +14,7 @@ import java.math.BigDecimal;
  *
  * @author WBS
  */
+
 public abstract class DataCheckBase {
     protected abstract boolean execute(BigDecimal value, CompareEnum e);
 

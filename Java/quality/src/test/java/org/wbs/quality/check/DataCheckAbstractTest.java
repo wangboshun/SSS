@@ -2,6 +2,8 @@ package org.wbs.quality.check;
 
 import cn.hutool.core.util.ClassUtil;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.wbs.quality.ApplicationMain;
 import org.wbs.quality.business.check.CheckInvoker;
 import org.wbs.quality.business.check.DataCheckBase;
 import org.wbs.quality.business.check.algprothm.algprothm1;
@@ -14,6 +16,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+@SpringBootTest(classes = ApplicationMain.class)
 class DataCheckAbstractTest {
 
 
@@ -22,7 +25,7 @@ class DataCheckAbstractTest {
      */
     @Test
     void test1() {
-        BigDecimal value = new BigDecimal("8");
+        BigDecimal value = new BigDecimal("800");
 
         DataCheckBase one = new algprothm1();
         DataCheckBase two = new algprothm2();

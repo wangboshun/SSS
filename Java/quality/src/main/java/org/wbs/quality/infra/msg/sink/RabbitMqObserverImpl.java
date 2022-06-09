@@ -1,7 +1,10 @@
 package org.wbs.quality.infra.msg.sink;
 
 
+import org.wbs.quality.ApplicationMain;
 import org.wbs.quality.infra.msg.MsgObserver;
+import org.wbs.quality.infra.utils.ContextUtils;
+import org.wbs.quality.infra.utils.RabbitMqUtils;
 
 /**
  * Rabbitmq中间件
@@ -12,7 +15,7 @@ import org.wbs.quality.infra.msg.MsgObserver;
 
 public class RabbitMqObserverImpl implements MsgObserver {
 
-    private String msg;
+    private final String msg;
 
     public RabbitMqObserverImpl(String msg) {
         this.msg = msg;
@@ -20,22 +23,9 @@ public class RabbitMqObserverImpl implements MsgObserver {
 
     @Override
     public void run() {
-        System.out.println("开始使用RabbitMq发送消息：" + getMsg());
-
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
+        System.out.println("开始使用RabbitMq发送消息：" + msg);
+        RabbitMqUtils r = ContextUtils.getBean(RabbitMqUtils.class);
+        r.sendMsgForWork("RabbitMqObserverImpl", msg);
         System.out.println("RabbitMq发送消息结束");
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
     }
 }
