@@ -15,7 +15,7 @@ public class Channel {
     private final ReentrantLock lock;
     private final Condition notInsufficient;
     private final Condition notEmpty;
-    private int bufferSize = 0;
+    private int bufferSize;
     private ArrayBlockingQueue<Object> queue = null;
 
     public Channel() {

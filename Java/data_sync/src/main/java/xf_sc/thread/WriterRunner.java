@@ -1,6 +1,6 @@
 package xf_sc.thread;
 
-import xf_sc.RecordReceiver;
+import xf_sc.ObjectReceiver;
 import xf_sc.mysql.MySqlWrite;
 import xf_sc.task.Writer;
 
@@ -11,15 +11,15 @@ import xf_sc.task.Writer;
 
 public class WriterRunner implements Runnable {
 
-    private RecordReceiver recordReceiver;
+    private ObjectReceiver objectReceiver;
 
-    public void setRecordReceiver(RecordReceiver receiver) {
-        this.recordReceiver = receiver;
+    public void setRecordReceiver(ObjectReceiver o) {
+        this.objectReceiver = o;
     }
 
     @Override
     public void run() {
         Writer.Task taskWriter = new MySqlWrite.Task();
-        taskWriter.startWrite(recordReceiver);
+        taskWriter.startWrite(objectReceiver);
     }
 }

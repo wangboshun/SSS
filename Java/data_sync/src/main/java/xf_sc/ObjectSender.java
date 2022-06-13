@@ -5,7 +5,7 @@ package xf_sc;
  * Date:2022/6/11
  */
 
-public interface RecordSender {
+public interface ObjectSender {
 
     public Object createRecord();
 

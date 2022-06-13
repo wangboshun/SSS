@@ -5,6 +5,6 @@ package xf_sc;
  * Date:2022/6/11
  */
 
-public interface RecordReceiver {
+public interface ObjectReceiver {
     public Object getFromReader();
 }

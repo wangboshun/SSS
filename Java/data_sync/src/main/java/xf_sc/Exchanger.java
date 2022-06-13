@@ -9,7 +9,7 @@ import java.util.concurrent.locks.Condition;
  * Date:2022/6/11
  */
 
-public class Exchanger implements RecordSender, RecordReceiver {
+public class Exchanger implements ObjectSender, ObjectReceiver {
 
     private final Channel channel;
     private final List<Object> buffer;

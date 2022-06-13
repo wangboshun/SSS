@@ -1,6 +1,6 @@
 package xf_sc.thread;
 
-import xf_sc.RecordSender;
+import xf_sc.ObjectSender;
 import xf_sc.mysql.MySqlReader;
 import xf_sc.task.Reader;
 
@@ -11,15 +11,15 @@ import xf_sc.task.Reader;
 
 public class ReaderRunner implements Runnable {
 
-    private RecordSender recordSender;
+    private ObjectSender objectSender;
 
-    public void setRecordSender(RecordSender recordSender) {
-        this.recordSender = recordSender;
+    public void setRecordSender(ObjectSender o) {
+        this.objectSender = o;
     }
 
     @Override
     public void run() {
         Reader.Task taskReader = new MySqlReader.Task();
-        taskReader.startRead(recordSender);
+        taskReader.startRead(objectSender);
     }
 }

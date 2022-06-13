@@ -1,6 +1,6 @@
 package xf_sc.mysql;
 
-import xf_sc.RecordSender;
+import xf_sc.ObjectSender;
 import xf_sc.task.Reader;
 
 /**
@@ -14,11 +14,11 @@ public class MySqlReader extends Reader {
     public static class Task extends Reader.Task {
 
         @Override
-        public void startRead(RecordSender recordSender) {
+        public void startRead(ObjectSender objectSender) {
 
             for (int i = 0; i < 100; i++) {
                 String o = "hello world " + i;
-                recordSender.sendToWriter(o);
+                objectSender.sendToWriter(o);
                 System.out.println("send :"+o);
             }
         }

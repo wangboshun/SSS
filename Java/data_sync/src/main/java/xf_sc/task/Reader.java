@@ -1,6 +1,6 @@
 package xf_sc.task;
 
-import xf_sc.RecordSender;
+import xf_sc.ObjectSender;
 
 /**
  * @author WBS
@@ -9,6 +9,6 @@ import xf_sc.RecordSender;
 
 public abstract class Reader {
     public static abstract class Task {
-        public abstract void startRead(RecordSender recordSender);
+        public abstract void startRead(ObjectSender objectSender);
     }
 }

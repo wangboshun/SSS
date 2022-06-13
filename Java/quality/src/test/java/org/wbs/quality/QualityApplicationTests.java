@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.wbs.quality.dao.TestDao;
-import org.wbs.quality.infra.utils.yaml.YamlUtils;
+import org.wbs.quality.infra.utils.YamlUtils;
 import org.wbs.quality.model.Test1;
 import org.wbs.quality.model.YamlModelTest;
 

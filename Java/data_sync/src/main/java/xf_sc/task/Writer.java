@@ -1,6 +1,6 @@
 package xf_sc.task;
 
-import xf_sc.RecordReceiver;
+import xf_sc.ObjectReceiver;
 
 /**
  * @author WBS
@@ -8,7 +8,7 @@ import xf_sc.RecordReceiver;
  */
 public abstract class Writer {
     public abstract static class Task {
-        public abstract void startWrite(RecordReceiver lineReceiver);
+        public abstract void startWrite(ObjectReceiver lineReceiver);
 
     }
 }
