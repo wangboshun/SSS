@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <properties resource="db.properties">
+        <!--        这种方式也可以,如果跟外部文件的字段重复，优先使用外部的-->
+        <!--        <property name="um" value="root"/>-->
+        <!--        <property name="pd" value="123456"/>-->
+    </properties>
+
+    <settings>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+
+    <typeAliases>
+        <!--        方式1：直接指定-->
+        <!--        <typeAlias type="org.example.model.UserInfo" alias="UserInfo"/>-->
+
+        <!--        方式2：扫描实体类的包,以类名为别名，首字母小写，好像一模一样也行，哈哈-->
+        <!--        这种不能自定义名称，除非在类上使用Alias注解-->
+        <package name="org.example.model"/>
+    </typeAliases>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <!--                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>-->
+                <!--                <property name="url"-->
+                <!--                          value="jdbc:mysql://127.0.0.1:3306/wbs?useSSL=true&amp;useUnicode=true&amp;characterEncoding=utf-8"/>-->
+                <!--                <property name="username" value="root"/>-->
+                <!--                <property name="password" value="123456"/>-->
+
+
+                <!--使用配置文件-->
+                <property name="driver" value="${driver}"/>
+                <!--不能使用url，需要自定义其他名称-->
+                <property name="url" value="${jdbc_url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <!--        方式1，绑定资源文件-->
+        <!--        <mapper resource="org/example/dao/UserInfoMapper.xml"/>-->
+        <!--        方式2，绑定类，但是类和mapper的名称需要一致而且要放在一起，不能放在资源目录，否则会报错-->
+        <!--        <mapper class="org.example.dao.UserInfoMapper"/>-->
+        <!--        方式3，扫描包，类和mapper的名称需要一致而且要放在一起，不能放在资源目录，否则会报错-->
+        <package name="org.example.dao"/>
+
+        <!--        方式4：绑定接口，主要是注解查询-->
+        <!--        <mapper class="org.example.dao.UserInfo3Mapper"/>-->
+    </mappers>
+</configuration>

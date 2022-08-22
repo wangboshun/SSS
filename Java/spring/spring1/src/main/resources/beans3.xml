@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+         http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <bean id="test" class="org.aop.TestImpl"/>
+    <bean id="log" class="org.aop.Log"/>
+    <bean id="after" class="org.aop.AfterLog"/>
+
+    <!--注解切面-->
+    <bean class="org.aop.AnnotationPointcut" id="annotationPointcut"/>
+    <!--    注解切面-->
+    <aop:aspectj-autoproxy/>
+
+    <!--    原生spring接口-->
+    <!--    <aop:config>-->
+    <!--        <aop:pointcut id="pointcut" expression="execution(* org.aop.TestImpl.*())"/>-->
+    <!--        <aop:advisor advice-ref="log" pointcut-ref="pointcut"/>-->
+    <!--        <aop:advisor advice-ref="after" pointcut-ref="pointcut"/>-->
+    <!--    </aop:config>-->
+
+    <!--    自定义切面-->
+    <!--    <bean id="diy" class="org.aop.DiyPointcut"/>-->
+    <!--    <aop:config>-->
+    <!--        <aop:aspect ref="diy">-->
+    <!--            <aop:pointcut id="pointcut" expression="execution(* org.aop.TestImpl.*())"/>-->
+    <!--            <aop:before method="before" pointcut-ref="pointcut"/>-->
+    <!--            <aop:after method="after" pointcut-ref="pointcut"/>-->
+    <!--        </aop:aspect>-->
+    <!--    </aop:config>-->
+</beans>

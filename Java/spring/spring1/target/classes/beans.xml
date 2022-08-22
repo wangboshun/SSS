@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="mysql" class="org.service.MySqlImpl"/>
+    <bean id="sqlserver" class="org.service.SqlServerImpl"/>
+
+    <!--    <bean id="dbApplication" class="org.application.DbApplication">-->
+    <!--        <property name="dataBase" ref="sqlserver"/>-->
+    <!--        <property name="name" value="hahahahaha"/>-->
+    <!--    </bean>-->
+
+    <bean id="dbApplication" class="org.application.DbApplication">
+        <property name="dataBase" ref="sqlserver"/>
+        <constructor-arg name="age" value="12345"/>
+        <!--        <constructor-arg index="0" value="12345"/>  下标方式-->
+        <!--        <constructor-arg name="age" value="123"/>  名称方式-->
+    </bean>
+</beans>

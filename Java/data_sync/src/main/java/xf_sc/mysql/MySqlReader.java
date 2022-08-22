@@ -16,7 +16,7 @@ public class MySqlReader extends Reader {
         @Override
         public void startRead(ObjectSender objectSender) {
 
-            for (int i = 0; i < 100; i++) {
+            for (int i = 0; i < 1_000_000000; i++) {
                 String o = "hello world " + i;
                 objectSender.sendToWriter(o);
                 System.out.println("send :"+o);

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.dao.UserInfoMapper"> <!--绑定对应的dao接口-->
+
+    <!--    二级缓存-->
+    <cache eviction="FIFO" flushInterval="60000" size="512" readOnly="true"/>
+
+    <!--    id就是对应的方法名-->
+    <select id="getAllUserInfo" resultType="org.example.model.UserInfo">
+        select *
+        from userinfo
+    </select>
+
+    <select id="getUserInfoById" resultType="org.example.model.UserInfo" parameterType="String">
+        select *
+        from userinfo
+        where Id = #{id}
+    </select>
+
+    <!--    map参数 参数名可以自定义-->
+    <select id="getUserInfoByMap" resultType="org.example.model.UserInfo" parameterType="map">
+        select *
+        from userinfo
+        where Id = #{userid}
+    </select>
+
+    <!--    返回类型是别名，在mybatis.xml文件中配置的-->
+    <select id="getUserInfoByLike" resultType="UserInfo" parameterType="String">
+        select *
+        from userinfo
+        where Name like "%"#{name}"%"
+    </select>
+
+    <!--    RowBounds分页，类似于limit-->
+    <select id="getUserInfoByRowBounds" resultType="UserInfo">
+        select *
+        from userinfo
+    </select>
+
+    <!--    where条件查询-->
+    <select id="getUserInfoByNameOrId" resultType="UserInfo" parameterType="map">
+
+        select *
+        from userinfo
+        <where>
+            <if test="name!=null">
+                name=#{name}
+            </if>
+            <if test="id!=null">
+                and id=#{id}
+            </if>
+        </where>
+
+    </select>
+
+
+    <insert id="insertUserInfo" parameterType="org.example.model.UserInfo">
+        insert into userinfo(Id, Name, Age, TM)
+        values (#{id}, #{name}, #{age}, #{TM})
+    </insert>
+
+    <update id="updateUserInfo" parameterType="org.example.model.UserInfo">
+        update userinfo
+        set Name = #{name},
+            Age  = #{age}
+        where Id = #{id}
+    </update>
+
+    <delete id="deleteUserInfo" parameterType="String">
+        delete
+        from userinfo
+        where Id = #{id}
+    </delete>
+</mapper>

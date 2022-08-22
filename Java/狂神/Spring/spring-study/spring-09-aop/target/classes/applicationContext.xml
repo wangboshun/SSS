@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- 方法一 使用原生Spring API接口  -->
+    <bean id="userService" class="com.blue.service.UserServiceImpl"/>
+    <bean id="log" class="com.blue.log.Log"/>
+    <bean id="afterLog" class="com.blue.log.AfterLog"/>
+
+<!--    <aop:config>-->
+<!--        <aop:pointcut id="pointcut" expression="execution(* com.blue.service.UserServiceImpl.*(..))"/>-->
+<!--        <aop:advisor advice-ref="log" pointcut-ref="pointcut"/>-->
+<!--        <aop:advisor advice-ref="afterLog" pointcut-ref="pointcut"/>-->
+<!--    </aop:config>-->
+
+<!--    &lt;!&ndash; 方式二：自定义类   &ndash;&gt;-->
+<!--    <bean id="diy" class="com.blue.diy.DiyPointCut"/>-->
+
+<!--    <aop:config>-->
+<!--        &lt;!&ndash;   自定义切面，ref 要因用的类     &ndash;&gt;-->
+<!--        <aop:aspect ref="diy">-->
+<!--            <aop:pointcut id="point" expression="execution(* com.blue.service.UserServiceImpl.*(..))"/>-->
+<!--            &lt;!&ndash;  通知  &ndash;&gt;-->
+<!--            <aop:before method="before" pointcut-ref="point"/>-->
+<!--            <aop:after method="after" pointcut-ref="point"/>-->
+<!--        </aop:aspect>-->
+<!--    </aop:config>-->
+
+    <!--    方式三-->
+    <bean id="annotationPointOut" class="com.blue.diy.AnnotationPointCut"/>
+    <!--开启注解支持-->
+    <aop:aspectj-autoproxy/>
+
+</beans>

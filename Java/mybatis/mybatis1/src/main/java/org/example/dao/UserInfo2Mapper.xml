@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.dao.UserInfo2Mapper"> <!--绑定对应的dao接口-->
+
+    <resultMap id="user_result" type="org.example.model.UserInfo2">
+        <result column="Id" property="UserId"/>
+        <result column="Name" property="UserName"/>
+    </resultMap>
+
+    <!--    id就是对应的方法名-->
+    <select id="getAllUserInfo" resultMap="user_result">
+        select *
+        from userinfo
+    </select>
+</mapper>

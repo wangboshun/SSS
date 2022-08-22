@@ -21,6 +21,7 @@ public class App {
     public static void main(String[] args) throws IOException {
         System.out.println("Hello World!");
         getStreamData3();
+
     }
 
 
@@ -110,6 +111,7 @@ public class App {
             Connection connect = mysqlDataSource.getConnection("root", "123456");
             Statement stmt = connect.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             stmt.setFetchSize(Integer.MIN_VALUE);
+
             ResultSet result = stmt.executeQuery("select * from Test1");
             int num = 0;
             while (result.next()) {
