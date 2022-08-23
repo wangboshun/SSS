@@ -47,5 +47,32 @@
         <servlet-name>downfile</servlet-name>
         <url-pattern>/downfile</url-pattern>
     </servlet-mapping>
-    
+
+    <servlet>
+        <servlet-name>request</servlet-name>
+        <servlet-class>com.example.servlet_2.RequestServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>request</servlet-name>
+        <url-pattern>/request</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>cookie</servlet-name>
+        <servlet-class>com.example.servlet_2.CookieServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>cookie</servlet-name>
+        <url-pattern>/cookie</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>session</servlet-name>
+        <servlet-class>com.example.servlet_2.SessionServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>session</servlet-name>
+        <url-pattern>/session</url-pattern>
+    </servlet-mapping>
+
 </web-app>
