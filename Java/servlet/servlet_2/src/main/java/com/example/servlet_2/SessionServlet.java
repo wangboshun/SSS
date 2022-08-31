@@ -19,10 +19,10 @@ public class SessionServlet extends HttpServlet {
         HttpSession session = request.getSession();
         String sessionId = session.getId();
         session.setAttribute("name", "heimalang");
-        String name = (String) session.getAttribute("name");
-        session.isNew();//是否刚刚创建
-        session.invalidate();//是否已存在
-        session.removeAttribute("name"); //删除
+//        String name = (String) session.getAttribute("name");
+//        session.isNew();//是否刚刚创建
+//        session.invalidate();//是否已存在
+//        session.removeAttribute("name"); //删除
     }
 
 }

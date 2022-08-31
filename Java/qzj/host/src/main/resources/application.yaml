@@ -1,3 +1,9 @@
 spring:
   profiles:
-    include: iot,user
+    include: iot,user,common
+  datasource:
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://127.0.0.1:3306/wbs
