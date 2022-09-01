@@ -6,7 +6,9 @@ import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
+import com.zny.common.aop.api.ApiLog;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +21,7 @@ import java.util.List;
  * Date:2022/8/31
  */
 
+@Slf4j
 @RestController
 @RequestMapping("/user")
 @Tag(name = "user", description = "用户模块")
@@ -35,15 +38,19 @@ public class UserController {
         return "user";
     }
 
+    @ApiLog
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public SaResult login(String username, String password) {
+        log.info("login info");
+        log.error("login error");
+
         StpUtil.login(username);
         Object loginId = StpUtil.getLoginId();
         SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
         List<String> permissionList = StpUtil.getPermissionList();
         List<String> roleList = StpUtil.getRoleList();
-        boolean permission = StpUtil.hasPermission("add");
-        boolean role = StpUtil.hasRole("guest");
+        boolean permission = StpUtil.hasPermission("user-add");
+        boolean role = StpUtil.hasRole("admin");
         return SaResult.data(tokenInfo.tokenValue);
     }
 
@@ -63,13 +70,13 @@ public class UserController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @SaCheckPermission(value = "user-add", orRole = "admin")
-    public SaResult add() {
+    public SaResult add(String username, String password) {
         return SaResult.ok("添加成功");
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @SaCheckPermission(value = "user-delete", orRole = "admin")
-    public SaResult delete() {
+    public SaResult delete(String username) {
         return SaResult.ok("删除成功");
     }
 }
