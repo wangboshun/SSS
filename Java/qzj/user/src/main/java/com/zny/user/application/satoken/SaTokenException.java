@@ -18,10 +18,6 @@ public class SaTokenException {
     @ResponseBody
     @ExceptionHandler(NotLoginException.class)
     public SaResult handlerNotLoginException(NotLoginException nle) throws Exception {
-
-        // 打印堆栈，以供调试
-        // nle.printStackTrace();
-
         String message = "";
         if (nle.getType().equals(NotLoginException.NOT_TOKEN)) {
             message = "未提供token";

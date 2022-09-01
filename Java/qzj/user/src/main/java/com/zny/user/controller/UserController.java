@@ -6,7 +6,6 @@ import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
-import com.zny.common.aop.api.ApiLog;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +37,6 @@ public class UserController {
         return "user";
     }
 
-    @ApiLog
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public SaResult login(String username, String password) {
         log.info("login info");
