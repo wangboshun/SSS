@@ -9,10 +9,9 @@ import com.zny.user.application.user.UserApplication;
 import com.zny.user.model.UserModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * @author WBS
@@ -39,16 +38,32 @@ public class UserController {
         if (StringUtils.isNotBlank(token)) {
             return SaResult.data(token);
         }
-        return SaResult.get(401, "请登录！", null);
+        return SaResult.get(401, "账号或密码错误！", null);
     }
 
     /**
      * 注销
      */
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    @SaCheckLogin
     public SaResult logout() {
         StpUtil.logout();
         return SaResult.ok("注销成功");
+    }
+
+    /**
+     * 获取用户列表
+     *
+     * @param userId    用户id
+     * @param userName  用户名
+     * @param pageIndex 页码
+     * @param pageSize  分页大小
+     */
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @SaCheckLogin
+    public SaResult list(@RequestParam(required = false) String userId, @RequestParam(required = false) String userName, @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
+        Map<String, Object> result = userApplication.getUserList(userId, userName, pageIndex, pageSize);
+        return SaResult.data(result);
     }
 
     /**
@@ -58,7 +73,7 @@ public class UserController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @SaCheckLogin
-    public SaResult info(@PathVariable String id) {
+    public SaResult get(@PathVariable String id) {
         UserModel model = userApplication.getById(id);
         return SaResult.data(model);
     }
@@ -72,7 +87,7 @@ public class UserController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @SaCheckPermission(value = "user-add", orRole = "admin")
     public SaResult add(String username, String password) {
-        return SaResult.ok("添加成功");
+        return userApplication.addUser(username, password);
     }
 
 
@@ -84,6 +99,19 @@ public class UserController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @SaCheckPermission(value = "user-delete", orRole = "admin")
     public SaResult delete(@PathVariable String id) {
-        return SaResult.ok("删除成功");
+        return userApplication.deleteUser(id);
+    }
+
+    /**
+     * 更新用户信息
+     *
+     * @param id       用户id
+     * @param username 用户名
+     * @param password 密码
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
+    @SaCheckPermission(value = "user-delete", orRole = "admin")
+    public SaResult update(@PathVariable String id, String username, String password) {
+        return userApplication.updateUser(id, username, password);
     }
 }

@@ -1,13 +1,14 @@
 package com.zny.system.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.util.SaResult;
 import com.zny.system.application.apilog.ApiLogApplication;
 import com.zny.system.model.apilog.ApiLogModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -15,7 +16,6 @@ import java.util.Map;
  * Date:2022/9/2
  */
 
-@Slf4j
 @RestController
 @RequestMapping("/system/apilog/")
 @Tag(name = "system", description = "系统模块")
@@ -24,23 +24,18 @@ public class ApiLogController {
     @Autowired
     private ApiLogApplication apiLogApplication;
 
-    @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public String Test() {
-        return "apilog";
-    }
-
     /**
      * 查询日志列表
      *
-     * @param userId
-     * @param method
-     * @param ip
-     * @param pageIndex
-     * @param pageSize
-     * @return
+     * @param userId    用户名
+     * @param method    请求方法
+     * @param ip        ip地址
+     * @param pageIndex 页码
+     * @param pageSize  分页大小
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public SaResult getApiLogList(@RequestParam(required = false) String userId, @RequestParam(required = false) String method, @RequestParam(required = false) String ip, @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
+    @SaCheckLogin
+    public SaResult list(@RequestParam(required = false) String userId, @RequestParam(required = false) String method, @RequestParam(required = false) String ip, @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
         Map<String, Object> result = apiLogApplication.getApiLogList(userId, method, ip, pageIndex, pageSize);
         return SaResult.data(result);
     }
@@ -48,24 +43,24 @@ public class ApiLogController {
     /**
      * 查询日志
      *
-     * @param id
-     * @return
+     * @param id 日志id
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public SaResult getApiLogById(@RequestParam(required = true) @PathVariable String id) {
+    @SaCheckLogin
+    public SaResult get(@PathVariable String id) {
         ApiLogModel model = apiLogApplication.getById(id);
         return SaResult.data(model);
     }
 
     /**
-     * 删除日志
+     * 批量删除日志
      *
-     * @param id
-     * @return
+     * @param ids id数组
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public SaResult deleteApiLogById(@RequestParam(required = true) @PathVariable String id) {
-        boolean b = apiLogApplication.removeById(id);
+    @RequestMapping(value = "/{ids}", method = RequestMethod.DELETE)
+    @SaCheckLogin
+    public SaResult delete(@PathVariable String[] ids) {
+        boolean b = apiLogApplication.removeBatchByIds(Arrays.asList(ids));
         if (b) {
             return SaResult.ok("日志删除成功！");
         } else {

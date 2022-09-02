@@ -52,6 +52,11 @@ public class ApiLogAspect {
             SaResult sa = (SaResult) result;
             LocalDateTime end = LocalDateTime.now();
 
+            //如果是未授权
+            if (sa.getCode() == 401) {
+                return result;
+            }
+            //如果未登录
             if (!StpUtil.isLogin()) {
                 return SaResult.get(401, "请登录！", null);
             }

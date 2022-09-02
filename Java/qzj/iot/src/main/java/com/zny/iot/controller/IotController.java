@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/iot")
-@Tag(name = "iot",description = "物联网模块")
+@Tag(name = "iot", description = "物联网模块")
 public class IotController {
 
     @Value("${iot_username}")
