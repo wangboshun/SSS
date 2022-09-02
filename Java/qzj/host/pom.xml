@@ -17,6 +17,12 @@
 
         <dependency>
             <groupId>com.zny</groupId>
+            <artifactId>system</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zny</groupId>
             <artifactId>iot</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
@@ -32,6 +38,8 @@
             <artifactId>common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
+
     </dependencies>
 
     <build>

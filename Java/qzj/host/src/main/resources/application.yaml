@@ -1,12 +1,12 @@
 spring:
   profiles:
-    include: iot,user,common
+    include: iot,user,common,system
   datasource:
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://127.0.0.1:3306/wbs
+    url: jdbc:mysql://127.0.0.1:3306/wbs?rewriteBatchedStatements=true&useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
 
 sa-token:
   # token 名称 (同时也是cookie名称)
@@ -22,6 +22,10 @@ sa-token:
   # 是否输出操作日志
   is-log: true
 
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    mapUnderscoreToCamelCase: false #关闭下划线转驼峰
 
 springdoc:
   swagger-ui:
