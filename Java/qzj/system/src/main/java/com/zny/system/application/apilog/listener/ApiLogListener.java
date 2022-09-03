@@ -7,12 +7,14 @@ import com.zny.system.model.apilog.ApiLogModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.context.ApplicationListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -24,17 +26,14 @@ import java.util.concurrent.LinkedBlockingDeque;
 @Component
 public class ApiLogListener implements ApplicationListener<ApiLogEvent> {
 
-    private final LinkedBlockingDeque<ApiLogModel> queue = new LinkedBlockingDeque<ApiLogModel>();
+    private final LinkedBlockingDeque<Map<String, Object>> queue = new LinkedBlockingDeque<>();
     @Autowired
     private ApiLogApplication apiLogApplication;
 
+    @Async
     @Override
     public void onApplicationEvent(ApiLogEvent event) {
-        ApiLogModel model = new ApiLogModel();
-        model.id = UUID.randomUUID().toString();
-        BeanMap beanMap = BeanMap.create(model);
-        beanMap.putAll(event.getMessage());
-        queue.add(model);
+        queue.add(event.getMessage());
     }
 
     @Scheduled(cron = "0 0/1 * * * ?")
@@ -46,7 +45,11 @@ public class ApiLogListener implements ApplicationListener<ApiLogEvent> {
         }
         List<ApiLogModel> list = new ArrayList<>();
         for (int i = 0; i < size; i++) {
-            list.add(queue.remove());
+            ApiLogModel model = new ApiLogModel();
+            model.setId(UUID.randomUUID().toString());
+            BeanMap beanMap = BeanMap.create(model);
+            beanMap.putAll(queue.remove());
+            list.add(model);
         }
         boolean status = apiLogApplication.saveBatch(list, 500);
         System.out.printf("插入：" + list.size() + ":" + status);

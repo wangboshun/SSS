@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class ApiLogEvent extends ApplicationEvent {
 
-    private Map<String, Object> message;
+    private final Map<String, Object> message;
 
     public ApiLogEvent(Map<String, Object> message) {
         super(message);

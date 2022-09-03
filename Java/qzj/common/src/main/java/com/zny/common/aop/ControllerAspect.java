@@ -66,14 +66,17 @@ public class ControllerAspect {
             map.put("params", httpServletRequest.getQueryString());
             map.put("ip", IpUtils.getRemoteIp(httpServletRequest));
             map.put("code", sa.getCode());
-
-            //GET请求不存储日志
-            if (!httpServletRequest.getMethod().equals("GET")) {
-                map.put("data", sa.toString());
-            }
             map.put("start_time", DateUtils.dateToStr(start));
             map.put("end_time", DateUtils.dateToStr(end));
-            applicationEventPublisher.publishEvent(new ApiLogEvent(map));
+            
+            //GET请求不存储日志
+            if (!"GET".equals(httpServletRequest.getMethod())) {
+                map.put("data", sa.toString());
+            }
+
+            new Thread(() -> {
+                applicationEventPublisher.publishEvent(new ApiLogEvent(map));
+            }).start();
         } catch (Throwable e) {
             logger.error(e.getMessage());
             result = SaResult.error("内部异常！");
