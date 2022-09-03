@@ -34,7 +34,6 @@ public class ApiLogController {
      * @param pageSize  分页大小
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    @SaCheckLogin
     public SaResult list(@RequestParam(required = false) String userId, @RequestParam(required = false) String method, @RequestParam(required = false) String ip, @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
         Map<String, Object> result = apiLogApplication.getApiLogList(userId, method, ip, pageIndex, pageSize);
         return SaResult.data(result);
@@ -46,7 +45,6 @@ public class ApiLogController {
      * @param id 日志id
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @SaCheckLogin
     public SaResult get(@PathVariable String id) {
         ApiLogModel model = apiLogApplication.getById(id);
         return SaResult.data(model);
@@ -58,7 +56,6 @@ public class ApiLogController {
      * @param ids id数组
      */
     @RequestMapping(value = "/{ids}", method = RequestMethod.DELETE)
-    @SaCheckLogin
     public SaResult delete(@PathVariable String[] ids) {
         boolean b = apiLogApplication.removeBatchByIds(Arrays.asList(ids));
         if (b) {

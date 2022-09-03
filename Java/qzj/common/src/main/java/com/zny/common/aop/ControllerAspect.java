@@ -1,5 +1,6 @@
 package com.zny.common.aop;
 
+import cn.dev33.satoken.spring.SpringMVCUtil;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
 import com.zny.common.event.ApiLogEvent;
@@ -14,8 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
@@ -25,13 +24,13 @@ import java.util.Map;
 
 /**
  * @author WBS
- * 控制器接口日志拦截
+ * 控制器拦截
  * Date:2022/9/1
  */
 
 @Aspect
 @Component
-public class ApiLogAspect {
+public class ControllerAspect {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
@@ -47,24 +46,18 @@ public class ApiLogAspect {
 
         Object result = null;
         try {
+            HttpServletRequest httpServletRequest = SpringMVCUtil.getRequest();
+
+            //如果未登录
+            if (!"/user/login".equals(httpServletRequest.getRequestURI()) && !StpUtil.isLogin()) {
+                return SaResult.get(401, "请登录！", null);
+            }
+
             LocalDateTime start = LocalDateTime.now();
             Object[] args = pjp.getArgs();
             result = pjp.proceed(args);
             SaResult sa = (SaResult) result;
             LocalDateTime end = LocalDateTime.now();
-
-            //如果是未授权
-            if (sa.getCode() == 401) {
-                return result;
-            }
-            //如果未登录
-            if (!StpUtil.isLogin()) {
-                return SaResult.get(401, "请登录！", null);
-            }
-
-            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-            HttpServletRequest httpServletRequest = attributes.getRequest();
-
             Map<String, Object> map = new HashMap<>(10);
             map.put("user_id", StpUtil.getLoginId().toString());
             map.put("spend", Duration.between(start, end).toMillis() / 1000f);
