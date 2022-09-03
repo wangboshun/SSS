@@ -1,4 +1,4 @@
-package com.zny.user.application.satoken;
+package com.zny.common.config.satoken;
 
 import cn.dev33.satoken.listener.SaTokenListener;
 import cn.dev33.satoken.stp.SaLoginModel;
@@ -8,13 +8,13 @@ import cn.dev33.satoken.stp.SaLoginModel;
  * Date:2022/9/1
  */
 
-public class DefaultSaTokenListener implements SaTokenListener {
+public class MySaTokenListener implements SaTokenListener {
     /**
      * 每次登录时触发
      */
     @Override
     public void doLogin(String loginType, Object loginId, String tokenValue, SaLoginModel loginModel) {
-        // ...
+        System.out.println("satoken doLogin");
     }
 
     /**
@@ -22,7 +22,7 @@ public class DefaultSaTokenListener implements SaTokenListener {
      */
     @Override
     public void doLogout(String loginType, Object loginId, String tokenValue) {
-        // ...
+        System.out.println("satoken doLogout");
     }
 
     /**
@@ -30,7 +30,7 @@ public class DefaultSaTokenListener implements SaTokenListener {
      */
     @Override
     public void doKickout(String loginType, Object loginId, String tokenValue) {
-        // ...
+        System.out.println("satoken doKickout");
     }
 
     /**
@@ -38,7 +38,7 @@ public class DefaultSaTokenListener implements SaTokenListener {
      */
     @Override
     public void doReplaced(String loginType, Object loginId, String tokenValue) {
-        // ...
+        System.out.println("satoken doReplaced");
     }
 
     /**
@@ -46,7 +46,7 @@ public class DefaultSaTokenListener implements SaTokenListener {
      */
     @Override
     public void doDisable(String loginType, Object loginId, long disableTime) {
-        // ...
+        System.out.println("satoken doDisable");
     }
 
     /**
@@ -54,7 +54,7 @@ public class DefaultSaTokenListener implements SaTokenListener {
      */
     @Override
     public void doUntieDisable(String loginType, Object loginId) {
-        // ...
+        System.out.println("satoken doUntieDisable");
     }
 
     /**
@@ -62,7 +62,7 @@ public class DefaultSaTokenListener implements SaTokenListener {
      */
     @Override
     public void doCreateSession(String id) {
-        // ...
+        System.out.println("satoken doCreateSession");
     }
 
     /**
@@ -70,6 +70,6 @@ public class DefaultSaTokenListener implements SaTokenListener {
      */
     @Override
     public void doLogoutSession(String id) {
-        // ...
+        System.out.println("satoken doLogoutSession");
     }
 }
