@@ -3,7 +3,7 @@ package com.zny.common.aop;
 import cn.dev33.satoken.spring.SpringMVCUtil;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
-import com.google.common.eventbus.AsyncEventBus;
+import com.zny.common.eventbus.TopicEventBusImpl;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.IpUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -37,7 +37,7 @@ public class ControllerAspect {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private AsyncEventBus asyncEventBus;
+    private TopicEventBusImpl topicEventBus;
 
     @Pointcut("execution(* com.zny.*.controller..*.*(..))")
     public void apiLog() {
@@ -77,6 +77,7 @@ public class ControllerAspect {
                 map.put("data", sa.toString());
             }
             logQueue.offer(map);
+            topicEventBus.post("ApiLogListener", map.toString());
         } catch (Throwable e) {
             logger.error(e.getMessage());
             result = SaResult.error("内部异常！");
@@ -87,13 +88,13 @@ public class ControllerAspect {
 
     @Scheduled(cron = "0 0/1 * * * ?")
     private void addApiLog() {
-        System.out.println("插入日志任务：" + DateUtils.dateToStr(LocalDateTime.now()));
-        int size = logQueue.size();
-        if (size < 1) {
-            return;
-        }
-        for (int i = 0; i < size; i++) {
-            asyncEventBus.post(logQueue.poll());
-        }
+//        System.out.println("插入日志任务：" + DateUtils.dateToStr(LocalDateTime.now()));
+//        int size = logQueue.size();
+//        if (size < 1) {
+//            return;
+//        }
+//        for (int i = 0; i < size; i++) {
+//            topicEventBus.post("ApiLogListener",logQueue.poll().toString());
+//        }
     }
 }

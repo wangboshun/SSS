@@ -1,37 +1,30 @@
 package com.zny.system.application.apilog;
 
-import com.google.common.eventbus.AllowConcurrentEvents;
-import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.Subscribe;
+import com.zny.common.eventbus.TopicEventBusImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.Map;
 
 /**
  * @author WBS
  * Date:2022/9/4
- * 日志信息监听类
  */
 
-@Service
+@Component
 public class ApiLogListener {
+
     @Autowired
-    private AsyncEventBus asyncEventBus;
+    private TopicEventBusImpl topicEventBus;
 
     @PostConstruct
     public void register() {
-        asyncEventBus.register(this);
+        topicEventBus.register("ApiLogListener", this);
     }
 
-    @AllowConcurrentEvents
     @Subscribe
-    public void receive(Map<String, Object> event) {
-        try {
-            System.out.println("onMessageEvent---》" + Thread.currentThread().getName() + ":" + event);
-        } catch (Exception e) {
-
-        }
+    public void receive(String event) {
+        System.out.println(event);
     }
 }
