@@ -3,6 +3,7 @@ package com.zny.common.aop;
 import cn.dev33.satoken.spring.SpringMVCUtil;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
+import com.google.common.eventbus.AsyncEventBus;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.IpUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -11,6 +12,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +21,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author WBS
@@ -31,8 +33,11 @@ import java.util.concurrent.LinkedBlockingDeque;
 @Component
 public class ControllerAspect {
 
-    private final LinkedBlockingDeque<Map<String, Object>> logQueue = new LinkedBlockingDeque<>();
+    private final LinkedBlockingQueue<Map<String, Object>> logQueue = new LinkedBlockingQueue<>();
     private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    private AsyncEventBus asyncEventBus;
 
     @Pointcut("execution(* com.zny.*.controller..*.*(..))")
     public void apiLog() {
@@ -88,7 +93,7 @@ public class ControllerAspect {
             return;
         }
         for (int i = 0; i < size; i++) {
-            System.out.println(logQueue.poll());
+            asyncEventBus.post(logQueue.poll());
         }
     }
 }
