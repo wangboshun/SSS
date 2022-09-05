@@ -1,8 +1,6 @@
 package com.zny.common.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -20,18 +18,15 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class ScheduledConfig implements SchedulingConfigurer {
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        taskRegistrar.setScheduler(taskScheduler());
-    }
+        // 返回可用处理器数量
+        int processNum = Runtime.getRuntime().availableProcessors();
 
-    @Bean
-    public TaskScheduler taskScheduler() {
+        int corePoolSize = (int) (processNum / (1 - 0.2));
         ThreadPoolTaskScheduler executor = new ThreadPoolTaskScheduler();
-        executor.setPoolSize(10);
+        executor.setPoolSize(corePoolSize);
         executor.setThreadNamePrefix("定时任务---");
-        //设置饱和策略
-        //CallerRunsPolicy：线程池的饱和策略之一，当线程池使用饱和后，直接使用调用者所在的线程来执行任务；如果执行程序已关闭，则会丢弃该任务
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         executor.initialize();
-        return executor;
+        taskRegistrar.setScheduler(executor);
     }
 }

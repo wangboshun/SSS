@@ -1,6 +1,5 @@
 package com.zny.common.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -20,13 +19,18 @@ public class AsyncConfig implements AsyncConfigurer {
 
     @Override
     public Executor getAsyncExecutor() {
+        // 返回可用处理器的数量
+        int processNum = Runtime.getRuntime().availableProcessors();
+        int corePoolSize = (int) (processNum / (1 - 0.2));
+        int maxPoolSize = (int) (processNum / (1 - 0.5));
+
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         //核心线程池大小
-        executor.setCorePoolSize(10);
+        executor.setCorePoolSize(corePoolSize);
         //最大线程数
-        executor.setMaxPoolSize(20);
+        executor.setMaxPoolSize(maxPoolSize);
         //队列容量
-        executor.setQueueCapacity(10);
+        executor.setQueueCapacity(maxPoolSize * 10);
         //活跃时间
         executor.setKeepAliveSeconds(60);
         //线程名字前缀

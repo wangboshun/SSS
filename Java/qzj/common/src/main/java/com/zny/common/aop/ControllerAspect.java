@@ -3,8 +3,8 @@ package com.zny.common.aop;
 import cn.dev33.satoken.spring.SpringMVCUtil;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
-import com.zny.common.eventbus.core.EventBus;
-import com.zny.common.eventbus.event.ApiLogEvent;
+import com.zny.common.eventbus.EventEnum;
+import com.zny.common.eventbus.TopicAsyncEventBus;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.IpUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -40,7 +40,7 @@ public class ControllerAspect {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private EventBus eventBus;
+    private TopicAsyncEventBus topicEventBus;
 
     @Pointcut("execution(* com.zny.*.controller..*.*(..))")
     public void apiLog() {
@@ -96,15 +96,12 @@ public class ControllerAspect {
         if (size < 1) {
             return;
         }
+
         List<Map<String, Object>> list = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             list.add(logQueue.poll());
         }
 
-        ApiLogEvent apiLogEvent = new ApiLogEvent();
-        apiLogEvent.setTopic("apilog");
-        apiLogEvent.setContent(list);
-        eventBus.post(apiLogEvent);
-        System.out.println("发布完成");
+        topicEventBus.post(EventEnum.APILOG.toString(),list);
     }
 }
