@@ -1,5 +1,8 @@
 package com.zny.common.config;
 
+import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
+import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -13,17 +16,15 @@ import java.util.concurrent.ThreadPoolExecutor;
  * Date:2022/9/5
  */
 
-@Configuration
 @EnableAsync
-public class AsyncConfig implements AsyncConfigurer {
+@Configuration
+public class AsyncConfig {
 
-    @Override
-    public Executor getAsyncExecutor() {
-        // 返回可用处理器的数量
+    @Bean(name = "defaultExecutor")
+    public ThreadPoolTaskExecutor defaultExecutor() {
         int processNum = Runtime.getRuntime().availableProcessors();
         int corePoolSize = (int) (processNum / (1 - 0.2));
         int maxPoolSize = (int) (processNum / (1 - 0.5));
-
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         //核心线程池大小
         executor.setCorePoolSize(corePoolSize);

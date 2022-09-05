@@ -18,9 +18,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class ScheduledConfig implements SchedulingConfigurer {
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        // 返回可用处理器数量
         int processNum = Runtime.getRuntime().availableProcessors();
-
         int corePoolSize = (int) (processNum / (1 - 0.2));
         ThreadPoolTaskScheduler executor = new ThreadPoolTaskScheduler();
         executor.setPoolSize(corePoolSize);

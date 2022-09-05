@@ -5,7 +5,7 @@ package com.zny.common.eventbus;
  * Date:2022/9/5
  */
 
-public interface IListener<T> {
+public interface IEventListener<T> {
     void register();
 
     void receive(T event);

@@ -2,7 +2,7 @@ package com.zny.system.application.apilog;
 
 import com.google.common.eventbus.Subscribe;
 import com.zny.common.eventbus.EventEnum;
-import com.zny.common.eventbus.IListener;
+import com.zny.common.eventbus.IEventListener;
 import com.zny.common.eventbus.TopicAsyncEventBus;
 import com.zny.system.model.apilog.ApiLogModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import java.util.Map;
  */
 
 @Component
-public class ApiLogListener implements IListener<List<Map<String, Object>>> {
+public class ApiLogEventListener implements IEventListener<List<Map<String, Object>>> {
 
     @Autowired
     private ApiLogApplication apiLogApplication;

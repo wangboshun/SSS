@@ -18,7 +18,7 @@ public class TopicAsyncEventBus implements IEventBus {
     private final Map<String, AsyncEventBus> eventBusMap;
 
     @Autowired
-    private ThreadPoolTaskExecutor executor;
+    private ThreadPoolTaskExecutor defaultExecutor;
 
     public TopicAsyncEventBus() {
         eventBusMap = new ConcurrentHashMap<>();
@@ -53,7 +53,7 @@ public class TopicAsyncEventBus implements IEventBus {
         synchronized (eventBusMap) {
             AsyncEventBus eventBus = eventBusMap.get(topic);
             if (eventBus == null) {
-                eventBus = new AsyncEventBus(executor);
+                eventBus = new AsyncEventBus(defaultExecutor);
                 eventBusMap.put(topic, eventBus);
             }
             return eventBus;
