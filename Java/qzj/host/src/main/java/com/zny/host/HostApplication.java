@@ -1,5 +1,6 @@
 package com.zny.host;
 
+import com.zny.common.eventbus.spring.EnableEventBus;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,8 +11,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication()
 @ComponentScan(basePackages = "com.zny.**")
 @ServletComponentScan
-@EnableScheduling
 @MapperScan(basePackages = "com.zny.**")
+@EnableEventBus
 public class HostApplication {
 
 

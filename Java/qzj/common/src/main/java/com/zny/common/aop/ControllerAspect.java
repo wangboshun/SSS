@@ -3,7 +3,8 @@ package com.zny.common.aop;
 import cn.dev33.satoken.spring.SpringMVCUtil;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
-import com.zny.common.eventbus.TopicEventBusImpl;
+import com.zny.common.eventbus.core.EventBus;
+import com.zny.common.eventbus.event.ApiLogEvent;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.IpUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -19,7 +20,9 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -37,7 +40,7 @@ public class ControllerAspect {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private TopicEventBusImpl topicEventBus;
+    private EventBus eventBus;
 
     @Pointcut("execution(* com.zny.*.controller..*.*(..))")
     public void apiLog() {
@@ -76,8 +79,8 @@ public class ControllerAspect {
             if (!"GET".equals(httpServletRequest.getMethod())) {
                 map.put("data", sa.toString());
             }
+
             logQueue.offer(map);
-            topicEventBus.post("ApiLogListener", map.toString());
         } catch (Throwable e) {
             logger.error(e.getMessage());
             result = SaResult.error("内部异常！");
@@ -88,13 +91,20 @@ public class ControllerAspect {
 
     @Scheduled(cron = "0 0/1 * * * ?")
     private void addApiLog() {
-//        System.out.println("插入日志任务：" + DateUtils.dateToStr(LocalDateTime.now()));
-//        int size = logQueue.size();
-//        if (size < 1) {
-//            return;
-//        }
-//        for (int i = 0; i < size; i++) {
-//            topicEventBus.post("ApiLogListener",logQueue.poll().toString());
-//        }
+        System.out.println(Thread.currentThread().getName() + "插入日志任务：" + DateUtils.dateToStr(LocalDateTime.now()));
+        int size = logQueue.size();
+        if (size < 1) {
+            return;
+        }
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            list.add(logQueue.poll());
+        }
+
+        ApiLogEvent apiLogEvent = new ApiLogEvent();
+        apiLogEvent.setTopic("apilog");
+        apiLogEvent.setContent(list);
+        eventBus.post(apiLogEvent);
+        System.out.println("发布完成");
     }
 }
