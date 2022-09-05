@@ -102,6 +102,6 @@ public class ControllerAspect {
             list.add(logQueue.poll());
         }
 
-        topicEventBus.post(EventEnum.APILOG.toString(),list);
+        topicEventBus.post(EventEnum.APILOG.toString(), list);
     }
 }

@@ -1,6 +1,5 @@
 package com.zny.system.controller;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.util.SaResult;
 import com.zny.system.application.apilog.ApiLogApplication;
 import com.zny.system.model.apilog.ApiLogModel;
