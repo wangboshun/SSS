@@ -14,19 +14,19 @@ public class UserModel implements Serializable {
     public String id;
     public String user_name;
     public String password;
-    //    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")  //时间格式化
+
+    /**
+     * @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+     * 时间格式化
+     */
     public String create_time;
     public Integer user_status;
 
     @Override
     public String toString() {
-        return "UserModel{" +
-                "id='" + id + '\'' +
-                ", user_name='" + user_name + '\'' +
-                ", password='" + password + '\'' +
-                ", create_time='" + create_time + '\'' +
-                ", user_status=" + user_status +
-                '}';
+        return "UserModel{" + "id='" + id + '\'' + ", user_name='" + user_name + '\'' +
+                ", password='" + password + '\'' + ", create_time='" + create_time + '\'' +
+                ", user_status=" + user_status + '}';
     }
 
     public String getId() {

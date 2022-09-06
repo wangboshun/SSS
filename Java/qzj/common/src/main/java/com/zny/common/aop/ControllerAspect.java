@@ -42,45 +42,37 @@ public class ControllerAspect {
     @Autowired
     private TopicAsyncEventBus topicEventBus;
 
+    /**
+     * 控制器切面
+     */
     @Pointcut("execution(* com.zny.*.controller..*.*(..))")
     public void apiLog() {
 
     }
 
+    /**
+     * 拦截控制器请求
+     *
+     * @param pjp 环绕通知
+     */
     @Around("apiLog()")
     public Object around(ProceedingJoinPoint pjp) {
 
-        Object result = null;
+        Object result;
         try {
             HttpServletRequest httpServletRequest = SpringMVCUtil.getRequest();
-
             //如果未登录
             if (!"/user/login".equals(httpServletRequest.getRequestURI()) && !StpUtil.isLogin()) {
                 return SaResult.get(401, "请登录！", null);
             }
-
             LocalDateTime start = LocalDateTime.now();
             Object[] args = pjp.getArgs();
             result = pjp.proceed(args);
             SaResult sa = (SaResult) result;
-            LocalDateTime end = LocalDateTime.now();
-            Map<String, Object> map = new HashMap<>(10);
-            map.put("user_id", StpUtil.getLoginId().toString());
-            map.put("spend", Duration.between(start, end).toMillis() / 1000f);
-            map.put("url", httpServletRequest.getRequestURI());
-            map.put("method", httpServletRequest.getMethod());
-            map.put("params", httpServletRequest.getQueryString());
-            map.put("ip", IpUtils.getRemoteIp(httpServletRequest));
-            map.put("code", sa.getCode());
-            map.put("start_time", DateUtils.dateToStr(start));
-            map.put("end_time", DateUtils.dateToStr(end));
-
-            //GET请求不存储日志
-            if (!"GET".equals(httpServletRequest.getMethod())) {
-                map.put("data", sa.toString());
+            if (sa.getCode() == 200) {
+                addApiLog(httpServletRequest,sa, start);
             }
 
-            logQueue.offer(map);
         } catch (Throwable e) {
             logger.error(e.getMessage());
             result = SaResult.error("内部异常！");
@@ -89,8 +81,39 @@ public class ControllerAspect {
         return result;
     }
 
+    /**
+     * 添加接口日志
+     *
+     * @param httpServletRequest http请求
+     * @param sa                 执行接口
+     * @param start              开始时间
+     */
+    private void addApiLog(HttpServletRequest httpServletRequest, SaResult sa, LocalDateTime start) {
+        LocalDateTime end = LocalDateTime.now();
+        Map<String, Object> map = new HashMap<>(10);
+        map.put("user_id", StpUtil.getLoginId().toString());
+        map.put("spend", Duration.between(start, end).toMillis() / 1000f);
+        map.put("url", httpServletRequest.getRequestURI());
+        map.put("method", httpServletRequest.getMethod());
+        map.put("params", httpServletRequest.getQueryString());
+        map.put("ip", IpUtils.getRemoteIp(httpServletRequest));
+        map.put("code", sa.getCode());
+        map.put("start_time", DateUtils.dateToStr(start));
+        map.put("end_time", DateUtils.dateToStr(end));
+
+        //GET请求不存储日志
+        if (!"GET".equals(httpServletRequest.getMethod())) {
+            map.put("data", sa.toString());
+        }
+
+        logQueue.offer(map);
+    }
+
+    /**
+     * 接口日志定时任务
+     */
     @Scheduled(cron = "0 0/1 * * * ?")
-    private void addApiLog() {
+    private void apiLogSchedule() {
         System.out.println(Thread.currentThread().getName() + "插入日志任务：" + DateUtils.dateToStr(LocalDateTime.now()));
         int size = logQueue.size();
         if (size < 1) {
