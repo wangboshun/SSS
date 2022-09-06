@@ -25,6 +25,8 @@ import java.util.UUID;
 @Service
 public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
 
+    private RoleModel model;
+
     /**
      * 添加角色
      *

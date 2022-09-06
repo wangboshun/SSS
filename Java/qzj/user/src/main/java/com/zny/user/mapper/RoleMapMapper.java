@@ -2,8 +2,6 @@ package com.zny.user.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zny.user.model.RoleMapModel;
-import com.zny.user.model.RoleModel;
-import com.zny.user.model.UserModel;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +12,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Mapper
-public interface RoleMapper extends BaseMapper<RoleModel> {
+public interface RoleMapMapper extends BaseMapper<RoleMapModel> {
 }
