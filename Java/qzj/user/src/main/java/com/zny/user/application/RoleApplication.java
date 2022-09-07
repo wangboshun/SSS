@@ -1,4 +1,4 @@
-package com.zny.user.application.user;
+package com.zny.user.application;
 
 import cn.dev33.satoken.util.SaResult;
 import cn.hutool.crypto.SecureUtil;

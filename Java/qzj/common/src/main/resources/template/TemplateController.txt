@@ -1,0 +1,78 @@
+package com.zny.common.code.template;
+
+import cn.dev33.satoken.util.SaResult;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+/**
+ * @author WBS
+ * Date:2022/9/6
+ */
+
+@RestController
+@RequestMapping("/user/template")
+@Tag(name = "template", description = "模板模块")
+public class TemplateController {
+
+    @Autowired
+    private TemplateApplication templateApplication;
+
+    /**
+     * 获取模板列表
+     *
+     * @param templateId   模板id
+     * @param templateName 模板名
+     * @param pageSize     分页大小
+     */
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public SaResult list(@RequestParam(required = false) String templateId, @RequestParam(required = false) String templateName, @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
+        Map<String, Object> result = templateApplication.getTemplateList(templateId, templateName, pageIndex, pageSize);
+        return SaResult.data(result);
+    }
+
+    /**
+     * 获取模板信息
+     *
+     * @param id 模板id
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public SaResult get(@PathVariable String id) {
+        TemplateModel model = templateApplication.getById(id);
+        return SaResult.data(model);
+    }
+
+    /**
+     * 添加模板
+     *
+     * @param templateName 模板名
+     */
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public SaResult add(String templateName) {
+        return templateApplication.addTemplate(templateName);
+    }
+
+
+    /**
+     * 删除模板
+     *
+     * @param id 模板id
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public SaResult delete(@PathVariable String id) {
+        return templateApplication.deleteTemplate(id);
+    }
+
+    /**
+     * 更新模板信息
+     *
+     * @param id           模板id
+     * @param templateName 模板名
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
+    public SaResult update(@PathVariable String id, String templateName) {
+        return templateApplication.updateTemplate(id, templateName);
+    }
+}

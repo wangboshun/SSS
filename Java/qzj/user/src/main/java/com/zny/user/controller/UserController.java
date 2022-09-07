@@ -3,7 +3,7 @@ package com.zny.user.controller;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.zny.user.application.user.UserApplication;
+import com.zny.user.application.UserApplication;
 import com.zny.user.model.UserModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;

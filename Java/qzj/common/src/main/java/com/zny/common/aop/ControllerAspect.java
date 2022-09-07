@@ -70,7 +70,7 @@ public class ControllerAspect {
             result = pjp.proceed(args);
             SaResult sa = (SaResult) result;
             if (sa.getCode() == 200) {
-                addApiLog(httpServletRequest,sa, start);
+                addApiLog(httpServletRequest, sa, start);
             }
 
         } catch (Throwable e) {
@@ -79,6 +79,20 @@ public class ControllerAspect {
         }
 
         return result;
+    }
+
+    /**
+     * 检查权限
+     */
+    private boolean checkPermission() {
+        return true;
+    }
+
+    /**
+     * 检查角色
+     */
+    private boolean checkRole() {
+        return true;
     }
 
     /**

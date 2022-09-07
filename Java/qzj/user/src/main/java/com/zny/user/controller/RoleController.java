@@ -1,7 +1,7 @@
 package com.zny.user.controller;
 
 import cn.dev33.satoken.util.SaResult;
-import com.zny.user.application.user.RoleApplication;
+import com.zny.user.application.RoleApplication;
 import com.zny.user.model.RoleModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;

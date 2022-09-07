@@ -2,12 +2,14 @@ package com.zny.user.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import java.io.Serializable;
+
 /**
  * @author WBS
  * Date:2022/9/6
  */
 @TableName("sys_permission")
-public class PermissionModel {
+public class PermissionModel implements Serializable {
     public String id;
 
     public String getId() {

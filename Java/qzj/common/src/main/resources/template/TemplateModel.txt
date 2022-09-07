@@ -1,0 +1,49 @@
+package com.zny.common.code.template;
+
+import com.baomidou.mybatisplus.annotation.TableName;
+
+/**
+ * @author WBS
+ * Date:2022/9/6
+ */
+@TableName("sys_template")
+public class TemplateModel {
+    public String id;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getTemplate_name() {
+        return template_name;
+    }
+
+    public void setTemplate_name(String template_name) {
+        this.template_name = template_name;
+    }
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
+    }
+
+    public Integer getTemplate_status() {
+        return template_status;
+    }
+
+    public void setTemplate_status(Integer template_status) {
+        this.template_status = template_status;
+    }
+
+    public String template_name;
+    public String create_time;
+    public Integer template_status;
+
+}

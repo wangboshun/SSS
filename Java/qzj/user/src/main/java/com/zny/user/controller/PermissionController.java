@@ -1,7 +1,7 @@
 package com.zny.user.controller;
 
 import cn.dev33.satoken.util.SaResult;
-import com.zny.user.application.user.PermissionApplication;
+import com.zny.user.application.PermissionApplication;
 import com.zny.user.model.PermissionModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
