@@ -2,7 +2,6 @@ package com.zny.user.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.google.common.collect.Table;
 import com.zny.user.application.ResourceApplication;
 import com.zny.user.application.UserApplication;
@@ -11,8 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,9 +37,9 @@ public class UserController {
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public SaResult login(String username, String password) {
-        String token = userApplication.login(username, password);
-        if (StringUtils.isNotBlank(token)) {
-            return SaResult.data(token);
+        Map<String, String> tokenInfo = userApplication.login(username, password);
+        if (tokenInfo != null) {
+            return SaResult.data(tokenInfo);
         }
         return SaResult.get(401, "账号或密码错误！", null);
     }
@@ -123,18 +120,8 @@ public class UserController {
      */
     @RequestMapping(value = "/getRole", method = RequestMethod.GET)
     public SaResult getRole(String userId) {
-        Table<String, String, String> menu = resourceApplication.getRoleByUser(userId);
-        List<Map<String, String>> list = new ArrayList<>();
-        for (String key : menu.rowKeySet()) {
-            Map<String, String> columnMap = menu.row(key);
-            columnMap.forEach((columnKey, value) -> {
-                Map<String, String> map = new HashMap<>();
-                map.put("id", key);
-                map.put("code", value);
-                map.put("name", columnKey);
-                list.add(map);
-            });
-        }
+        Table<String, String, String> table = resourceApplication.getRoleByUser(userId);
+        List<Map<String, String>> list = resourceApplication.TableConvertList(table);
         return SaResult.data(list);
     }
 
@@ -145,18 +132,8 @@ public class UserController {
      */
     @RequestMapping(value = "/getMenu", method = RequestMethod.GET)
     public SaResult getMenu(String userId) {
-        Table<String, String, String> menu = resourceApplication.getMenuByUser(userId);
-        List<Map<String, String>> list = new ArrayList<>();
-        for (String key : menu.rowKeySet()) {
-            Map<String, String> columnMap = menu.row(key);
-            columnMap.forEach((columnKey, value) -> {
-                Map<String, String> map = new HashMap<>();
-                map.put("id", key);
-                map.put("code", value);
-                map.put("name", columnKey);
-                list.add(map);
-            });
-        }
+        Table<String, String, String> table = resourceApplication.getMenuByUser(userId);
+        List<Map<String, String>> list = resourceApplication.TableConvertList(table);
         return SaResult.data(list);
     }
 
@@ -167,18 +144,8 @@ public class UserController {
      */
     @RequestMapping(value = "/getPermission", method = RequestMethod.GET)
     public SaResult getPermission(String userId) {
-        Table<String, String, String> menu = resourceApplication.getPermissionByUser(userId);
-        List<Map<String, String>> list = new ArrayList<>();
-        for (String key : menu.rowKeySet()) {
-            Map<String, String> columnMap = menu.row(key);
-            columnMap.forEach((columnKey, value) -> {
-                Map<String, String> map = new HashMap<>();
-                map.put("id", key);
-                map.put("code", value);
-                map.put("name", columnKey);
-                list.add(map);
-            });
-        }
+        Table<String, String, String> table = resourceApplication.getPermissionByUser(userId);
+        List<Map<String, String>> list = resourceApplication.TableConvertList(table);
         return SaResult.data(list);
     }
 }

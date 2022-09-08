@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author WBS
@@ -85,6 +82,26 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
         else {
             return SaResult.error("添加资源失败！");
         }
+    }
+
+    /**
+     * 数据表转集合
+     *
+     * @param table 数据表
+     */
+    public List<Map<String, String>> TableConvertList(Table<String, String, String> table) {
+        List<Map<String, String>> list = new ArrayList<>();
+        for (String key : table.rowKeySet()) {
+            Map<String, String> columnMap = table.row(key);
+            columnMap.forEach((columnKey, value) -> {
+                Map<String, String> map = new HashMap<>();
+                map.put("id", key);
+                map.put("code", value);
+                map.put("name", columnKey);
+                list.add(map);
+            });
+        }
+        return list;
     }
 
     /**

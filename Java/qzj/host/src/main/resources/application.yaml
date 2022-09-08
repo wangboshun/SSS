@@ -1,4 +1,8 @@
 spring:
+  mvc:
+    pathmatch:
+      # 配置策略
+      matching-strategy: ant-path-matcher
   profiles:
     include: iot,user,common,system
   datasource:

@@ -61,10 +61,12 @@ public class ControllerAspect {
         Object result;
         try {
             HttpServletRequest httpServletRequest = SpringMVCUtil.getRequest();
+
             //如果未登录
             if (!"/user/login".equals(httpServletRequest.getRequestURI()) && !StpUtil.isLogin()) {
                 return SaResult.get(401, "请登录！", null);
             }
+
             LocalDateTime start = LocalDateTime.now();
             Object[] args = pjp.getArgs();
             result = pjp.proceed(args);
@@ -129,8 +131,7 @@ public class ControllerAspect {
      */
     @Scheduled(cron = "0 0/1 * * * ?")
     private void apiLogSchedule() {
-        System.out.println(
-                Thread.currentThread().getName() + "插入日志任务：" + DateUtils.dateToStr(LocalDateTime.now()));
+        System.out.println(Thread.currentThread().getName() + "插入日志任务：" + DateUtils.dateToStr(LocalDateTime.now()));
         int size = logQueue.size();
         if (size < 1) {
             return;

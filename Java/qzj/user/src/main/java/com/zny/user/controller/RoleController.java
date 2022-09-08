@@ -9,8 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -99,17 +97,8 @@ public class RoleController {
      */
     @RequestMapping(value = "/getUser", method = RequestMethod.GET)
     public SaResult getUser(String roleId) {
-        Table<String, String, String> menu = resourceApplication.getUserByRole(roleId);
-        List<Map<String, String>> list = new ArrayList<>();
-        for (String key : menu.rowKeySet()) {
-            Map<String, String> columnMap = menu.row(key);
-            columnMap.forEach((columnKey, value) -> {
-                Map<String, String> map = new HashMap<>();
-                map.put("id", key);
-                map.put("name", columnKey);
-                list.add(map);
-            });
-        }
+        Table<String, String, String> table = resourceApplication.getUserByRole(roleId);
+        List<Map<String, String>> list = resourceApplication.TableConvertList(table);
         return SaResult.data(list);
     }
 
@@ -120,17 +109,8 @@ public class RoleController {
      */
     @RequestMapping(value = "/getMenu", method = RequestMethod.GET)
     public SaResult getMenu(String roleId) {
-        Table<String, String, String> menu = resourceApplication.getMenuByRole(roleId);
-        List<Map<String, String>> list = new ArrayList<>();
-        for (String key : menu.rowKeySet()) {
-            Map<String, String> columnMap = menu.row(key);
-            columnMap.forEach((columnKey, value) -> {
-                Map<String, String> map = new HashMap<>();
-                map.put("id", key);
-                map.put("name", columnKey);
-                list.add(map);
-            });
-        }
+        Table<String, String, String> table = resourceApplication.getMenuByRole(roleId);
+        List<Map<String, String>> list = resourceApplication.TableConvertList(table);
         return SaResult.data(list);
     }
 
@@ -141,17 +121,8 @@ public class RoleController {
      */
     @RequestMapping(value = "/getPermission", method = RequestMethod.GET)
     public SaResult getPermission(String roleId) {
-        Table<String, String, String> menu = resourceApplication.getPermissionByRole(roleId);
-        List<Map<String, String>> list = new ArrayList<>();
-        for (String key : menu.rowKeySet()) {
-            Map<String, String> columnMap = menu.row(key);
-            columnMap.forEach((columnKey, value) -> {
-                Map<String, String> map = new HashMap<>();
-                map.put("id", key);
-                map.put("name", columnKey);
-                list.add(map);
-            });
-        }
+        Table<String, String, String> table = resourceApplication.getPermissionByRole(roleId);
+        List<Map<String, String>> list = resourceApplication.TableConvertList(table);
         return SaResult.data(list);
     }
 }

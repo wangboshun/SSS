@@ -32,7 +32,7 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
      * @param username 用户名
      * @param password 密码
      */
-    public String login(String username, String password) {
+    public Map<String, String> login(String username, String password) {
         QueryWrapper<UserModel> wrapper = new QueryWrapper<UserModel>();
         wrapper.eq("user_name", username);
         wrapper.eq("password", SecureUtil.md5(password));
@@ -40,7 +40,9 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
         if (model != null) {
             StpUtil.login(model.id);
             SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
-            return tokenInfo.getTokenValue();
+            Map<String, String> map = new HashMap<String, String>();
+            map.put(tokenInfo.getTokenName(), tokenInfo.getTokenValue());
+            return map;
         }
         return null;
     }
