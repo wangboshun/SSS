@@ -117,7 +117,8 @@ class DruidDataSourceProperties {
         datasource.setMaxPoolPreparedStatementPerConnectionSize(maxPoolPreparedStatementPerConnectionSize);
         try {
             datasource.setFilters(filters);
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             System.err.println("druid configuration initialization filter: " + e);
         }
         datasource.setConnectionProperties(connectionProperties);

@@ -25,7 +25,8 @@ public class StringUtils {
             if (i == 0) {
                 firstStr = eachStr[0].toLowerCase();
                 resStr.append(firstStr);
-            } else {
+            }
+            else {
                 //以后的数组首字母大写
                 tempStr = capitalizeTheFirstLetter(eachStr[i]);
                 resStr.append(tempStr);

@@ -21,9 +21,17 @@ public class ResourceModel implements Serializable {
     public String slave_id;
     public String slave_name;
     public int slave_type;
-
+    public String slave_code;
     public String create_time;
     public Integer resource_status;
+
+    public String getSlave_code() {
+        return slave_code;
+    }
+
+    public void setSlave_code(String slave_code) {
+        this.slave_code = slave_code;
+    }
 
     public int getSlave_type() {
         return slave_type;

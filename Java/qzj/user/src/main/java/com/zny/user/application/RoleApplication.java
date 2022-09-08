@@ -1,7 +1,6 @@
 package com.zny.user.application;
 
 import cn.dev33.satoken.util.SaResult;
-import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -9,7 +8,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.RoleMapper;
 import com.zny.user.model.RoleModel;
-import com.zny.user.model.UserModel;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -47,7 +45,8 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
         roleModel.setRole_code(roleCode);
         if (save(roleModel)) {
             return SaResult.ok("添加角色成功！");
-        } else {
+        }
+        else {
             return SaResult.error("添加角色失败！");
         }
     }
@@ -60,7 +59,8 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
      * @param pageIndex 页码
      * @param pageSize  分页大小
      */
-    public Map<String, Object> getRoleList(String roleId,String roleName, String roleCode, Integer pageIndex, Integer pageSize) {
+    public Map<String, Object> getRoleList(
+            String roleId, String roleName, String roleCode, Integer pageIndex, Integer pageSize) {
         if (pageSize == null) {
             pageSize = 10;
         }
@@ -96,7 +96,8 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
         }
         if (removeById(id)) {
             return SaResult.ok("删除角色成功！");
-        } else {
+        }
+        else {
             return SaResult.error("删除角色失败！");
         }
     }
@@ -120,7 +121,8 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
         model.setRole_code(roleCode);
         if (updateById(model)) {
             return SaResult.ok("更新角色信息成功！");
-        } else {
+        }
+        else {
             return SaResult.error("删除角色信息失败！");
         }
     }

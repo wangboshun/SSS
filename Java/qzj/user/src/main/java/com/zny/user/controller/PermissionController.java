@@ -31,8 +31,12 @@ public class PermissionController {
      * @param pageSize       分页大小
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public SaResult list(@RequestParam(required = false) String permissionId, @RequestParam(required = false) String permissionName, @RequestParam(required = false) String permissionCode, @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
-        Map<String, Object> result = permissionApplication.getPermissionList(permissionId, permissionName, permissionCode, pageIndex, pageSize);
+    public SaResult list(
+            @RequestParam(required = false) String permissionId, @RequestParam(required = false) String permissionName,
+            @RequestParam(required = false) String permissionCode, @RequestParam(required = false) Integer pageIndex,
+            @RequestParam(required = false) Integer pageSize) {
+        Map<String, Object> result = permissionApplication.getPermissionList(
+                permissionId, permissionName, permissionCode, pageIndex, pageSize);
         return SaResult.data(result);
     }
 

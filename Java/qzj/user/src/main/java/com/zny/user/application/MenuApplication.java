@@ -28,7 +28,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      *
      * @param menuName 菜单名
      */
-    public SaResult addMenu(String menuName,String menuCode) {
+    public SaResult addMenu(String menuName, String menuCode) {
         QueryWrapper<MenuModel> wrapper = new QueryWrapper<MenuModel>();
         wrapper.eq("menu_name", menuName);
         MenuModel model = this.getOne(wrapper);
@@ -42,7 +42,8 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
         menuModel.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
         if (save(menuModel)) {
             return SaResult.ok("添加菜单成功！");
-        } else {
+        }
+        else {
             return SaResult.error("添加菜单失败！");
         }
     }
@@ -50,11 +51,12 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
     /**
      * 查询菜单列表
      *
-     * @param menuName 菜单名
-     * @param pageIndex    页码
-     * @param pageSize     分页大小
+     * @param menuName  菜单名
+     * @param pageIndex 页码
+     * @param pageSize  分页大小
      */
-    public Map<String, Object> getMenuList(String menuId, String menuName,String menuCode, Integer pageIndex, Integer pageSize) {
+    public Map<String, Object> getMenuList(
+            String menuId, String menuName, String menuCode, Integer pageIndex, Integer pageSize) {
         if (pageSize == null) {
             pageSize = 10;
         }
@@ -90,7 +92,8 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
         }
         if (removeById(id)) {
             return SaResult.ok("删除菜单成功！");
-        } else {
+        }
+        else {
             return SaResult.error("删除菜单失败！");
         }
     }
@@ -98,7 +101,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
     /**
      * 更新菜单信息
      *
-     * @param id           菜单id
+     * @param id       菜单id
      * @param menuName 菜单名
      */
     public SaResult updateMenu(String id, String menuName, String menuCode) {
@@ -113,7 +116,8 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
         model.setMenu_code(menuCode);
         if (updateById(model)) {
             return SaResult.ok("更新菜单信息成功！");
-        } else {
+        }
+        else {
             return SaResult.error("删除菜单信息失败！");
         }
     }

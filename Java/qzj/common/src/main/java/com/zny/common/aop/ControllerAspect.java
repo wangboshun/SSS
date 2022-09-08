@@ -73,7 +73,8 @@ public class ControllerAspect {
                 addApiLog(httpServletRequest, sa, start);
             }
 
-        } catch (Throwable e) {
+        }
+        catch (Throwable e) {
             logger.error(e.getMessage());
             result = SaResult.error("内部异常！");
         }
@@ -128,7 +129,8 @@ public class ControllerAspect {
      */
     @Scheduled(cron = "0 0/1 * * * ?")
     private void apiLogSchedule() {
-        System.out.println(Thread.currentThread().getName() + "插入日志任务：" + DateUtils.dateToStr(LocalDateTime.now()));
+        System.out.println(
+                Thread.currentThread().getName() + "插入日志任务：" + DateUtils.dateToStr(LocalDateTime.now()));
         int size = logQueue.size();
         if (size < 1) {
             return;

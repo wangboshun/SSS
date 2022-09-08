@@ -65,7 +65,8 @@ public class CodeMain {
 
             bw.close();
             fw.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

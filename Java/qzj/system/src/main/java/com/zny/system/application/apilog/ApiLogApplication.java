@@ -23,7 +23,8 @@ public class ApiLogApplication extends ServiceImpl<ApiLogMapper, ApiLogModel> {
     @Autowired
     private ApiLogMapper apiLogMapper;
 
-    public Map<String, Object> getApiLogList(String userId, String method, String ip, Integer pageIndex, Integer pageSize) {
+    public Map<String, Object> getApiLogList(
+            String userId, String method, String ip, Integer pageIndex, Integer pageSize) {
         if (pageSize == null) {
             pageSize = 10;
         }

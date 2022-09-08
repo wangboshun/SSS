@@ -65,7 +65,8 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
         userModel.setPassword(SecureUtil.md5(password));
         if (save(userModel)) {
             return SaResult.ok("添加用户成功！");
-        } else {
+        }
+        else {
             return SaResult.error("添加用户失败！");
         }
     }
@@ -113,7 +114,8 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
         }
         if (removeById(id)) {
             return SaResult.ok("删除用户成功！");
-        } else {
+        }
+        else {
             return SaResult.error("删除用户失败！");
         }
     }
@@ -137,7 +139,8 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
         model.setUser_name(username);
         if (updateById(model)) {
             return SaResult.ok("更新用户信息成功！");
-        } else {
+        }
+        else {
             return SaResult.error("删除用户信息失败！");
         }
     }

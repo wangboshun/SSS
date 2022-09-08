@@ -43,7 +43,8 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
         permissionModel.setPermission_code(permissionCode);
         if (save(permissionModel)) {
             return SaResult.ok("添加权限成功！");
-        } else {
+        }
+        else {
             return SaResult.error("添加权限失败！");
         }
     }
@@ -56,7 +57,8 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      * @param pageIndex      页码
      * @param pageSize       分页大小
      */
-    public Map<String, Object> getPermissionList(String permissionId, String permissionName, String permissionCode, Integer pageIndex, Integer pageSize) {
+    public Map<String, Object> getPermissionList(
+            String permissionId, String permissionName, String permissionCode, Integer pageIndex, Integer pageSize) {
         if (pageSize == null) {
             pageSize = 10;
         }
@@ -92,7 +94,8 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
         }
         if (removeById(id)) {
             return SaResult.ok("删除权限成功！");
-        } else {
+        }
+        else {
             return SaResult.error("删除权限失败！");
         }
     }
@@ -116,7 +119,8 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
         model.setPermission_code(permissionCode);
         if (updateById(model)) {
             return SaResult.ok("更新权限信息成功！");
-        } else {
+        }
+        else {
             return SaResult.error("删除权限信息失败！");
         }
     }

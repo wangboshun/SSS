@@ -33,7 +33,10 @@ public class ApiLogController {
      * @param pageSize  分页大小
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public SaResult list(@RequestParam(required = false) String userId, @RequestParam(required = false) String method, @RequestParam(required = false) String ip, @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
+    public SaResult list(
+            @RequestParam(required = false) String userId, @RequestParam(required = false) String method,
+            @RequestParam(required = false) String ip, @RequestParam(required = false) Integer pageIndex,
+            @RequestParam(required = false) Integer pageSize) {
         Map<String, Object> result = apiLogApplication.getApiLogList(userId, method, ip, pageIndex, pageSize);
         return SaResult.data(result);
     }
@@ -59,7 +62,8 @@ public class ApiLogController {
         boolean b = apiLogApplication.removeBatchByIds(Arrays.asList(ids));
         if (b) {
             return SaResult.ok("日志删除成功！");
-        } else {
+        }
+        else {
             return SaResult.error("日志删除失败！");
         }
     }

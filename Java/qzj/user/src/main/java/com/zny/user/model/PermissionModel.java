@@ -11,6 +11,10 @@ import java.io.Serializable;
 @TableName("sys_permission")
 public class PermissionModel implements Serializable {
     public String id;
+    public String permission_name;
+    public String create_time;
+    public Integer permission_status;
+    private String permission_code;
 
     public String getId() {
         return id;
@@ -51,10 +55,5 @@ public class PermissionModel implements Serializable {
     public void setPermission_code(String permission_code) {
         this.permission_code = permission_code;
     }
-
-    public String permission_name;
-    public String create_time;
-    public Integer permission_status;
-    private String permission_code;
 
 }

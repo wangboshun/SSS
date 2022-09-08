@@ -1,12 +1,17 @@
 package com.zny.user.controller;
 
 import cn.dev33.satoken.util.SaResult;
+import com.google.common.collect.Table;
+import com.zny.user.application.ResourceApplication;
 import com.zny.user.application.RoleApplication;
 import com.zny.user.model.RoleModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,6 +25,9 @@ import java.util.Map;
 public class RoleController {
 
     @Autowired
+    private ResourceApplication resourceApplication;
+
+    @Autowired
     private RoleApplication roleApplication;
 
     /**
@@ -31,7 +39,10 @@ public class RoleController {
      * @param pageSize 分页大小
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public SaResult list(@RequestParam(required = false) String roleId, @RequestParam(required = false) String roleName, @RequestParam(required = false) String roleCode, @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
+    public SaResult list(
+            @RequestParam(required = false) String roleId, @RequestParam(required = false) String roleName,
+            @RequestParam(required = false) String roleCode, @RequestParam(required = false) Integer pageIndex,
+            @RequestParam(required = false) Integer pageSize) {
         Map<String, Object> result = roleApplication.getRoleList(roleId, roleName, roleCode, pageIndex, pageSize);
         return SaResult.data(result);
     }
@@ -79,5 +90,68 @@ public class RoleController {
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
     public SaResult update(@PathVariable String id, String roleName, String roleCode) {
         return roleApplication.updateRole(id, roleName, roleCode);
+    }
+
+    /**
+     * 根据角色获取用户
+     *
+     * @param roleId 角色id
+     */
+    @RequestMapping(value = "/getUser", method = RequestMethod.GET)
+    public SaResult getUser(String roleId) {
+        Table<String, String, String> menu = resourceApplication.getUserByRole(roleId);
+        List<Map<String, String>> list = new ArrayList<>();
+        for (String key : menu.rowKeySet()) {
+            Map<String, String> columnMap = menu.row(key);
+            columnMap.forEach((columnKey, value) -> {
+                Map<String, String> map = new HashMap<>();
+                map.put("id", key);
+                map.put("name", columnKey);
+                list.add(map);
+            });
+        }
+        return SaResult.data(list);
+    }
+
+    /**
+     * 根据角色获取菜单
+     *
+     * @param roleId 角色id
+     */
+    @RequestMapping(value = "/getMenu", method = RequestMethod.GET)
+    public SaResult getMenu(String roleId) {
+        Table<String, String, String> menu = resourceApplication.getMenuByRole(roleId);
+        List<Map<String, String>> list = new ArrayList<>();
+        for (String key : menu.rowKeySet()) {
+            Map<String, String> columnMap = menu.row(key);
+            columnMap.forEach((columnKey, value) -> {
+                Map<String, String> map = new HashMap<>();
+                map.put("id", key);
+                map.put("name", columnKey);
+                list.add(map);
+            });
+        }
+        return SaResult.data(list);
+    }
+
+    /**
+     * 根据角色获取权限
+     *
+     * @param roleId 角色id
+     */
+    @RequestMapping(value = "/getPermission", method = RequestMethod.GET)
+    public SaResult getPermission(String roleId) {
+        Table<String, String, String> menu = resourceApplication.getPermissionByRole(roleId);
+        List<Map<String, String>> list = new ArrayList<>();
+        for (String key : menu.rowKeySet()) {
+            Map<String, String> columnMap = menu.row(key);
+            columnMap.forEach((columnKey, value) -> {
+                Map<String, String> map = new HashMap<>();
+                map.put("id", key);
+                map.put("name", columnKey);
+                list.add(map);
+            });
+        }
+        return SaResult.data(list);
     }
 }

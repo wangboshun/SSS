@@ -7,23 +7,37 @@ package com.zny.user.model;
 
 public enum ResourceEnum {
 
+
     /**
      * 角色
      */
-    ROLE,
+    ROLE(0),
 
     /**
      * 用户
      */
-    USER,
-
+    USER(1),
     /**
      * 菜单
      */
-    MENU,
+    MENU(2),
 
     /**
      * 权限
      */
-    PERMISSION
+    PERMISSION(3);
+
+    public Integer index;
+
+    ResourceEnum(Integer index) {
+        this.index = index;
+    }
+
+    public Integer getIndex() {
+        return index;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index;
+    }
 }

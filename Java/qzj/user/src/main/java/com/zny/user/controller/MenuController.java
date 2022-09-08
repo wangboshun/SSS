@@ -1,12 +1,17 @@
 package com.zny.user.controller;
 
 import cn.dev33.satoken.util.SaResult;
+import com.google.common.collect.Table;
 import com.zny.user.application.MenuApplication;
+import com.zny.user.application.ResourceApplication;
 import com.zny.user.model.MenuModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,6 +27,9 @@ public class MenuController {
     @Autowired
     private MenuApplication menuApplication;
 
+    @Autowired
+    private ResourceApplication resourceApplication;
+
     /**
      * 获取菜单列表
      *
@@ -30,7 +38,10 @@ public class MenuController {
      * @param pageSize 分页大小
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public SaResult list(@RequestParam(required = false) String menuId, @RequestParam(required = false) String menuName, @RequestParam(required = false) String menuCode, @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
+    public SaResult list(
+            @RequestParam(required = false) String menuId, @RequestParam(required = false) String menuName,
+            @RequestParam(required = false) String menuCode, @RequestParam(required = false) Integer pageIndex,
+            @RequestParam(required = false) Integer pageSize) {
         Map<String, Object> result = menuApplication.getMenuList(menuId, menuName, menuCode, pageIndex, pageSize);
         return SaResult.data(result);
     }
@@ -44,6 +55,48 @@ public class MenuController {
     public SaResult get(@PathVariable String id) {
         MenuModel model = menuApplication.getById(id);
         return SaResult.data(model);
+    }
+
+    /**
+     * 根据用户获取菜单
+     *
+     * @param userId 用户id
+     */
+    @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
+    public SaResult getForUser(@PathVariable String userId) {
+        Table<String, String, String> menu = resourceApplication.getMenuByUser(userId);
+        List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        for (String key : menu.rowKeySet()) {
+            Map<String, String> columnMap = menu.row(key);
+            columnMap.forEach((columnKey, value) -> {
+                Map<String, String> map = new HashMap<>();
+                map.put("name", columnKey);
+                map.put("code", value);
+                list.add(map);
+            });
+        }
+        return SaResult.data(list);
+    }
+
+    /**
+     * 根据角色获取菜单
+     *
+     * @param roleId 角色id
+     */
+    @RequestMapping(value = "/role/{roleId}", method = RequestMethod.GET)
+    public SaResult getForRole(@PathVariable String roleId) {
+        Table<String, String, String> menu = resourceApplication.getMenuByRole(roleId);
+        List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        for (String key : menu.rowKeySet()) {
+            Map<String, String> columnMap = menu.row(key);
+            columnMap.forEach((columnKey, value) -> {
+                Map<String, String> map = new HashMap<>();
+                map.put("name", columnKey);
+                map.put("code", value);
+                list.add(map);
+            });
+        }
+        return SaResult.data(list);
     }
 
     /**
