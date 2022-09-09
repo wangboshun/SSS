@@ -46,10 +46,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
         String slaveName = resourceInfo.get("name");
         String slaveCode = resourceInfo.get("code");
 
-        if (StringUtils.isBlank(mainName)) {
-            return SaResult.error("资源不存在！");
-        }
-        if (StringUtils.isBlank(slaveName)) {
+        if (StringUtils.isBlank(mainName) || StringUtils.isBlank(slaveName)) {
             return SaResult.error("资源不存在！");
         }
 
@@ -195,6 +192,36 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
     }
 
     /**
+     * 根据用户获取Api
+     *
+     * @param userId 用户id
+     */
+    public Table<String, String, String> getApiByUser(String userId) {
+        Table<String, String, String> table = HashBasedTable.create();
+        Table<String, String, String> roles = getRoleByUser(userId);
+
+        //循环所有roleId
+        for (String roleId : roles.rowKeySet()) {
+            //根据roleId获取权限
+            Table<String, String, String> tmp = getPermissionByRole(roleId);
+            if (!tmp.isEmpty()) {
+                //table添加角色关联得到权限
+                table.putAll(tmp);
+            }
+        }
+
+        QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
+        wrapper.eq("main_id", userId);
+        wrapper.eq("main_type", ResourceEnum.USER.getIndex());
+        wrapper.eq("slave_type", ResourceEnum.API.getIndex());
+        List<ResourceModel> list = this.list(wrapper);
+        for (ResourceModel resourceModel : list) {
+            table.put(resourceModel.getSlave_id(), resourceModel.getSlave_name(), resourceModel.getSlave_code());
+        }
+        return table;
+    }
+
+    /**
      * 根据角色获取用户
      *
      * @param roleId 角色id
@@ -219,6 +246,15 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
      */
     public Table<String, String, String> getPermissionByRole(String roleId) {
         return getTable(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.PERMISSION.getIndex());
+    }
+
+    /**
+     * 根据角色获取Api
+     *
+     * @param roleId 角色id
+     */
+    public Table<String, String, String> getApiByRole(String roleId) {
+        return getTable(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.API.getIndex());
     }
 
     /**
@@ -353,6 +389,10 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
                 }
                 name = menu.getMenu_name();
                 code = menu.getMenu_code();
+                break;
+            //判断API是否存在
+            case API:
+
                 break;
             default:
                 break;

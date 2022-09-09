@@ -14,8 +14,12 @@
     </parent>
 
     <dependencies>
-
-
+        <dependency>
+            <groupId>com.sun.javadoc</groupId>
+            <artifactId>com.sun.javadoc</artifactId>
+            <scope>system</scope>
+            <systemPath>${java.home}/../lib/tools.jar</systemPath>
+        </dependency>
     </dependencies>
 
 

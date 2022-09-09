@@ -25,7 +25,12 @@ public enum ResourceEnum {
     /**
      * 权限
      */
-    PERMISSION(3);
+    PERMISSION(3),
+
+    /**
+     * API
+     */
+    API(4);
 
     public Integer index;
 

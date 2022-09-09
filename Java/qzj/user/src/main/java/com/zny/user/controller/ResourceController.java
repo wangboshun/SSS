@@ -7,6 +7,7 @@ import com.zny.user.model.ResourceModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -21,6 +22,8 @@ import java.util.Map;
 @Tag(name = "resource", description = "资源模块")
 public class ResourceController {
 
+    @Autowired
+    private WebApplicationContext applicationContext;
     @Autowired
     private ResourceApplication resourceApplication;
 

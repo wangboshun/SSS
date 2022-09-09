@@ -148,4 +148,5 @@ public class UserController {
         List<Map<String, String>> list = resourceApplication.TableConvertList(table);
         return SaResult.data(list);
     }
+
 }

@@ -7,6 +7,7 @@ import com.zny.common.eventbus.EventEnum;
 import com.zny.common.eventbus.TopicAsyncEventBus;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.IpUtils;
+import com.zny.common.utils.ReflectUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -67,6 +68,8 @@ public class ControllerAspect {
                 return SaResult.get(401, "请登录！", null);
             }
 
+            boolean b = checkUrl(pjp);
+
             LocalDateTime start = LocalDateTime.now();
             Object[] args = pjp.getArgs();
             result = pjp.proceed(args);
@@ -96,6 +99,27 @@ public class ControllerAspect {
      */
     private boolean checkRole() {
         return true;
+    }
+
+    /**
+     * 检查菜单
+     */
+    private boolean checkMenu() {
+        return true;
+    }
+
+    /**
+     * 检查URL
+     */
+    private boolean checkUrl(ProceedingJoinPoint pjp) {
+        try {
+            String apiUrl = ReflectUtils.getApiUrl(pjp);
+            System.out.println(apiUrl);
+        }
+        catch (NoSuchMethodException e) {
+
+        }
+        return false;
     }
 
     /**
