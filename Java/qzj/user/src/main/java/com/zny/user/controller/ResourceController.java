@@ -2,8 +2,8 @@ package com.zny.user.controller;
 
 import cn.dev33.satoken.util.SaResult;
 import com.zny.user.application.ResourceApplication;
-import com.zny.user.model.ResourceEnum;
 import com.zny.user.model.ResourceModel;
+import com.zny.user.model.enums.ResourceEnum;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

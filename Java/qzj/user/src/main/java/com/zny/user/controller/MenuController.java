@@ -39,6 +39,7 @@ public class MenuController {
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public SaResult list(
+
             @RequestParam(required = false) String menuId, @RequestParam(required = false) String menuName,
             @RequestParam(required = false) String menuCode, @RequestParam(required = false) Integer pageIndex,
             @RequestParam(required = false) Integer pageSize) {
@@ -105,8 +106,8 @@ public class MenuController {
      * @param menuName 菜单名
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public SaResult add(String menuName, String menuCode) {
-        return menuApplication.addMenu(menuName, menuCode);
+    public SaResult add(String menuName, String menuCode, @RequestParam(required = false) String parentId) {
+        return menuApplication.addMenu(menuName, menuCode,parentId);
     }
 
 

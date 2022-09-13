@@ -9,6 +9,7 @@ import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.PermissionMapper;
 import com.zny.user.model.PermissionModel;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -29,7 +30,7 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      * @param permissionName 权限名
      * @param permissionCode 权限代码
      */
-    public SaResult addPermission(String permissionName, String permissionCode) {
+    public SaResult addPermission(String permissionName, String permissionCode, String parentId) {
         QueryWrapper<PermissionModel> wrapper = new QueryWrapper<PermissionModel>();
         wrapper.eq("permission_name", permissionName);
         PermissionModel model = this.getOne(wrapper);
@@ -39,6 +40,7 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
         PermissionModel permissionModel = new PermissionModel();
         permissionModel.setId(UUID.randomUUID().toString());
         permissionModel.setPermission_name(permissionName);
+        permissionModel.setParent_id(parentId);
         permissionModel.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
         permissionModel.setPermission_code(permissionCode);
         if (save(permissionModel)) {
@@ -58,7 +60,8 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      * @param pageSize       分页大小
      */
     public Map<String, Object> getPermissionList(
-            String permissionId, String permissionName, String permissionCode, Integer pageIndex, Integer pageSize) {
+            String permissionId, String permissionName, String permissionCode, Integer pageIndex,
+            Integer pageSize) {
         if (pageSize == null) {
             pageSize = 10;
         }

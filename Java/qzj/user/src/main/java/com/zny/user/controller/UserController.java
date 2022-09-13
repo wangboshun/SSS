@@ -70,6 +70,19 @@ public class UserController {
     }
 
     /**
+     * 获取用户树
+     *
+     * @param userId    用户id
+     * @param userName  用户名
+     */
+    @RequestMapping(value = "/tree", method = RequestMethod.GET)
+    public SaResult tree(
+            @RequestParam(required = false) String userId, @RequestParam(required = false) String userName) {
+        List<Map<String, Object>> result = userApplication.getUserTree(userId, userName);
+        return SaResult.data(result);
+    }
+
+    /**
      * 获取用户信息
      *
      * @param id 用户id
@@ -87,8 +100,8 @@ public class UserController {
      * @param password 密码
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public SaResult add(String username, String password) {
-        return userApplication.addUser(username, password);
+    public SaResult add(String username, String password, @RequestParam(required = false) String parentId) {
+        return userApplication.addUser(username, password,parentId);
     }
 
     /**

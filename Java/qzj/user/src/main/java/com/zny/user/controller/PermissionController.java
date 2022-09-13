@@ -35,8 +35,7 @@ public class PermissionController {
             @RequestParam(required = false) String permissionId, @RequestParam(required = false) String permissionName,
             @RequestParam(required = false) String permissionCode, @RequestParam(required = false) Integer pageIndex,
             @RequestParam(required = false) Integer pageSize) {
-        Map<String, Object> result = permissionApplication.getPermissionList(
-                permissionId, permissionName, permissionCode, pageIndex, pageSize);
+        Map<String, Object> result = permissionApplication.getPermissionList(permissionId, permissionName, permissionCode, pageIndex, pageSize);
         return SaResult.data(result);
     }
 
@@ -58,8 +57,8 @@ public class PermissionController {
      * @param permissionCode 权限代码
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public SaResult add(String permissionName, String permissionCode) {
-        return permissionApplication.addPermission(permissionName, permissionCode);
+    public SaResult add(String permissionName, String permissionCode, @RequestParam(required = false) String parentId) {
+        return permissionApplication.addPermission(permissionName, permissionCode,parentId);
     }
 
 

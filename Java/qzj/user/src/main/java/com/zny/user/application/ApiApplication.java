@@ -9,6 +9,7 @@ import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.ReflectUtils;
 import com.zny.user.mapper.ApiMapper;
 import com.zny.user.model.ApiModel;
+import com.zny.user.model.enums.ApiStatusEnum;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author WBS
@@ -45,11 +47,23 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     public SaResult addApi() {
         try {
+            List<ApiModel> allData = this.list();
             RequestMappingHandlerMapping mapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
             List<ApiModel> list = new ArrayList<>();
             for (Map.Entry<RequestMappingInfo, HandlerMethod> m : mapping.getHandlerMethods().entrySet()) {
+
                 //控制器类
                 Class<?> mainClass = m.getValue().getMethod().getDeclaringClass();
+
+                //URL
+                RequestMappingInfo info = m.getKey();
+                PatternsRequestCondition p = info.getPatternsCondition();
+                String url = p.toString().replace("[", "").replace("]", "");
+
+                //如果状态已经修改，不处理这条记录
+                if (allData.stream().anyMatch(x -> x.getApi_code().equals(url) && x.getApi_status() != null && !Objects.equals(x.getApi_status(), ApiStatusEnum.ON.getIndex()))) {
+                    continue;
+                }
 
                 //控制器名称
                 String controllerClass = mainClass.getName();
@@ -65,32 +79,30 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
                 if (!controllerClass.contains("Controller")) {
                     continue;
                 }
+
+                //获取模块名
+                String group = AnnotationUtils.findAnnotation(mainClass, Tag.class).description();
+
+                //获取方法注释
+                String doc = ReflectUtils.getMethodDoc(controllerClass, methodName);
+
+                //请求类型
+                RequestMethodsRequestCondition methodsCondition = info.getMethodsCondition();
+
                 ApiModel model = new ApiModel();
                 model.setId(UUID.randomUUID().toString());
                 model.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
                 model.setApi_path(controllerClass + "." + methodName);
-
-                //获取模块名
-                String group = AnnotationUtils.findAnnotation(mainClass, Tag.class).description();
+                model.setApi_status(ApiStatusEnum.ON.getIndex());
+                model.setApi_code(url);
                 model.setApi_group(group);
-
-                //获取方法注释
-                String doc = ReflectUtils.getMethodDoc(controllerClass, methodName);
                 model.setApi_name(doc);
-
-                //URL
-                RequestMappingInfo info = m.getKey();
-                PatternsRequestCondition p = info.getPatternsCondition();
-                model.setApi_code(p.toString().replace("[", "").replace("]", ""));
-
-                //请求类型
-                RequestMethodsRequestCondition methodsCondition = info.getMethodsCondition();
                 model.setApi_type(methodsCondition.toString().replace("[", "").replace("]", ""));
                 list.add(model);
             }
 
-            List<ApiModel> allData = this.list();
-            removeBatchByIds(allData);
+            //删除状态没变的
+            removeBatchByIds(allData.stream().filter(x -> x.getApi_status() != null && Objects.equals(x.getApi_status(), ApiStatusEnum.ON.getIndex())).collect(Collectors.toList()));
             if (saveBatch(list)) {
                 return SaResult.ok("添加接口成功");
             }
@@ -136,11 +148,11 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
     }
 
     /**
-     * 删除接口
+     * 禁用接口
      *
      * @param id 用户id
      */
-    public SaResult deleteApi(String id) {
+    public SaResult offApi(String id) {
         QueryWrapper<ApiModel> wrapper = new QueryWrapper<ApiModel>();
         wrapper.eq("id", id);
         ApiModel model = this.getOne(wrapper);
@@ -148,21 +160,21 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
         if (model == null) {
             return SaResult.error("接口不存在！");
         }
-        if (removeById(id)) {
-            return SaResult.ok("删除接口成功！");
+        model.setApi_status(ApiStatusEnum.OFF.getIndex());
+        if (updateById(model)) {
+            return SaResult.ok("禁用接口成功！");
         }
         else {
-            return SaResult.error("删除接口失败！");
+            return SaResult.error("禁用接口失败！");
         }
     }
 
     /**
-     * 更新接口信息
+     * 启用接口
      *
-     * @param id      接口id
-     * @param apiName 接口名
+     * @param id 接口id
      */
-    public SaResult updateApi(String id, String apiName, String apiCode) {
+    public SaResult onApi(String id) {
         QueryWrapper<ApiModel> wrapper = new QueryWrapper<ApiModel>();
         wrapper.eq("id", id);
         ApiModel model = this.getOne(wrapper);
@@ -170,13 +182,13 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
         if (model == null) {
             return SaResult.error("接口不存在！");
         }
-        model.setApi_name(apiName);
-        model.setApi_code(apiCode);
+
+        model.setApi_status(ApiStatusEnum.ON.getIndex());
         if (updateById(model)) {
-            return SaResult.ok("更新接口信息成功！");
+            return SaResult.ok("启用接口成功！");
         }
         else {
-            return SaResult.error("删除接口信息失败！");
+            return SaResult.error("启用接口失败！");
         }
     }
 }

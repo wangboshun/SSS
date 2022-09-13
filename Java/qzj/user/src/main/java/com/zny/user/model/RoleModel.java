@@ -15,7 +15,16 @@ public class RoleModel implements Serializable {
     public String role_name;
     public String create_time;
     public Integer role_status;
+    public String parent_id;
     private String role_code;
+
+    public String getParent_id() {
+        return parent_id;
+    }
+
+    public void setParent_id(String parent_id) {
+        this.parent_id = parent_id;
+    }
 
     @Override
     public String toString() {

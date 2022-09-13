@@ -1,40 +1,30 @@
-package com.zny.user.model;
+package com.zny.user.model.enums;
 
 /**
  * @author WBS
  * Date:2022/9/6
  */
 
-public enum ResourceEnum {
-
-
-    /**
-     * 角色
-     */
-    ROLE(0),
+public enum ApiStatusEnum {
 
     /**
-     * 用户
+     * 启用
      */
-    USER(1),
-    /**
-     * 菜单
-     */
-    MENU(2),
+    ON(1),
 
     /**
-     * 权限
+     * 禁用
      */
-    PERMISSION(3),
+    OFF(0),
 
     /**
-     * API
+     * 删除
      */
-    API(4);
+    DELETE(2);
 
     public Integer index;
 
-    ResourceEnum(Integer index) {
+    ApiStatusEnum(Integer index) {
         this.index = index;
     }
 

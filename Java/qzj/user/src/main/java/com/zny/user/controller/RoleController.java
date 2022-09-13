@@ -63,8 +63,8 @@ public class RoleController {
      * @param roleCode 角色代码
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public SaResult add(String roleName, String roleCode) {
-        return roleApplication.addRole(roleName, roleCode);
+    public SaResult add(String roleName, String roleCode, @RequestParam(required = false) String parentId) {
+        return roleApplication.addRole(roleName, roleCode,parentId);
     }
 
 

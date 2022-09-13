@@ -1,4 +1,4 @@
-package com.zny.user.application.satoken.sotoken;
+package com.zny.user.application.satoken;
 
 import cn.dev33.satoken.stp.StpInterface;
 import com.google.common.collect.Table;

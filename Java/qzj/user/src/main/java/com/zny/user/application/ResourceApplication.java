@@ -10,6 +10,7 @@ import com.google.common.collect.Table;
 import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.*;
 import com.zny.user.model.*;
+import com.zny.user.model.enums.ResourceEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,9 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
 
     @Autowired
     private RoleMapper roleMapper;
+
+    @Autowired
+    private ApiMapper apiMapper;
 
     @Autowired
     private MenuMapper menMapper;
@@ -121,141 +125,6 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
         return table;
     }
 
-    /**
-     * 根据用户获取角色
-     *
-     * @param userId 用户id
-     */
-    public Table<String, String, String> getRoleByUser(String userId) {
-        return getTable(userId, ResourceEnum.USER.getIndex(), ResourceEnum.ROLE.getIndex());
-    }
-
-    /**
-     * 根据用户获取菜单
-     *
-     * @param userId 用户id
-     */
-    public Table<String, String, String> getMenuByUser(String userId) {
-        Table<String, String, String> table = HashBasedTable.create();
-        Table<String, String, String> roles = getRoleByUser(userId);
-
-        //循环所有roleId
-        for (String roleId : roles.rowKeySet()) {
-            //根据roleId获取菜单
-            Table<String, String, String> tmp = getMenuByRole(roleId);
-            if (!tmp.isEmpty()) {
-                //table添加角色关联得到菜单
-                table.putAll(tmp);
-            }
-        }
-
-        QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
-        wrapper.eq("main_id", userId);
-        wrapper.eq("main_type", ResourceEnum.USER.getIndex());
-        wrapper.eq("slave_type", ResourceEnum.MENU.getIndex());
-        List<ResourceModel> list = this.list(wrapper);
-        for (ResourceModel resourceModel : list) {
-            table.put(resourceModel.getSlave_id(), resourceModel.getSlave_name(), resourceModel.getSlave_code());
-        }
-        return table;
-
-    }
-
-    /**
-     * 根据用户获取权限
-     *
-     * @param userId 用户id
-     */
-    public Table<String, String, String> getPermissionByUser(String userId) {
-        Table<String, String, String> table = HashBasedTable.create();
-        Table<String, String, String> roles = getRoleByUser(userId);
-
-        //循环所有roleId
-        for (String roleId : roles.rowKeySet()) {
-            //根据roleId获取权限
-            Table<String, String, String> tmp = getPermissionByRole(roleId);
-            if (!tmp.isEmpty()) {
-                //table添加角色关联得到权限
-                table.putAll(tmp);
-            }
-        }
-
-        QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
-        wrapper.eq("main_id", userId);
-        wrapper.eq("main_type", ResourceEnum.USER.getIndex());
-        wrapper.eq("slave_type", ResourceEnum.PERMISSION.getIndex());
-        List<ResourceModel> list = this.list(wrapper);
-        for (ResourceModel resourceModel : list) {
-            table.put(resourceModel.getSlave_id(), resourceModel.getSlave_name(), resourceModel.getSlave_code());
-        }
-        return table;
-    }
-
-    /**
-     * 根据用户获取Api
-     *
-     * @param userId 用户id
-     */
-    public Table<String, String, String> getApiByUser(String userId) {
-        Table<String, String, String> table = HashBasedTable.create();
-        Table<String, String, String> roles = getRoleByUser(userId);
-
-        //循环所有roleId
-        for (String roleId : roles.rowKeySet()) {
-            //根据roleId获取权限
-            Table<String, String, String> tmp = getPermissionByRole(roleId);
-            if (!tmp.isEmpty()) {
-                //table添加角色关联得到权限
-                table.putAll(tmp);
-            }
-        }
-
-        QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
-        wrapper.eq("main_id", userId);
-        wrapper.eq("main_type", ResourceEnum.USER.getIndex());
-        wrapper.eq("slave_type", ResourceEnum.API.getIndex());
-        List<ResourceModel> list = this.list(wrapper);
-        for (ResourceModel resourceModel : list) {
-            table.put(resourceModel.getSlave_id(), resourceModel.getSlave_name(), resourceModel.getSlave_code());
-        }
-        return table;
-    }
-
-    /**
-     * 根据角色获取用户
-     *
-     * @param roleId 角色id
-     */
-    public Table<String, String, String> getUserByRole(String roleId) {
-        return getTable(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.USER.getIndex());
-    }
-
-    /**
-     * 根据角色获取菜单
-     *
-     * @param roleId 角色id
-     */
-    public Table<String, String, String> getMenuByRole(String roleId) {
-        return getTable(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.MENU.getIndex());
-    }
-
-    /**
-     * 根据角色获取权限
-     *
-     * @param roleId 角色id
-     */
-    public Table<String, String, String> getPermissionByRole(String roleId) {
-        return getTable(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.PERMISSION.getIndex());
-    }
-
-    /**
-     * 根据角色获取Api
-     *
-     * @param roleId 角色id
-     */
-    public Table<String, String, String> getApiByRole(String roleId) {
-        return getTable(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.API.getIndex());
-    }
 
     /**
      * 查询资源列表
@@ -288,6 +157,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
         map.put("current", result.getCurrent());
         return map;
     }
+
 
     /**
      * 删除资源
@@ -392,7 +262,12 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
                 break;
             //判断API是否存在
             case API:
-
+                ApiModel api = apiMapper.selectById(resourceId);
+                if (api == null) {
+                    return null;
+                }
+                name = api.getApi_name();
+                code = api.getApi_code();
                 break;
             default:
                 break;
@@ -401,5 +276,147 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
         map.put("name", name);
         map.put("code", code);
         return map;
+    }
+
+    //    根据用户处理
+
+    /**
+     * 根据用户获取角色
+     *
+     * @param userId 用户id
+     */
+    public Table<String, String, String> getRoleByUser(String userId) {
+        return getTable(userId, ResourceEnum.USER.getIndex(), ResourceEnum.ROLE.getIndex());
+    }
+
+    /**
+     * 根据用户获取菜单
+     *
+     * @param userId 用户id
+     */
+    public Table<String, String, String> getMenuByUser(String userId) {
+        Table<String, String, String> table = HashBasedTable.create();
+        Table<String, String, String> roles = getRoleByUser(userId);
+
+        //循环所有roleId
+        for (String roleId : roles.rowKeySet()) {
+            //根据roleId获取菜单
+            Table<String, String, String> tmp = getMenuByRole(roleId);
+            if (!tmp.isEmpty()) {
+                //table添加角色关联得到菜单
+                table.putAll(tmp);
+            }
+        }
+
+        QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
+        wrapper.eq("main_id", userId);
+        wrapper.eq("main_type", ResourceEnum.USER.getIndex());
+        wrapper.eq("slave_type", ResourceEnum.MENU.getIndex());
+        List<ResourceModel> list = this.list(wrapper);
+        for (ResourceModel resourceModel : list) {
+            table.put(resourceModel.getSlave_id(), resourceModel.getSlave_name(), resourceModel.getSlave_code());
+        }
+        return table;
+
+    }
+
+    /**
+     * 根据用户获取权限
+     *
+     * @param userId 用户id
+     */
+    public Table<String, String, String> getPermissionByUser(String userId) {
+        Table<String, String, String> table = HashBasedTable.create();
+        Table<String, String, String> roles = getRoleByUser(userId);
+
+        //循环所有roleId
+        for (String roleId : roles.rowKeySet()) {
+            //根据roleId获取权限
+            Table<String, String, String> tmp = getPermissionByRole(roleId);
+            if (!tmp.isEmpty()) {
+                //table添加角色关联得到权限
+                table.putAll(tmp);
+            }
+        }
+
+        QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
+        wrapper.eq("main_id", userId);
+        wrapper.eq("main_type", ResourceEnum.USER.getIndex());
+        wrapper.eq("slave_type", ResourceEnum.PERMISSION.getIndex());
+        List<ResourceModel> list = this.list(wrapper);
+        for (ResourceModel resourceModel : list) {
+            table.put(resourceModel.getSlave_id(), resourceModel.getSlave_name(), resourceModel.getSlave_code());
+        }
+        return table;
+    }
+
+    /**
+     * 根据用户获取Api
+     *
+     * @param userId 用户id
+     */
+    public Table<String, String, String> getApiByUser(String userId) {
+        Table<String, String, String> table = HashBasedTable.create();
+        Table<String, String, String> roles = getRoleByUser(userId);
+
+        //循环所有roleId
+        for (String roleId : roles.rowKeySet()) {
+            //根据roleId获取权限
+            Table<String, String, String> tmp = getPermissionByRole(roleId);
+            if (!tmp.isEmpty()) {
+                //table添加角色关联得到权限
+                table.putAll(tmp);
+            }
+        }
+
+        QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
+        wrapper.eq("main_id", userId);
+        wrapper.eq("main_type", ResourceEnum.USER.getIndex());
+        wrapper.eq("slave_type", ResourceEnum.API.getIndex());
+        List<ResourceModel> list = this.list(wrapper);
+        for (ResourceModel resourceModel : list) {
+            table.put(resourceModel.getSlave_id(), resourceModel.getSlave_name(), resourceModel.getSlave_code());
+        }
+        return table;
+    }
+
+
+//    根据角色处理
+
+
+    /**
+     * 根据角色获取用户
+     *
+     * @param roleId 角色id
+     */
+    public Table<String, String, String> getUserByRole(String roleId) {
+        return getTable(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.USER.getIndex());
+    }
+
+    /**
+     * 根据角色获取菜单
+     *
+     * @param roleId 角色id
+     */
+    public Table<String, String, String> getMenuByRole(String roleId) {
+        return getTable(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.MENU.getIndex());
+    }
+
+    /**
+     * 根据角色获取权限
+     *
+     * @param roleId 角色id
+     */
+    public Table<String, String, String> getPermissionByRole(String roleId) {
+        return getTable(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.PERMISSION.getIndex());
+    }
+
+    /**
+     * 根据角色获取Api
+     *
+     * @param roleId 角色id
+     */
+    public Table<String, String, String> getApiByRole(String roleId) {
+        return getTable(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.API.getIndex());
     }
 }

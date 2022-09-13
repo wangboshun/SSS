@@ -13,8 +13,17 @@ public class PermissionModel implements Serializable {
     public String id;
     public String permission_name;
     public String create_time;
+    public String parent_id;
     public Integer permission_status;
     private String permission_code;
+
+    public String getParent_id() {
+        return parent_id;
+    }
+
+    public void setParent_id(String parent_id) {
+        this.parent_id = parent_id;
+    }
 
     public String getId() {
         return id;

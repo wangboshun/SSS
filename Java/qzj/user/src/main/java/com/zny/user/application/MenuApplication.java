@@ -28,7 +28,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      *
      * @param menuName 菜单名
      */
-    public SaResult addMenu(String menuName, String menuCode) {
+    public SaResult addMenu(String menuName, String menuCode,String parentId) {
         QueryWrapper<MenuModel> wrapper = new QueryWrapper<MenuModel>();
         wrapper.eq("menu_name", menuName);
         MenuModel model = this.getOne(wrapper);
@@ -39,6 +39,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
         menuModel.setId(UUID.randomUUID().toString());
         menuModel.setMenu_name(menuName);
         menuModel.setMenu_code(menuCode);
+        menuModel.setParent_id(parentId);
         menuModel.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
         if (save(menuModel)) {
             return SaResult.ok("添加菜单成功！");

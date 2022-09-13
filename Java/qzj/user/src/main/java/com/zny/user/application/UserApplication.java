@@ -14,9 +14,7 @@ import com.zny.user.model.UserModel;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author WBS
@@ -53,7 +51,7 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
      * @param username 用户名
      * @param password 密码
      */
-    public SaResult addUser(String username, String password) {
+    public SaResult addUser(String username, String password, String parentId) {
         QueryWrapper<UserModel> wrapper = new QueryWrapper<UserModel>();
         wrapper.eq("user_name", username);
         UserModel model = this.getOne(wrapper);
@@ -63,6 +61,7 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
         UserModel userModel = new UserModel();
         userModel.setId(UUID.randomUUID().toString());
         userModel.setUser_name(username);
+        userModel.setParent_id(parentId);
         userModel.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
         userModel.setPassword(SecureUtil.md5(password));
         if (save(userModel)) {
@@ -99,6 +98,17 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
         map.put("pages", result.getPages());
         map.put("current", result.getCurrent());
         return map;
+    }
+
+    /**
+     * 查询用户树
+     *
+     * @param userId   用户id
+     * @param userName 用户名
+     */
+    public List<Map<String, Object>> getUserTree(String userId, String userName) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        return list;
     }
 
     /**

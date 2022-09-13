@@ -9,6 +9,7 @@ import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.RoleMapper;
 import com.zny.user.model.RoleModel;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -31,7 +32,7 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
      * @param roleName 角色名
      * @param roleCode 角色代码
      */
-    public SaResult addRole(String roleName, String roleCode) {
+    public SaResult addRole(String roleName, String roleCode, String parentId) {
         QueryWrapper<RoleModel> wrapper = new QueryWrapper<RoleModel>();
         wrapper.eq("role_name", roleName);
         RoleModel model = this.getOne(wrapper);
@@ -41,6 +42,7 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
         RoleModel roleModel = new RoleModel();
         roleModel.setId(UUID.randomUUID().toString());
         roleModel.setRole_name(roleName);
+        roleModel.setParent_id(parentId);
         roleModel.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
         roleModel.setRole_code(roleCode);
         if (save(roleModel)) {

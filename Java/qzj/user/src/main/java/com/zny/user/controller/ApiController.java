@@ -50,31 +50,22 @@ public class ApiController {
     }
 
     /**
-     * 添加接口
-     */
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public SaResult add() {
-        return apiApplication.addApi();
-    }
-
-    /**
-     * 删除接口
+     * 禁用接口
      *
      * @param id 接口id
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public SaResult delete(@PathVariable String id) {
-        return apiApplication.deleteApi(id);
+    public SaResult off(@PathVariable String id) {
+        return apiApplication.offApi(id);
     }
 
     /**
-     * 更新接口信息
+     * 启用接口
      *
-     * @param id      接口id
-     * @param apiName 接口名
+     * @param id 接口id
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
-    public SaResult update(@PathVariable String id, String apiName, String apiCode) {
-        return apiApplication.updateApi(id, apiName, apiCode);
+    public SaResult on(@PathVariable String id) {
+        return apiApplication.onApi(id);
     }
 }
