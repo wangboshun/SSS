@@ -7,13 +7,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.MenuMapper;
-import com.zny.user.model.MenuModel;
+import com.zny.user.model.menu.MenuModel;
+import com.zny.user.model.menu.MenuTreeModel;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author WBS
@@ -28,7 +27,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      *
      * @param menuName 菜单名
      */
-    public SaResult addMenu(String menuName, String menuCode,String parentId) {
+    public SaResult addMenu(String menuName, String menuCode, String parentId) {
         QueryWrapper<MenuModel> wrapper = new QueryWrapper<MenuModel>();
         wrapper.eq("menu_name", menuName);
         MenuModel model = this.getOne(wrapper);
@@ -47,6 +46,52 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
         else {
             return SaResult.error("添加菜单失败！");
         }
+    }
+
+    /**
+     * 查询菜单树
+     *
+     * @param menuId 菜单id
+     */
+    public List<MenuTreeModel> getMenuTree(String menuId) {
+        List<MenuTreeModel> list = new ArrayList<>();
+        if (menuId == null) {
+            QueryWrapper<MenuModel> wrapper = new QueryWrapper<MenuModel>();
+            wrapper.isNull("parent_id");
+            List<MenuModel> menuList = this.list(wrapper);
+            for (MenuModel menu : menuList) {
+                list.add(getChildren(menu.getId(), menu.getMenu_name(), 1));
+            }
+        }
+        else {
+            QueryWrapper<MenuModel> wrapper = new QueryWrapper<MenuModel>();
+            wrapper.eq(StringUtils.isNotBlank(menuId), "id", menuId);
+            MenuModel menu = this.getOne(wrapper);
+            list.add(getChildren(menu.getId(), menu.getMenu_name(), 1));
+        }
+        return list;
+    }
+
+    /**
+     * 获取目录树
+     *
+     * @param menuId 菜单id
+     * @param level  树形等级
+     */
+    private MenuTreeModel getChildren(String menuId, String menuName, Integer level) {
+        MenuTreeModel tree = new MenuTreeModel();
+        QueryWrapper<MenuModel> wrapper = new QueryWrapper<MenuModel>();
+        wrapper.eq(StringUtils.isNotBlank(menuId), "parent_id", menuId);
+        List<MenuModel> children = this.list(wrapper);
+        tree.setId(menuId);
+        tree.setLelvel(level);
+        tree.setMenu_name(menuName);
+        if (children.size() > 0) {
+            for (MenuModel menu : children) {
+                tree.setChildren(getChildren(menu.getId(), menu.getMenu_name(), level + 1));
+            }
+        }
+        return tree;
     }
 
     /**

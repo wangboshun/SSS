@@ -5,7 +5,8 @@ import cn.dev33.satoken.util.SaResult;
 import com.google.common.collect.Table;
 import com.zny.user.application.ResourceApplication;
 import com.zny.user.application.UserApplication;
-import com.zny.user.model.UserModel;
+import com.zny.user.model.user.UserModel;
+import com.zny.user.model.user.UserTreeModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -72,13 +73,11 @@ public class UserController {
     /**
      * 获取用户树
      *
-     * @param userId    用户id
-     * @param userName  用户名
+     * @param userId 用户id
      */
     @RequestMapping(value = "/tree", method = RequestMethod.GET)
-    public SaResult tree(
-            @RequestParam(required = false) String userId, @RequestParam(required = false) String userName) {
-        List<Map<String, Object>> result = userApplication.getUserTree(userId, userName);
+    public SaResult tree(@RequestParam(required = false) String userId) {
+        List<UserTreeModel> result = userApplication.getUserTree(userId);
         return SaResult.data(result);
     }
 
@@ -101,7 +100,7 @@ public class UserController {
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public SaResult add(String username, String password, @RequestParam(required = false) String parentId) {
-        return userApplication.addUser(username, password,parentId);
+        return userApplication.addUser(username, password, parentId);
     }
 
     /**

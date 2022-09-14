@@ -4,7 +4,8 @@ import cn.dev33.satoken.util.SaResult;
 import com.google.common.collect.Table;
 import com.zny.user.application.ResourceApplication;
 import com.zny.user.application.RoleApplication;
-import com.zny.user.model.RoleModel;
+import com.zny.user.model.role.RoleModel;
+import com.zny.user.model.role.RoleTreeModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +47,18 @@ public class RoleController {
     }
 
     /**
+     * 获取角色树
+     *
+     * @param roleId 角色id
+     */
+    @RequestMapping(value = "/tree", method = RequestMethod.GET)
+    public SaResult tree(@RequestParam(required = false) String roleId) {
+        List<RoleTreeModel> result = roleApplication.getRoleTree(roleId);
+        return SaResult.data(result);
+    }
+
+
+    /**
      * 获取角色信息
      *
      * @param id 角色id
@@ -64,7 +77,7 @@ public class RoleController {
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public SaResult add(String roleName, String roleCode, @RequestParam(required = false) String parentId) {
-        return roleApplication.addRole(roleName, roleCode,parentId);
+        return roleApplication.addRole(roleName, roleCode, parentId);
     }
 
 

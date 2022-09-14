@@ -1,4 +1,4 @@
-package com.zny.user.model;
+package com.zny.user.model.user;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 

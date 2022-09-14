@@ -10,7 +10,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.UserMapper;
-import com.zny.user.model.UserModel;
+import com.zny.user.model.user.UserModel;
+import com.zny.user.model.user.UserTreeModel;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -103,12 +104,47 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
     /**
      * 查询用户树
      *
-     * @param userId   用户id
-     * @param userName 用户名
+     * @param userId 用户id
      */
-    public List<Map<String, Object>> getUserTree(String userId, String userName) {
-        List<Map<String, Object>> list = new ArrayList<>();
+    public List<UserTreeModel> getUserTree(String userId) {
+        List<UserTreeModel> list = new ArrayList<>();
+        if (userId == null) {
+            QueryWrapper<UserModel> wrapper = new QueryWrapper<UserModel>();
+            wrapper.isNull("parent_id");
+            List<UserModel> menuList = this.list(wrapper);
+            for (UserModel user : menuList) {
+                list.add(getChildren(user.getId(), user.getUser_name(), 1));
+            }
+        }
+        else {
+            QueryWrapper<UserModel> wrapper = new QueryWrapper<UserModel>();
+            wrapper.eq(StringUtils.isNotBlank(userId), "id", userId);
+            UserModel user = this.getOne(wrapper);
+            list.add(getChildren(user.getId(), user.getUser_name(), 1));
+        }
         return list;
+    }
+
+    /**
+     * 获取目录树
+     *
+     * @param userId 用户id
+     * @param level  树形等级
+     */
+    private UserTreeModel getChildren(String userId, String userName, Integer level) {
+        UserTreeModel tree = new UserTreeModel();
+        QueryWrapper<UserModel> wrapper = new QueryWrapper<UserModel>();
+        wrapper.eq(StringUtils.isNotBlank(userId), "parent_id", userId);
+        List<UserModel> children = this.list(wrapper);
+        tree.setId(userId);
+        tree.setLelvel(level);
+        tree.setUser_name(userName);
+        if (children.size() > 0) {
+            for (UserModel user : children) {
+                tree.setChildren(getChildren(user.getId(), user.getUser_name(), level + 1));
+            }
+        }
+        return tree;
     }
 
     /**

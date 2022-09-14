@@ -7,14 +7,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.PermissionMapper;
-import com.zny.user.model.PermissionModel;
+import com.zny.user.model.permission.PermissionModel;
+import com.zny.user.model.permission.PermissionTreeModel;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author WBS
@@ -52,6 +50,52 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
     }
 
     /**
+     * 查询权限树
+     *
+     * @param permissionId 权限id
+     */
+    public List<PermissionTreeModel> getPermissionTree(String permissionId) {
+        List<PermissionTreeModel> list = new ArrayList<>();
+        if (permissionId == null) {
+            QueryWrapper<PermissionModel> wrapper = new QueryWrapper<PermissionModel>();
+            wrapper.isNull("parent_id");
+            List<PermissionModel> permissionList = this.list(wrapper);
+            for (PermissionModel permission : permissionList) {
+                list.add(getChildren(permission.getId(), permission.getPermission_name(), 1));
+            }
+        }
+        else {
+            QueryWrapper<PermissionModel> wrapper = new QueryWrapper<PermissionModel>();
+            wrapper.eq(StringUtils.isNotBlank(permissionId), "id", permissionId);
+            PermissionModel permission = this.getOne(wrapper);
+            list.add(getChildren(permission.getId(), permission.getPermission_name(), 1));
+        }
+        return list;
+    }
+
+    /**
+     * 获取目录树
+     *
+     * @param permissionId 权限id
+     * @param level        树形等级
+     */
+    private PermissionTreeModel getChildren(String permissionId, String permissionName, Integer level) {
+        PermissionTreeModel tree = new PermissionTreeModel();
+        QueryWrapper<PermissionModel> wrapper = new QueryWrapper<PermissionModel>();
+        wrapper.eq(StringUtils.isNotBlank(permissionId), "parent_id", permissionId);
+        List<PermissionModel> children = this.list(wrapper);
+        tree.setId(permissionId);
+        tree.setLelvel(level);
+        tree.setPermission_name(permissionName);
+        if (children.size() > 0) {
+            for (PermissionModel permission : children) {
+                tree.setChildren(getChildren(permission.getId(), permission.getPermission_name(), level + 1));
+            }
+        }
+        return tree;
+    }
+
+    /**
      * 查询权限列表
      *
      * @param permissionName 权限名
@@ -60,8 +104,7 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      * @param pageSize       分页大小
      */
     public Map<String, Object> getPermissionList(
-            String permissionId, String permissionName, String permissionCode, Integer pageIndex,
-            Integer pageSize) {
+            String permissionId, String permissionName, String permissionCode, Integer pageIndex, Integer pageSize) {
         if (pageSize == null) {
             pageSize = 10;
         }

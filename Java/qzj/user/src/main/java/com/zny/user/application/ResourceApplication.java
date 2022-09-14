@@ -11,6 +11,10 @@ import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.*;
 import com.zny.user.model.*;
 import com.zny.user.model.enums.ResourceEnum;
+import com.zny.user.model.menu.MenuModel;
+import com.zny.user.model.permission.PermissionModel;
+import com.zny.user.model.role.RoleModel;
+import com.zny.user.model.user.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

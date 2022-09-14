@@ -4,7 +4,8 @@ import cn.dev33.satoken.util.SaResult;
 import com.google.common.collect.Table;
 import com.zny.user.application.MenuApplication;
 import com.zny.user.application.ResourceApplication;
-import com.zny.user.model.MenuModel;
+import com.zny.user.model.menu.MenuModel;
+import com.zny.user.model.menu.MenuTreeModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +45,17 @@ public class MenuController {
             @RequestParam(required = false) String menuCode, @RequestParam(required = false) Integer pageIndex,
             @RequestParam(required = false) Integer pageSize) {
         Map<String, Object> result = menuApplication.getMenuList(menuId, menuName, menuCode, pageIndex, pageSize);
+        return SaResult.data(result);
+    }
+
+    /**
+     * 获取菜单树
+     *
+     * @param menuId 菜单id
+     */
+    @RequestMapping(value = "/tree", method = RequestMethod.GET)
+    public SaResult tree(@RequestParam(required = false) String menuId) {
+        List<MenuTreeModel> result = menuApplication.getMenuTree(menuId);
         return SaResult.data(result);
     }
 
@@ -107,7 +119,7 @@ public class MenuController {
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public SaResult add(String menuName, String menuCode, @RequestParam(required = false) String parentId) {
-        return menuApplication.addMenu(menuName, menuCode,parentId);
+        return menuApplication.addMenu(menuName, menuCode, parentId);
     }
 
 

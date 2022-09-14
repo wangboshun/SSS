@@ -2,11 +2,13 @@ package com.zny.user.controller;
 
 import cn.dev33.satoken.util.SaResult;
 import com.zny.user.application.PermissionApplication;
-import com.zny.user.model.PermissionModel;
+import com.zny.user.model.permission.PermissionModel;
+import com.zny.user.model.permission.PermissionTreeModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,6 +42,17 @@ public class PermissionController {
     }
 
     /**
+     * 获取权限树
+     *
+     * @param permissionId 权限id
+     */
+    @RequestMapping(value = "/tree", method = RequestMethod.GET)
+    public SaResult tree(@RequestParam(required = false) String permissionId) {
+        List<PermissionTreeModel> result = permissionApplication.getPermissionTree(permissionId);
+        return SaResult.data(result);
+    }
+
+    /**
      * 获取权限信息
      *
      * @param id 权限id
@@ -58,7 +71,7 @@ public class PermissionController {
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public SaResult add(String permissionName, String permissionCode, @RequestParam(required = false) String parentId) {
-        return permissionApplication.addPermission(permissionName, permissionCode,parentId);
+        return permissionApplication.addPermission(permissionName, permissionCode, parentId);
     }
 
 

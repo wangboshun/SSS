@@ -7,14 +7,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.RoleMapper;
-import com.zny.user.model.RoleModel;
+import com.zny.user.model.role.RoleModel;
+import com.zny.user.model.role.RoleTreeModel;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author WBS
@@ -23,8 +21,6 @@ import java.util.UUID;
 
 @Service
 public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
-
-    private RoleModel model;
 
     /**
      * 添加角色
@@ -51,6 +47,52 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
         else {
             return SaResult.error("添加角色失败！");
         }
+    }
+
+    /**
+     * 查询角色树
+     *
+     * @param roleId 角色id
+     */
+    public List<RoleTreeModel> getRoleTree(String roleId) {
+        List<RoleTreeModel> list = new ArrayList<>();
+        if (roleId == null) {
+            QueryWrapper<RoleModel> wrapper = new QueryWrapper<RoleModel>();
+            wrapper.isNull("parent_id");
+            List<RoleModel> permissionList = this.list(wrapper);
+            for (RoleModel role : permissionList) {
+                list.add(getChildren(role.getId(), role.getRole_name(), 1));
+            }
+        }
+        else {
+            QueryWrapper<RoleModel> wrapper = new QueryWrapper<RoleModel>();
+            wrapper.eq(StringUtils.isNotBlank(roleId), "id", roleId);
+            RoleModel role = this.getOne(wrapper);
+            list.add(getChildren(role.getId(), role.getRole_name(), 1));
+        }
+        return list;
+    }
+
+    /**
+     * 获取目录树
+     *
+     * @param roleId 角色id
+     * @param level  树形等级
+     */
+    private RoleTreeModel getChildren(String roleId, String roleName, Integer level) {
+        RoleTreeModel tree = new RoleTreeModel();
+        QueryWrapper<RoleModel> wrapper = new QueryWrapper<RoleModel>();
+        wrapper.eq(StringUtils.isNotBlank(roleId), "parent_id", roleId);
+        List<RoleModel> children = this.list(wrapper);
+        tree.setId(roleId);
+        tree.setLelvel(level);
+        tree.setRole_name(roleName);
+        if (children.size() > 0) {
+            for (RoleModel role : children) {
+                tree.setChildren(getChildren(role.getId(), role.getRole_name(), level + 1));
+            }
+        }
+        return tree;
     }
 
     /**
@@ -86,7 +128,7 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
     /**
      * 删除角色
      *
-     * @param id 用户id
+     * @param id 角色id
      */
     public SaResult deleteRole(String id) {
         QueryWrapper<RoleModel> wrapper = new QueryWrapper<RoleModel>();
