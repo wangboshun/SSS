@@ -9,9 +9,9 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.*;
-import com.zny.user.model.ApiModel;
-import com.zny.user.model.ResourceModel;
-import com.zny.user.model.enums.ResourceEnum;
+import com.zny.user.model.api.ApiModel;
+import com.zny.user.model.resource.ResourceModel;
+import com.zny.user.model.resource.ResourceEnum;
 import com.zny.user.model.menu.MenuModel;
 import com.zny.user.model.permission.PermissionModel;
 import com.zny.user.model.role.RoleModel;
@@ -47,13 +47,20 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
     /**
      * 添加资源
      */
-    public SaResult addResource(String mainId, int mainType, String slaveId, int slaveType) {
-        Map<String, String> resourceInfo = getResourceInfo(mainId, mainType);
-        String mainName = resourceInfo.get("name");
+    public SaResult addResource(String mainId, int mainType, String slaveId, int slaveType, String slaveCode) {
+        Map<String, String> slaveResource = new HashMap<>(1);
+        Map<String, String> mainResource = getResourceInfo(mainId, mainType);
+        String mainName = mainResource.get("name");
 
-        resourceInfo = getResourceInfo(slaveId, slaveType);
-        String slaveName = resourceInfo.get("name");
-        String slaveCode = resourceInfo.get("code");
+        //如果code为空
+        if (slaveCode == null) {
+            slaveResource = getResourceInfo(slaveId, slaveType);
+            slaveCode = slaveResource.get("code");
+        }
+        else {
+            slaveResource = getResourceInfoByCode(slaveCode, slaveType);
+        }
+        String slaveName = slaveResource.get("name");
 
         if (StringUtils.isBlank(mainName) || StringUtils.isBlank(slaveName)) {
             return SaResult.error("资源不存在！");
@@ -63,8 +70,9 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
         wrapper.eq("main_id", mainId);
         wrapper.eq("main_type", mainType);
 
-        wrapper.eq("slave_id", slaveId);
+        wrapper.eq(StringUtils.isNotBlank(slaveId), "slave_id", slaveId);
         wrapper.eq("slave_type", slaveType);
+        wrapper.eq(StringUtils.isNotBlank(slaveCode), "slave_code", slaveCode);
         ResourceModel model = this.getOne(wrapper);
         if (model != null) {
             return SaResult.error("资源已存在！");
@@ -267,12 +275,39 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
                 break;
             //判断API是否存在
             case API:
-                ApiModel api = apiMapper.selectById(resourceId);
+                QueryWrapper<ApiModel> wrapper = new QueryWrapper<ApiModel>();
+                wrapper.eq("api_code", resourceId);
+                ApiModel api = apiMapper.selectOne(wrapper);
                 if (api == null) {
                     return null;
                 }
                 name = api.getApi_name();
                 code = api.getApi_code();
+                break;
+            default:
+                break;
+        }
+        Map<String, String> map = new HashMap<String, String>(2);
+        map.put("name", name);
+        map.put("code", code);
+        return map;
+    }
+
+    /**
+     * 根据code获取资源信息
+     */
+    private Map<String, String> getResourceInfoByCode(String code, int resourceType) {
+        String name = "";
+        ResourceEnum e = ResourceEnum.values()[resourceType];
+        switch (e) {
+            case API:
+                QueryWrapper<ApiModel> wrapper = new QueryWrapper<ApiModel>();
+                wrapper.eq("api_code", code);
+                ApiModel api = apiMapper.selectOne(wrapper);
+                if (api == null) {
+                    return null;
+                }
+                name = api.getApi_name();
                 break;
             default:
                 break;

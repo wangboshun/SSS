@@ -12,6 +12,7 @@ import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.UserMapper;
 import com.zny.user.model.user.UserModel;
 import com.zny.user.model.user.UserTreeModel;
+import com.zny.user.model.user.UserTypeEnum;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -38,6 +39,7 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
         UserModel model = this.getOne(wrapper);
         if (model != null) {
             StpUtil.login(model.id);
+            StpUtil.getSession().set("user", model);
             SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
             Map<String, String> map = new HashMap<String, String>(1);
             map.put(tokenInfo.getTokenName(), tokenInfo.getTokenValue());
@@ -52,7 +54,10 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
      * @param username 用户名
      * @param password 密码
      */
-    public SaResult addUser(String username, String password, String parentId) {
+    public SaResult addUser(String username, String password, Integer userType, String parentId) {
+        if (userType == null) {
+            userType = UserTypeEnum.COMMON.getIndex();
+        }
         QueryWrapper<UserModel> wrapper = new QueryWrapper<UserModel>();
         wrapper.eq("user_name", username);
         UserModel model = this.getOne(wrapper);
@@ -63,6 +68,7 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
         userModel.setId(UUID.randomUUID().toString());
         userModel.setUser_name(username);
         userModel.setParent_id(parentId);
+        userModel.setUser_type(userType);
         userModel.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
         userModel.setPassword(SecureUtil.md5(password));
         if (save(userModel)) {

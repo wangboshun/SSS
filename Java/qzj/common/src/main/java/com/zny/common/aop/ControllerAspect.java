@@ -7,7 +7,6 @@ import com.zny.common.eventbus.EventEnum;
 import com.zny.common.eventbus.TopicAsyncEventBus;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.IpUtils;
-import com.zny.common.utils.ReflectUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -15,6 +14,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -35,10 +35,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 @Aspect
 @Component
+@Order(2)
 public class ControllerAspect {
 
     private final LinkedBlockingQueue<Map<String, Object>> logQueue = new LinkedBlockingQueue<>();
-    private final Logger logger = LoggerFactory.getLogger(getClass()); 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private TopicAsyncEventBus topicEventBus;
@@ -58,7 +59,6 @@ public class ControllerAspect {
      */
     @Around("apiLog()")
     public Object around(ProceedingJoinPoint pjp) {
-
         Object result;
         try {
             HttpServletRequest httpServletRequest = SpringMVCUtil.getRequest();
@@ -68,8 +68,6 @@ public class ControllerAspect {
                 return SaResult.get(401, "请登录！", null);
             }
 
-            boolean b = checkUrl(pjp);
-
             LocalDateTime start = LocalDateTime.now();
             Object[] args = pjp.getArgs();
             result = pjp.proceed(args);
@@ -77,7 +75,6 @@ public class ControllerAspect {
             if (sa.getCode() == 200) {
                 addApiLog(httpServletRequest, sa, start);
             }
-
         }
         catch (Throwable e) {
             logger.error(e.getMessage());
@@ -85,41 +82,6 @@ public class ControllerAspect {
         }
 
         return result;
-    }
-
-    /**
-     * 检查权限
-     */
-    private boolean checkPermission() {
-        return true;
-    }
-
-    /**
-     * 检查角色
-     */
-    private boolean checkRole() {
-        return true;
-    }
-
-    /**
-     * 检查菜单
-     */
-    private boolean checkMenu() {
-        return true;
-    }
-
-    /**
-     * 检查URL
-     */
-    private boolean checkUrl(ProceedingJoinPoint pjp) {
-        try {
-            String apiUrl = ReflectUtils.getApiUrl(pjp);
-            System.out.println(apiUrl);
-        }
-        catch (NoSuchMethodException e) {
-
-        }
-        return false;
     }
 
     /**

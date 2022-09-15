@@ -2,7 +2,7 @@ package com.zny.user.controller;
 
 import cn.dev33.satoken.util.SaResult;
 import com.zny.user.application.ApiApplication;
-import com.zny.user.model.ApiModel;
+import com.zny.user.model.api.ApiModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

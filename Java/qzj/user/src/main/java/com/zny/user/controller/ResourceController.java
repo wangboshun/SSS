@@ -2,8 +2,8 @@ package com.zny.user.controller;
 
 import cn.dev33.satoken.util.SaResult;
 import com.zny.user.application.ResourceApplication;
-import com.zny.user.model.ResourceModel;
-import com.zny.user.model.enums.ResourceEnum;
+import com.zny.user.model.resource.ResourceModel;
+import com.zny.user.model.resource.ResourceEnum;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -53,8 +53,10 @@ public class ResourceController {
      * 添加资源
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public SaResult add(String mainId, int mainType, String slaveId, int slaveType) {
-        return resourceApplication.addResource(mainId, mainType, slaveId, slaveType);
+    public SaResult add(
+            String mainId, int mainType, @RequestParam(required = false) String slaveId, int slaveType,
+            @RequestParam(required = false) String slaveCode) {
+        return resourceApplication.addResource(mainId, mainType, slaveId, slaveType,slaveCode);
     }
 
     /**

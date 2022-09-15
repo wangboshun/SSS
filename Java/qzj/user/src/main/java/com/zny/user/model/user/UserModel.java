@@ -21,6 +21,15 @@ public class UserModel implements Serializable {
      */
     public String create_time;
     public Integer user_status;
+    public Integer user_type;
+
+    public Integer getUser_type() {
+        return user_type;
+    }
+
+    public void setUser_type(Integer user_type) {
+        this.user_type = user_type;
+    }
 
     public String getParent_id() {
         return parent_id;

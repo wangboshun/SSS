@@ -99,8 +99,9 @@ public class UserController {
      * @param password 密码
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public SaResult add(String username, String password, @RequestParam(required = false) String parentId) {
-        return userApplication.addUser(username, password, parentId);
+    public SaResult add(String username, String password, @RequestParam(required = false) Integer userType,
+                        @RequestParam(required = false) String parentId) {
+        return userApplication.addUser(username, password,userType, parentId);
     }
 
     /**
@@ -157,6 +158,18 @@ public class UserController {
     @RequestMapping(value = "/getPermission", method = RequestMethod.GET)
     public SaResult getPermission(String userId) {
         Table<String, String, String> table = resourceApplication.getPermissionByUser(userId);
+        List<Map<String, String>> list = resourceApplication.TableConvertList(table);
+        return SaResult.data(list);
+    }
+
+    /**
+     * 根据用户获取Api
+     *
+     * @param userId 用户id
+     */
+    @RequestMapping(value = "/getApi", method = RequestMethod.GET)
+    public SaResult getApi(String userId) {
+        Table<String, String, String> table = resourceApplication.getApiByUser(userId);
         List<Map<String, String>> list = resourceApplication.TableConvertList(table);
         return SaResult.data(list);
     }

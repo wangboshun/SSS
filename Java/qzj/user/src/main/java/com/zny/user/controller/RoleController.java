@@ -138,4 +138,16 @@ public class RoleController {
         List<Map<String, String>> list = resourceApplication.TableConvertList(table);
         return SaResult.data(list);
     }
+
+    /**
+     * 根据角色获取权限
+     *
+     * @param roleId 角色id
+     */
+    @RequestMapping(value = "/getApi", method = RequestMethod.GET)
+    public SaResult getApi(String roleId) {
+        Table<String, String, String> table = resourceApplication.getApiByRole(roleId);
+        List<Map<String, String>> list = resourceApplication.TableConvertList(table);
+        return SaResult.data(list);
+    }
 }
