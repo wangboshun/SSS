@@ -38,7 +38,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class ControllerAspect {
 
     private final LinkedBlockingQueue<Map<String, Object>> logQueue = new LinkedBlockingQueue<>();
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass()); 
 
     @Autowired
     private TopicAsyncEventBus topicEventBus;

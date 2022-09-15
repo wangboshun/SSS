@@ -117,7 +117,7 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
         wrapper.eq(StringUtils.isNotBlank(permissionCode), "permission_code", permissionCode);
         Page<PermissionModel> page = new Page<>(pageIndex, pageSize);
         Page<PermissionModel> result = this.page(page, wrapper);
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>(4);
         map.put("total", result.getTotal());
         map.put("rows", result.getRecords());
         map.put("pages", result.getPages());

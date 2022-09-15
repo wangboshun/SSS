@@ -76,7 +76,7 @@ public class ResourceController {
      */
     @RequestMapping(value = "/forUser", method = RequestMethod.DELETE)
     public SaResult deleteForUser(String userId) {
-        return resourceApplication.forMain(userId, ResourceEnum.USER.ordinal());
+        return resourceApplication.forMain(userId, ResourceEnum.USER);
     }
 
     /**
@@ -84,7 +84,7 @@ public class ResourceController {
      */
     @RequestMapping(value = "/forRole", method = RequestMethod.DELETE)
     public SaResult deleteForRole(String roleId) {
-        return resourceApplication.forMain(roleId, ResourceEnum.ROLE.ordinal());
+        return resourceApplication.forMain(roleId, ResourceEnum.ROLE);
     }
 
 

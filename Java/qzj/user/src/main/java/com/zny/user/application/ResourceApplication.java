@@ -9,7 +9,8 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.*;
-import com.zny.user.model.*;
+import com.zny.user.model.ApiModel;
+import com.zny.user.model.ResourceModel;
 import com.zny.user.model.enums.ResourceEnum;
 import com.zny.user.model.menu.MenuModel;
 import com.zny.user.model.permission.PermissionModel;
@@ -99,7 +100,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
         for (String key : table.rowKeySet()) {
             Map<String, String> columnMap = table.row(key);
             columnMap.forEach((columnKey, value) -> {
-                Map<String, String> map = new HashMap<>();
+                Map<String, String> map = new HashMap<>(3);
                 map.put("id", key);
                 map.put("code", value);
                 map.put("name", columnKey);
@@ -116,12 +117,12 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
      * @param mainType  主类型
      * @param slaveType 关联类型
      */
-    private Table<String, String, String> getTable(String mainId, Integer mainType, Integer slaveType) {
+    private Table<String, String, String> getTable(String mainId, ResourceEnum mainType, ResourceEnum slaveType) {
         Table<String, String, String> table = HashBasedTable.create();
         QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
         wrapper.eq("main_id", mainId);
-        wrapper.eq("main_type", mainType);
-        wrapper.eq("slave_type", slaveType);
+        wrapper.eq("main_type", mainType.getIndex());
+        wrapper.eq("slave_type", slaveType.getIndex());
         List<ResourceModel> list = this.list(wrapper);
         for (ResourceModel resourceModel : list) {
             table.put(resourceModel.getSlave_id(), resourceModel.getSlave_name(), resourceModel.getSlave_code());
@@ -154,7 +155,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
         Page<ResourceModel> page = new Page<>(pageIndex, pageSize);
         Page<ResourceModel> result = this.page(page, wrapper);
 
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>(4);
         map.put("total", result.getTotal());
         map.put("rows", result.getRecords());
         map.put("pages", result.getPages());
@@ -166,10 +167,10 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
     /**
      * 删除资源
      */
-    public SaResult forMain(String mainId, Integer mainType) {
+    public SaResult forMain(String mainId, ResourceEnum mainType) {
         QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
         wrapper.eq("main_id", mainId);
-        wrapper.eq("main_type", mainType);
+        wrapper.eq("main_type", mainType.getIndex());
         if (remove(wrapper)) {
             return SaResult.ok("删除资源成功！");
         }
@@ -276,7 +277,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
             default:
                 break;
         }
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<String, String>(2);
         map.put("name", name);
         map.put("code", code);
         return map;
@@ -290,7 +291,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
      * @param userId 用户id
      */
     public Table<String, String, String> getRoleByUser(String userId) {
-        return getTable(userId, ResourceEnum.USER.getIndex(), ResourceEnum.ROLE.getIndex());
+        return getTable(userId, ResourceEnum.USER, ResourceEnum.ROLE);
     }
 
     /**
@@ -321,7 +322,6 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
             table.put(resourceModel.getSlave_id(), resourceModel.getSlave_name(), resourceModel.getSlave_code());
         }
         return table;
-
     }
 
     /**
@@ -394,7 +394,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
      * @param roleId 角色id
      */
     public Table<String, String, String> getUserByRole(String roleId) {
-        return getTable(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.USER.getIndex());
+        return getTable(roleId, ResourceEnum.ROLE, ResourceEnum.USER);
     }
 
     /**
@@ -403,7 +403,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
      * @param roleId 角色id
      */
     public Table<String, String, String> getMenuByRole(String roleId) {
-        return getTable(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.MENU.getIndex());
+        return getTable(roleId, ResourceEnum.ROLE, ResourceEnum.MENU);
     }
 
     /**
@@ -412,7 +412,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
      * @param roleId 角色id
      */
     public Table<String, String, String> getPermissionByRole(String roleId) {
-        return getTable(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.PERMISSION.getIndex());
+        return getTable(roleId, ResourceEnum.ROLE, ResourceEnum.PERMISSION);
     }
 
     /**
@@ -421,6 +421,6 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
      * @param roleId 角色id
      */
     public Table<String, String, String> getApiByRole(String roleId) {
-        return getTable(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.API.getIndex());
+        return getTable(roleId, ResourceEnum.ROLE, ResourceEnum.API);
     }
 }

@@ -139,7 +139,7 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
         wrapper.eq(StringUtils.isNotBlank(apiCode), "api_code", apiCode);
         Page<ApiModel> page = new Page<>(pageIndex, pageSize);
         Page<ApiModel> result = this.page(page, wrapper);
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>(4);
         map.put("total", result.getTotal());
         map.put("rows", result.getRecords());
         map.put("pages", result.getPages());

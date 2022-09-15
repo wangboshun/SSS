@@ -115,7 +115,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
         wrapper.eq(StringUtils.isNotBlank(menuCode), "menu_code", menuCode);
         Page<MenuModel> page = new Page<>(pageIndex, pageSize);
         Page<MenuModel> result = this.page(page, wrapper);
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>(4);
         map.put("total", result.getTotal());
         map.put("rows", result.getRecords());
         map.put("pages", result.getPages());

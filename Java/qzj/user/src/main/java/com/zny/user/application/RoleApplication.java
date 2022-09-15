@@ -117,7 +117,7 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
         wrapper.eq(StringUtils.isNotBlank(roleCode), "role_code", roleCode);
         Page<RoleModel> page = new Page<>(pageIndex, pageSize);
         Page<RoleModel> result = this.page(page, wrapper);
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>(4);
         map.put("total", result.getTotal());
         map.put("rows", result.getRecords());
         map.put("pages", result.getPages());

@@ -39,7 +39,7 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
         if (model != null) {
             StpUtil.login(model.id);
             SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
-            Map<String, String> map = new HashMap<String, String>();
+            Map<String, String> map = new HashMap<String, String>(1);
             map.put(tokenInfo.getTokenName(), tokenInfo.getTokenValue());
             return map;
         }
@@ -93,7 +93,7 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
         wrapper.eq(StringUtils.isNotBlank(userName), "user_name", userName);
         Page<UserModel> page = new Page<>(pageIndex, pageSize);
         Page<UserModel> result = this.page(page, wrapper);
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>(4);
         map.put("total", result.getTotal());
         map.put("rows", result.getRecords());
         map.put("pages", result.getPages());
