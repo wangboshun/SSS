@@ -26,6 +26,8 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      * 添加菜单
      *
      * @param menuName 菜单名
+     * @param menuCode 菜单代码
+     * @param parentId 父级id
      */
     public SaResult addMenu(String menuName, String menuCode, String parentId) {
         QueryWrapper<MenuModel> wrapper = new QueryWrapper<MenuModel>();
@@ -149,14 +151,18 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      *
      * @param id       菜单id
      * @param menuName 菜单名
+     * @param parentId 父级id
      */
-    public SaResult updateMenu(String id, String menuName, String menuCode) {
+    public SaResult updateMenu(String id, String menuName, String menuCode, String parentId) {
         QueryWrapper<MenuModel> wrapper = new QueryWrapper<MenuModel>();
         wrapper.eq("id", id);
         MenuModel model = this.getOne(wrapper);
 
         if (model == null) {
             return SaResult.error("菜单不存在！");
+        }
+        if (StringUtils.isNotBlank(parentId)) {
+            model.setParent_id(parentId);
         }
         model.setMenu_name(menuName);
         model.setMenu_code(menuCode);

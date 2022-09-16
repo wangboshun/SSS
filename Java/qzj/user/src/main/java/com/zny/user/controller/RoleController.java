@@ -76,12 +76,12 @@ public class RoleController {
      *
      * @param roleName 角色名
      * @param roleCode 角色代码
+     * @param parentId 父级id
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public SaResult add(String roleName, String roleCode, @RequestParam(required = false) String parentId) {
         return roleApplication.addRole(roleName, roleCode, parentId);
     }
-
 
     /**
      * 删除角色
@@ -99,10 +99,13 @@ public class RoleController {
      * @param id       角色id
      * @param roleName 角色名
      * @param roleCode 角色代码
+     * @param parentId 父级id
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
-    public SaResult update(@PathVariable String id, String roleName, String roleCode) {
-        return roleApplication.updateRole(id, roleName, roleCode);
+    public SaResult update(
+            @PathVariable String id, String roleName, String roleCode,
+            @RequestParam(required = false) String parentId) {
+        return roleApplication.updateRole(id, roleName, roleCode, parentId);
     }
 
     /**

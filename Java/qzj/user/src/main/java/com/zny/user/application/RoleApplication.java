@@ -27,6 +27,7 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
      *
      * @param roleName 角色名
      * @param roleCode 角色代码
+     * @param parentId 父级id
      */
     public SaResult addRole(String roleName, String roleCode, String parentId) {
         QueryWrapper<RoleModel> wrapper = new QueryWrapper<RoleModel>();
@@ -152,14 +153,18 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
      * @param id       角色id
      * @param roleName 角色名
      * @param roleCode 角色代码
+     * @param parentId 父级id
      */
-    public SaResult updateRole(String id, String roleName, String roleCode) {
+    public SaResult updateRole(String id, String roleName, String roleCode, String parentId) {
         QueryWrapper<RoleModel> wrapper = new QueryWrapper<RoleModel>();
         wrapper.eq("id", id);
         RoleModel model = this.getOne(wrapper);
 
         if (model == null) {
             return SaResult.error("角色不存在！");
+        }
+        if (StringUtils.isNotBlank(parentId)) {
+            model.setParent_id(parentId);
         }
         model.setRole_name(roleName);
         model.setRole_code(roleCode);

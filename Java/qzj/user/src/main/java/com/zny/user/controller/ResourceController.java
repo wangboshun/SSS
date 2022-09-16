@@ -80,7 +80,7 @@ public class ResourceController {
      */
     @RequestMapping(value = "/forUser", method = RequestMethod.DELETE)
     public SaResult deleteForUser(String userId) {
-        return resourceApplication.forMain(userId, ResourceEnum.USER);
+        return resourceApplication.deleteResource(userId, ResourceEnum.USER);
     }
 
     /**
@@ -88,7 +88,7 @@ public class ResourceController {
      */
     @RequestMapping(value = "/forRole", method = RequestMethod.DELETE)
     public SaResult deleteForRole(String roleId) {
-        return resourceApplication.forMain(roleId, ResourceEnum.ROLE);
+        return resourceApplication.deleteResource(roleId, ResourceEnum.ROLE);
     }
 
 

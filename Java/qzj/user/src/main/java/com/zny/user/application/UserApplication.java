@@ -12,6 +12,7 @@ import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.UserMapper;
 import com.zny.user.model.user.UserModel;
 import com.zny.user.model.user.UserTreeModel;
+import com.zny.user.model.user.UserTypeEnum;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -52,6 +53,8 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
      *
      * @param username 用户名
      * @param password 密码
+     * @param userType 用户类型
+     * @param parentId 父级id
      */
     public SaResult addUser(String username, String password, Integer userType, String parentId) {
         QueryWrapper<UserModel> wrapper = new QueryWrapper<UserModel>();
@@ -63,8 +66,16 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
         UserModel userModel = new UserModel();
         userModel.setId(UUID.randomUUID().toString());
         userModel.setUser_name(username);
-        userModel.setParent_id(parentId);
-        userModel.setUser_type(userType);
+        if (StringUtils.isNotBlank(parentId)) {
+            userModel.setParent_id(parentId);
+        }
+        if (userType != null) {
+            userModel.setUser_type(userType);
+        }
+        else {
+            userModel.setUser_type(UserTypeEnum.COMMON.getIndex());
+        }
+
         userModel.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
         userModel.setPassword(SecureUtil.md5(password));
         if (save(userModel)) {
@@ -176,14 +187,22 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
      * @param id       用户id
      * @param username 用户名
      * @param password 用户密码
+     * @param userType 用户类型
+     * @param parentId 父级id
      */
-    public SaResult updateUser(String id, String username, String password) {
+    public SaResult updateUser(String id, String username, String password, Integer userType, String parentId) {
         QueryWrapper<UserModel> wrapper = new QueryWrapper<UserModel>();
         wrapper.eq("id", id);
         UserModel model = this.getOne(wrapper);
 
         if (model == null) {
             return SaResult.error("用户不存在！");
+        }
+        if (userType != null) {
+            model.setUser_type(userType);
+        }
+        if (StringUtils.isNotBlank(parentId)) {
+            model.setParent_id(parentId);
         }
         model.setPassword(SecureUtil.md5(password));
         model.setUser_name(username);

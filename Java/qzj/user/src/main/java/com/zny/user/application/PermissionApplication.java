@@ -27,6 +27,7 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      *
      * @param permissionName 权限名
      * @param permissionCode 权限代码
+     * @param parentId       父级id
      */
     public SaResult addPermission(String permissionName, String permissionCode, String parentId) {
         QueryWrapper<PermissionModel> wrapper = new QueryWrapper<PermissionModel>();
@@ -152,14 +153,18 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      * @param id             权限id
      * @param permissionName 权限名
      * @param permissionCode 权限代码
+     * @param parentId       父级id
      */
-    public SaResult updatePermission(String id, String permissionName, String permissionCode) {
+    public SaResult updatePermission(String id, String permissionName, String permissionCode, String parentId) {
         QueryWrapper<PermissionModel> wrapper = new QueryWrapper<PermissionModel>();
         wrapper.eq("id", id);
         PermissionModel model = this.getOne(wrapper);
 
         if (model == null) {
             return SaResult.error("权限不存在！");
+        }
+        if (StringUtils.isNotBlank(parentId)) {
+            model.setParent_id(parentId);
         }
         model.setPermission_name(permissionName);
         model.setPermission_code(permissionCode);

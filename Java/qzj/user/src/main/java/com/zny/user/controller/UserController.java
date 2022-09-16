@@ -99,10 +99,12 @@ public class UserController {
      *
      * @param username 用户名
      * @param password 密码
+     * @param userType 用户类型
+     * @param parentId 父级id
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public SaResult add(
-            String username, String password, Integer userType,
+            String username, String password, @RequestParam(required = false) Integer userType,
             @RequestParam(required = false) String parentId) {
         return userApplication.addUser(username, password, userType, parentId);
     }
@@ -123,10 +125,14 @@ public class UserController {
      * @param id       用户id
      * @param username 用户名
      * @param password 密码
+     * @param userType 用户类型
+     * @param parentId 父级id
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
-    public SaResult update(@PathVariable String id, String username, String password) {
-        return userApplication.updateUser(id, username, password);
+    public SaResult update(
+            @PathVariable String id, String username, String password, @RequestParam(required = false) Integer userType,
+            @RequestParam(required = false) String parentId) {
+        return userApplication.updateUser(id, username, password, userType, parentId);
     }
 
     /**

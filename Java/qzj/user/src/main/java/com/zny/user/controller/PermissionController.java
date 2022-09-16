@@ -70,6 +70,7 @@ public class PermissionController {
      *
      * @param permissionName 权限名
      * @param permissionCode 权限代码
+     * @param parentId 父级id
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public SaResult add(String permissionName, String permissionCode, @RequestParam(required = false) String parentId) {
@@ -93,9 +94,12 @@ public class PermissionController {
      * @param id             权限id
      * @param permissionName 权限名
      * @param permissionCode 权限代码
+     * @param parentId       父级id
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
-    public SaResult update(@PathVariable String id, String permissionName, String permissionCode) {
-        return permissionApplication.updatePermission(id, permissionName, permissionCode);
+    public SaResult update(
+            @PathVariable String id, String permissionName, String permissionCode,
+            @RequestParam(required = false) String parentId) {
+        return permissionApplication.updatePermission(id, permissionName, permissionCode, parentId);
     }
 }

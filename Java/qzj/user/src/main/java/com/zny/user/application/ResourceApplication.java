@@ -179,11 +179,10 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
         return map;
     }
 
-
     /**
      * 删除资源
      */
-    public SaResult forMain(String mainId, ResourceEnum mainType) {
+    public SaResult deleteResource(String mainId, ResourceEnum mainType) {
         QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
         wrapper.eq("main_id", mainId);
         wrapper.eq("main_type", mainType.getIndex());
@@ -345,12 +344,9 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
         Table<String, String, String> table = HashBasedTable.create();
         Table<String, String, String> roles = getRoleByUser(userId);
 
-        //循环所有roleId
         for (String roleId : roles.rowKeySet()) {
-            //根据roleId获取菜单
             Table<String, String, String> tmp = getMenuByRole(roleId);
             if (!tmp.isEmpty()) {
-                //table添加角色关联得到菜单
                 table.putAll(tmp);
             }
         }
@@ -375,12 +371,9 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
         Table<String, String, String> table = HashBasedTable.create();
         Table<String, String, String> roles = getRoleByUser(userId);
 
-        //循环所有roleId
         for (String roleId : roles.rowKeySet()) {
-            //根据roleId获取权限
             Table<String, String, String> tmp = getPermissionByRole(roleId);
             if (!tmp.isEmpty()) {
-                //table添加角色关联得到权限
                 table.putAll(tmp);
             }
         }
@@ -405,12 +398,9 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
         Table<String, String, String> table = HashBasedTable.create();
         Table<String, String, String> roles = getRoleByUser(userId);
 
-        //循环所有roleId
         for (String roleId : roles.rowKeySet()) {
-            //根据roleId获取权限
-            Table<String, String, String> tmp = getPermissionByRole(roleId);
+            Table<String, String, String> tmp = getApiByRole(roleId);
             if (!tmp.isEmpty()) {
-                //table添加角色关联得到权限
                 table.putAll(tmp);
             }
         }

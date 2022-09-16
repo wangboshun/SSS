@@ -118,6 +118,8 @@ public class MenuController {
      * 添加菜单
      *
      * @param menuName 菜单名
+     * @param menuCode 菜单代码
+     * @param parentId 父级id
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public SaResult add(String menuName, String menuCode, @RequestParam(required = false) String parentId) {
@@ -140,9 +142,12 @@ public class MenuController {
      *
      * @param id       菜单id
      * @param menuName 菜单名
+     * @param parentId 父级id
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
-    public SaResult update(@PathVariable String id, String menuName, String menuCode) {
-        return menuApplication.updateMenu(id, menuName, menuCode);
+    public SaResult update(
+            @PathVariable String id, String menuName, String menuCode,
+            @RequestParam(required = false) String parentId) {
+        return menuApplication.updateMenu(id, menuName, menuCode, parentId);
     }
 }
