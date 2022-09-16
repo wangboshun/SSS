@@ -25,11 +25,17 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
     /**
      * 添加菜单
      *
-     * @param menuName 菜单名
-     * @param menuCode 菜单代码
-     * @param parentId 父级id
+     * @param menuName  菜单名
+     * @param menuCode  菜单代码
+     * @param parentId  父级id
+     * @param menuIndex 菜单序号
+     * @param menuUrl   菜单url
+     * @param menuIcon  菜单图标
+     * @param menuType  菜单类型：链接、按钮
      */
-    public SaResult addMenu(String menuName, String menuCode, String parentId) {
+    public SaResult addMenu(
+            String menuName, String menuCode, String parentId, Integer menuIndex, String menuUrl, String menuIcon,
+            Integer menuType) {
         QueryWrapper<MenuModel> wrapper = new QueryWrapper<MenuModel>();
         wrapper.eq("menu_name", menuName);
         MenuModel model = this.getOne(wrapper);
@@ -41,6 +47,10 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
         menuModel.setMenu_name(menuName);
         menuModel.setMenu_code(menuCode);
         menuModel.setParent_id(parentId);
+        menuModel.setMenu_index(menuIndex);
+        menuModel.setMenu_url(menuUrl);
+        menuModel.setMenu_icon(menuIcon);
+        menuModel.setMenu_type(menuType);
         menuModel.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
         if (save(menuModel)) {
             return SaResult.ok("添加菜单成功！");
@@ -149,24 +159,33 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
     /**
      * 更新菜单信息
      *
-     * @param id       菜单id
-     * @param menuName 菜单名
-     * @param parentId 父级id
+     * @param id        菜单id
+     * @param menuName  菜单名
+     * @param menuCode  菜单代码
+     * @param parentId  父级id
+     * @param menuIndex 菜单序号
+     * @param menuUrl   菜单url
+     * @param menuIcon  菜单图标
+     * @param menuType  菜单类型：链接、按钮
      */
-    public SaResult updateMenu(String id, String menuName, String menuCode, String parentId) {
+    public SaResult updateMenu(
+            String id, String menuName, String menuCode, String parentId, Integer menuIndex, String menuUrl,
+            String menuIcon, Integer menuType) {
         QueryWrapper<MenuModel> wrapper = new QueryWrapper<MenuModel>();
         wrapper.eq("id", id);
-        MenuModel model = this.getOne(wrapper);
+        MenuModel menuModel = this.getOne(wrapper);
 
-        if (model == null) {
+        if (menuModel == null) {
             return SaResult.error("菜单不存在！");
         }
-        if (StringUtils.isNotBlank(parentId)) {
-            model.setParent_id(parentId);
-        }
-        model.setMenu_name(menuName);
-        model.setMenu_code(menuCode);
-        if (updateById(model)) {
+        menuModel.setMenu_name(menuName);
+        menuModel.setMenu_code(menuCode);
+        menuModel.setParent_id(parentId);
+        menuModel.setMenu_index(menuIndex);
+        menuModel.setMenu_url(menuUrl);
+        menuModel.setMenu_icon(menuIcon);
+        menuModel.setMenu_type(menuType);
+        if (updateById(menuModel)) {
             return SaResult.ok("更新菜单信息成功！");
         }
         else {

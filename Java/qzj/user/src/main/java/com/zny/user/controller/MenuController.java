@@ -117,13 +117,20 @@ public class MenuController {
     /**
      * 添加菜单
      *
-     * @param menuName 菜单名
-     * @param menuCode 菜单代码
-     * @param parentId 父级id
+     * @param menuName  菜单名
+     * @param menuCode  菜单代码
+     * @param parentId  父级id
+     * @param menuIndex 菜单序号
+     * @param menuUrl   菜单url
+     * @param menuIcon  菜单图标
+     * @param menuType  菜单类型：链接、按钮
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public SaResult add(String menuName, String menuCode, @RequestParam(required = false) String parentId) {
-        return menuApplication.addMenu(menuName, menuCode, parentId);
+    public SaResult add(
+            String menuName, String menuCode, @RequestParam(required = false) String parentId,
+            @RequestParam(required = false) Integer menuIndex, @RequestParam(required = false) String menuUrl,
+            @RequestParam(required = false) String menuIcon,@RequestParam(required = false) Integer menuType) {
+        return menuApplication.addMenu(menuName, menuCode, parentId, menuIndex, menuUrl, menuIcon,menuType);
     }
 
 
@@ -141,13 +148,19 @@ public class MenuController {
      * 更新菜单信息
      *
      * @param id       菜单id
-     * @param menuName 菜单名
-     * @param parentId 父级id
+     * @param menuName  菜单名
+     * @param menuCode  菜单代码
+     * @param parentId  父级id
+     * @param menuIndex 菜单序号
+     * @param menuUrl   菜单url
+     * @param menuIcon  菜单图标
+     * @param menuType  菜单类型：链接、按钮
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
     public SaResult update(
-            @PathVariable String id, String menuName, String menuCode,
-            @RequestParam(required = false) String parentId) {
-        return menuApplication.updateMenu(id, menuName, menuCode, parentId);
+            @PathVariable String id, String menuName, String menuCode, @RequestParam(required = false) String parentId,
+            @RequestParam(required = false) Integer menuIndex, @RequestParam(required = false) String menuUrl,
+            @RequestParam(required = false) String menuIcon,@RequestParam(required = false) Integer menuType) {
+        return menuApplication.updateMenu(id, menuName, menuCode, parentId, menuIndex, menuUrl, menuIcon,menuType);
     }
 }

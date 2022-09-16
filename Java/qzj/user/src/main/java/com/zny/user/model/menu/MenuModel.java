@@ -14,6 +14,42 @@ public class MenuModel {
     private String parent_id;
     private String create_time;
     private Integer menu_status;
+    private Integer menu_type;
+    private Integer menu_index;
+    private String menu_url;
+    private String menu_icon;
+
+    public Integer getMenu_type() {
+        return menu_type;
+    }
+
+    public void setMenu_type(Integer menu_type) {
+        this.menu_type = menu_type;
+    }
+
+    public Integer getMenu_index() {
+        return menu_index;
+    }
+
+    public void setMenu_index(Integer menu_index) {
+        this.menu_index = menu_index;
+    }
+
+    public String getMenu_url() {
+        return menu_url;
+    }
+
+    public void setMenu_url(String menu_url) {
+        this.menu_url = menu_url;
+    }
+
+    public String getMenu_icon() {
+        return menu_icon;
+    }
+
+    public void setMenu_icon(String menu_icon) {
+        this.menu_icon = menu_icon;
+    }
 
     public String getParent_id() {
         return parent_id;
