@@ -26,8 +26,9 @@ public class ApiLogController {
     /**
      * 查询日志列表
      *
-     * @param userId    用户名
-     * @param method    请求方法
+     * @param userId    用户id
+     * @param apiName   接口名称
+     * @param method    请求类型：GET、POST
      * @param ip        ip地址
      * @param pageIndex 页码
      * @param pageSize  分页大小
@@ -35,9 +36,9 @@ public class ApiLogController {
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public SaResult list(
             @RequestParam(required = false) String userId, @RequestParam(required = false) String method,
-            @RequestParam(required = false) String ip, @RequestParam(required = false) Integer pageIndex,
-            @RequestParam(required = false) Integer pageSize) {
-        Map<String, Object> result = apiLogApplication.getApiLogList(userId, method, ip, pageIndex, pageSize);
+            @RequestParam(required = false) String apiName, @RequestParam(required = false) String ip,
+            @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
+        Map<String, Object> result = apiLogApplication.getApiLogList(userId, apiName, method, ip, pageIndex, pageSize);
         return SaResult.data(result);
     }
 

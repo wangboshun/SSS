@@ -12,18 +12,18 @@ import java.io.Serializable;
 @TableName("sys_resource")
 public class ResourceModel implements Serializable {
 
-    public String id;
+    private String id;
 
-    public String main_id;
-    public String main_name;
-    public int main_type;
+    private String main_id;
+    private String main_name;
+    private int main_type;
 
-    public String slave_id;
-    public String slave_name;
-    public int slave_type;
-    public String slave_code;
-    public String create_time;
-    public Integer resource_status;
+    private String slave_id;
+    private String slave_name;
+    private int slave_type;
+    private String slave_code;
+    private String create_time;
+    private Integer resource_status;
 
     public String getSlave_code() {
         return slave_code;

@@ -6,10 +6,10 @@ package com.zny.user.model.menu;
  */
 
 public class MenuTreeModel {
-    public String id;
-    public String menu_name;
-    public MenuTreeModel children;
-    public int lelvel;
+    private String id;
+    private String menu_name;
+    private MenuTreeModel children;
+    private int lelvel;
 
     public int getLelvel() {
         return lelvel;

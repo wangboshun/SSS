@@ -11,11 +11,11 @@ import java.io.Serializable;
 
 @TableName("sys_role")
 public class RoleModel implements Serializable {
-    public String id;
-    public String role_name;
-    public String create_time;
-    public Integer role_status;
-    public String parent_id;
+    private String id;
+    private String role_name;
+    private String create_time;
+    private Integer role_status;
+    private String parent_id;
     private String role_code;
 
     public String getParent_id() {
@@ -28,13 +28,7 @@ public class RoleModel implements Serializable {
 
     @Override
     public String toString() {
-        return "UserModel{" +
-                "id='" + id + '\'' +
-                ", role_name='" + role_name + '\'' +
-                ", create_time='" + create_time + '\'' +
-                ", role_code='" + role_code + '\'' +
-                ", role_status=" + role_status +
-                '}';
+        return "RoleModel{" + "id='" + id + '\'' + ", role_name='" + role_name + '\'' + ", create_time='" + create_time + '\'' + ", role_status=" + role_status + ", parent_id='" + parent_id + '\'' + ", role_code='" + role_code + '\'' + '}';
     }
 
     public String getId() {

@@ -11,17 +11,17 @@ import java.io.Serializable;
 
 @TableName("sys_user")
 public class UserModel implements Serializable {
-    public String id;
-    public String user_name;
-    public String password;
-    public String parent_id;
+    private String id;
+    private String user_name;
+    private String password;
+    private String parent_id;
     /**
      * @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
      * 时间格式化
      */
-    public String create_time;
-    public Integer user_status;
-    public Integer user_type;
+    private String create_time;
+    private Integer user_status;
+    private Integer user_type;
 
     public Integer getUser_type() {
         return user_type;
@@ -41,7 +41,7 @@ public class UserModel implements Serializable {
 
     @Override
     public String toString() {
-        return "UserModel{" + "id='" + id + '\'' + ", user_name='" + user_name + '\'' + ", password='" + password + '\'' + ", create_time='" + create_time + '\'' + ", user_status=" + user_status + '}';
+        return "UserModel{" + "id='" + id + '\'' + ", user_name='" + user_name + '\'' + ", password='" + password + '\'' + ", parent_id='" + parent_id + '\'' + ", create_time='" + create_time + '\'' + ", user_status=" + user_status + ", user_type=" + user_type + '}';
     }
 
     public String getId() {

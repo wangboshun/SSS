@@ -8,10 +8,10 @@ import java.io.Serializable;
  */
 
 public class UserTreeModel implements Serializable {
-    public String id;
-    public String user_name;
-    public UserTreeModel children;
-    public int lelvel;
+    private String id;
+    private String user_name;
+    private UserTreeModel children;
+    private int lelvel;
 
     public int getLelvel() {
         return lelvel;

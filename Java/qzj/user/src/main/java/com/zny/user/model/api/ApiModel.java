@@ -13,14 +13,14 @@ import java.io.Serializable;
 @TableName("sys_api")
 @JsonIgnoreProperties(value = {"api_path"})  //不返回path字段到前端
 public class ApiModel implements Serializable {
-    public String id;
-    public String api_name;
-    public String api_code;
-    public String api_type;
-    public Integer api_status;
-    public String create_time;
-    public String api_path;
-    public String api_group;
+    private String id;
+    private String api_name;
+    private String api_code;
+    private String api_type;
+    private Integer api_status;
+    private String create_time;
+    private String api_path;
+    private String api_group;
 
     public String getId() {
         return id;

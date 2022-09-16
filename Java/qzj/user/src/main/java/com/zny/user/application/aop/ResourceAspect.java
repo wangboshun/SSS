@@ -24,12 +24,12 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @Order(1)
-public class ResourceAop {
+public class ResourceAspect {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final ResourceApplication resourceApplication;
 
-    public ResourceAop(ResourceApplication resourceApplication) {
+    public ResourceAspect(ResourceApplication resourceApplication) {
         this.resourceApplication = resourceApplication;
     }
 
@@ -81,7 +81,7 @@ public class ResourceAop {
             return table.containsValue(api);
         }
         catch (NoSuchMethodException e) {
-
+            logger.error("检查api异常", e);
         }
         return false;
     }

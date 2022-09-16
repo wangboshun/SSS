@@ -38,7 +38,21 @@ public class ReflectUtils {
     }
 
     /**
+     * 获取方法上的注释
+     *
+     * @param pjp 环绕通知
+     */
+    public static String getMethodDoc(ProceedingJoinPoint pjp) {
+        String methodName = pjp.getSignature().getName();
+        Class<?> classTarget = pjp.getTarget().getClass();
+        Class<?>[] par = ((MethodSignature) pjp.getSignature()).getParameterTypes();
+        return getMethodDoc(classTarget.getName(), methodName);
+    }
+
+    /**
      * 获取接口上的URL
+     *
+     * @param pjp 环绕通知
      */
     public static String getApiUrl(ProceedingJoinPoint pjp) throws NoSuchMethodException {
         String url = "";

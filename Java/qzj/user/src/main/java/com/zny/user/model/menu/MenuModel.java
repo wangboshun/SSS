@@ -8,12 +8,12 @@ import com.baomidou.mybatisplus.annotation.TableName;
  */
 @TableName("sys_menu")
 public class MenuModel {
-    public String id;
-    public String menu_name;
-    public String menu_code;
-    public String parent_id;
-    public String create_time;
-    public Integer menu_status;
+    private String id;
+    private String menu_name;
+    private String menu_code;
+    private String parent_id;
+    private String create_time;
+    private Integer menu_status;
 
     public String getParent_id() {
         return parent_id;

@@ -6,10 +6,10 @@ package com.zny.user.model.role;
  */
 
 public class RoleTreeModel {
-    public String id;
-    public String role_name;
-    public RoleTreeModel children;
-    public int lelvel;
+    private String id;
+    private String role_name;
+    private RoleTreeModel children;
+    private int lelvel;
 
     public int getLelvel() {
         return lelvel;

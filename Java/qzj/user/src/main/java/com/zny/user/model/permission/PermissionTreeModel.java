@@ -6,10 +6,10 @@ package com.zny.user.model.permission;
  */
 
 public class PermissionTreeModel {
-    public String id;
-    public String permission_name;
-    public PermissionTreeModel children;
-    public int lelvel;
+    private String id;
+    private String permission_name;
+    private PermissionTreeModel children;
+    private int lelvel;
 
     public int getLelvel() {
         return lelvel;

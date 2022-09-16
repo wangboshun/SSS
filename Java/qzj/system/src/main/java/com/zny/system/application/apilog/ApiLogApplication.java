@@ -23,8 +23,16 @@ public class ApiLogApplication extends ServiceImpl<ApiLogMapper, ApiLogModel> {
     @Autowired
     private ApiLogMapper apiLogMapper;
 
+    /**
+     * @param userId    用户id
+     * @param apiName   接口名称
+     * @param method    请求类型：GET、POST
+     * @param ip        ip地址
+     * @param pageIndex 页码
+     * @param pageSize  分页大小
+     */
     public Map<String, Object> getApiLogList(
-            String userId, String method, String ip, Integer pageIndex, Integer pageSize) {
+            String userId, String apiName, String method, String ip, Integer pageIndex, Integer pageSize) {
         if (pageSize == null) {
             pageSize = 10;
         }
@@ -32,6 +40,7 @@ public class ApiLogApplication extends ServiceImpl<ApiLogMapper, ApiLogModel> {
             pageIndex = 1;
         }
         QueryWrapper<ApiLogModel> wrapper = new QueryWrapper<ApiLogModel>();
+        wrapper.eq(StringUtils.isNotBlank(apiName), "api_name", apiName);
         wrapper.eq(StringUtils.isNotBlank(userId), "user_id", userId);
         wrapper.eq(StringUtils.isNotBlank(ip), "ip", ip);
         wrapper.eq(StringUtils.isNotBlank(method), "method", method);

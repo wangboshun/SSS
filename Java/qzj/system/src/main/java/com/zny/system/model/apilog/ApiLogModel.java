@@ -12,17 +12,26 @@ import java.io.Serializable;
 @TableName("sys_api_log")
 public class ApiLogModel implements Serializable {
 
-    public String id;
-    public String user_id;
-    public Float spend;
-    public String url;
-    public String method;
-    public String params;
-    public String ip;
-    public Integer code;
-    public String data;
-    public String start_time;
-    public String end_time;
+    private String id;
+    private String user_id;
+    private Float spend;
+    private String url;
+    private String method;
+    private String params;
+    private String api_name;
+    private String ip;
+    private Integer code;
+    private String data;
+    private String start_time;
+    private String end_time;
+
+    public String getApi_name() {
+        return api_name;
+    }
+
+    public void setApi_name(String api_name) {
+        this.api_name = api_name;
+    }
 
     public String getId() {
         return id;
@@ -42,19 +51,7 @@ public class ApiLogModel implements Serializable {
 
     @Override
     public String toString() {
-        return "ApiLogModel{" +
-                "id='" + id + '\'' +
-                ", user_id='" + user_id + '\'' +
-                ", spend=" + spend +
-                ", url='" + url + '\'' +
-                ", method='" + method + '\'' +
-                ", params='" + params + '\'' +
-                ", ip='" + ip + '\'' +
-                ", code=" + code +
-                ", data='" + data + '\'' +
-                ", start_time='" + start_time + '\'' +
-                ", end_time='" + end_time + '\'' +
-                '}';
+        return "ApiLogModel{" + "id='" + id + '\'' + ", user_id='" + user_id + '\'' + ", spend=" + spend + ", url='" + url + '\'' + ", method='" + method + '\'' + ", params='" + params + '\'' + ", api_name='" + api_name + '\'' + ", ip='" + ip + '\'' + ", code=" + code + ", data='" + data + '\'' + ", start_time='" + start_time + '\'' + ", end_time='" + end_time + '\'' + '}';
     }
 
     public Float getSpend() {

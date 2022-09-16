@@ -7,6 +7,7 @@ import com.zny.common.eventbus.EventEnum;
 import com.zny.common.eventbus.TopicAsyncEventBus;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.IpUtils;
+import com.zny.common.utils.ReflectUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -35,14 +36,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Aspect
 @Component
 @Order(2)
-public class ControllerAspect {
+public class ApiLogAspect {
 
     private final LinkedBlockingQueue<Map<String, Object>> logQueue = new LinkedBlockingQueue<>();
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final TopicAsyncEventBus topicEventBus;
 
-    public ControllerAspect(TopicAsyncEventBus topicEventBus) {
+    public ApiLogAspect(TopicAsyncEventBus topicEventBus) {
         this.topicEventBus = topicEventBus;
     }
 
@@ -74,8 +75,8 @@ public class ControllerAspect {
             Object[] args = pjp.getArgs();
             result = pjp.proceed(args);
             SaResult sa = (SaResult) result;
-            if (sa.getCode() == 200) {
-                addApiLog(httpServletRequest, sa, start);
+            if (sa.getCode() == 200 && !"GET".equals(httpServletRequest.getMethod())) {
+                addApiLog(httpServletRequest, sa, ReflectUtils.getMethodDoc(pjp), start);
             }
         }
         catch (Throwable e) {
@@ -93,9 +94,9 @@ public class ControllerAspect {
      * @param sa                 执行接口
      * @param start              开始时间
      */
-    private void addApiLog(HttpServletRequest httpServletRequest, SaResult sa, LocalDateTime start) {
+    private void addApiLog(HttpServletRequest httpServletRequest, SaResult sa, String apiName, LocalDateTime start) {
         LocalDateTime end = LocalDateTime.now();
-        Map<String, Object> map = new HashMap<>(10);
+        Map<String, Object> map = new HashMap<>(11);
         map.put("user_id", StpUtil.getLoginId().toString());
         map.put("spend", Duration.between(start, end).toMillis() / 1000f);
         map.put("url", httpServletRequest.getRequestURI());
@@ -105,12 +106,8 @@ public class ControllerAspect {
         map.put("code", sa.getCode());
         map.put("start_time", DateUtils.dateToStr(start));
         map.put("end_time", DateUtils.dateToStr(end));
-
-        //GET请求不存储日志
-        if (!"GET".equals(httpServletRequest.getMethod())) {
-            map.put("data", sa.toString());
-        }
-
+        map.put("api_name", apiName);
+        map.put("data", sa.toString());
         logQueue.offer(map);
     }
 
