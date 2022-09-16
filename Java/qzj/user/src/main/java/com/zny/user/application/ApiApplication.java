@@ -27,7 +27,6 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author WBS
@@ -47,13 +46,12 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
      * 添加接口
      */
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
-    public SaResult addApi() {
+    public void addApi() {
         try {
-            List<ApiModel> allData = this.list();
+            List<ApiModel> oldList = this.list();
             RequestMappingHandlerMapping mapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
-            List<ApiModel> list = new ArrayList<>();
+            List<ApiModel> newsList = new ArrayList<>();
             for (Map.Entry<RequestMappingInfo, HandlerMethod> m : mapping.getHandlerMethods().entrySet()) {
-
                 //控制器类
                 Class<?> mainClass = m.getValue().getMethod().getDeclaringClass();
 
@@ -61,11 +59,6 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
                 RequestMappingInfo info = m.getKey();
                 PatternsRequestCondition p = info.getPatternsCondition();
                 String url = p.toString().replace("[", "").replace("]", "");
-
-                //如果状态已经修改，不处理这条记录
-                if (allData.stream().anyMatch(x -> x.getApi_code().equals(url) && x.getApi_status() != null && !Objects.equals(x.getApi_status(), ApiStatusEnum.ON.getIndex()))) {
-                    continue;
-                }
 
                 //控制器名称
                 String controllerClass = mainClass.getName();
@@ -92,32 +85,53 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
                 RequestMethodsRequestCondition methodsCondition = info.getMethodsCondition();
 
                 ApiModel model = new ApiModel();
-                model.setId(UUID.randomUUID().toString());
-                model.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
+
                 model.setApi_path(controllerClass + "." + methodName);
                 model.setApi_status(ApiStatusEnum.ON.getIndex());
                 model.setApi_code(url);
                 model.setApi_group(group);
                 model.setApi_name(doc);
                 model.setApi_type(methodsCondition.toString().replace("[", "").replace("]", ""));
-                list.add(model);
+                newsList.add(model);
             }
 
-            //删除状态没变的
-            removeBatchByIds(allData.stream().filter(x -> x.getApi_status() != null && Objects.equals(x.getApi_status(), ApiStatusEnum.ON.getIndex())).collect(Collectors.toList()));
-            if (saveBatch(list)) {
-                return SaResult.ok("添加接口成功");
+            List<ApiModel> addList = new ArrayList<>();
+            List<ApiModel> updateList = new ArrayList<>();
+
+            for (ApiModel news : newsList) {
+                Optional<ApiModel> apiModel = oldList.stream().filter(x -> x.getApi_code().equals(news.getApi_code())).findFirst();
+                if (apiModel.isPresent()) {
+                    //如果存在，除了id和状态以外都需要更新
+                    ApiModel model = apiModel.get();
+                    news.setId(model.getId());
+                    news.setApi_status(model.getApi_status());
+                    updateList.add(news);
+                }
+                else {
+                    news.setId(UUID.randomUUID().toString());
+                    news.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
+                    addList.add(news);
+                }
             }
-            else {
-                logger.error("添加接口失败");
-                return SaResult.error("添加接口失败");
+
+            if (addList.size() > 0) {
+                if (!saveBatch(addList)) {
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                    logger.error("接口添加失败");
+                }
+            }
+            if (updateList.size() > 0) {
+                if (!updateBatchById(updateList)) {
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                    logger.error("接口更新失败");
+                }
             }
         }
         catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            logger.error("添加接口异常", e);
-            return SaResult.error("添加接口异常");
+            logger.error("接口处理异常");
         }
+        logger.info("接口处理完成");
     }
 
     /**

@@ -12,7 +12,6 @@ import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.UserMapper;
 import com.zny.user.model.user.UserModel;
 import com.zny.user.model.user.UserTreeModel;
-import com.zny.user.model.user.UserTypeEnum;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -55,9 +54,6 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
      * @param password 密码
      */
     public SaResult addUser(String username, String password, Integer userType, String parentId) {
-        if (userType == null) {
-            userType = UserTypeEnum.COMMON.getIndex();
-        }
         QueryWrapper<UserModel> wrapper = new QueryWrapper<UserModel>();
         wrapper.eq("user_name", username);
         UserModel model = this.getOne(wrapper);

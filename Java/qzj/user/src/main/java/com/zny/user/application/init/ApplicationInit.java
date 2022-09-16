@@ -1,6 +1,5 @@
 package com.zny.user.application.init;
 
-import cn.dev33.satoken.util.SaResult;
 import com.zny.user.application.ApiApplication;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +24,6 @@ public class ApplicationInit {
      */
     @PostConstruct
     public void addApi() {
-        SaResult result = apiApplication.addApi();
+        apiApplication.addApi();
     }
 }

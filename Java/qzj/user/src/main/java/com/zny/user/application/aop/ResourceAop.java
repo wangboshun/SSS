@@ -1,6 +1,5 @@
 package com.zny.user.application.aop;
 
-import cn.dev33.satoken.spring.SpringMVCUtil;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
 import com.google.common.collect.Table;
@@ -16,8 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author WBS
@@ -54,10 +51,8 @@ public class ResourceAop {
         Object result;
         try {
             Object[] args = pjp.getArgs();
-            HttpServletRequest httpServletRequest = SpringMVCUtil.getRequest();
-            if (!"/user/login".equals(httpServletRequest.getRequestURI())) {
+            if (StpUtil.isLogin()) {
                 UserModel user = (UserModel) StpUtil.getSession().get("userInfo");
-
                 //不是超级管理员
                 if (!user.getUser_type().equals(UserTypeEnum.SUPER.getIndex())) {
                     //检测api

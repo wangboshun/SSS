@@ -52,13 +52,17 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
      * 添加资源
      */
     public SaResult addResource(String mainId, int mainType, String slaveId, int slaveType, String slaveCode) {
-        Map<String, String> slaveResource = new HashMap<>(1);
-        Map<String, String> mainResource = getResourceInfo(mainId, mainType);
+        Map<String, String> mainResource = getResourceInfoById(mainId, mainType);
         String mainName = mainResource.get("name");
 
+        if (StringUtils.isBlank(mainName)) {
+            return SaResult.error("主资源不存在！");
+        }
+
+        Map<String, String> slaveResource = new HashMap<>(2);
         //如果code为空
-        if (slaveCode == null) {
-            slaveResource = getResourceInfo(slaveId, slaveType);
+        if (StringUtils.isBlank(slaveCode)) {
+            slaveResource = getResourceInfoById(slaveId, slaveType);
             slaveCode = slaveResource.get("code");
         }
         else {
@@ -66,8 +70,8 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
         }
         String slaveName = slaveResource.get("name");
 
-        if (StringUtils.isBlank(mainName) || StringUtils.isBlank(slaveName)) {
-            return SaResult.error("资源不存在！");
+        if (StringUtils.isBlank(slaveName)) {
+            return SaResult.error("副资源不存在！");
         }
 
         QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
@@ -203,10 +207,10 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
             return SaResult.error("资源不存在！");
         }
 
-        Map<String, String> resourceInfo = getResourceInfo(mainId, mainType);
+        Map<String, String> resourceInfo = getResourceInfoById(mainId, mainType);
         String mainName = resourceInfo.get("name");
 
-        resourceInfo = getResourceInfo(slaveId, slaveType);
+        resourceInfo = getResourceInfoById(slaveId, slaveType);
         String slaveName = resourceInfo.get("name");
         String slaveCode = resourceInfo.get("code");
 
@@ -237,7 +241,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
     /**
      * 根据id获取资源信息
      */
-    private Map<String, String> getResourceInfo(String resourceId, int resourceType) {
+    private Map<String, String> getResourceInfoById(String resourceId, int resourceType) {
         String name = "";
         String code = "";
         ResourceEnum e = ResourceEnum.values()[resourceType];
@@ -280,8 +284,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
             //判断API是否存在
             case API:
                 QueryWrapper<ApiModel> wrapper = new QueryWrapper<ApiModel>();
-                wrapper.eq("api_code", resourceId);
-                ApiModel api = apiMapper.selectOne(wrapper);
+                ApiModel api = apiMapper.selectById(resourceId);
                 if (api == null) {
                     return null;
                 }

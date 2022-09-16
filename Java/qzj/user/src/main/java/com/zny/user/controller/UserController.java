@@ -102,7 +102,7 @@ public class UserController {
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public SaResult add(
-            String username, String password, @RequestParam(required = false) Integer userType,
+            String username, String password, Integer userType,
             @RequestParam(required = false) String parentId) {
         return userApplication.addUser(username, password, userType, parentId);
     }
