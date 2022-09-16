@@ -13,7 +13,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -41,8 +40,11 @@ public class ControllerAspect {
     private final LinkedBlockingQueue<Map<String, Object>> logQueue = new LinkedBlockingQueue<>();
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private TopicAsyncEventBus topicEventBus;
+    private final TopicAsyncEventBus topicEventBus;
+
+    public ControllerAspect(TopicAsyncEventBus topicEventBus) {
+        this.topicEventBus = topicEventBus;
+    }
 
     /**
      * 控制器切面

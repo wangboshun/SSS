@@ -2,7 +2,6 @@ package com.zny.user.application.init;
 
 import cn.dev33.satoken.util.SaResult;
 import com.zny.user.application.ApiApplication;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -15,8 +14,11 @@ import javax.annotation.PostConstruct;
 @Component
 public class ApplicationInit {
 
-    @Autowired
-    private ApiApplication apiApplication;
+    private final ApiApplication apiApplication;
+
+    public ApplicationInit(ApiApplication apiApplication) {
+        this.apiApplication = apiApplication;
+    }
 
     /**
      * 添加API接口信息

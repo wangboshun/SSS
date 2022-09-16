@@ -3,7 +3,6 @@ package com.zny.user.application.satoken;
 import cn.dev33.satoken.stp.StpInterface;
 import com.google.common.collect.Table;
 import com.zny.user.application.ResourceApplication;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,8 +17,11 @@ import java.util.Set;
 @Service
 public class SaTokenImpl implements StpInterface {
 
-    @Autowired
-    private ResourceApplication resourceApplication;
+    private final ResourceApplication resourceApplication;
+
+    public SaTokenImpl(ResourceApplication resourceApplication) {
+        this.resourceApplication = resourceApplication;
+    }
 
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {

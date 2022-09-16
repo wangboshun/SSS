@@ -7,7 +7,6 @@ import com.zny.user.application.ResourceApplication;
 import com.zny.user.model.menu.MenuModel;
 import com.zny.user.model.menu.MenuTreeModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -25,11 +24,14 @@ import java.util.Map;
 @Tag(name = "menu", description = "菜单模块")
 public class MenuController {
 
-    @Autowired
-    private MenuApplication menuApplication;
+    private final MenuApplication menuApplication;
 
-    @Autowired
-    private ResourceApplication resourceApplication;
+    private final ResourceApplication resourceApplication;
+
+    public MenuController(MenuApplication menuApplication, ResourceApplication resourceApplication) {
+        this.menuApplication = menuApplication;
+        this.resourceApplication = resourceApplication;
+    }
 
     /**
      * 获取菜单列表

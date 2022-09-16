@@ -39,7 +39,7 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
         UserModel model = this.getOne(wrapper);
         if (model != null) {
             StpUtil.login(model.id);
-            StpUtil.getSession().set("user", model);
+            StpUtil.getSession().set("userInfo", model);
             SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
             Map<String, String> map = new HashMap<String, String>(1);
             map.put(tokenInfo.getTokenName(), tokenInfo.getTokenValue());

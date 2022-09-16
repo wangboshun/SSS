@@ -1,7 +1,6 @@
 package com.zny.common.eventbus;
 
 import com.google.common.eventbus.AsyncEventBus;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
@@ -17,11 +16,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TopicAsyncEventBus implements IEventBus {
     private final Map<String, AsyncEventBus> eventBusMap;
 
-    @Autowired
-    private ThreadPoolTaskExecutor defaultExecutor;
+    private final ThreadPoolTaskExecutor defaultExecutor;
 
-    public TopicAsyncEventBus() {
+    public TopicAsyncEventBus(ThreadPoolTaskExecutor defaultExecutor) {
         eventBusMap = new ConcurrentHashMap<>();
+        this.defaultExecutor = defaultExecutor;
     }
 
     @Override

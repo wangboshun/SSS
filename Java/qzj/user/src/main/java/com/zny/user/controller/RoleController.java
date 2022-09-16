@@ -7,7 +7,6 @@ import com.zny.user.application.RoleApplication;
 import com.zny.user.model.role.RoleModel;
 import com.zny.user.model.role.RoleTreeModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,11 +22,14 @@ import java.util.Map;
 @Tag(name = "role", description = "角色模块")
 public class RoleController {
 
-    @Autowired
-    private ResourceApplication resourceApplication;
+    private final ResourceApplication resourceApplication;
 
-    @Autowired
-    private RoleApplication roleApplication;
+    private final RoleApplication roleApplication;
+
+    public RoleController(ResourceApplication resourceApplication, RoleApplication roleApplication) {
+        this.resourceApplication = resourceApplication;
+        this.roleApplication = roleApplication;
+    }
 
     /**
      * 获取角色列表

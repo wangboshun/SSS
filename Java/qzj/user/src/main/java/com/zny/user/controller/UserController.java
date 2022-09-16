@@ -8,7 +8,6 @@ import com.zny.user.application.UserApplication;
 import com.zny.user.model.user.UserModel;
 import com.zny.user.model.user.UserTreeModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,11 +23,14 @@ import java.util.Map;
 @Tag(name = "user", description = "用户模块")
 public class UserController {
 
-    @Autowired
-    private ResourceApplication resourceApplication;
+    private final ResourceApplication resourceApplication;
 
-    @Autowired
-    private UserApplication userApplication;
+    private final UserApplication userApplication;
+
+    public UserController(ResourceApplication resourceApplication, UserApplication userApplication) {
+        this.resourceApplication = resourceApplication;
+        this.userApplication = userApplication;
+    }
 
     /**
      * 登录
@@ -99,9 +101,10 @@ public class UserController {
      * @param password 密码
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public SaResult add(String username, String password, @RequestParam(required = false) Integer userType,
-                        @RequestParam(required = false) String parentId) {
-        return userApplication.addUser(username, password,userType, parentId);
+    public SaResult add(
+            String username, String password, @RequestParam(required = false) Integer userType,
+            @RequestParam(required = false) String parentId) {
+        return userApplication.addUser(username, password, userType, parentId);
     }
 
     /**

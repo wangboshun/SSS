@@ -4,7 +4,6 @@ import cn.dev33.satoken.util.SaResult;
 import com.zny.user.application.ApiApplication;
 import com.zny.user.model.api.ApiModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -19,8 +18,11 @@ import java.util.Map;
 @Tag(name = "api", description = "接口模块")
 public class ApiController {
 
-    @Autowired
-    private ApiApplication apiApplication;
+    private final ApiApplication apiApplication;
+
+    public ApiController(ApiApplication apiApplication) {
+        this.apiApplication = apiApplication;
+    }
 
     /**
      * 获取接口列表

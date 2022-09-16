@@ -2,10 +2,9 @@ package com.zny.user.controller;
 
 import cn.dev33.satoken.util.SaResult;
 import com.zny.user.application.ResourceApplication;
-import com.zny.user.model.resource.ResourceModel;
 import com.zny.user.model.resource.ResourceEnum;
+import com.zny.user.model.resource.ResourceModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -22,10 +21,13 @@ import java.util.Map;
 @Tag(name = "resource", description = "资源模块")
 public class ResourceController {
 
-    @Autowired
-    private WebApplicationContext applicationContext;
-    @Autowired
-    private ResourceApplication resourceApplication;
+    private final WebApplicationContext applicationContext;
+    private final ResourceApplication resourceApplication;
+
+    public ResourceController(WebApplicationContext applicationContext, ResourceApplication resourceApplication) {
+        this.applicationContext = applicationContext;
+        this.resourceApplication = resourceApplication;
+    }
 
     /**
      * 获取资源列表
@@ -56,7 +58,7 @@ public class ResourceController {
     public SaResult add(
             String mainId, int mainType, @RequestParam(required = false) String slaveId, int slaveType,
             @RequestParam(required = false) String slaveCode) {
-        return resourceApplication.addResource(mainId, mainType, slaveId, slaveType,slaveCode);
+        return resourceApplication.addResource(mainId, mainType, slaveId, slaveType, slaveCode);
     }
 
     /**

@@ -44,8 +44,3 @@ logging:
   config: classpath:logback-spring.xml
   file:
     path: logs
-
-filter_url:
-  -"/iot/*"
-  -"/user/*"
-

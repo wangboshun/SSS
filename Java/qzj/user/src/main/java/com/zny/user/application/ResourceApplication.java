@@ -10,13 +10,12 @@ import com.google.common.collect.Table;
 import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.*;
 import com.zny.user.model.api.ApiModel;
-import com.zny.user.model.resource.ResourceModel;
-import com.zny.user.model.resource.ResourceEnum;
 import com.zny.user.model.menu.MenuModel;
 import com.zny.user.model.permission.PermissionModel;
+import com.zny.user.model.resource.ResourceEnum;
+import com.zny.user.model.resource.ResourceModel;
 import com.zny.user.model.role.RoleModel;
 import com.zny.user.model.user.UserModel;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,20 +28,25 @@ import java.util.*;
 
 @Service
 public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceModel> {
-    @Autowired
-    private PermissionMapper permissionMapper;
+    private final PermissionMapper permissionMapper;
 
-    @Autowired
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
 
-    @Autowired
-    private RoleMapper roleMapper;
+    private final RoleMapper roleMapper;
 
-    @Autowired
-    private ApiMapper apiMapper;
+    private final ApiMapper apiMapper;
 
-    @Autowired
-    private MenuMapper menMapper;
+    private final MenuMapper menMapper;
+
+    public ResourceApplication(
+            PermissionMapper permissionMapper, UserMapper userMapper, RoleMapper roleMapper, ApiMapper apiMapper,
+            MenuMapper menMapper) {
+        this.permissionMapper = permissionMapper;
+        this.userMapper = userMapper;
+        this.roleMapper = roleMapper;
+        this.apiMapper = apiMapper;
+        this.menMapper = menMapper;
+    }
 
     /**
      * 添加资源

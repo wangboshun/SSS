@@ -5,7 +5,6 @@ import com.zny.user.application.PermissionApplication;
 import com.zny.user.model.permission.PermissionModel;
 import com.zny.user.model.permission.PermissionTreeModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,8 +20,11 @@ import java.util.Map;
 @Tag(name = "permission", description = "权限模块")
 public class PermissionController {
 
-    @Autowired
-    private PermissionApplication permissionApplication;
+    private final PermissionApplication permissionApplication;
+
+    public PermissionController(PermissionApplication permissionApplication) {
+        this.permissionApplication = permissionApplication;
+    }
 
     /**
      * 获取权限列表

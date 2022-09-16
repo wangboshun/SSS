@@ -13,7 +13,6 @@ import com.zny.user.model.api.ApiStatusEnum;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,8 +37,11 @@ import java.util.stream.Collectors;
 @Service
 public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    @Autowired
-    private WebApplicationContext applicationContext;
+    private final WebApplicationContext applicationContext;
+
+    public ApiApplication(WebApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 
     /**
      * 添加接口

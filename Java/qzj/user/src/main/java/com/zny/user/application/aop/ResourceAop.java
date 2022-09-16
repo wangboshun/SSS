@@ -14,7 +14,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -31,8 +30,11 @@ import javax.servlet.http.HttpServletRequest;
 public class ResourceAop {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private ResourceApplication resourceApplication;
+    private final ResourceApplication resourceApplication;
+
+    public ResourceAop(ResourceApplication resourceApplication) {
+        this.resourceApplication = resourceApplication;
+    }
 
     /**
      * 控制器切面
@@ -54,7 +56,7 @@ public class ResourceAop {
             Object[] args = pjp.getArgs();
             HttpServletRequest httpServletRequest = SpringMVCUtil.getRequest();
             if (!"/user/login".equals(httpServletRequest.getRequestURI())) {
-                UserModel user = (UserModel) StpUtil.getSession().get("user");
+                UserModel user = (UserModel) StpUtil.getSession().get("userInfo");
 
                 //不是超级管理员
                 if (!user.getUser_type().equals(UserTypeEnum.SUPER.getIndex())) {
