@@ -1,4 +1,4 @@
-package com.zny.common.aop;
+package com.zny.system.application.apilog;
 
 import cn.dev33.satoken.spring.SpringMVCUtil;
 import cn.dev33.satoken.stp.StpUtil;

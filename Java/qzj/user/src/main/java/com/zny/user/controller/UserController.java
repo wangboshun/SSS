@@ -3,7 +3,7 @@ package com.zny.user.controller;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
 import com.google.common.collect.Table;
-import com.zny.user.application.ResourceApplication;
+import com.zny.user.application.resource.ResourceApplication;
 import com.zny.user.application.UserApplication;
 import com.zny.user.model.resource.ResourceEnum;
 import com.zny.user.model.user.UserModel;

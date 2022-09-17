@@ -1,9 +1,7 @@
 package com.zny.user.controller;
 
 import cn.dev33.satoken.util.SaResult;
-import com.google.common.collect.Table;
 import com.zny.user.application.MenuApplication;
-import com.zny.user.application.ResourceApplication;
 import com.zny.user.model.menu.MenuModel;
 import com.zny.user.model.menu.MenuTreeModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,11 +22,8 @@ public class MenuController {
 
     private final MenuApplication menuApplication;
 
-    private final ResourceApplication resourceApplication;
-
-    public MenuController(MenuApplication menuApplication, ResourceApplication resourceApplication) {
+    public MenuController(MenuApplication menuApplication) {
         this.menuApplication = menuApplication;
-        this.resourceApplication = resourceApplication;
     }
 
     /**

@@ -1,10 +1,9 @@
-package com.zny.user.application.aop;
+package com.zny.user.application.resource;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
 import com.google.common.collect.Table;
 import com.zny.common.utils.ReflectUtils;
-import com.zny.user.application.ResourceApplication;
 import com.zny.user.model.user.UserModel;
 import com.zny.user.model.user.UserTypeEnum;
 import org.aspectj.lang.ProceedingJoinPoint;

@@ -1,7 +1,7 @@
 package com.zny.user.controller;
 
 import cn.dev33.satoken.util.SaResult;
-import com.zny.user.application.ResourceApplication;
+import com.zny.user.application.resource.ResourceApplication;
 import com.zny.user.model.resource.ResourceModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;

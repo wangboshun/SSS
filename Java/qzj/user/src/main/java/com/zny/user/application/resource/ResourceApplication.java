@@ -1,4 +1,4 @@
-package com.zny.user.application;
+package com.zny.user.application.resource;
 
 import cn.dev33.satoken.util.SaResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
