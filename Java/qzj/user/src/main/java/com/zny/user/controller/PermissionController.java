@@ -2,6 +2,7 @@ package com.zny.user.controller;
 
 import cn.dev33.satoken.util.SaResult;
 import com.zny.user.application.PermissionApplication;
+import com.zny.user.application.ResourceApplication;
 import com.zny.user.model.permission.PermissionModel;
 import com.zny.user.model.permission.PermissionTreeModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,9 +21,11 @@ import java.util.Map;
 @Tag(name = "permission", description = "权限模块")
 public class PermissionController {
 
+    private final ResourceApplication resourceApplication;
     private final PermissionApplication permissionApplication;
 
-    public PermissionController(PermissionApplication permissionApplication) {
+    public PermissionController(ResourceApplication resourceApplication, PermissionApplication permissionApplication) {
+        this.resourceApplication = resourceApplication;
         this.permissionApplication = permissionApplication;
     }
 
@@ -70,7 +73,7 @@ public class PermissionController {
      *
      * @param permissionName 权限名
      * @param permissionCode 权限代码
-     * @param parentId 父级id
+     * @param parentId       父级id
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public SaResult add(String permissionName, String permissionCode, @RequestParam(required = false) String parentId) {

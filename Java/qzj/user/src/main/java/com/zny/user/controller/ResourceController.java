@@ -2,11 +2,9 @@ package com.zny.user.controller;
 
 import cn.dev33.satoken.util.SaResult;
 import com.zny.user.application.ResourceApplication;
-import com.zny.user.model.resource.ResourceEnum;
 import com.zny.user.model.resource.ResourceModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -20,17 +18,21 @@ import java.util.Map;
 @RequestMapping("/user/resource")
 @Tag(name = "resource", description = "资源模块")
 public class ResourceController {
-
-    private final WebApplicationContext applicationContext;
     private final ResourceApplication resourceApplication;
 
-    public ResourceController(WebApplicationContext applicationContext, ResourceApplication resourceApplication) {
-        this.applicationContext = applicationContext;
+    public ResourceController(ResourceApplication resourceApplication) {
         this.resourceApplication = resourceApplication;
     }
 
     /**
      * 获取资源列表
+     *
+     * @param mainId    主id
+     * @param mainType  主类型
+     * @param slaveId   副id
+     * @param slaveType 副类型
+     * @param pageIndex 页码
+     * @param pageSize  分页大小
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public SaResult list(
@@ -44,6 +46,8 @@ public class ResourceController {
 
     /**
      * 获取资源信息
+     *
+     * @param id 资源id
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public SaResult get(@PathVariable String id) {
@@ -53,16 +57,22 @@ public class ResourceController {
 
     /**
      * 添加资源
+     *
+     * @param mainId    主id
+     * @param mainType  主类型
+     * @param slaveId   副id
+     * @param slaveType 副类型
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public SaResult add(
-            String mainId, int mainType, @RequestParam(required = false) String slaveId, int slaveType,
-            @RequestParam(required = false) String slaveCode) {
-        return resourceApplication.addResource(mainId, mainType, slaveId, slaveType, slaveCode);
+            String mainId, int mainType, @RequestParam(required = false) String slaveId, int slaveType) {
+        return resourceApplication.addResource(mainId, mainType, slaveId, slaveType);
     }
 
     /**
      * 删除资源
+     *
+     * @param ids id或id组
      */
     @RequestMapping(value = "/{ids}", method = RequestMethod.DELETE)
     public SaResult delete(@PathVariable String[] ids) {
@@ -76,24 +86,13 @@ public class ResourceController {
     }
 
     /**
-     * 根据用户删除资源
-     */
-    @RequestMapping(value = "/forUser", method = RequestMethod.DELETE)
-    public SaResult deleteForUser(String userId) {
-        return resourceApplication.deleteResource(userId, ResourceEnum.USER);
-    }
-
-    /**
-     * 根据角色删除资源
-     */
-    @RequestMapping(value = "/forRole", method = RequestMethod.DELETE)
-    public SaResult deleteForRole(String roleId) {
-        return resourceApplication.deleteResource(roleId, ResourceEnum.ROLE);
-    }
-
-
-    /**
      * 更新资源信息
+     *
+     * @param id        id
+     * @param mainId    主id
+     * @param mainType  主类型
+     * @param slaveId   副id
+     * @param slaveType 副类型
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
     public SaResult update(

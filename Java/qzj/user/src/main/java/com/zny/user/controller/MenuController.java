@@ -9,8 +9,6 @@ import com.zny.user.model.menu.MenuTreeModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -73,48 +71,6 @@ public class MenuController {
     }
 
     /**
-     * 根据用户获取菜单
-     *
-     * @param userId 用户id
-     */
-    @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
-    public SaResult getForUser(@PathVariable String userId) {
-        Table<String, String, String> menu = resourceApplication.getMenuByUser(userId);
-        List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        for (String key : menu.rowKeySet()) {
-            Map<String, String> columnMap = menu.row(key);
-            columnMap.forEach((columnKey, value) -> {
-                Map<String, String> map = new HashMap<>();
-                map.put("name", columnKey);
-                map.put("code", value);
-                list.add(map);
-            });
-        }
-        return SaResult.data(list);
-    }
-
-    /**
-     * 根据角色获取菜单
-     *
-     * @param roleId 角色id
-     */
-    @RequestMapping(value = "/role/{roleId}", method = RequestMethod.GET)
-    public SaResult getForRole(@PathVariable String roleId) {
-        Table<String, String, String> menu = resourceApplication.getMenuByRole(roleId);
-        List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        for (String key : menu.rowKeySet()) {
-            Map<String, String> columnMap = menu.row(key);
-            columnMap.forEach((columnKey, value) -> {
-                Map<String, String> map = new HashMap<>();
-                map.put("name", columnKey);
-                map.put("code", value);
-                list.add(map);
-            });
-        }
-        return SaResult.data(list);
-    }
-
-    /**
      * 添加菜单
      *
      * @param menuName  菜单名
@@ -129,8 +85,8 @@ public class MenuController {
     public SaResult add(
             String menuName, String menuCode, @RequestParam(required = false) String parentId,
             @RequestParam(required = false) Integer menuIndex, @RequestParam(required = false) String menuUrl,
-            @RequestParam(required = false) String menuIcon,@RequestParam(required = false) Integer menuType) {
-        return menuApplication.addMenu(menuName, menuCode, parentId, menuIndex, menuUrl, menuIcon,menuType);
+            @RequestParam(required = false) String menuIcon, @RequestParam(required = false) Integer menuType) {
+        return menuApplication.addMenu(menuName, menuCode, parentId, menuIndex, menuUrl, menuIcon, menuType);
     }
 
 
@@ -147,7 +103,7 @@ public class MenuController {
     /**
      * 更新菜单信息
      *
-     * @param id       菜单id
+     * @param id        菜单id
      * @param menuName  菜单名
      * @param menuCode  菜单代码
      * @param parentId  父级id
@@ -160,7 +116,7 @@ public class MenuController {
     public SaResult update(
             @PathVariable String id, String menuName, String menuCode, @RequestParam(required = false) String parentId,
             @RequestParam(required = false) Integer menuIndex, @RequestParam(required = false) String menuUrl,
-            @RequestParam(required = false) String menuIcon,@RequestParam(required = false) Integer menuType) {
-        return menuApplication.updateMenu(id, menuName, menuCode, parentId, menuIndex, menuUrl, menuIcon,menuType);
+            @RequestParam(required = false) String menuIcon, @RequestParam(required = false) Integer menuType) {
+        return menuApplication.updateMenu(id, menuName, menuCode, parentId, menuIndex, menuUrl, menuIcon, menuType);
     }
 }

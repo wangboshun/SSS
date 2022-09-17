@@ -15,23 +15,12 @@ public class ResourceModel implements Serializable {
     private String id;
 
     private String main_id;
-    private String main_name;
     private int main_type;
 
     private String slave_id;
-    private String slave_name;
     private int slave_type;
-    private String slave_code;
     private String create_time;
     private Integer resource_status;
-
-    public String getSlave_code() {
-        return slave_code;
-    }
-
-    public void setSlave_code(String slave_code) {
-        this.slave_code = slave_code;
-    }
 
     public int getSlave_type() {
         return slave_type;
@@ -57,28 +46,12 @@ public class ResourceModel implements Serializable {
         this.main_id = main_id;
     }
 
-    public String getMain_name() {
-        return main_name;
-    }
-
-    public void setMain_name(String main_name) {
-        this.main_name = main_name;
-    }
-
     public String getSlave_id() {
         return slave_id;
     }
 
     public void setSlave_id(String slave_id) {
         this.slave_id = slave_id;
-    }
-
-    public String getSlave_name() {
-        return slave_name;
-    }
-
-    public void setSlave_name(String slave_name) {
-        this.slave_name = slave_name;
     }
 
     public String getCreate_time() {

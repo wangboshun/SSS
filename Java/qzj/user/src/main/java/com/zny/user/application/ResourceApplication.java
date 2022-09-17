@@ -50,8 +50,13 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
 
     /**
      * 添加资源
+     *
+     * @param mainId    主id
+     * @param mainType  主类型
+     * @param slaveId   副id
+     * @param slaveType 副类型
      */
-    public SaResult addResource(String mainId, int mainType, String slaveId, int slaveType, String slaveCode) {
+    public SaResult addResource(String mainId, int mainType, String slaveId, int slaveType) {
         Map<String, String> mainResource = getResourceInfoById(mainId, mainType);
         String mainName = mainResource.get("name");
 
@@ -60,14 +65,8 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
         }
 
         Map<String, String> slaveResource = new HashMap<>(2);
-        //如果code为空
-        if (StringUtils.isBlank(slaveCode)) {
-            slaveResource = getResourceInfoById(slaveId, slaveType);
-            slaveCode = slaveResource.get("code");
-        }
-        else {
-            slaveResource = getResourceInfoByCode(slaveCode, slaveType);
-        }
+        slaveResource = getResourceInfoById(slaveId, slaveType);
+
         String slaveName = slaveResource.get("name");
 
         if (StringUtils.isBlank(slaveName)) {
@@ -80,7 +79,6 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
 
         wrapper.eq(StringUtils.isNotBlank(slaveId), "slave_id", slaveId);
         wrapper.eq("slave_type", slaveType);
-        wrapper.eq(StringUtils.isNotBlank(slaveCode), "slave_code", slaveCode);
         ResourceModel model = this.getOne(wrapper);
         if (model != null) {
             return SaResult.error("资源已存在！");
@@ -91,12 +89,8 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
 
         resourceModel.setMain_id(mainId);
         resourceModel.setMain_type(mainType);
-        resourceModel.setMain_name(mainName);
-
         resourceModel.setSlave_id(slaveId);
         resourceModel.setSlave_type(slaveType);
-        resourceModel.setSlave_name(slaveName);
-        resourceModel.setSlave_code(slaveCode);
 
         if (save(resourceModel)) {
             return SaResult.ok("添加资源成功！");
@@ -107,48 +101,14 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
     }
 
     /**
-     * 数据表转集合
-     *
-     * @param table 数据表
-     */
-    public List<Map<String, String>> TableConvertList(Table<String, String, String> table) {
-        List<Map<String, String>> list = new ArrayList<>();
-        for (String key : table.rowKeySet()) {
-            Map<String, String> columnMap = table.row(key);
-            columnMap.forEach((columnKey, value) -> {
-                Map<String, String> map = new HashMap<>(3);
-                map.put("id", key);
-                map.put("code", value);
-                map.put("name", columnKey);
-                list.add(map);
-            });
-        }
-        return list;
-    }
-
-    /**
-     * 获取映射表
+     * 查询资源列表
      *
      * @param mainId    主id
      * @param mainType  主类型
-     * @param slaveType 关联类型
-     */
-    private Table<String, String, String> getTable(String mainId, ResourceEnum mainType, ResourceEnum slaveType) {
-        Table<String, String, String> table = HashBasedTable.create();
-        QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
-        wrapper.eq("main_id", mainId);
-        wrapper.eq("main_type", mainType.getIndex());
-        wrapper.eq("slave_type", slaveType.getIndex());
-        List<ResourceModel> list = this.list(wrapper);
-        for (ResourceModel resourceModel : list) {
-            table.put(resourceModel.getSlave_id(), resourceModel.getSlave_name(), resourceModel.getSlave_code());
-        }
-        return table;
-    }
-
-
-    /**
-     * 查询资源列表
+     * @param slaveId   副id
+     * @param slaveType 副类型
+     * @param pageIndex 页码
+     * @param pageSize  分页大小
      */
     public Map<String, Object> getResourceList(
             String id, String mainId, Integer mainType, String slaveId, Integer slaveType, Integer pageIndex,
@@ -180,9 +140,12 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
     }
 
     /**
-     * 删除资源
+     * 根据主id删除资源
+     *
+     * @param mainId   主id
+     * @param mainType 主类型
      */
-    public SaResult deleteResource(String mainId, ResourceEnum mainType) {
+    public SaResult deleteForMain(String mainId, ResourceEnum mainType) {
         QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
         wrapper.eq("main_id", mainId);
         wrapper.eq("main_type", mainType.getIndex());
@@ -196,9 +159,14 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
 
     /**
      * 更新资源信息
+     *
+     * @param id        id
+     * @param mainId    主id
+     * @param mainType  主类型
+     * @param slaveId   副id
+     * @param slaveType 副类型
      */
     public SaResult updateResource(String id, String mainId, Integer mainType, String slaveId, Integer slaveType) {
-
         QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
         wrapper.eq("id", id);
         ResourceModel model = this.getOne(wrapper);
@@ -208,27 +176,20 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
 
         Map<String, String> resourceInfo = getResourceInfoById(mainId, mainType);
         String mainName = resourceInfo.get("name");
+        if (StringUtils.isBlank(mainName)) {
+            return SaResult.error("主资源不存在！");
+        }
 
         resourceInfo = getResourceInfoById(slaveId, slaveType);
         String slaveName = resourceInfo.get("name");
-        String slaveCode = resourceInfo.get("code");
-
-        if (StringUtils.isBlank(mainName)) {
-            return SaResult.error("资源不存在！");
-        }
         if (StringUtils.isBlank(slaveName)) {
-            return SaResult.error("资源不存在！");
+            return SaResult.error("副资源不存在！");
         }
 
         model.setMain_id(mainId);
         model.setMain_type(mainType);
-        model.setMain_name(mainName);
-
         model.setSlave_id(slaveId);
         model.setSlave_type(slaveType);
-        model.setSlave_name(slaveName);
-        model.setSlave_code(slaveCode);
-
         if (updateById(model)) {
             return SaResult.ok("更新资源信息成功！");
         }
@@ -239,6 +200,9 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
 
     /**
      * 根据id获取资源信息
+     *
+     * @param resourceId   资源id
+     * @param resourceType 资源类型
      */
     private Map<String, String> getResourceInfoById(String resourceId, int resourceType) {
         String name = "";
@@ -248,72 +212,42 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
             //判断角色是否存在
             case ROLE:
                 RoleModel role = roleMapper.selectById(resourceId);
-                if (role == null) {
-                    return null;
+                if (role != null) {
+                    name = role.getRole_name();
+                    code = role.getRole_code();
                 }
-                name = role.getRole_name();
-                code = role.getRole_code();
                 break;
             //判断用户是否存在
             case USER:
                 UserModel user = userMapper.selectById(resourceId);
-                if (user == null) {
-                    return null;
+                if (user != null) {
+                    name = user.getUser_name();
                 }
-                name = user.getUser_name();
                 break;
             //判断权限是否存在
             case PERMISSION:
                 PermissionModel permission = permissionMapper.selectById(resourceId);
-                if (permission == null) {
-                    return null;
+                if (permission != null) {
+                    name = permission.getPermission_name();
+                    code = permission.getPermission_code();
                 }
-                name = permission.getPermission_name();
-                code = permission.getPermission_code();
                 break;
             //判断菜单是否存在
             case MENU:
                 MenuModel menu = menMapper.selectById(resourceId);
-                if (menu == null) {
-                    return null;
+                if (menu != null) {
+                    name = menu.getMenu_name();
+                    code = menu.getMenu_code();
                 }
-                name = menu.getMenu_name();
-                code = menu.getMenu_code();
                 break;
             //判断API是否存在
             case API:
                 QueryWrapper<ApiModel> wrapper = new QueryWrapper<ApiModel>();
                 ApiModel api = apiMapper.selectById(resourceId);
-                if (api == null) {
-                    return null;
+                if (api != null) {
+                    name = api.getApi_name();
+                    code = api.getApi_code();
                 }
-                name = api.getApi_name();
-                code = api.getApi_code();
-                break;
-            default:
-                break;
-        }
-        Map<String, String> map = new HashMap<String, String>(2);
-        map.put("name", name);
-        map.put("code", code);
-        return map;
-    }
-
-    /**
-     * 根据code获取资源信息
-     */
-    private Map<String, String> getResourceInfoByCode(String code, int resourceType) {
-        String name = "";
-        ResourceEnum e = ResourceEnum.values()[resourceType];
-        switch (e) {
-            case API:
-                QueryWrapper<ApiModel> wrapper = new QueryWrapper<ApiModel>();
-                wrapper.eq("api_code", code);
-                ApiModel api = apiMapper.selectOne(wrapper);
-                if (api == null) {
-                    return null;
-                }
-                name = api.getApi_name();
                 break;
             default:
                 break;
@@ -350,15 +284,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
                 table.putAll(tmp);
             }
         }
-
-        QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
-        wrapper.eq("main_id", userId);
-        wrapper.eq("main_type", ResourceEnum.USER.getIndex());
-        wrapper.eq("slave_type", ResourceEnum.MENU.getIndex());
-        List<ResourceModel> list = this.list(wrapper);
-        for (ResourceModel resourceModel : list) {
-            table.put(resourceModel.getSlave_id(), resourceModel.getSlave_name(), resourceModel.getSlave_code());
-        }
+        table.putAll(getTable(userId, ResourceEnum.USER, ResourceEnum.MENU));
         return table;
     }
 
@@ -378,14 +304,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
             }
         }
 
-        QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
-        wrapper.eq("main_id", userId);
-        wrapper.eq("main_type", ResourceEnum.USER.getIndex());
-        wrapper.eq("slave_type", ResourceEnum.PERMISSION.getIndex());
-        List<ResourceModel> list = this.list(wrapper);
-        for (ResourceModel resourceModel : list) {
-            table.put(resourceModel.getSlave_id(), resourceModel.getSlave_name(), resourceModel.getSlave_code());
-        }
+        table.putAll(getTable(userId, ResourceEnum.USER, ResourceEnum.PERMISSION));
         return table;
     }
 
@@ -405,14 +324,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
             }
         }
 
-        QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
-        wrapper.eq("main_id", userId);
-        wrapper.eq("main_type", ResourceEnum.USER.getIndex());
-        wrapper.eq("slave_type", ResourceEnum.API.getIndex());
-        List<ResourceModel> list = this.list(wrapper);
-        for (ResourceModel resourceModel : list) {
-            table.put(resourceModel.getSlave_id(), resourceModel.getSlave_name(), resourceModel.getSlave_code());
-        }
+        table.putAll(getTable(userId, ResourceEnum.USER, ResourceEnum.API));
         return table;
     }
 
@@ -454,5 +366,48 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
      */
     public Table<String, String, String> getApiByRole(String roleId) {
         return getTable(roleId, ResourceEnum.ROLE, ResourceEnum.API);
+    }
+
+    /**
+     * 获取资源映射表
+     *
+     * @param mainId    主id
+     * @param mainType  主类型
+     * @param slaveType 关联类型
+     */
+    private Table<String, String, String> getTable(String mainId, ResourceEnum mainType, ResourceEnum slaveType) {
+        Table<String, String, String> table = HashBasedTable.create();
+        QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
+        wrapper.eq("main_id", mainId);
+        wrapper.eq("main_type", mainType.getIndex());
+        wrapper.eq("slave_type", slaveType.getIndex());
+        List<ResourceModel> list = this.list(wrapper);
+        for (ResourceModel resourceModel : list) {
+            Map<String, String> map = getResourceInfoById(resourceModel.getSlave_id(), resourceModel.getSlave_type());
+            if (StringUtils.isNotBlank(map.get("name"))) {
+                table.put(resourceModel.getSlave_id(), map.get("name"), map.get("code"));
+            }
+        }
+        return table;
+    }
+
+    /**
+     * 数据表转集合
+     *
+     * @param table 数据表
+     */
+    public List<Map<String, String>> tableConvertList(Table<String, String, String> table) {
+        List<Map<String, String>> list = new ArrayList<>();
+        for (String key : table.rowKeySet()) {
+            Map<String, String> columnMap = table.row(key);
+            columnMap.forEach((columnKey, value) -> {
+                Map<String, String> map = new HashMap<>(3);
+                map.put("id", key);
+                map.put("code", value);
+                map.put("name", columnKey);
+                list.add(map);
+            });
+        }
+        return list;
     }
 }

@@ -5,6 +5,7 @@ import cn.dev33.satoken.util.SaResult;
 import com.google.common.collect.Table;
 import com.zny.user.application.ResourceApplication;
 import com.zny.user.application.UserApplication;
+import com.zny.user.model.resource.ResourceEnum;
 import com.zny.user.model.user.UserModel;
 import com.zny.user.model.user.UserTreeModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -120,6 +121,16 @@ public class UserController {
     }
 
     /**
+     * 删除指定用户下的所有资源
+     *
+     * @param userId 用户id
+     */
+    @RequestMapping(value = "/delResource", method = RequestMethod.DELETE)
+    public SaResult delResource(String userId) {
+        return resourceApplication.deleteForMain(userId, ResourceEnum.USER);
+    }
+
+    /**
      * 更新用户信息
      *
      * @param id       用户id
@@ -143,7 +154,7 @@ public class UserController {
     @RequestMapping(value = "/getRole", method = RequestMethod.GET)
     public SaResult getRole(String userId) {
         Table<String, String, String> table = resourceApplication.getRoleByUser(userId);
-        List<Map<String, String>> list = resourceApplication.TableConvertList(table);
+        List<Map<String, String>> list = resourceApplication.tableConvertList(table);
         return SaResult.data(list);
     }
 
@@ -155,7 +166,7 @@ public class UserController {
     @RequestMapping(value = "/getMenu", method = RequestMethod.GET)
     public SaResult getMenu(String userId) {
         Table<String, String, String> table = resourceApplication.getMenuByUser(userId);
-        List<Map<String, String>> list = resourceApplication.TableConvertList(table);
+        List<Map<String, String>> list = resourceApplication.tableConvertList(table);
         return SaResult.data(list);
     }
 
@@ -167,7 +178,7 @@ public class UserController {
     @RequestMapping(value = "/getPermission", method = RequestMethod.GET)
     public SaResult getPermission(String userId) {
         Table<String, String, String> table = resourceApplication.getPermissionByUser(userId);
-        List<Map<String, String>> list = resourceApplication.TableConvertList(table);
+        List<Map<String, String>> list = resourceApplication.tableConvertList(table);
         return SaResult.data(list);
     }
 
@@ -179,7 +190,7 @@ public class UserController {
     @RequestMapping(value = "/getApi", method = RequestMethod.GET)
     public SaResult getApi(String userId) {
         Table<String, String, String> table = resourceApplication.getApiByUser(userId);
-        List<Map<String, String>> list = resourceApplication.TableConvertList(table);
+        List<Map<String, String>> list = resourceApplication.tableConvertList(table);
         return SaResult.data(list);
     }
 
