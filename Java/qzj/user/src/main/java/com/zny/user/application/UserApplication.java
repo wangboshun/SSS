@@ -121,8 +121,12 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
      */
     public List<UserTreeModel> getUserTree(String userId) {
         List<UserTreeModel> list = new ArrayList<>();
+
+        //查找根目录
         if (userId == null) {
             QueryWrapper<UserModel> wrapper = new QueryWrapper<UserModel>();
+
+            //查找没有父级id的用户
             wrapper.isNull("parent_id");
             List<UserModel> menuList = this.list(wrapper);
             for (UserModel user : menuList) {

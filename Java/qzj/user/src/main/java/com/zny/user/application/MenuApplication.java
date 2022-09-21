@@ -67,9 +67,13 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      */
     public List<MenuTreeModel> getMenuTree(String menuId) {
         List<MenuTreeModel> list = new ArrayList<>();
+
+        //查找根目录
         if (menuId == null) {
             QueryWrapper<MenuModel> wrapper = new QueryWrapper<MenuModel>();
             wrapper.isNull("parent_id");
+
+            //查找没有父级id的菜单
             List<MenuModel> menuList = this.list(wrapper);
             for (MenuModel menu : menuList) {
                 list.add(getChildren(menu.getId(), menu.getMenu_name(), 1));

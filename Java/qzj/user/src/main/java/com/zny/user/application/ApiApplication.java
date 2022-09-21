@@ -97,6 +97,7 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
 
             List<ApiModel> addList = new ArrayList<>();
             List<ApiModel> updateList = new ArrayList<>();
+            List<ApiModel> deleteList = new ArrayList<>();
 
             for (ApiModel news : newsList) {
                 Optional<ApiModel> apiModel = oldList.stream().filter(x -> x.getApi_code().equals(news.getApi_code())).findFirst();
@@ -114,16 +115,31 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
                 }
             }
 
+            for (ApiModel old : oldList) {
+                Optional<ApiModel> apiModel = newsList.stream().filter(x -> x.getApi_code().equals(old.getApi_code())).findFirst();
+                if (!apiModel.isPresent()) {
+                    //如果接口不存在
+                    deleteList.add(old);
+                }
+            }
+
             if (addList.size() > 0) {
                 if (!saveBatch(addList)) {
                     TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                    logger.error("接口添加失败");
+                    logger.error("添加接口失败");
                 }
             }
             if (updateList.size() > 0) {
                 if (!updateBatchById(updateList)) {
                     TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                    logger.error("接口更新失败");
+                    logger.error("更新接口失败");
+                }
+            }
+
+            if (deleteList.size() > 0) {
+                if (!removeBatchByIds(deleteList)) {
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                    logger.error("删除接口失败");
                 }
             }
         }

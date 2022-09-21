@@ -242,7 +242,6 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
                 break;
             //判断API是否存在
             case API:
-                QueryWrapper<ApiModel> wrapper = new QueryWrapper<ApiModel>();
                 ApiModel api = apiMapper.selectById(resourceId);
                 if (api != null) {
                     name = api.getApi_name();

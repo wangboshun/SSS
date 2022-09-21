@@ -57,8 +57,12 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
      */
     public List<RoleTreeModel> getRoleTree(String roleId) {
         List<RoleTreeModel> list = new ArrayList<>();
+
+        //查找根目录
         if (roleId == null) {
             QueryWrapper<RoleModel> wrapper = new QueryWrapper<RoleModel>();
+
+            //查找没有父级id的角色
             wrapper.isNull("parent_id");
             List<RoleModel> permissionList = this.list(wrapper);
             for (RoleModel role : permissionList) {

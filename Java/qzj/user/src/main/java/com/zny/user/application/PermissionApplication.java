@@ -57,8 +57,12 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      */
     public List<PermissionTreeModel> getPermissionTree(String permissionId) {
         List<PermissionTreeModel> list = new ArrayList<>();
+
+        //查找根目录
         if (permissionId == null) {
             QueryWrapper<PermissionModel> wrapper = new QueryWrapper<PermissionModel>();
+
+            //查找没有父级id的权限
             wrapper.isNull("parent_id");
             List<PermissionModel> permissionList = this.list(wrapper);
             for (PermissionModel permission : permissionList) {
