@@ -1,8 +1,8 @@
 package com.zny.user.controller;
 
 import cn.dev33.satoken.util.SaResult;
+import com.zny.common.resource.ResourceApplication;
 import com.zny.user.application.PermissionApplication;
-import com.zny.user.application.resource.ResourceApplication;
 import com.zny.user.model.permission.PermissionModel;
 import com.zny.user.model.permission.PermissionTreeModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -104,5 +104,71 @@ public class PermissionController {
             @PathVariable String id, String permissionName, String permissionCode,
             @RequestParam(required = false) String parentId) {
         return permissionApplication.updatePermission(id, permissionName, permissionCode, parentId);
+    }
+
+    /**
+     * 根据用户获取权限
+     *
+     * @param userId 用户id
+     */
+    @RequestMapping(value = "/by_user", method = RequestMethod.GET)
+    public SaResult getPermissionByUser(String userId) {
+        List<PermissionModel> list = permissionApplication.getPermissionByUser(userId);
+        return SaResult.data(list);
+    }
+
+    /**
+     * 根据角色获取权限
+     *
+     * @param roleId 角色id
+     */
+    @RequestMapping(value = "/by_role", method = RequestMethod.GET)
+    public SaResult getPermissionByRole(String roleId) {
+        List<PermissionModel> list = permissionApplication.getPermissionByRole(roleId);
+        return SaResult.data(list);
+    }
+
+    /**
+     * 绑定权限到用户
+     *
+     * @param userId 用户id
+     * @param menuId 权限id
+     */
+    @RequestMapping(value = "/bind_by_user", method = RequestMethod.POST)
+    public SaResult bindPermissionByUser(String userId, String[] menuId) {
+        return permissionApplication.bindPermissionByUser(userId, menuId);
+    }
+
+    /**
+     * 绑定权限到角色
+     *
+     * @param roleId 角色id
+     * @param menuId 权限id
+     */
+    @RequestMapping(value = "/bind_by_role", method = RequestMethod.POST)
+    public SaResult bindPermissionByRole(String roleId, String[] menuId) {
+        return permissionApplication.bindPermissionByRole(roleId, menuId);
+    }
+
+    /**
+     * 解绑权限到用户
+     *
+     * @param userId 用户id
+     * @param permissionId  id
+     */
+    @RequestMapping(value = "/unbind_by_user", method = RequestMethod.POST)
+    public SaResult unBindPermissionByUser(String userId, String[] permissionId) {
+        return permissionApplication.unBindPermissionByUser(userId, permissionId);
+    }
+
+    /**
+     * 解绑权限到角色
+     *
+     * @param roleId 角色id
+     * @param permissionId  id
+     */
+    @RequestMapping(value = "/unbind_by_role", method = RequestMethod.POST)
+    public SaResult unBindPermissionByRole(String roleId, String[] permissionId) {
+        return permissionApplication.unBindPermissionByRole(roleId, permissionId);
     }
 }

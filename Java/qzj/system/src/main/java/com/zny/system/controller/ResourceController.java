@@ -1,8 +1,8 @@
-package com.zny.user.controller;
+package com.zny.system.controller;
 
 import cn.dev33.satoken.util.SaResult;
-import com.zny.user.application.resource.ResourceApplication;
-import com.zny.user.model.resource.ResourceModel;
+import com.zny.common.resource.ResourceApplication;
+import com.zny.common.resource.ResourceModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +15,7 @@ import java.util.Map;
  */
 
 @RestController
-@RequestMapping("/user/resource")
+@RequestMapping("/system/resource")
 @Tag(name = "resource", description = "资源模块")
 public class ResourceController {
     private final ResourceApplication resourceApplication;
@@ -65,7 +65,7 @@ public class ResourceController {
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public SaResult add(
-            String mainId, int mainType, @RequestParam(required = false) String slaveId, int slaveType) {
+            String mainId, int mainType, @RequestParam(required = false) String[] slaveId, int slaveType) {
         return resourceApplication.addResource(mainId, mainType, slaveId, slaveType);
     }
 

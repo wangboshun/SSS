@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zny.common.resource.ResourceApplication;
+import com.zny.common.resource.ResourceEnum;
+import com.zny.common.resource.ResourceModel;
 import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.PermissionMapper;
 import com.zny.user.model.permission.PermissionModel;
@@ -21,6 +24,12 @@ import java.util.*;
 
 @Service
 public class PermissionApplication extends ServiceImpl<PermissionMapper, PermissionModel> {
+
+    private final ResourceApplication resourceApplication;
+
+    public PermissionApplication(ResourceApplication resourceApplication) {
+        this.resourceApplication = resourceApplication;
+    }
 
     /**
      * 添加权限
@@ -79,7 +88,7 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
     }
 
     /**
-     * 获取目录树
+     * 获取子级
      *
      * @param permissionId 权限id
      * @param level        树形等级
@@ -178,5 +187,90 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
         else {
             return SaResult.error("删除权限信息失败！");
         }
+    }
+
+    /**
+     * 根据用户获取权限
+     *
+     * @param userId 用户id
+     */
+    public List<PermissionModel> getPermissionByUser(String userId) {
+        List<ResourceModel> resourceList = resourceApplication.getResourceList(userId, ResourceEnum.USER.getIndex(), ResourceEnum.PERMISSION.getIndex());
+        List<PermissionModel> permissionList = new ArrayList<PermissionModel>(getPermissionByResourceModel(resourceList));
+
+        //获取所有角色
+        List<String> roleList = resourceApplication.getRoleByUser(userId);
+
+        //遍历角色id，获取资源
+        for (String roleId : roleList) {
+            permissionList.addAll(getPermissionByRole(roleId));
+        }
+
+        return permissionList;
+    }
+
+
+    /**
+     * 根据角色获取权限
+     *
+     * @param roleId 角色id
+     */
+    public List<PermissionModel> getPermissionByRole(String roleId) {
+        List<ResourceModel> resourceList = resourceApplication.getResourceList(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.PERMISSION.getIndex());
+        return new ArrayList<PermissionModel>(getPermissionByResourceModel(resourceList));
+    }
+
+    /**
+     * 根据资源映射获取权限
+     *
+     * @param list 资源列表
+     */
+    private List<PermissionModel> getPermissionByResourceModel(List<ResourceModel> list) {
+        List<PermissionModel> permissionList = new ArrayList<PermissionModel>();
+        for (ResourceModel resourceModel : list) {
+            PermissionModel permissionModel = this.getById(resourceModel.getSlave_id());
+            permissionList.add(permissionModel);
+        }
+        return permissionList;
+    }
+
+    /**
+     * 绑定菜单到用户
+     *
+     * @param userId       用户id
+     * @param permissionId 权限id
+     */
+    public SaResult bindPermissionByUser(String userId, String[] permissionId) {
+        return resourceApplication.addResource(userId, ResourceEnum.USER.getIndex(), permissionId, ResourceEnum.PERMISSION.getIndex());
+    }
+
+    /**
+     * 绑定菜单到角色
+     *
+     * @param roleId       角色id
+     * @param permissionId 权限id
+     */
+    public SaResult bindPermissionByRole(String roleId, String[] permissionId) {
+        return resourceApplication.addResource(roleId, ResourceEnum.ROLE.getIndex(), permissionId, ResourceEnum.PERMISSION.getIndex());
+    }
+
+    /**
+     * 解绑权限到用户
+     *
+     * @param userId       用户id
+     * @param permissionId id
+     */
+    public SaResult unBindPermissionByUser(String userId, String[] permissionId) {
+        return resourceApplication.deleteResource(null, userId, ResourceEnum.USER.getIndex(), permissionId, ResourceEnum.PERMISSION.getIndex());
+    }
+
+    /**
+     * 解绑权限到角色
+     *
+     * @param roleId       角色id
+     * @param permissionId id
+     */
+    public SaResult unBindPermissionByRole(String roleId, String[] permissionId) {
+        return resourceApplication.deleteResource(null, roleId, ResourceEnum.ROLE.getIndex(), permissionId, ResourceEnum.PERMISSION.getIndex());
     }
 }

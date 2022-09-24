@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zny.common.resource.ResourceApplication;
+import com.zny.common.resource.ResourceEnum;
+import com.zny.common.resource.ResourceModel;
 import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.MenuMapper;
 import com.zny.user.model.menu.MenuModel;
@@ -21,6 +24,12 @@ import java.util.*;
 
 @Service
 public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
+
+    private final ResourceApplication resourceApplication;
+
+    public MenuApplication(ResourceApplication resourceApplication) {
+        this.resourceApplication = resourceApplication;
+    }
 
     /**
      * 添加菜单
@@ -89,7 +98,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
     }
 
     /**
-     * 获取目录树
+     * 获取子级
      *
      * @param menuId 菜单id
      * @param level  树形等级
@@ -195,5 +204,90 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
         else {
             return SaResult.error("删除菜单信息失败！");
         }
+    }
+
+    /**
+     * 根据用户获取菜单
+     *
+     * @param userId 用户id
+     */
+    public List<MenuModel> getMenuByUser(String userId) {
+        List<ResourceModel> resourceList = resourceApplication.getResourceList(userId, ResourceEnum.USER.getIndex(), ResourceEnum.MENU.getIndex());
+        List<MenuModel> menuList = new ArrayList<MenuModel>(getMenuByResourceModel(resourceList));
+
+        //获取所有角色
+        List<String> roleList = resourceApplication.getRoleByUser(userId);
+
+        //遍历角色id，获取资源
+        for (String roleId : roleList) {
+            menuList.addAll(getMenuByRole(roleId));
+        }
+
+        return menuList;
+    }
+
+
+    /**
+     * 根据角色获取菜单
+     *
+     * @param roleId 角色id
+     */
+    public List<MenuModel> getMenuByRole(String roleId) {
+        List<ResourceModel> resourceList = resourceApplication.getResourceList(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.MENU.getIndex());
+        return new ArrayList<MenuModel>(getMenuByResourceModel(resourceList));
+    }
+
+    /**
+     * 根据资源映射获取菜单
+     *
+     * @param list 资源列表
+     */
+    private List<MenuModel> getMenuByResourceModel(List<ResourceModel> list) {
+        List<MenuModel> menuList = new ArrayList<MenuModel>();
+        for (ResourceModel resourceModel : list) {
+            MenuModel menuModel = this.getById(resourceModel.getSlave_id());
+            menuList.add(menuModel);
+        }
+        return menuList;
+    }
+
+    /**
+     * 绑定菜单到用户
+     *
+     * @param userId 用户id
+     * @param menuId 菜单id
+     */
+    public SaResult bindMenuByUser(String userId, String[] menuId) {
+        return resourceApplication.addResource(userId, ResourceEnum.USER.getIndex(), menuId, ResourceEnum.MENU.getIndex());
+    }
+
+    /**
+     * 绑定菜单到角色
+     *
+     * @param roleId 角色id
+     * @param menuId 菜单id
+     */
+    public SaResult bindMenuByRole(String roleId, String[] menuId) {
+        return resourceApplication.addResource(roleId, ResourceEnum.ROLE.getIndex(), menuId, ResourceEnum.MENU.getIndex());
+    }
+
+    /**
+     * 解绑菜单到用户
+     *
+     * @param userId 用户id
+     * @param menuId  id
+     */
+    public SaResult unBindMenuByUser(String userId, String[] menuId) {
+        return resourceApplication.deleteResource(null, userId, ResourceEnum.USER.getIndex(), menuId, ResourceEnum.MENU.getIndex());
+    }
+
+    /**
+     * 解绑菜单到角色
+     *
+     * @param roleId 角色id
+     * @param menuId  id
+     */
+    public SaResult unBindMenuByRole(String roleId, String[] menuId) {
+        return resourceApplication.deleteResource(null, roleId, ResourceEnum.ROLE.getIndex(), menuId, ResourceEnum.MENU.getIndex());
     }
 }

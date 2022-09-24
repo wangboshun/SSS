@@ -79,7 +79,7 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
     }
 
     /**
-     * 获取目录树
+     * 获取子级
      *
      * @param roleId 角色id
      * @param level  树形等级

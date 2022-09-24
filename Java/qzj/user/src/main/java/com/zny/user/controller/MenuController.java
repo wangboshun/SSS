@@ -114,4 +114,71 @@ public class MenuController {
             @RequestParam(required = false) String menuIcon, @RequestParam(required = false) Integer menuType) {
         return menuApplication.updateMenu(id, menuName, menuCode, parentId, menuIndex, menuUrl, menuIcon, menuType);
     }
+
+    /**
+     * 根据用户获取菜单
+     *
+     * @param userId 用户id
+     */
+    @RequestMapping(value = "/by_user", method = RequestMethod.GET)
+    public SaResult getMenuByUser(String userId) {
+        List<MenuModel> list = menuApplication.getMenuByUser(userId);
+        return SaResult.data(list);
+    }
+
+    /**
+     * 根据角色获取菜单
+     *
+     * @param roleId 角色id
+     */
+    @RequestMapping(value = "/by_role", method = RequestMethod.GET)
+    public SaResult getMenuByRole(String roleId) {
+        List<MenuModel> list = menuApplication.getMenuByRole(roleId);
+        return SaResult.data(list);
+    }
+
+
+    /**
+     * 绑定菜单到用户
+     *
+     * @param userId 用户id
+     * @param menuId 菜单id
+     */
+    @RequestMapping(value = "/bind_by_user", method = RequestMethod.POST)
+    public SaResult bindMenuByUser(String userId, String[] menuId) {
+        return menuApplication.bindMenuByUser(userId, menuId);
+    }
+
+    /**
+     * 绑定菜单到角色
+     *
+     * @param roleId 角色id
+     * @param menuId 菜单id
+     */
+    @RequestMapping(value = "/bind_by_role", method = RequestMethod.POST)
+    public SaResult bindMenuByRole(String roleId, String[] menuId) {
+        return menuApplication.bindMenuByRole(roleId, menuId);
+    }
+
+    /**
+     * 解绑菜单到用户
+     *
+     * @param userId 用户id
+     * @param menuId  id
+     */
+    @RequestMapping(value = "/unbind_by_user", method = RequestMethod.POST)
+    public SaResult unBindMenuByUser(String userId, String[] menuId) {
+        return menuApplication.unBindMenuByUser(userId, menuId);
+    }
+
+    /**
+     * 解绑菜单到角色
+     *
+     * @param roleId 角色id
+     * @param menuId  id
+     */
+    @RequestMapping(value = "/unbind_by_role", method = RequestMethod.POST)
+    public SaResult unBindMenuByRole(String roleId, String[] menuId) {
+        return menuApplication.unBindMenuByRole(roleId, menuId);
+    }
 }

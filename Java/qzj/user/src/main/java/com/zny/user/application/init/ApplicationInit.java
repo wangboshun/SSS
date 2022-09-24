@@ -1,6 +1,6 @@
 package com.zny.user.application.init;
 
-import com.zny.user.application.ApiApplication;
+import com.zny.system.application.api.ApiApplication;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;

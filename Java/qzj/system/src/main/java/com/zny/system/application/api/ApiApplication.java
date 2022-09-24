@@ -1,15 +1,18 @@
-package com.zny.user.application;
+package com.zny.system.application.api;
 
 import cn.dev33.satoken.util.SaResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zny.common.resource.ResourceApplication;
+import com.zny.common.resource.ResourceEnum;
+import com.zny.common.resource.ResourceModel;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.ReflectUtils;
-import com.zny.user.mapper.ApiMapper;
-import com.zny.user.model.api.ApiModel;
-import com.zny.user.model.api.ApiStatusEnum;
+import com.zny.system.mapper.api.ApiMapper;
+import com.zny.system.model.api.ApiModel;
+import com.zny.system.model.api.ApiStatusEnum;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +41,11 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final WebApplicationContext applicationContext;
 
-    public ApiApplication(WebApplicationContext applicationContext) {
+    private final ResourceApplication resourceApplication;
+
+    public ApiApplication(WebApplicationContext applicationContext, ResourceApplication resourceApplication) {
         this.applicationContext = applicationContext;
+        this.resourceApplication = resourceApplication;
     }
 
     /**
@@ -222,5 +228,90 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
         else {
             return SaResult.error("启用接口失败！");
         }
+    }
+
+
+    /**
+     * 根据用户获取api
+     *
+     * @param userId 用户id
+     */
+    public List<ApiModel> getApiByUser(String userId) {
+        List<ResourceModel> resourceList = resourceApplication.getResourceList(userId, ResourceEnum.USER.getIndex(), ResourceEnum.API.getIndex());
+        List<ApiModel> apiList = new ArrayList<ApiModel>(getApiByResourceModel(resourceList));
+
+        //获取所有角色
+        List<String> roleList = resourceApplication.getRoleByUser(userId);
+
+        //遍历角色id，获取资源
+        for (String roleId : roleList) {
+            apiList.addAll(getApiByRole(roleId));
+        }
+
+        return apiList;
+    }
+
+    /**
+     * 根据角色获取api
+     *
+     * @param roleId 角色id
+     */
+    public List<ApiModel> getApiByRole(String roleId) {
+        List<ResourceModel> resourceList = resourceApplication.getResourceList(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.API.getIndex());
+        return new ArrayList<ApiModel>(getApiByResourceModel(resourceList));
+    }
+
+    /**
+     * 根据资源映射获取api
+     *
+     * @param list 资源列表
+     */
+    private List<ApiModel> getApiByResourceModel(List<ResourceModel> list) {
+        List<ApiModel> apiList = new ArrayList<ApiModel>();
+        for (ResourceModel resourceModel : list) {
+            ApiModel apiModel = this.getById(resourceModel.getSlave_id());
+            apiList.add(apiModel);
+        }
+        return apiList;
+    }
+
+    /**
+     * 绑定api到用户
+     *
+     * @param userId 用户id
+     * @param apiId  id
+     */
+    public SaResult bindApiByUser(String userId, String[] apiId) {
+        return resourceApplication.addResource(userId, ResourceEnum.USER.getIndex(), apiId, ResourceEnum.API.getIndex());
+    }
+
+    /**
+     * 绑定api到角色
+     *
+     * @param roleId 角色id
+     * @param apiId  id
+     */
+    public SaResult bindApiByRole(String roleId, String[] apiId) {
+        return resourceApplication.addResource(roleId, ResourceEnum.ROLE.getIndex(), apiId, ResourceEnum.API.getIndex());
+    }
+
+    /**
+     * 解绑api到用户
+     *
+     * @param userId 用户id
+     * @param apiId  id
+     */
+    public SaResult unBindApiByUser(String userId, String[] apiId) {
+        return resourceApplication.deleteResource(null, userId, ResourceEnum.USER.getIndex(), apiId, ResourceEnum.API.getIndex());
+    }
+
+    /**
+     * 解绑api到角色
+     *
+     * @param roleId 角色id
+     * @param apiId  id
+     */
+    public SaResult unBindApiByRole(String roleId, String[] apiId) {
+        return resourceApplication.deleteResource(null, roleId, ResourceEnum.ROLE.getIndex(), apiId, ResourceEnum.API.getIndex());
     }
 }

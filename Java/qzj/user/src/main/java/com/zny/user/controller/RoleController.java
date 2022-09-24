@@ -1,10 +1,8 @@
 package com.zny.user.controller;
 
 import cn.dev33.satoken.util.SaResult;
-import com.google.common.collect.Table;
+import com.zny.common.resource.ResourceApplication;
 import com.zny.user.application.RoleApplication;
-import com.zny.user.application.resource.ResourceApplication;
-import com.zny.user.model.resource.ResourceEnum;
 import com.zny.user.model.role.RoleModel;
 import com.zny.user.model.role.RoleTreeModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -94,16 +92,6 @@ public class RoleController {
     }
 
     /**
-     * 删除指定角色下的所有资源
-     *
-     * @param roleId 角色id
-     */
-    @RequestMapping(value = "/delResource", method = RequestMethod.DELETE)
-    public SaResult delResource(String roleId) {
-        return resourceApplication.deleteForMain(roleId, ResourceEnum.ROLE);
-    }
-
-    /**
      * 更新角色信息
      *
      * @param id       角色id
@@ -116,53 +104,5 @@ public class RoleController {
             @PathVariable String id, String roleName, String roleCode,
             @RequestParam(required = false) String parentId) {
         return roleApplication.updateRole(id, roleName, roleCode, parentId);
-    }
-
-    /**
-     * 根据角色获取用户
-     *
-     * @param roleId 角色id
-     */
-    @RequestMapping(value = "/getUser", method = RequestMethod.GET)
-    public SaResult getUser(String roleId) {
-        Table<String, String, String> table = resourceApplication.getUserByRole(roleId);
-        List<Map<String, String>> list = resourceApplication.tableConvertList(table);
-        return SaResult.data(list);
-    }
-
-    /**
-     * 根据角色获取菜单
-     *
-     * @param roleId 角色id
-     */
-    @RequestMapping(value = "/getMenu", method = RequestMethod.GET)
-    public SaResult getMenu(String roleId) {
-        Table<String, String, String> table = resourceApplication.getMenuByRole(roleId);
-        List<Map<String, String>> list = resourceApplication.tableConvertList(table);
-        return SaResult.data(list);
-    }
-
-    /**
-     * 根据角色获取权限
-     *
-     * @param roleId 角色id
-     */
-    @RequestMapping(value = "/getPermission", method = RequestMethod.GET)
-    public SaResult getPermission(String roleId) {
-        Table<String, String, String> table = resourceApplication.getPermissionByRole(roleId);
-        List<Map<String, String>> list = resourceApplication.tableConvertList(table);
-        return SaResult.data(list);
-    }
-
-    /**
-     * 根据角色获取api
-     *
-     * @param roleId 角色id
-     */
-    @RequestMapping(value = "/getApi", method = RequestMethod.GET)
-    public SaResult getApi(String roleId) {
-        Table<String, String, String> table = resourceApplication.getApiByRole(roleId);
-        List<Map<String, String>> list = resourceApplication.tableConvertList(table);
-        return SaResult.data(list);
     }
 }

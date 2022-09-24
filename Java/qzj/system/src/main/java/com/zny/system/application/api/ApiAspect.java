@@ -1,11 +1,10 @@
-package com.zny.user.application.resource;
+package com.zny.system.application.api;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
-import com.google.common.collect.Table;
+import com.zny.common.enums.UserTypeEnum;
 import com.zny.common.utils.ReflectUtils;
-import com.zny.user.model.user.UserModel;
-import com.zny.user.model.user.UserTypeEnum;
+import com.zny.system.model.api.ApiModel;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -15,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @author WBS
  * Date:2022/9/15
@@ -23,13 +24,13 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @Order(1)
-public class ResourceAspect {
+public class ApiAspect {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final ResourceApplication resourceApplication;
+    private final ApiApplication apiApplication;
 
-    public ResourceAspect(ResourceApplication resourceApplication) {
-        this.resourceApplication = resourceApplication;
+    public ApiAspect(ApiApplication apiApplication) {
+        this.apiApplication = apiApplication;
     }
 
     /**
@@ -51,11 +52,12 @@ public class ResourceAspect {
         try {
             Object[] args = pjp.getArgs();
             if (StpUtil.isLogin()) {
-                UserModel user = (UserModel) StpUtil.getSession().get("userInfo");
+                Object userType = StpUtil.getSession().get("userType");
                 //不是超级管理员
-                if (!user.getUser_type().equals(UserTypeEnum.SUPER.getIndex())) {
+                if (!userType.equals(UserTypeEnum.SUPER.getIndex())) {
+                    String userId = (String) StpUtil.getSession().get("userId");
                     //检测api
-                    if (!checkApi(user.getId(), pjp)) {
+                    if (!checkApi(userId, pjp)) {
                         return SaResult.get(500, "没有权限！", null);
                     }
                 }
@@ -76,8 +78,8 @@ public class ResourceAspect {
     private boolean checkApi(String userId, ProceedingJoinPoint pjp) {
         try {
             String api = ReflectUtils.getApiUrl(pjp);
-            Table<String, String, String> table = resourceApplication.getApiByUser(userId);
-            return table.containsValue(api);
+            List<ApiModel> apis = apiApplication.getApiByUser(userId);
+            return apis.stream().anyMatch(x -> x.getApi_code().equals(api));
         }
         catch (NoSuchMethodException e) {
             logger.error("检查api异常", e);

@@ -1,7 +1,7 @@
-package com.zny.user.mapper;
+package com.zny.system.mapper.api;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zny.user.model.api.ApiModel;
+import com.zny.system.model.api.ApiModel;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

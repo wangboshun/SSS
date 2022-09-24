@@ -1,30 +1,30 @@
-package com.zny.user.model.user;
+package com.zny.system.model.api;
 
 /**
  * @author WBS
- * Date:2022/9/15
+ * Date:2022/9/6
  */
 
-public enum UserTypeEnum {
+public enum ApiStatusEnum {
 
     /**
-     * 普通用户，可定制权限
+     * 启用
      */
-    COMMON(0),
+    ON(1),
 
     /**
-     * 超级用户，拥有所有权限
+     * 禁用
      */
-    SUPER(1),
+    OFF(0),
 
     /**
-     * 只读用户，只能查看数据
+     * 删除
      */
-    READ(2);
+    DELETE(2);
 
     public Integer index;
 
-    UserTypeEnum(Integer index) {
+    ApiStatusEnum(Integer index) {
         this.index = index;
     }
 
@@ -35,5 +35,4 @@ public enum UserTypeEnum {
     public void setIndex(Integer index) {
         this.index = index;
     }
-
 }

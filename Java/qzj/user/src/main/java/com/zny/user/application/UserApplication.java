@@ -8,11 +8,14 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zny.common.enums.UserTypeEnum;
+import com.zny.common.resource.ResourceApplication;
+import com.zny.common.resource.ResourceEnum;
+import com.zny.common.resource.ResourceModel;
 import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.UserMapper;
 import com.zny.user.model.user.UserModel;
 import com.zny.user.model.user.UserTreeModel;
-import com.zny.user.model.user.UserTypeEnum;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,6 +28,12 @@ import java.util.*;
 
 @Service
 public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
+
+    private final ResourceApplication resourceApplication;
+
+    public UserApplication(ResourceApplication resourceApplication) {
+        this.resourceApplication = resourceApplication;
+    }
 
     /**
      * 登录
@@ -39,7 +48,8 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
         UserModel model = this.getOne(wrapper);
         if (model != null) {
             StpUtil.login(model.getId());
-            StpUtil.getSession().set("userInfo", model);
+            StpUtil.getSession().set("userType", model.getUser_type());
+            StpUtil.getSession().set("userId", model.getId());
             SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
             Map<String, String> map = new HashMap<String, String>(1);
             map.put(tokenInfo.getTokenName(), tokenInfo.getTokenValue());
@@ -143,7 +153,7 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
     }
 
     /**
-     * 获取目录树
+     * 获取子级
      *
      * @param userId 用户id
      * @param level  树形等级
@@ -216,5 +226,49 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
         else {
             return SaResult.error("删除用户信息失败！");
         }
+    }
+
+    /**
+     * 根据角色获取用户
+     *
+     * @param roleId 角色id
+     */
+    public List<UserModel> getUserByRole(String roleId) {
+        List<ResourceModel> resourceList = resourceApplication.getResourceList(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.USER.getIndex());
+        return new ArrayList<UserModel>(getUserByResourceModel(resourceList));
+    }
+
+    /**
+     * 根据资源映射获取用户
+     *
+     * @param list 资源列表
+     */
+    private List<UserModel> getUserByResourceModel(List<ResourceModel> list) {
+        List<UserModel> userList = new ArrayList<UserModel>();
+        for (ResourceModel resourceModel : list) {
+            UserModel userModel = this.getById(resourceModel.getSlave_id());
+            userList.add(userModel);
+        }
+        return userList;
+    }
+
+    /**
+     * 绑定菜单到角色
+     *
+     * @param roleId 角色id
+     * @param userId 用户id
+     */
+    public SaResult bindUserByRole(String roleId, String[] userId) {
+        return resourceApplication.addResource(roleId, ResourceEnum.ROLE.getIndex(), userId, ResourceEnum.USER.getIndex());
+    }
+
+    /**
+     * 解绑用户到角色
+     *
+     * @param roleId 角色id
+     * @param userId id
+     */
+    public SaResult unBindUserByRole(String roleId, String[] userId) {
+        return resourceApplication.deleteResource(null, roleId, ResourceEnum.ROLE.getIndex(), userId, ResourceEnum.USER.getIndex());
     }
 }

@@ -1,4 +1,4 @@
-package com.zny.user.model.api;
+package com.zny.system.model.api;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

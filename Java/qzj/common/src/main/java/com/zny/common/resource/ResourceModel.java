@@ -1,4 +1,4 @@
-package com.zny.user.model.resource;
+package com.zny.common.resource;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
