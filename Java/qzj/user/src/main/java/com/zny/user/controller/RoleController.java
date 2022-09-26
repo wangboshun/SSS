@@ -1,7 +1,6 @@
 package com.zny.user.controller;
 
 import cn.dev33.satoken.util.SaResult;
-import com.zny.common.resource.ResourceApplication;
 import com.zny.user.application.RoleApplication;
 import com.zny.user.model.role.RoleModel;
 import com.zny.user.model.role.RoleTreeModel;
@@ -21,12 +20,9 @@ import java.util.Map;
 @Tag(name = "role", description = "角色模块")
 public class RoleController {
 
-    private final ResourceApplication resourceApplication;
-
     private final RoleApplication roleApplication;
 
-    public RoleController(ResourceApplication resourceApplication, RoleApplication roleApplication) {
-        this.resourceApplication = resourceApplication;
+    public RoleController(RoleApplication roleApplication) {
         this.roleApplication = roleApplication;
     }
 

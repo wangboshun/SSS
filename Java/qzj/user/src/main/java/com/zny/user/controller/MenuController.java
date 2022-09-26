@@ -164,7 +164,7 @@ public class MenuController {
      * 解绑菜单到用户
      *
      * @param userId 用户id
-     * @param menuId  id
+     * @param menuId id
      */
     @RequestMapping(value = "/unbind_by_user", method = RequestMethod.POST)
     public SaResult unBindMenuByUser(String userId, String[] menuId) {
@@ -175,7 +175,7 @@ public class MenuController {
      * 解绑菜单到角色
      *
      * @param roleId 角色id
-     * @param menuId  id
+     * @param menuId id
      */
     @RequestMapping(value = "/unbind_by_role", method = RequestMethod.POST)
     public SaResult unBindMenuByRole(String roleId, String[] menuId) {

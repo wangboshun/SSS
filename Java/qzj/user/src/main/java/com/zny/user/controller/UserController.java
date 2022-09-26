@@ -2,7 +2,6 @@ package com.zny.user.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
-import com.zny.common.resource.ResourceApplication;
 import com.zny.user.application.UserApplication;
 import com.zny.user.model.user.UserModel;
 import com.zny.user.model.user.UserTreeModel;
@@ -22,12 +21,9 @@ import java.util.Map;
 @Tag(name = "user", description = "用户模块")
 public class UserController {
 
-    private final ResourceApplication resourceApplication;
-
     private final UserApplication userApplication;
 
-    public UserController(ResourceApplication resourceApplication, UserApplication userApplication) {
-        this.resourceApplication = resourceApplication;
+    public UserController(UserApplication userApplication) {
         this.userApplication = userApplication;
     }
 

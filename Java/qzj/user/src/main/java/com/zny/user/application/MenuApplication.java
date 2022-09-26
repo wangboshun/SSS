@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zny.common.enums.ResourceEnum;
 import com.zny.common.resource.ResourceApplication;
-import com.zny.common.resource.ResourceEnum;
 import com.zny.common.resource.ResourceModel;
 import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.MenuMapper;
@@ -275,7 +275,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      * 解绑菜单到用户
      *
      * @param userId 用户id
-     * @param menuId  id
+     * @param menuId id
      */
     public SaResult unBindMenuByUser(String userId, String[] menuId) {
         return resourceApplication.deleteResource(null, userId, ResourceEnum.USER.getIndex(), menuId, ResourceEnum.MENU.getIndex());
@@ -285,7 +285,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      * 解绑菜单到角色
      *
      * @param roleId 角色id
-     * @param menuId  id
+     * @param menuId id
      */
     public SaResult unBindMenuByRole(String roleId, String[] menuId) {
         return resourceApplication.deleteResource(null, roleId, ResourceEnum.ROLE.getIndex(), menuId, ResourceEnum.MENU.getIndex());

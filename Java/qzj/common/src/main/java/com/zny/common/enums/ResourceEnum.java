@@ -1,4 +1,4 @@
-package com.zny.common.resource;
+package com.zny.common.enums;
 
 /**
  * @author WBS

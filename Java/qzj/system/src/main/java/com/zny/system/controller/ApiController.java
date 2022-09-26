@@ -134,7 +134,7 @@ public class ApiController {
      * @param apiId  id
      */
     @RequestMapping(value = "/unbind_by_role", method = RequestMethod.POST)
-    public SaResult unBindApiByRole(String roleId,  String[] apiId) {
+    public SaResult unBindApiByRole(String roleId, String[] apiId) {
         return apiApplication.unBindApiByRole(roleId, apiId);
     }
 }
