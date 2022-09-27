@@ -4,7 +4,6 @@ import cn.dev33.satoken.util.SaResult;
 import com.zny.system.application.apilog.ApiLogApplication;
 import com.zny.system.model.apilog.ApiLogModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -20,8 +19,11 @@ import java.util.Map;
 @Tag(name = "system", description = "系统模块")
 public class ApiLogController {
 
-    @Autowired
-    private ApiLogApplication apiLogApplication;
+    private final ApiLogApplication apiLogApplication;
+
+    public ApiLogController(ApiLogApplication apiLogApplication) {
+        this.apiLogApplication = apiLogApplication;
+    }
 
     /**
      * 查询日志列表

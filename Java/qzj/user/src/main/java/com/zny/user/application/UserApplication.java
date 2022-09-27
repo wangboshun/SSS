@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
 import cn.hutool.crypto.SecureUtil;
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -27,6 +28,7 @@ import java.util.*;
  */
 
 @Service
+@DS("main")
 public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
 
     private final ResourceApplication resourceApplication;
@@ -235,7 +237,7 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
      */
     public List<UserModel> getUserByRole(String roleId) {
         List<ResourceModel> resourceList = resourceApplication.getResourceList(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.USER.getIndex());
-        return new ArrayList<UserModel>(getUserByResourceModel(resourceList));
+        return getUserByResourceModel(resourceList);
     }
 
     /**

@@ -7,7 +7,6 @@ package com.zny.common.enums;
 
 public enum ResourceEnum {
 
-
     /**
      * 角色
      */

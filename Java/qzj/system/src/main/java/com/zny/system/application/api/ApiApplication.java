@@ -1,6 +1,7 @@
 package com.zny.system.application.api;
 
 import cn.dev33.satoken.util.SaResult;
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -37,6 +38,7 @@ import java.util.*;
  */
 
 @Service
+@DS("main")
 public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final WebApplicationContext applicationContext;

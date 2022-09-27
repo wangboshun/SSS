@@ -1,6 +1,7 @@
 package com.zny.user.application;
 
 import cn.dev33.satoken.util.SaResult;
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -23,6 +24,7 @@ import java.util.*;
  */
 
 @Service
+@DS("main")
 public class PermissionApplication extends ServiceImpl<PermissionMapper, PermissionModel> {
 
     private final ResourceApplication resourceApplication;
@@ -217,7 +219,7 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      */
     public List<PermissionModel> getPermissionByRole(String roleId) {
         List<ResourceModel> resourceList = resourceApplication.getResourceList(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.PERMISSION.getIndex());
-        return new ArrayList<PermissionModel>(getPermissionByResourceModel(resourceList));
+        return getPermissionByResourceModel(resourceList);
     }
 
     /**

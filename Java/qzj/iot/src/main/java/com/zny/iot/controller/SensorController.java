@@ -6,4 +6,5 @@ package com.zny.iot.controller;
  */
 
 public class SensorController {
+
 }

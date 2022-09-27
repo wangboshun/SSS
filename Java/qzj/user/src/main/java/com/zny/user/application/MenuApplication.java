@@ -1,6 +1,7 @@
 package com.zny.user.application;
 
 import cn.dev33.satoken.util.SaResult;
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -23,6 +24,7 @@ import java.util.*;
  */
 
 @Service
+@DS("main")
 public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
 
     private final ResourceApplication resourceApplication;
@@ -234,7 +236,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      */
     public List<MenuModel> getMenuByRole(String roleId) {
         List<ResourceModel> resourceList = resourceApplication.getResourceList(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.MENU.getIndex());
-        return new ArrayList<MenuModel>(getMenuByResourceModel(resourceList));
+        return getMenuByResourceModel(resourceList);
     }
 
     /**

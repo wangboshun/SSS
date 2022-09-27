@@ -1,21 +1,19 @@
-package com.zny.user.application.init;
+package com.zny.system.application.api;
 
-import com.zny.system.application.api.ApiApplication;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
 /**
  * @author WBS
- * Date:2022/9/9
+ * Date:2022/9/26
  */
 
 @Component
-public class ApplicationInit {
-
+public class ApiInit {
     private final ApiApplication apiApplication;
 
-    public ApplicationInit(ApiApplication apiApplication) {
+    public ApiInit(ApiApplication apiApplication) {
         this.apiApplication = apiApplication;
     }
 
