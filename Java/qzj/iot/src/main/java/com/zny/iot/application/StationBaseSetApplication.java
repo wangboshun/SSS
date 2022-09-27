@@ -1,13 +1,11 @@
 package com.zny.iot.application;
 
-import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.enums.ResourceEnum;
-import com.zny.common.enums.UserTypeEnum;
 import com.zny.common.resource.ResourceApplication;
 import com.zny.common.resource.ResourceModel;
 import com.zny.iot.mapper.StationBaseSetMapper;
@@ -50,33 +48,8 @@ public class StationBaseSetApplication extends ServiceImpl<StationBaseSetMapper,
         }
 
         QueryWrapper<StationBaseSetModel> wrapper = new QueryWrapper<StationBaseSetModel>();
-        Object userType = StpUtil.getSession().get("userType");
-        //如果不是超级管理员
-        if (!userType.equals(UserTypeEnum.SUPER.getIndex())) {
-            String userId = (String) StpUtil.getSession().get("userId");
-            List<String> ids = getIdsByUser(userId);
-            if (ids.size() < 1) {
-                return null;
-            }
-            else {
-                //如果有前端where条件
-                if (stationId != null) {
-                    //判断在资源范围内
-                    if (ids.stream().anyMatch(x -> x.equals(stationId))) {
-                        wrapper.eq("StationID", stationId);
-                    }
-                    else {
-                        return null;
-                    }
-                }
-                //如果没有前端where条件
-                else {
-                    wrapper.in("StationID", ids);
-                }
-            }
-        }
-        else {
-            wrapper.eq(stationId != null, "StationID", stationId);
+        if (!resourceApplication.haveResource(wrapper, stationId, "StationID", ResourceEnum.Station)) {
+            return null;
         }
 
         Page<StationBaseSetModel> page = new Page<>(pageIndex, pageSize);
@@ -132,48 +105,6 @@ public class StationBaseSetApplication extends ServiceImpl<StationBaseSetMapper,
         }
         return menuList;
     }
-
-
-    /**
-     * 根据用户获取测站id
-     *
-     * @param userId 用户id
-     */
-    public List<String> getIdsByUser(String userId) {
-        List<ResourceModel> resourceList = resourceApplication.getResourceList(userId, ResourceEnum.USER.getIndex(), ResourceEnum.Station.getIndex());
-        List<String> ids = new ArrayList<>();
-
-        for (ResourceModel resourceModel : resourceList) {
-            ids.add(resourceModel.getSlave_id());
-        }
-
-        //获取所有角色
-        List<String> roleList = resourceApplication.getRoleByUser(userId);
-
-        //遍历角色id，获取资源
-        for (String roleId : roleList) {
-            ids.addAll(getIdsByRole(roleId));
-        }
-
-        return ids;
-    }
-
-    /**
-     * 根据角色获取测站id
-     *
-     * @param roleId 角色id
-     */
-    public List<String> getIdsByRole(String roleId) {
-        //根据角色获取所有资源
-        List<ResourceModel> resourceList = resourceApplication.getResourceList(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.Station.getIndex());
-
-        List<String> ids = new ArrayList<>();
-        for (ResourceModel resourceModel : resourceList) {
-            ids.add(resourceModel.getSlave_id());
-        }
-        return ids;
-    }
-
 
     /**
      * 绑定测站到用户

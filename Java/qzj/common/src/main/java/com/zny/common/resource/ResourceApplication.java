@@ -1,5 +1,6 @@
 package com.zny.common.resource;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -7,6 +8,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.enums.ResourceEnum;
+import com.zny.common.enums.UserTypeEnum;
 import com.zny.common.utils.DateUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -188,10 +190,97 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
      */
     public List<String> getRoleByUser(String userId) {
         List<String> roleList = new ArrayList<String>();
+        //获取角色获取关联的用户
         List<ResourceModel> list = getResourceList(null, null, ResourceEnum.ROLE.getIndex(), userId, ResourceEnum.USER.getIndex());
         for (ResourceModel model : list) {
             roleList.add(model.getMain_id());
         }
         return roleList;
+    }
+
+    /**
+     * 根据用户获取ids
+     *
+     * @param userId 用户id
+     */
+    public List<String> getIdsByUser(String userId, ResourceEnum slaveType) {
+        //获取用户关联的资源id
+        List<ResourceModel> resourceList = getResourceList(userId, ResourceEnum.USER.getIndex(), slaveType.getIndex());
+        if (resourceList == null || resourceList.isEmpty()) {
+            return null;
+        }
+
+        List<String> ids = new ArrayList<>();
+        for (ResourceModel resourceModel : resourceList) {
+            ids.add(resourceModel.getSlave_id());
+        }
+
+        //获取所有角色
+        List<String> roleList = getRoleByUser(userId);
+        //遍历角色id，获取资源
+        for (String roleId : roleList) {
+            ids.addAll(getIdsByRole(roleId, slaveType));
+        }
+
+        return ids;
+    }
+
+    /**
+     * 根据角色获取ids
+     *
+     * @param roleId 角色id
+     */
+    public List<String> getIdsByRole(String roleId, ResourceEnum slaveType) {
+        //获取角色关联的资源id
+        List<ResourceModel> resourceList = getResourceList(roleId, ResourceEnum.ROLE.getIndex(), slaveType.getIndex());
+        if (resourceList == null || resourceList.isEmpty()) {
+            return null;
+        }
+        List<String> ids = new ArrayList<>();
+        for (ResourceModel resourceModel : resourceList) {
+            ids.add(resourceModel.getSlave_id());
+        }
+        return ids;
+    }
+
+
+    /**
+     * 根据用户查看是否有权限
+     *
+     * @param wrapper   构建条件
+     * @param id        id
+     * @param idField   id字段
+     * @param slaveType 副资源类型
+     */
+    public boolean haveResource(QueryWrapper wrapper, String id, String idField, ResourceEnum slaveType) {
+        Object userType = StpUtil.getSession().get("userType");
+        //如果不是超级管理员
+        if (!userType.equals(UserTypeEnum.SUPER.getIndex())) {
+            String userId = (String) StpUtil.getSession().get("userId");
+            List<String> ids = getIdsByUser(userId, slaveType);
+            if (ids.size() < 1) {
+                return false;
+            }
+            else {
+                //如果有前端where条件
+                if (id != null) {
+                    //判断在资源范围内
+                    if (ids.stream().anyMatch(x -> x.equals(id))) {
+                        wrapper.eq(idField, id);
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                //如果没有前端where条件
+                else {
+                    wrapper.in(idField, ids);
+                }
+            }
+        }
+        else {
+            wrapper.eq(id != null, idField, id);
+        }
+        return true;
     }
 }
