@@ -137,7 +137,9 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
             pageIndex = 1;
         }
         QueryWrapper<MenuModel> wrapper = new QueryWrapper<MenuModel>();
-        wrapper.eq(StringUtils.isNotBlank(menuId), "id", menuId);
+        if (!resourceApplication.haveResource(wrapper, menuId, "id", ResourceEnum.MENU)) {
+            return null;
+        }
         wrapper.eq(StringUtils.isNotBlank(menuName), "menu_name", menuName);
         wrapper.eq(StringUtils.isNotBlank(menuCode), "menu_code", menuCode);
         Page<MenuModel> page = new Page<>(pageIndex, pageSize);

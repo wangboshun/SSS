@@ -174,7 +174,10 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
             pageIndex = 1;
         }
         QueryWrapper<ApiModel> wrapper = new QueryWrapper<ApiModel>();
-        wrapper.eq(StringUtils.isNotBlank(apiId), "id", apiId);
+        if (!resourceApplication.haveResource(wrapper, apiId, "id", ResourceEnum.API)) {
+            return null;
+        }
+
         wrapper.eq(StringUtils.isNotBlank(apiName), "api_name", apiName);
         wrapper.eq(StringUtils.isNotBlank(apiCode), "api_code", apiCode);
         Page<ApiModel> page = new Page<>(pageIndex, pageSize);

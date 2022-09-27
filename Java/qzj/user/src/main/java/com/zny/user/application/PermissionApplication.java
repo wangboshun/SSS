@@ -128,7 +128,9 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
             pageIndex = 1;
         }
         QueryWrapper<PermissionModel> wrapper = new QueryWrapper<PermissionModel>();
-        wrapper.eq(StringUtils.isNotBlank(permissionId), "id", permissionId);
+        if (!resourceApplication.haveResource(wrapper, permissionId, "id", ResourceEnum.PERMISSION)) {
+            return null;
+        }
         wrapper.eq(StringUtils.isNotBlank(permissionName), "permission_name", permissionName);
         wrapper.eq(StringUtils.isNotBlank(permissionCode), "permission_code", permissionCode);
         Page<PermissionModel> page = new Page<>(pageIndex, pageSize);
