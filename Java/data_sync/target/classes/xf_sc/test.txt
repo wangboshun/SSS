@@ -1,0 +1,17 @@
+        Channel channel = new Channel();
+
+        ReaderRunner readerRunner = new ReaderRunner();
+        readerRunner.setRecordSender(new Exchanger(channel));
+
+        WriterRunner writerRunner = new WriterRunner();
+        writerRunner.setRecordReceiver(new Exchanger(channel));
+
+        Thread writerThread = new Thread(writerRunner, "writerThread");
+        Thread senderThread = new Thread(readerRunner, "senderThread");
+
+
+        writerThread.start();
+        senderThread.start();
+
+
+        Thread.sleep(2000);

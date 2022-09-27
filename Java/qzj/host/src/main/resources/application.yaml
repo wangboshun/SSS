@@ -8,34 +8,50 @@ spring:
     autoconfigure:
       exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
   datasource:
+    druid:
+      #配置初始化大小/最小/最大
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      #监控统计拦截的filters
+      filters: stat,wall         #底层开启功能，stat（sql监控），wall（防火墙）开启监控功能，防火墙功能  写几个相当于开启几个功能组件
+      #获取连接等待超时时间
+      max-wait: 60000
+      #间隔多久进行一次检测，检测需要关闭的空闲连接
+      time-between-eviction-runs-millis: 60000
+      #一个连接在池中最小生存的时间
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 'x'
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      #打开PSCache，并指定每个连接上PSCache的大小。oracle设为true，mysql设为false。分库分表较多推荐设置为false
+      pool-prepared-statements: false
+      max-pool-prepared-statement-per-connection-size: 20
+      stat-view-servlet:        #druid的监控页功能
+        enabled: true           #开启监控页
+        login-username: admin   #开启监控页的登录用户名
+        login-password: 123456  #开启监控页的登录密码
+        resetEnable: false      #关闭重置按钮
+        allow: 127.0.0.1        #IP白名单
+        deny: ""                #IP黑名单
+      web-stat-filter:          #监控web
+        enabled: true           #开启功能,监控我们的web应用
+        urlPattern: /*
+        exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*'
+      filter:
+        stat: #对上面filters里面的stat的详细配置
+          enabled: true         #开启
+          slow-sql-millis: 5000 #只要查询时间超过1000毫秒的都是慢查询
+          log-slow-sql: true    #记录慢查询到日志中
+        wall:
+          enabled: true         #开启防火墙
+          config:
+            update-allow: true  #更新操作被开启，如果为false，则全部更新被拦截，默认也是true
     type: com.alibaba.druid.pool.DruidDataSource
     dynamic:
       primary: host
       strict: false
-      druid:
-        #配置初始化大小/最小/最大
-        initialSize: 5
-        minIdle: 5
-        maxActive: 20
-        #监控统计拦截的filters
-        filters: stat
-        #获取连接等待超时时间
-        max-wait: 60000
-        #间隔多久进行一次检测，检测需要关闭的空闲连接
-        time-between-eviction-runs-millis: 60000
-        #一个连接在池中最小生存的时间
-        min-evictable-idle-time-millis: 300000
-        validation-query: SELECT 'x'
-        test-while-idle: true
-        test-on-borrow: false
-        test-on-return: false
-        #打开PSCache，并指定每个连接上PSCache的大小。oracle设为true，mysql设为false。分库分表较多推荐设置为false
-        pool-prepared-statements: false
-        max-pool-prepared-statement-per-connection-size: 20
-        stat:
-          merge-sql: true
-          log-slow-sql: true
-          slow-sql-millis: 2000
       datasource:
         main:
           username: root
