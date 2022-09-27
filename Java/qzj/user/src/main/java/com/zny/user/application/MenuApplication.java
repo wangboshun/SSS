@@ -228,7 +228,6 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
         return menuList;
     }
 
-
     /**
      * 根据角色获取菜单
      *

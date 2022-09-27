@@ -29,7 +29,12 @@ public enum ResourceEnum {
     /**
      * API
      */
-    API(4);
+    API(4),
+
+    /**
+     * 测站
+     */
+    Station(5);
 
     public Integer index;
 
