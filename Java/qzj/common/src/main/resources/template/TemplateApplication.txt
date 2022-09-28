@@ -4,6 +4,7 @@ import cn.dev33.satoken.util.SaResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zny.common.model.PageResult;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.utils.DateUtils;
 import org.springframework.stereotype.Service;
@@ -51,7 +52,8 @@ public class TemplateApplication extends ServiceImpl<TemplateMapper, TemplateMod
      * @param pageIndex    页码
      * @param pageSize     分页大小
      */
-    public Map<String, Object> getTemplateList(String templateId, String templateName, Integer pageIndex, Integer pageSize) {
+    public PageResult getTemplatePage(String templateId, String templateName, Integer pageIndex, Integer
+    pageSize) {
         if (pageSize == null) {
             pageSize = 10;
         }
@@ -63,12 +65,12 @@ public class TemplateApplication extends ServiceImpl<TemplateMapper, TemplateMod
         wrapper.eq(StringUtils.isNotBlank(templateName), "template_name", templateName);
         Page<TemplateModel> page = new Page<>(pageIndex, pageSize);
         Page<TemplateModel> result = this.page(page, wrapper);
-        Map<String, Object> map = new HashMap<>();
-        map.put("total", result.getTotal());
-        map.put("rows", result.getRecords());
-        map.put("pages", result.getPages());
-        map.put("current", result.getCurrent());
-        return map;
+        PageResult pageResult = new PageResult();
+        pageResult.setPages(result.getPages());
+        pageResult.setRows(result.getRecords());
+        pageResult.setTotal(result.getTotal());
+        pageResult.setCurrent(result.getCurrent());
+        return pageResult;
     }
 
     /**

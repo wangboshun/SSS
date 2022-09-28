@@ -7,8 +7,8 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.enums.ResourceEnum;
+import com.zny.common.model.PageResult;
 import com.zny.common.resource.ResourceApplication;
-import com.zny.common.resource.ResourceModel;
 import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.PermissionMapper;
 import com.zny.user.model.permission.PermissionModel;
@@ -119,7 +119,7 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      * @param pageIndex      页码
      * @param pageSize       分页大小
      */
-    public Map<String, Object> getPermissionList(
+    public PageResult getPermissionPage(
             String permissionId, String permissionName, String permissionCode, Integer pageIndex, Integer pageSize) {
         if (pageSize == null) {
             pageSize = 10;
@@ -135,12 +135,12 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
         wrapper.eq(StringUtils.isNotBlank(permissionCode), "permission_code", permissionCode);
         Page<PermissionModel> page = new Page<>(pageIndex, pageSize);
         Page<PermissionModel> result = this.page(page, wrapper);
-        Map<String, Object> map = new HashMap<>(4);
-        map.put("total", result.getTotal());
-        map.put("rows", result.getRecords());
-        map.put("pages", result.getPages());
-        map.put("current", result.getCurrent());
-        return map;
+        PageResult pageResult = new PageResult();
+        pageResult.setPages(result.getPages());
+        pageResult.setRows(result.getRecords());
+        pageResult.setTotal(result.getTotal());
+        pageResult.setCurrent(result.getCurrent());
+        return pageResult;
     }
 
     /**
@@ -199,8 +199,8 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      * @param userId 用户id
      */
     public List<PermissionModel> getPermissionByUser(String userId) {
-        List<ResourceModel> resourceList = resourceApplication.getResourceList(userId, ResourceEnum.USER.getIndex(), ResourceEnum.PERMISSION.getIndex());
-        List<PermissionModel> permissionList = new ArrayList<PermissionModel>(getPermissionByResourceModel(resourceList));
+        List<String> ids = resourceApplication.getIdsByUser(userId, ResourceEnum.PERMISSION);
+        List<PermissionModel> permissionList = new ArrayList<PermissionModel>(getPermissionByIds(ids));
 
         //获取所有角色
         List<String> roleList = resourceApplication.getRoleByUser(userId);
@@ -220,19 +220,19 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      * @param roleId 角色id
      */
     public List<PermissionModel> getPermissionByRole(String roleId) {
-        List<ResourceModel> resourceList = resourceApplication.getResourceList(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.PERMISSION.getIndex());
-        return getPermissionByResourceModel(resourceList);
+        List<String> ids = resourceApplication.getIdsByRole(roleId, ResourceEnum.PERMISSION);
+        return getPermissionByIds(ids);
     }
 
     /**
      * 根据资源映射获取权限
      *
-     * @param list 资源列表
+     * @param ids 资源id
      */
-    private List<PermissionModel> getPermissionByResourceModel(List<ResourceModel> list) {
+    private List<PermissionModel> getPermissionByIds(List<String> ids) {
         List<PermissionModel> permissionList = new ArrayList<PermissionModel>();
-        for (ResourceModel resourceModel : list) {
-            PermissionModel permissionModel = this.getById(resourceModel.getSlave_id());
+        for (String id : ids) {
+            PermissionModel permissionModel = this.getById(id);
             permissionList.add(permissionModel);
         }
         return permissionList;
@@ -245,6 +245,9 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      * @param permissionId 权限id
      */
     public SaResult bindPermissionByUser(String userId, String[] permissionId) {
+        if (permissionId == null || permissionId.length == 0) {
+            return SaResult.error("请输入资源id");
+        }
         return resourceApplication.addResource(userId, ResourceEnum.USER.getIndex(), permissionId, ResourceEnum.PERMISSION.getIndex());
     }
 
@@ -255,6 +258,9 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      * @param permissionId 权限id
      */
     public SaResult bindPermissionByRole(String roleId, String[] permissionId) {
+        if (permissionId == null || permissionId.length == 0) {
+            return SaResult.error("请输入资源id");
+        }
         return resourceApplication.addResource(roleId, ResourceEnum.ROLE.getIndex(), permissionId, ResourceEnum.PERMISSION.getIndex());
     }
 
@@ -265,6 +271,9 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      * @param permissionId id
      */
     public SaResult unBindPermissionByUser(String userId, String[] permissionId) {
+        if (permissionId == null || permissionId.length == 0) {
+            return SaResult.error("请输入资源id");
+        }
         return resourceApplication.deleteResource(null, userId, ResourceEnum.USER.getIndex(), permissionId, ResourceEnum.PERMISSION.getIndex());
     }
 
@@ -275,6 +284,9 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      * @param permissionId id
      */
     public SaResult unBindPermissionByRole(String roleId, String[] permissionId) {
+        if (permissionId == null || permissionId.length == 0) {
+            return SaResult.error("请输入资源id");
+        }
         return resourceApplication.deleteResource(null, roleId, ResourceEnum.ROLE.getIndex(), permissionId, ResourceEnum.PERMISSION.getIndex());
     }
 }

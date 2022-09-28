@@ -6,8 +6,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.enums.ResourceEnum;
+import com.zny.common.model.PageResult;
 import com.zny.common.resource.ResourceApplication;
-import com.zny.common.resource.ResourceModel;
 import com.zny.iot.mapper.StationBaseSetMapper;
 import com.zny.iot.model.StationBaseSetModel;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,7 @@ public class StationBaseSetApplication extends ServiceImpl<StationBaseSetMapper,
      * @param pageIndex 页码
      * @param pageSize  分页大小
      */
-    public Map<String, Object> getStationList(String stationId, Integer pageIndex, Integer pageSize) {
+    public PageResult getStationPage(String stationId, Integer pageIndex, Integer pageSize) {
         if (pageSize == null) {
             pageSize = 10;
         }
@@ -54,12 +54,12 @@ public class StationBaseSetApplication extends ServiceImpl<StationBaseSetMapper,
 
         Page<StationBaseSetModel> page = new Page<>(pageIndex, pageSize);
         Page<StationBaseSetModel> result = this.page(page, wrapper);
-        Map<String, Object> map = new HashMap<>(4);
-        map.put("total", result.getTotal());
-        map.put("rows", result.getRecords());
-        map.put("pages", result.getPages());
-        map.put("current", result.getCurrent());
-        return map;
+        PageResult pageResult = new PageResult();
+        pageResult.setPages(result.getPages());
+        pageResult.setRows(result.getRecords());
+        pageResult.setTotal(result.getTotal());
+        pageResult.setCurrent(result.getCurrent());
+        return pageResult;
     }
 
     /**
@@ -68,8 +68,8 @@ public class StationBaseSetApplication extends ServiceImpl<StationBaseSetMapper,
      * @param userId 用户id
      */
     public List<StationBaseSetModel> getStationBaseSetByUser(String userId) {
-        List<ResourceModel> resourceList = resourceApplication.getResourceList(userId, ResourceEnum.USER.getIndex(), ResourceEnum.Station.getIndex());
-        List<StationBaseSetModel> stationBaseSetList = new ArrayList<StationBaseSetModel>(getStationBaseSetByResourceModel(resourceList));
+        List<String> ids = resourceApplication.getIdsByUser(userId, ResourceEnum.Station);
+        List<StationBaseSetModel> stationBaseSetList = new ArrayList<StationBaseSetModel>(getStationBaseSetByIds(ids));
 
         //获取所有角色
         List<String> roleList = resourceApplication.getRoleByUser(userId);
@@ -88,19 +88,19 @@ public class StationBaseSetApplication extends ServiceImpl<StationBaseSetMapper,
      * @param roleId 角色id
      */
     public List<StationBaseSetModel> getStationBaseSetByRole(String roleId) {
-        List<ResourceModel> resourceList = resourceApplication.getResourceList(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.Station.getIndex());
-        return getStationBaseSetByResourceModel(resourceList);
+        List<String> ids = resourceApplication.getIdsByRole(roleId, ResourceEnum.Station);
+        return getStationBaseSetByIds(ids);
     }
 
     /**
      * 根据资源映射获取菜单
      *
-     * @param list 资源列表
+     * @param ids 资源id
      */
-    private List<StationBaseSetModel> getStationBaseSetByResourceModel(List<ResourceModel> list) {
+    private List<StationBaseSetModel> getStationBaseSetByIds(List<String> ids) {
         List<StationBaseSetModel> menuList = new ArrayList<StationBaseSetModel>();
-        for (ResourceModel resourceModel : list) {
-            StationBaseSetModel model = this.getById(resourceModel.getSlave_id());
+        for (String id : ids) {
+            StationBaseSetModel model = this.getById(id);
             menuList.add(model);
         }
         return menuList;
@@ -113,6 +113,9 @@ public class StationBaseSetApplication extends ServiceImpl<StationBaseSetMapper,
      * @param stationBaseSetId 测站id
      */
     public SaResult bindStationBaseSetByUser(String userId, String[] stationBaseSetId) {
+        if (stationBaseSetId == null || stationBaseSetId.length == 0) {
+            return SaResult.error("请输入资源id");
+        }
         return resourceApplication.addResource(userId, ResourceEnum.USER.getIndex(), stationBaseSetId, ResourceEnum.Station.getIndex());
     }
 
@@ -123,6 +126,9 @@ public class StationBaseSetApplication extends ServiceImpl<StationBaseSetMapper,
      * @param stationBaseSetId 测站id
      */
     public SaResult bindStationBaseSetByRole(String roleId, String[] stationBaseSetId) {
+        if (stationBaseSetId == null || stationBaseSetId.length == 0) {
+            return SaResult.error("请输入资源id");
+        }
         return resourceApplication.addResource(roleId, ResourceEnum.ROLE.getIndex(), stationBaseSetId, ResourceEnum.Station.getIndex());
     }
 
@@ -133,6 +139,9 @@ public class StationBaseSetApplication extends ServiceImpl<StationBaseSetMapper,
      * @param stationBaseSetId id
      */
     public SaResult unBindStationBaseSetByUser(String userId, String[] stationBaseSetId) {
+        if (stationBaseSetId == null || stationBaseSetId.length == 0) {
+            return SaResult.error("请输入资源id");
+        }
         return resourceApplication.deleteResource(null, userId, ResourceEnum.USER.getIndex(), stationBaseSetId, ResourceEnum.Station.getIndex());
     }
 
@@ -143,6 +152,9 @@ public class StationBaseSetApplication extends ServiceImpl<StationBaseSetMapper,
      * @param stationBaseSetId id
      */
     public SaResult unBindStationBaseSetByRole(String roleId, String[] stationBaseSetId) {
+        if (stationBaseSetId == null || stationBaseSetId.length == 0) {
+            return SaResult.error("请输入资源id");
+        }
         return resourceApplication.deleteResource(null, roleId, ResourceEnum.ROLE.getIndex(), stationBaseSetId, ResourceEnum.Station.getIndex());
     }
 }

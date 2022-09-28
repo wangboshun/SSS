@@ -1,6 +1,7 @@
 package com.zny.system.controller;
 
 import cn.dev33.satoken.util.SaResult;
+import com.zny.common.model.PageResult;
 import com.zny.system.application.api.ApiApplication;
 import com.zny.system.model.api.ApiModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,7 +38,7 @@ public class ApiController {
             @RequestParam(required = false) String apiId, @RequestParam(required = false) String apiName,
             @RequestParam(required = false) String apiCode, @RequestParam(required = false) Integer pageIndex,
             @RequestParam(required = false) Integer pageSize) {
-        Map<String, Object> result = apiApplication.getApiList(apiId, apiName, apiCode, pageIndex, pageSize);
+        PageResult result = apiApplication.getApiPage(apiId, apiName, apiCode, pageIndex, pageSize);
         return SaResult.data(result);
     }
 

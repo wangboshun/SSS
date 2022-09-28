@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.enums.ResourceEnum;
 import com.zny.common.enums.UserTypeEnum;
+import com.zny.common.model.PageResult;
 import com.zny.common.utils.DateUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -75,7 +76,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
             wrapper.eq(StringUtils.isNotBlank(id), "id", id);
             wrapper.eq(StringUtils.isNotBlank(mainId), "main_id", mainId);
             wrapper.eq(mainType != null, "main_type", mainType);
-            wrapper.in(slaveId != null && slaveId.length > 0, "slave_id", new ArrayList<>(Arrays.asList(slaveId)));
+            wrapper.in("slave_id", new ArrayList<>(Arrays.asList(slaveId)));
             wrapper.eq(slaveType != null, "slave_type", slaveType);
             if (remove(wrapper)) {
                 return SaResult.ok("删除资源信息成功！");
@@ -100,7 +101,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
      * @param pageIndex 页码
      * @param pageSize  分页大小
      */
-    public Map<String, Object> getResourceList(
+    public PageResult getResourcePage(
             String id, String mainId, Integer mainType, String slaveId, Integer slaveType, Integer pageIndex,
             Integer pageSize) {
         if (pageSize == null) {
@@ -119,12 +120,12 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
         Page<ResourceModel> page = new Page<>(pageIndex, pageSize);
         Page<ResourceModel> result = this.page(page, wrapper);
 
-        Map<String, Object> map = new HashMap<>(4);
-        map.put("total", result.getTotal());
-        map.put("rows", result.getRecords());
-        map.put("pages", result.getPages());
-        map.put("current", result.getCurrent());
-        return map;
+        PageResult pageResult = new PageResult();
+        pageResult.setPages(result.getPages());
+        pageResult.setRows(result.getRecords());
+        pageResult.setTotal(result.getTotal());
+        pageResult.setCurrent(result.getCurrent());
+        return pageResult;
     }
 
     /**

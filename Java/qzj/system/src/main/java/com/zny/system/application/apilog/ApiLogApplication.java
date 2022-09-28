@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zny.common.model.PageResult;
 import com.zny.system.mapper.apilog.ApiLogMapper;
 import com.zny.system.model.apilog.ApiLogModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class ApiLogApplication extends ServiceImpl<ApiLogMapper, ApiLogModel> {
      * @param pageIndex 页码
      * @param pageSize  分页大小
      */
-    public Map<String, Object> getApiLogList(
+    public PageResult getApiLogPage(
             String userId, String apiName, String method, String ip, Integer pageIndex, Integer pageSize) {
         if (pageSize == null) {
             pageSize = 10;
@@ -48,11 +49,11 @@ public class ApiLogApplication extends ServiceImpl<ApiLogMapper, ApiLogModel> {
         wrapper.eq(StringUtils.isNotBlank(method), "method", method);
         Page<ApiLogModel> page = new Page<>(pageIndex, pageSize);
         Page<ApiLogModel> result = this.page(page, wrapper);
-        Map<String, Object> map = new HashMap<>();
-        map.put("total", result.getTotal());
-        map.put("rows", result.getRecords());
-        map.put("pages", result.getPages());
-        map.put("current", result.getCurrent());
-        return map;
+        PageResult pageResult = new PageResult();
+        pageResult.setPages(result.getPages());
+        pageResult.setRows(result.getRecords());
+        pageResult.setTotal(result.getTotal());
+        pageResult.setCurrent(result.getCurrent());
+        return pageResult;
     }
 }

@@ -1,6 +1,7 @@
 package com.zny.user.controller;
 
 import cn.dev33.satoken.util.SaResult;
+import com.zny.common.model.PageResult;
 import com.zny.user.application.MenuApplication;
 import com.zny.user.model.menu.MenuModel;
 import com.zny.user.model.menu.MenuTreeModel;
@@ -39,7 +40,7 @@ public class MenuController {
             @RequestParam(required = false) String menuId, @RequestParam(required = false) String menuName,
             @RequestParam(required = false) String menuCode, @RequestParam(required = false) Integer pageIndex,
             @RequestParam(required = false) Integer pageSize) {
-        Map<String, Object> result = menuApplication.getMenuList(menuId, menuName, menuCode, pageIndex, pageSize);
+        PageResult result = menuApplication.getMenuPage(menuId, menuName, menuCode, pageIndex, pageSize);
         return SaResult.data(result);
     }
 

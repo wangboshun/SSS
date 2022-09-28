@@ -2,6 +2,7 @@ package com.zny.user.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
+import com.zny.common.model.PageResult;
 import com.zny.user.application.UserApplication;
 import com.zny.user.model.user.UserModel;
 import com.zny.user.model.user.UserTreeModel;
@@ -63,7 +64,7 @@ public class UserController {
     public SaResult list(
             @RequestParam(required = false) String userId, @RequestParam(required = false) String userName,
             @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
-        Map<String, Object> result = userApplication.getUserList(userId, userName, pageIndex, pageSize);
+        PageResult result = userApplication.getUserPage(userId, userName, pageIndex, pageSize);
         return SaResult.data(result);
     }
 

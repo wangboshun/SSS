@@ -7,8 +7,8 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.enums.ResourceEnum;
+import com.zny.common.model.PageResult;
 import com.zny.common.resource.ResourceApplication;
-import com.zny.common.resource.ResourceModel;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.ReflectUtils;
 import com.zny.system.mapper.api.ApiMapper;
@@ -165,7 +165,7 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
      * @param pageIndex 页码
      * @param pageSize  分页大小
      */
-    public Map<String, Object> getApiList(
+    public PageResult getApiPage(
             String apiId, String apiName, String apiCode, Integer pageIndex, Integer pageSize) {
         if (pageSize == null) {
             pageSize = 10;
@@ -182,12 +182,12 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
         wrapper.eq(StringUtils.isNotBlank(apiCode), "api_code", apiCode);
         Page<ApiModel> page = new Page<>(pageIndex, pageSize);
         Page<ApiModel> result = this.page(page, wrapper);
-        Map<String, Object> map = new HashMap<>(4);
-        map.put("total", result.getTotal());
-        map.put("rows", result.getRecords());
-        map.put("pages", result.getPages());
-        map.put("current", result.getCurrent());
-        return map;
+        PageResult pageResult = new PageResult();
+        pageResult.setPages(result.getPages());
+        pageResult.setRows(result.getRecords());
+        pageResult.setTotal(result.getTotal());
+        pageResult.setCurrent(result.getCurrent());
+        return pageResult;
     }
 
     /**
@@ -242,8 +242,8 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
      * @param userId 用户id
      */
     public List<ApiModel> getApiByUser(String userId) {
-        List<ResourceModel> resourceList = resourceApplication.getResourceList(userId, ResourceEnum.USER.getIndex(), ResourceEnum.API.getIndex());
-        List<ApiModel> apiList = new ArrayList<ApiModel>(getApiByResourceModel(resourceList));
+        List<String> ids = resourceApplication.getIdsByUser(userId, ResourceEnum.API);
+        List<ApiModel> apiList = new ArrayList<ApiModel>(getApiByIds(ids));
 
         //获取所有角色
         List<String> roleList = resourceApplication.getRoleByUser(userId);
@@ -262,19 +262,19 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
      * @param roleId 角色id
      */
     public List<ApiModel> getApiByRole(String roleId) {
-        List<ResourceModel> resourceList = resourceApplication.getResourceList(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.API.getIndex());
-        return new ArrayList<ApiModel>(getApiByResourceModel(resourceList));
+        List<String> ids = resourceApplication.getIdsByRole(roleId, ResourceEnum.API);
+        return new ArrayList<ApiModel>(getApiByIds(ids));
     }
 
     /**
      * 根据资源映射获取api
      *
-     * @param list 资源列表
+     * @param ids 资源id
      */
-    private List<ApiModel> getApiByResourceModel(List<ResourceModel> list) {
+    private List<ApiModel> getApiByIds(List<String> ids) {
         List<ApiModel> apiList = new ArrayList<ApiModel>();
-        for (ResourceModel resourceModel : list) {
-            ApiModel apiModel = this.getById(resourceModel.getSlave_id());
+        for (String id : ids) {
+            ApiModel apiModel = this.getById(id);
             apiList.add(apiModel);
         }
         return apiList;
@@ -287,6 +287,9 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
      * @param apiId  id
      */
     public SaResult bindApiByUser(String userId, String[] apiId) {
+        if (apiId == null || apiId.length == 0) {
+            return SaResult.error("请输入资源id");
+        }
         return resourceApplication.addResource(userId, ResourceEnum.USER.getIndex(), apiId, ResourceEnum.API.getIndex());
     }
 
@@ -297,6 +300,9 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
      * @param apiId  id
      */
     public SaResult bindApiByRole(String roleId, String[] apiId) {
+        if (apiId == null || apiId.length == 0) {
+            return SaResult.error("请输入资源id");
+        }
         return resourceApplication.addResource(roleId, ResourceEnum.ROLE.getIndex(), apiId, ResourceEnum.API.getIndex());
     }
 
@@ -307,6 +313,9 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
      * @param apiId  id
      */
     public SaResult unBindApiByUser(String userId, String[] apiId) {
+        if (apiId == null || apiId.length == 0) {
+            return SaResult.error("请输入资源id");
+        }
         return resourceApplication.deleteResource(null, userId, ResourceEnum.USER.getIndex(), apiId, ResourceEnum.API.getIndex());
     }
 
@@ -317,6 +326,9 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
      * @param apiId  id
      */
     public SaResult unBindApiByRole(String roleId, String[] apiId) {
+        if (apiId == null || apiId.length == 0) {
+            return SaResult.error("请输入资源id");
+        }
         return resourceApplication.deleteResource(null, roleId, ResourceEnum.ROLE.getIndex(), apiId, ResourceEnum.API.getIndex());
     }
 }

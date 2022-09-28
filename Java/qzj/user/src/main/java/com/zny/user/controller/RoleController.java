@@ -1,6 +1,7 @@
 package com.zny.user.controller;
 
 import cn.dev33.satoken.util.SaResult;
+import com.zny.common.model.PageResult;
 import com.zny.user.application.RoleApplication;
 import com.zny.user.model.role.RoleModel;
 import com.zny.user.model.role.RoleTreeModel;
@@ -39,7 +40,7 @@ public class RoleController {
             @RequestParam(required = false) String roleId, @RequestParam(required = false) String roleName,
             @RequestParam(required = false) String roleCode, @RequestParam(required = false) Integer pageIndex,
             @RequestParam(required = false) Integer pageSize) {
-        Map<String, Object> result = roleApplication.getRoleList(roleId, roleName, roleCode, pageIndex, pageSize);
+        PageResult result = roleApplication.getRolePage(roleId, roleName, roleCode, pageIndex, pageSize);
         return SaResult.data(result);
     }
 

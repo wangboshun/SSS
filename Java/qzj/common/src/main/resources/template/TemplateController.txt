@@ -2,6 +2,7 @@ package com.zny.common.code.template;
 
 import cn.dev33.satoken.util.SaResult;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import com.zny.common.model.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,7 @@ public class TemplateController {
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public SaResult list(@RequestParam(required = false) String templateId, @RequestParam(required = false) String templateName, @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
-        Map<String, Object> result = templateApplication.getTemplateList(templateId, templateName, pageIndex, pageSize);
+        PageResult result = templateApplication.getTemplateList(templateId, templateName, pageIndex, pageSize);
         return SaResult.data(result);
     }
 

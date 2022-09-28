@@ -1,6 +1,7 @@
 package com.zny.iot.controller;
 
 import cn.dev33.satoken.util.SaResult;
+import com.zny.common.model.PageResult;
 import com.zny.iot.application.StationBaseSetApplication;
 import com.zny.iot.model.StationBaseSetModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -46,7 +47,7 @@ public class StationController {
     public SaResult list(
             @RequestParam(required = false) String stationId, @RequestParam(required = false) Integer pageIndex,
             @RequestParam(required = false) Integer pageSize) {
-        Map<String, Object> result = stationBaseSetApplication.getStationList(stationId, pageIndex, pageSize);
+        PageResult result = stationBaseSetApplication.getStationPage(stationId, pageIndex, pageSize);
         return SaResult.data(result);
     }
 

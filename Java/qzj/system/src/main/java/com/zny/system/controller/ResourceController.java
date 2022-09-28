@@ -1,6 +1,7 @@
 package com.zny.system.controller;
 
 import cn.dev33.satoken.util.SaResult;
+import com.zny.common.model.PageResult;
 import com.zny.common.resource.ResourceApplication;
 import com.zny.common.resource.ResourceModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,7 +41,7 @@ public class ResourceController {
             @RequestParam(required = false) Integer mainType, @RequestParam(required = false) String slaveId,
             @RequestParam(required = false) Integer slaveType, @RequestParam(required = false) Integer pageIndex,
             @RequestParam(required = false) Integer pageSize) {
-        Map<String, Object> result = resourceApplication.getResourceList(id, mainId, mainType, slaveId, slaveType, pageIndex, pageSize);
+        PageResult result = resourceApplication.getResourcePage(id, mainId, mainType, slaveId, slaveType, pageIndex, pageSize);
         return SaResult.data(result);
     }
 

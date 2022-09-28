@@ -11,8 +11,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.enums.ResourceEnum;
 import com.zny.common.enums.UserTypeEnum;
+import com.zny.common.model.PageResult;
 import com.zny.common.resource.ResourceApplication;
-import com.zny.common.resource.ResourceModel;
 import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.UserMapper;
 import com.zny.user.model.user.UserModel;
@@ -106,7 +106,7 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
      * @param pageIndex 页码
      * @param pageSize  分页大小
      */
-    public Map<String, Object> getUserList(String userId, String userName, Integer pageIndex, Integer pageSize) {
+    public PageResult getUserPage(String userId, String userName, Integer pageIndex, Integer pageSize) {
         if (pageSize == null) {
             pageSize = 10;
         }
@@ -118,12 +118,12 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
         wrapper.eq(StringUtils.isNotBlank(userName), "user_name", userName);
         Page<UserModel> page = new Page<>(pageIndex, pageSize);
         Page<UserModel> result = this.page(page, wrapper);
-        Map<String, Object> map = new HashMap<>(4);
-        map.put("total", result.getTotal());
-        map.put("rows", result.getRecords());
-        map.put("pages", result.getPages());
-        map.put("current", result.getCurrent());
-        return map;
+        PageResult pageResult = new PageResult();
+        pageResult.setPages(result.getPages());
+        pageResult.setRows(result.getRecords());
+        pageResult.setTotal(result.getTotal());
+        pageResult.setCurrent(result.getCurrent());
+        return pageResult;
     }
 
     /**
@@ -236,19 +236,19 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
      * @param roleId 角色id
      */
     public List<UserModel> getUserByRole(String roleId) {
-        List<ResourceModel> resourceList = resourceApplication.getResourceList(roleId, ResourceEnum.ROLE.getIndex(), ResourceEnum.USER.getIndex());
-        return getUserByResourceModel(resourceList);
+        List<String> ids = resourceApplication.getIdsByRole(roleId, ResourceEnum.USER);
+        return getUserByIds(ids);
     }
 
     /**
      * 根据资源映射获取用户
      *
-     * @param list 资源列表
+     * @param ids 资源id
      */
-    private List<UserModel> getUserByResourceModel(List<ResourceModel> list) {
+    private List<UserModel> getUserByIds(List<String> ids) {
         List<UserModel> userList = new ArrayList<UserModel>();
-        for (ResourceModel resourceModel : list) {
-            UserModel userModel = this.getById(resourceModel.getSlave_id());
+        for (String id : ids) {
+            UserModel userModel = this.getById(id);
             userList.add(userModel);
         }
         return userList;
@@ -261,6 +261,9 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
      * @param userId 用户id
      */
     public SaResult bindUserByRole(String roleId, String[] userId) {
+        if (userId == null || userId.length == 0) {
+            return SaResult.error("请输入资源id");
+        }
         return resourceApplication.addResource(roleId, ResourceEnum.ROLE.getIndex(), userId, ResourceEnum.USER.getIndex());
     }
 
@@ -271,6 +274,9 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
      * @param userId id
      */
     public SaResult unBindUserByRole(String roleId, String[] userId) {
+        if (userId == null || userId.length == 0) {
+            return SaResult.error("请输入资源id");
+        }
         return resourceApplication.deleteResource(null, roleId, ResourceEnum.ROLE.getIndex(), userId, ResourceEnum.USER.getIndex());
     }
 }

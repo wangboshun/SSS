@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zny.common.model.PageResult;
 import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.RoleMapper;
 import com.zny.user.model.role.RoleModel;
@@ -110,7 +111,7 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
      * @param pageIndex 页码
      * @param pageSize  分页大小
      */
-    public Map<String, Object> getRoleList(
+    public PageResult getRolePage(
             String roleId, String roleName, String roleCode, Integer pageIndex, Integer pageSize) {
         if (pageSize == null) {
             pageSize = 10;
@@ -125,11 +126,12 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
         Page<RoleModel> page = new Page<>(pageIndex, pageSize);
         Page<RoleModel> result = this.page(page, wrapper);
         Map<String, Object> map = new HashMap<>(4);
-        map.put("total", result.getTotal());
-        map.put("rows", result.getRecords());
-        map.put("pages", result.getPages());
-        map.put("current", result.getCurrent());
-        return map;
+        PageResult pageResult = new PageResult();
+        pageResult.setPages(result.getPages());
+        pageResult.setRows(result.getRecords());
+        pageResult.setTotal(result.getTotal());
+        pageResult.setCurrent(result.getCurrent());
+        return pageResult;
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.zny.user.controller;
 
 import cn.dev33.satoken.util.SaResult;
+import com.zny.common.model.PageResult;
 import com.zny.user.application.PermissionApplication;
 import com.zny.user.model.permission.PermissionModel;
 import com.zny.user.model.permission.PermissionTreeModel;
@@ -8,7 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author WBS
@@ -39,7 +39,7 @@ public class PermissionController {
             @RequestParam(required = false) String permissionId, @RequestParam(required = false) String permissionName,
             @RequestParam(required = false) String permissionCode, @RequestParam(required = false) Integer pageIndex,
             @RequestParam(required = false) Integer pageSize) {
-        Map<String, Object> result = permissionApplication.getPermissionList(permissionId, permissionName, permissionCode, pageIndex, pageSize);
+        PageResult result = permissionApplication.getPermissionPage(permissionId, permissionName, permissionCode, pageIndex, pageSize);
         return SaResult.data(result);
     }
 

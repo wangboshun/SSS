@@ -1,6 +1,7 @@
 package com.zny.system.controller;
 
 import cn.dev33.satoken.util.SaResult;
+import com.zny.common.model.PageResult;
 import com.zny.system.application.apilog.ApiLogApplication;
 import com.zny.system.model.apilog.ApiLogModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,7 +41,7 @@ public class ApiLogController {
             @RequestParam(required = false) String userId, @RequestParam(required = false) String method,
             @RequestParam(required = false) String apiName, @RequestParam(required = false) String ip,
             @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
-        Map<String, Object> result = apiLogApplication.getApiLogList(userId, apiName, method, ip, pageIndex, pageSize);
+        PageResult result = apiLogApplication.getApiLogPage(userId, apiName, method, ip, pageIndex, pageSize);
         return SaResult.data(result);
     }
 
