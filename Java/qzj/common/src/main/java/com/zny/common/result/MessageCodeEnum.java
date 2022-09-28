@@ -70,12 +70,12 @@ public enum MessageCodeEnum {
     /**
      * 服务器繁忙，请稍后重试
      */
-    SERVER_BUSY("U000001", 500, "服务器繁忙"),
+    SERVER_BUSY("S000001", 500, "服务器繁忙"),
 
     /**
      * 未知异常，无法识别的异常
      */
-    SERVER_ERROR("U00O02", 500, "未知异常"),
+    SERVER_ERROR("S00O02", 500, "未知异常"),
 
 
     /**

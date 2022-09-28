@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -238,11 +239,11 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      * @param userId 用户id
      */
     public List<MenuModel> getMenuByUser(String userId) {
-        List<String> ids = resourceApplication.getIdsByUser(userId, ResourceEnum.MENU);
+        Set<String> ids = resourceApplication.getIdsByUser(userId, ResourceEnum.MENU);
         List<MenuModel> menuList = new ArrayList<MenuModel>(getMenuByIds(ids));
 
         //获取所有角色
-        List<String> roleList = resourceApplication.getRoleByUser(userId);
+        Set<String> roleList = resourceApplication.getRoleByUser(userId);
 
         //遍历角色id，获取资源
         for (String roleId : roleList) {
@@ -258,7 +259,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      * @param roleId 角色id
      */
     public List<MenuModel> getMenuByRole(String roleId) {
-        List<String> ids = resourceApplication.getIdsByRole(roleId, ResourceEnum.MENU);
+        Set<String> ids = resourceApplication.getIdsByRole(roleId, ResourceEnum.MENU);
         return getMenuByIds(ids);
     }
 
@@ -267,7 +268,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      *
      * @param ids 资源id
      */
-    private List<MenuModel> getMenuByIds(List<String> ids) {
+    private List<MenuModel> getMenuByIds(Set<String> ids) {
         List<MenuModel> menuList = new ArrayList<MenuModel>();
         for (String id : ids) {
             MenuModel menuModel = this.getById(id);

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -221,11 +222,11 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      * @param userId 用户id
      */
     public List<PermissionModel> getPermissionByUser(String userId) {
-        List<String> ids = resourceApplication.getIdsByUser(userId, ResourceEnum.PERMISSION);
+        Set<String> ids = resourceApplication.getIdsByUser(userId, ResourceEnum.PERMISSION);
         List<PermissionModel> permissionList = new ArrayList<PermissionModel>(getPermissionByIds(ids));
 
         //获取所有角色
-        List<String> roleList = resourceApplication.getRoleByUser(userId);
+        Set<String> roleList = resourceApplication.getRoleByUser(userId);
 
         //遍历角色id，获取资源
         for (String roleId : roleList) {
@@ -242,7 +243,7 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      * @param roleId 角色id
      */
     public List<PermissionModel> getPermissionByRole(String roleId) {
-        List<String> ids = resourceApplication.getIdsByRole(roleId, ResourceEnum.PERMISSION);
+        Set<String> ids = resourceApplication.getIdsByRole(roleId, ResourceEnum.PERMISSION);
         return getPermissionByIds(ids);
     }
 
@@ -251,7 +252,7 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      *
      * @param ids 资源id
      */
-    private List<PermissionModel> getPermissionByIds(List<String> ids) {
+    private List<PermissionModel> getPermissionByIds(Set<String> ids) {
         List<PermissionModel> permissionList = new ArrayList<PermissionModel>();
         for (String id : ids) {
             PermissionModel permissionModel = this.getById(id);

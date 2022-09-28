@@ -17,10 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author WBS
@@ -194,8 +191,8 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
      *
      * @param userId 用户id
      */
-    public List<String> getRoleByUser(String userId) {
-        List<String> roleList = new ArrayList<String>();
+    public Set<String> getRoleByUser(String userId) {
+        Set<String> roleList = new HashSet<>();
         //获取角色获取关联的用户
         List<ResourceModel> list = getResourceList(null, null, ResourceEnum.ROLE.getIndex(), userId, ResourceEnum.USER.getIndex());
         for (ResourceModel model : list) {
@@ -209,20 +206,20 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
      *
      * @param userId 用户id
      */
-    public List<String> getIdsByUser(String userId, ResourceEnum slaveType) {
+    public Set<String> getIdsByUser(String userId, ResourceEnum slaveType) {
         //获取用户关联的资源id
         List<ResourceModel> resourceList = getResourceList(userId, ResourceEnum.USER.getIndex(), slaveType.getIndex());
         if (resourceList == null || resourceList.isEmpty()) {
             return null;
         }
 
-        List<String> ids = new ArrayList<>();
+        Set<String> ids =new HashSet<>();
         for (ResourceModel resourceModel : resourceList) {
             ids.add(resourceModel.getSlave_id());
         }
 
         //获取所有角色
-        List<String> roleList = getRoleByUser(userId);
+        Set<String> roleList = getRoleByUser(userId);
         //遍历角色id，获取资源
         for (String roleId : roleList) {
             ids.addAll(getIdsByRole(roleId, slaveType));
@@ -236,13 +233,13 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
      *
      * @param roleId 角色id
      */
-    public List<String> getIdsByRole(String roleId, ResourceEnum slaveType) {
+    public Set<String> getIdsByRole(String roleId, ResourceEnum slaveType) {
         //获取角色关联的资源id
         List<ResourceModel> resourceList = getResourceList(roleId, ResourceEnum.ROLE.getIndex(), slaveType.getIndex());
         if (resourceList == null || resourceList.isEmpty()) {
             return null;
         }
-        List<String> ids = new ArrayList<>();
+        Set<String> ids = new HashSet<>();
         for (ResourceModel resourceModel : resourceList) {
             ids.add(resourceModel.getSlave_id());
         }
@@ -263,7 +260,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
         //如果不是超级管理员
         if (!userType.equals(UserTypeEnum.SUPER.getIndex())) {
             String userId = (String) StpUtil.getSession().get("userId");
-            List<String> ids = getIdsByUser(userId, slaveType);
+            Set<String> ids = getIdsByUser(userId, slaveType);
             if (ids.size() < 1) {
                 return false;
             }
@@ -312,7 +309,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
         //如果不是超级管理员
         if (!userType.equals(UserTypeEnum.SUPER.getIndex())) {
             String userId = (String) StpUtil.getSession().get("userId");
-            List<String> ids = getIdsByUser(userId, slaveType);
+            Set<String> ids = getIdsByUser(userId, slaveType);
             if (ids.size() < 1) {
                 return false;
             }

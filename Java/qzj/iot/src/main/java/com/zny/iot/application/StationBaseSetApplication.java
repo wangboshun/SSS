@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author WBS
@@ -86,11 +87,11 @@ public class StationBaseSetApplication extends ServiceImpl<StationBaseSetMapper,
      * @param userId 用户id
      */
     public List<StationBaseSetModel> getStationBaseSetByUser(String userId) {
-        List<String> ids = resourceApplication.getIdsByUser(userId, ResourceEnum.Station);
+        Set<String> ids = resourceApplication.getIdsByUser(userId, ResourceEnum.Station);
         List<StationBaseSetModel> stationBaseSetList = new ArrayList<StationBaseSetModel>(getStationBaseSetByIds(ids));
 
         //获取所有角色
-        List<String> roleList = resourceApplication.getRoleByUser(userId);
+        Set<String> roleList = resourceApplication.getRoleByUser(userId);
 
         //遍历角色id，获取资源
         for (String roleId : roleList) {
@@ -106,7 +107,7 @@ public class StationBaseSetApplication extends ServiceImpl<StationBaseSetMapper,
      * @param roleId 角色id
      */
     public List<StationBaseSetModel> getStationBaseSetByRole(String roleId) {
-        List<String> ids = resourceApplication.getIdsByRole(roleId, ResourceEnum.Station);
+        Set<String> ids = resourceApplication.getIdsByRole(roleId, ResourceEnum.Station);
         return getStationBaseSetByIds(ids);
     }
 
@@ -115,7 +116,7 @@ public class StationBaseSetApplication extends ServiceImpl<StationBaseSetMapper,
      *
      * @param ids 资源id
      */
-    private List<StationBaseSetModel> getStationBaseSetByIds(List<String> ids) {
+    private List<StationBaseSetModel> getStationBaseSetByIds(Set<String> ids) {
         List<StationBaseSetModel> menuList = new ArrayList<StationBaseSetModel>();
         for (String id : ids) {
             StationBaseSetModel model = this.getById(id);

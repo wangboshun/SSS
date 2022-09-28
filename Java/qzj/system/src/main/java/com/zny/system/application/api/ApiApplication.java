@@ -262,11 +262,11 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
      * @param userId 用户id
      */
     public List<ApiModel> getApiByUser(String userId) {
-        List<String> ids = resourceApplication.getIdsByUser(userId, ResourceEnum.API);
+        Set<String> ids = resourceApplication.getIdsByUser(userId, ResourceEnum.API);
         List<ApiModel> apiList = new ArrayList<ApiModel>(getApiByIds(ids));
 
         //获取所有角色
-        List<String> roleList = resourceApplication.getRoleByUser(userId);
+        Set<String> roleList = resourceApplication.getRoleByUser(userId);
 
         //遍历角色id，获取资源
         for (String roleId : roleList) {
@@ -282,7 +282,7 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
      * @param roleId 角色id
      */
     public List<ApiModel> getApiByRole(String roleId) {
-        List<String> ids = resourceApplication.getIdsByRole(roleId, ResourceEnum.API);
+        Set<String> ids = resourceApplication.getIdsByRole(roleId, ResourceEnum.API);
         return new ArrayList<ApiModel>(getApiByIds(ids));
     }
 
@@ -291,7 +291,7 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
      *
      * @param ids 资源id
      */
-    private List<ApiModel> getApiByIds(List<String> ids) {
+    private List<ApiModel> getApiByIds(Set<String> ids) {
         List<ApiModel> apiList = new ArrayList<ApiModel>();
         for (String id : ids) {
             ApiModel apiModel = this.getById(id);

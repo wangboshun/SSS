@@ -256,7 +256,7 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
      * @param roleId 角色id
      */
     public List<UserModel> getUserByRole(String roleId) {
-        List<String> ids = resourceApplication.getIdsByRole(roleId, ResourceEnum.USER);
+        Set<String> ids = resourceApplication.getIdsByRole(roleId, ResourceEnum.USER);
         return getUserByIds(ids);
     }
 
@@ -265,7 +265,7 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
      *
      * @param ids 资源id
      */
-    private List<UserModel> getUserByIds(List<String> ids) {
+    private List<UserModel> getUserByIds(Set<String> ids) {
         List<UserModel> userList = new ArrayList<UserModel>();
         for (String id : ids) {
             UserModel userModel = this.getById(id);
