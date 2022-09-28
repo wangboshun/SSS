@@ -34,7 +34,12 @@ public enum ResourceEnum {
     /**
      * 测站
      */
-    Station(5);
+    Station(5),
+
+    /**
+     * 传感器
+     */
+    Sensor(6);
 
     public Integer index;
 

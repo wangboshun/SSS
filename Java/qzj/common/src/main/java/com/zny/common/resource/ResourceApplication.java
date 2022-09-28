@@ -255,7 +255,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
      * @param idField   资源id字段名
      * @param slaveType 副资源类型
      */
-    public boolean haveResource(QueryWrapper wrapper, String id, String idField, ResourceEnum slaveType) {
+    public boolean haveResource(QueryWrapper wrapper, Object id, String idField, ResourceEnum slaveType) {
         Object userType = StpUtil.getSession().get("userType");
         //如果不是超级管理员
         if (!userType.equals(UserTypeEnum.SUPER.getIndex())) {

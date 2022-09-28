@@ -12,37 +12,32 @@ import java.io.Serializable;
 
 @TableName("StationBaseSet")
 public class StationBaseSetModel implements Serializable {
-
-    /**
-     *
-     */
-
     @TableId
-    private Integer stationid;
+    private Integer stationId;
     /**
      *
      */
-    private String stationname;
+    private String stationName;
     /**
      *
      */
-    private Integer regionnum;
+    private Integer regionNum;
     /**
      *
      */
-    private Integer stationnum;
+    private Integer stationNum;
     /**
      *
      */
-    private Integer parentid;
+    private Integer parentId;
     /**
      *
      */
-    private String slcode;
+    private String slCode;
     /**
      *
      */
-    private Integer stationtypeid;
+    private Integer stationTypeId;
     /**
      *
      */
@@ -54,23 +49,23 @@ public class StationBaseSetModel implements Serializable {
     /**
      *
      */
-    private String nextstationid;
+    private String nextStationId;
     /**
      *
      */
-    private Float voltmax;
+    private Float voltMax;
     /**
      *
      */
-    private Float voltmin;
+    private Float voltMin;
     /**
      *
      */
-    private Integer failovertime;
+    private Integer failOverTime;
     /**
      *
      */
-    private Integer warnovertime;
+    private Integer warnOverTime;
     /**
      *
      */
@@ -79,99 +74,99 @@ public class StationBaseSetModel implements Serializable {
     /**
      *
      */
-    public Integer getStationid() {
-        return stationid;
+    public Integer getStationId() {
+        return stationId;
     }
 
     /**
      *
      */
-    public void setStationid(Integer stationid) {
-        this.stationid = stationid;
+    public void setStationId(Integer stationId) {
+        this.stationId = stationId;
     }
 
     /**
      *
      */
-    public String getStationname() {
-        return stationname;
+    public String getStationName() {
+        return stationName;
     }
 
     /**
      *
      */
-    public void setStationname(String stationname) {
-        this.stationname = stationname;
+    public void setStationName(String stationName) {
+        this.stationName = stationName;
     }
 
     /**
      *
      */
-    public Integer getRegionnum() {
-        return regionnum;
+    public Integer getRegionNum() {
+        return regionNum;
     }
 
     /**
      *
      */
-    public void setRegionnum(Integer regionnum) {
-        this.regionnum = regionnum;
+    public void setRegionNum(Integer regionNum) {
+        this.regionNum = regionNum;
     }
 
     /**
      *
      */
-    public Integer getStationnum() {
-        return stationnum;
+    public Integer getStationNum() {
+        return stationNum;
     }
 
     /**
      *
      */
-    public void setStationnum(Integer stationnum) {
-        this.stationnum = stationnum;
+    public void setStationNum(Integer stationNum) {
+        this.stationNum = stationNum;
     }
 
     /**
      *
      */
-    public Integer getParentid() {
-        return parentid;
+    public Integer getParentId() {
+        return parentId;
     }
 
     /**
      *
      */
-    public void setParentid(Integer parentid) {
-        this.parentid = parentid;
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
     }
 
     /**
      *
      */
-    public String getSlcode() {
-        return slcode;
+    public String getSlCode() {
+        return slCode;
     }
 
     /**
      *
      */
-    public void setSlcode(String slcode) {
-        this.slcode = slcode;
+    public void setSlCode(String slCode) {
+        this.slCode = slCode;
     }
 
     /**
      *
      */
-    public Integer getStationtypeid() {
-        return stationtypeid;
+    public Integer getStationTypeId() {
+        return stationTypeId;
     }
 
     /**
      *
      */
-    public void setStationtypeid(Integer stationtypeid) {
-        this.stationtypeid = stationtypeid;
+    public void setStationTypeId(Integer stationTypeId) {
+        this.stationTypeId = stationTypeId;
     }
 
     /**
@@ -205,71 +200,71 @@ public class StationBaseSetModel implements Serializable {
     /**
      *
      */
-    public String getNextstationid() {
-        return nextstationid;
+    public String getNextStationId() {
+        return nextStationId;
     }
 
     /**
      *
      */
-    public void setNextstationid(String nextstationid) {
-        this.nextstationid = nextstationid;
+    public void setNextStationId(String nextStationId) {
+        this.nextStationId = nextStationId;
     }
 
     /**
      *
      */
-    public Float getVoltmax() {
-        return voltmax;
+    public Float getVoltMax() {
+        return voltMax;
     }
 
     /**
      *
      */
-    public void setVoltmax(Float voltmax) {
-        this.voltmax = voltmax;
+    public void setVoltMax(Float voltMax) {
+        this.voltMax = voltMax;
     }
 
     /**
      *
      */
-    public Float getVoltmin() {
-        return voltmin;
+    public Float getVoltMin() {
+        return voltMin;
     }
 
     /**
      *
      */
-    public void setVoltmin(Float voltmin) {
-        this.voltmin = voltmin;
+    public void setVoltMin(Float voltMin) {
+        this.voltMin = voltMin;
     }
 
     /**
      *
      */
-    public Integer getFailovertime() {
-        return failovertime;
+    public Integer getFailOverTime() {
+        return failOverTime;
     }
 
     /**
      *
      */
-    public void setFailovertime(Integer failovertime) {
-        this.failovertime = failovertime;
+    public void setFailOverTime(Integer failOverTime) {
+        this.failOverTime = failOverTime;
     }
 
     /**
      *
      */
-    public Integer getWarnovertime() {
-        return warnovertime;
+    public Integer getWarnOverTime() {
+        return warnOverTime;
     }
 
     /**
      *
      */
-    public void setWarnovertime(Integer warnovertime) {
-        this.warnovertime = warnovertime;
+    public void setWarnOverTime(Integer warnOverTime) {
+        this.warnOverTime = warnOverTime;
     }
 
     /**

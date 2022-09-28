@@ -2,6 +2,7 @@ package com.zny.iot.mapper;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zny.iot.model.SensorSetModel;
 import com.zny.iot.model.StationBaseSetModel;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
@@ -14,8 +15,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @DS("iot")
-public interface StationBaseSetMapper extends BaseMapper<StationBaseSetModel> {
+public interface SensorSetMapper extends BaseMapper<SensorSetModel> {
 
-    @Select("select top 1 * from StationBaseSet order by stationId desc ")
-    Integer getMaxId();
 }

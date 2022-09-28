@@ -236,7 +236,6 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
         return permissionList;
     }
 
-
     /**
      * 根据角色获取权限
      *

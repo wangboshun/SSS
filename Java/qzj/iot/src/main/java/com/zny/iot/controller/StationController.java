@@ -1,9 +1,9 @@
 package com.zny.iot.controller;
 
 import cn.dev33.satoken.util.SaResult;
-import com.zny.common.model.PageResult;
-import com.zny.iot.application.StationBaseSetApplication;
+import com.zny.iot.application.StationApplication;
 import com.zny.iot.model.StationBaseSetModel;
+import com.zny.iot.model.input.StationInputDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,9 +19,9 @@ import java.util.List;
 @Tag(name = "station", description = "测站模块")
 public class StationController {
 
-    private final StationBaseSetApplication stationBaseSetApplication;
+    private final StationApplication stationBaseSetApplication;
 
-    public StationController(StationBaseSetApplication stationBaseSetApplication) {
+    public StationController(StationApplication stationBaseSetApplication) {
         this.stationBaseSetApplication = stationBaseSetApplication;
     }
 
@@ -40,13 +40,59 @@ public class StationController {
      *
      * @param stationId 测站id
      * @param pageSize  分页大小
+     * @param pageIndex 页码
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public SaResult list(
             @RequestParam(required = false) String stationId, @RequestParam(required = false) Integer pageIndex,
             @RequestParam(required = false) Integer pageSize) {
-        PageResult result = stationBaseSetApplication.getStationBaseSetPage(stationId, pageIndex, pageSize);
-        return SaResult.data(result);
+        return stationBaseSetApplication.getStationBaseSetPage(stationId, pageIndex, pageSize);
+    }
+
+    /**
+     * 添加测站
+     *
+     * @param input dto
+     */
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public SaResult add(@RequestBody StationInputDto input) {
+        return stationBaseSetApplication.addStationBaseSet(input);
+    }
+
+    /**
+     * 获取实时数据
+     *
+     * @param stationId 站点id
+     * @param pointId   传感器id
+     * @param start     开始时间
+     * @param end       结束时间
+     * @param pageIndex 页码
+     * @param pageSize  分页大小
+     */
+    @RequestMapping(value = "/real_data", method = RequestMethod.GET)
+    public SaResult realData(
+            @RequestParam(required = false) Integer stationId, @RequestParam(required = false) Integer pointId,
+            @RequestParam(required = false) String start, @RequestParam(required = false) String end,
+            @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
+        return stationBaseSetApplication.getRealData(stationId, pointId, start, end, pageIndex, pageSize);
+    }
+
+    /**
+     * 获取时段数据
+     *
+     * @param stationId 站点id
+     * @param pointId   传感器id
+     * @param start     开始时间
+     * @param end       结束时间
+     * @param pageIndex 页码
+     * @param pageSize  分页大小
+     */
+    @RequestMapping(value = "/period_data", method = RequestMethod.GET)
+    public SaResult periodData(
+            @RequestParam(required = false) Integer stationId, @RequestParam(required = false) Integer pointId,
+            @RequestParam(required = false) String start, @RequestParam(required = false) String end,
+            @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
+        return stationBaseSetApplication.getPeriodData(stationId, pointId, start, end, pageIndex, pageSize);
     }
 
     /**
