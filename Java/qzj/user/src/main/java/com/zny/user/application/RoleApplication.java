@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.model.PageResult;
+import com.zny.common.result.MessageCodeEnum;
+import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.RoleMapper;
 import com.zny.user.model.role.RoleModel;
@@ -37,7 +39,7 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
         wrapper.eq("role_name", roleName);
         RoleModel model = this.getOne(wrapper);
         if (model != null) {
-            return SaResult.error("角色名已存在！");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "角色已存在！");
         }
         RoleModel roleModel = new RoleModel();
         roleModel.setId(UUID.randomUUID().toString());
@@ -49,7 +51,7 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
             return SaResult.ok("添加角色成功！");
         }
         else {
-            return SaResult.error("添加角色失败！");
+            return SaResultEx.error(MessageCodeEnum.DB_ERROR, "添加角色失败！");
         }
     }
 
@@ -145,13 +147,13 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
         RoleModel model = this.getOne(wrapper);
 
         if (model == null) {
-            return SaResult.error("角色不存在！");
+            return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "角色不存在！");
         }
         if (removeById(id)) {
             return SaResult.ok("删除角色成功！");
         }
         else {
-            return SaResult.error("删除角色失败！");
+            return SaResultEx.error(MessageCodeEnum.DB_ERROR, "删除角色失败！");
         }
     }
 
@@ -169,7 +171,7 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
         RoleModel model = this.getOne(wrapper);
 
         if (model == null) {
-            return SaResult.error("角色不存在！");
+            return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "角色不存在！");
         }
         if (StringUtils.isNotBlank(parentId)) {
             model.setParent_id(parentId);
@@ -180,7 +182,7 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
             return SaResult.ok("更新角色信息成功！");
         }
         else {
-            return SaResult.error("删除角色信息失败！");
+            return SaResultEx.error(MessageCodeEnum.DB_ERROR, "删除角色信息失败！");
         }
     }
 }

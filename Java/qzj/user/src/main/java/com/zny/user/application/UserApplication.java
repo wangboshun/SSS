@@ -13,6 +13,8 @@ import com.zny.common.enums.ResourceEnum;
 import com.zny.common.enums.UserTypeEnum;
 import com.zny.common.model.PageResult;
 import com.zny.common.resource.ResourceApplication;
+import com.zny.common.result.MessageCodeEnum;
+import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.UserMapper;
 import com.zny.user.model.user.UserModel;
@@ -35,6 +37,24 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
 
     public UserApplication(ResourceApplication resourceApplication) {
         this.resourceApplication = resourceApplication;
+    }
+
+    /**
+     * 根据id获取用户信息
+     *
+     * @param id id
+     */
+    public SaResult getUserById(String id) {
+        if (resourceApplication.haveResource(id, ResourceEnum.USER)) {
+            UserModel model = this.getById(id);
+            if (model == null) {
+                return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "用户不存在！");
+            }
+            return SaResult.data(model);
+        }
+        else {
+            return SaResultEx.error(MessageCodeEnum.AUTH_INVALID);
+        }
     }
 
     /**
@@ -73,7 +93,7 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
         wrapper.eq("user_name", username);
         UserModel model = this.getOne(wrapper);
         if (model != null) {
-            return SaResult.error("用户名已存在！");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "用户已存在！");
         }
         UserModel userModel = new UserModel();
         userModel.setId(UUID.randomUUID().toString());
@@ -94,7 +114,7 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
             return SaResult.ok("添加用户成功！");
         }
         else {
-            return SaResult.error("添加用户失败！");
+            return SaResultEx.error(MessageCodeEnum.DB_ERROR, "添加用户失败！");
         }
     }
 
@@ -187,13 +207,13 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
         UserModel model = this.getOne(wrapper);
 
         if (model == null) {
-            return SaResult.error("用户不存在！");
+            return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "用户不存在！");
         }
         if (removeById(id)) {
             return SaResult.ok("删除用户成功！");
         }
         else {
-            return SaResult.error("删除用户失败！");
+            return SaResultEx.error(MessageCodeEnum.DB_ERROR, "删除用户失败！");
         }
     }
 
@@ -212,7 +232,7 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
         UserModel model = this.getOne(wrapper);
 
         if (model == null) {
-            return SaResult.error("用户不存在！");
+            return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "用户不存在！");
         }
         if (userType != null) {
             model.setUser_type(userType);
@@ -226,7 +246,7 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
             return SaResult.ok("更新用户信息成功！");
         }
         else {
-            return SaResult.error("删除用户信息失败！");
+            return SaResultEx.error(MessageCodeEnum.DB_ERROR, "删除用户信息失败！");
         }
     }
 
@@ -262,7 +282,7 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
      */
     public SaResult bindUserByRole(String roleId, String[] userId) {
         if (userId == null || userId.length == 0) {
-            return SaResult.error("请输入资源id");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
         return resourceApplication.addResource(roleId, ResourceEnum.ROLE.getIndex(), userId, ResourceEnum.USER.getIndex());
     }
@@ -275,7 +295,7 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
      */
     public SaResult unBindUserByRole(String roleId, String[] userId) {
         if (userId == null || userId.length == 0) {
-            return SaResult.error("请输入资源id");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
         return resourceApplication.deleteResource(null, roleId, ResourceEnum.ROLE.getIndex(), userId, ResourceEnum.USER.getIndex());
     }

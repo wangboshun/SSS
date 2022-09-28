@@ -5,6 +5,8 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
 import com.zny.common.eventbus.EventEnum;
 import com.zny.common.eventbus.TopicAsyncEventBus;
+import com.zny.common.result.MessageCodeEnum;
+import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.IpUtils;
 import com.zny.common.utils.ReflectUtils;
@@ -68,7 +70,7 @@ public class ApiLogAspect {
 
             //如果未登录
             if (!"/user/login".equals(httpServletRequest.getRequestURI()) && !StpUtil.isLogin()) {
-                return SaResult.get(401, "请登录！", null);
+                return SaResultEx.error(MessageCodeEnum.AUTH_INVALID);
             }
 
             LocalDateTime start = LocalDateTime.now();
@@ -81,7 +83,7 @@ public class ApiLogAspect {
         }
         catch (Throwable e) {
             logger.error(e.getMessage());
-            result = SaResult.error("内部异常！");
+            result = SaResultEx.error(MessageCodeEnum.EXCEPTION);
         }
 
         return result;

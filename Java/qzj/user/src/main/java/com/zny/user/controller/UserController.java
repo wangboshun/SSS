@@ -86,8 +86,7 @@ public class UserController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public SaResult get(@PathVariable("id") String id) {
-        UserModel model = userApplication.getById(id);
-        return SaResult.data(model);
+        return SaResult.data(userApplication.getUserById(id));
     }
 
     /**

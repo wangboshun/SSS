@@ -9,6 +9,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.enums.ResourceEnum;
 import com.zny.common.model.PageResult;
 import com.zny.common.resource.ResourceApplication;
+import com.zny.common.result.MessageCodeEnum;
+import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.PermissionMapper;
 import com.zny.user.model.permission.PermissionModel;
@@ -16,7 +18,9 @@ import com.zny.user.model.permission.PermissionTreeModel;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author WBS
@@ -34,6 +38,24 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
     }
 
     /**
+     * 根据id获取权限信息
+     *
+     * @param id id
+     */
+    public SaResult getPermissionById(String id) {
+        if (resourceApplication.haveResource(id, ResourceEnum.PERMISSION)) {
+            PermissionModel model = this.getById(id);
+            if (model == null) {
+                return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "权限不存在！");
+            }
+            return SaResult.data(model);
+        }
+        else {
+            return SaResultEx.error(MessageCodeEnum.AUTH_INVALID);
+        }
+    }
+
+    /**
      * 添加权限
      *
      * @param permissionName 权限名
@@ -45,7 +67,7 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
         wrapper.eq("permission_name", permissionName);
         PermissionModel model = this.getOne(wrapper);
         if (model != null) {
-            return SaResult.error("权限名已存在！");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "权限已存在！");
         }
         PermissionModel permissionModel = new PermissionModel();
         permissionModel.setId(UUID.randomUUID().toString());
@@ -57,7 +79,7 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
             return SaResult.ok("添加权限成功！");
         }
         else {
-            return SaResult.error("添加权限失败！");
+            return SaResultEx.error(MessageCodeEnum.DB_ERROR, "添加权限失败！");
         }
     }
 
@@ -154,13 +176,13 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
         PermissionModel model = this.getOne(wrapper);
 
         if (model == null) {
-            return SaResult.error("权限不存在！");
+            return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "权限不存在！");
         }
         if (removeById(id)) {
             return SaResult.ok("删除权限成功！");
         }
         else {
-            return SaResult.error("删除权限失败！");
+            return SaResultEx.error(MessageCodeEnum.DB_ERROR, "删除权限失败！");
         }
     }
 
@@ -178,7 +200,7 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
         PermissionModel model = this.getOne(wrapper);
 
         if (model == null) {
-            return SaResult.error("权限不存在！");
+            return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "权限不存在！");
         }
         if (StringUtils.isNotBlank(parentId)) {
             model.setParent_id(parentId);
@@ -189,7 +211,7 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
             return SaResult.ok("更新权限信息成功！");
         }
         else {
-            return SaResult.error("删除权限信息失败！");
+            return SaResultEx.error(MessageCodeEnum.DB_ERROR, "删除权限信息失败！");
         }
     }
 
@@ -246,7 +268,7 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      */
     public SaResult bindPermissionByUser(String userId, String[] permissionId) {
         if (permissionId == null || permissionId.length == 0) {
-            return SaResult.error("请输入资源id");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
         return resourceApplication.addResource(userId, ResourceEnum.USER.getIndex(), permissionId, ResourceEnum.PERMISSION.getIndex());
     }
@@ -259,7 +281,7 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      */
     public SaResult bindPermissionByRole(String roleId, String[] permissionId) {
         if (permissionId == null || permissionId.length == 0) {
-            return SaResult.error("请输入资源id");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
         return resourceApplication.addResource(roleId, ResourceEnum.ROLE.getIndex(), permissionId, ResourceEnum.PERMISSION.getIndex());
     }
@@ -272,7 +294,7 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      */
     public SaResult unBindPermissionByUser(String userId, String[] permissionId) {
         if (permissionId == null || permissionId.length == 0) {
-            return SaResult.error("请输入资源id");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
         return resourceApplication.deleteResource(null, userId, ResourceEnum.USER.getIndex(), permissionId, ResourceEnum.PERMISSION.getIndex());
     }
@@ -285,7 +307,7 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
      */
     public SaResult unBindPermissionByRole(String roleId, String[] permissionId) {
         if (permissionId == null || permissionId.length == 0) {
-            return SaResult.error("请输入资源id");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
         return resourceApplication.deleteResource(null, roleId, ResourceEnum.ROLE.getIndex(), permissionId, ResourceEnum.PERMISSION.getIndex());
     }

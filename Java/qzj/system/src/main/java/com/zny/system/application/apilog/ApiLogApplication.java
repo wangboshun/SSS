@@ -8,11 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.model.PageResult;
 import com.zny.system.mapper.apilog.ApiLogMapper;
 import com.zny.system.model.apilog.ApiLogModel;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author WBS
@@ -22,9 +18,6 @@ import java.util.Map;
 @Service
 @DS("main")
 public class ApiLogApplication extends ServiceImpl<ApiLogMapper, ApiLogModel> {
-
-    @Autowired
-    private ApiLogMapper apiLogMapper;
 
     /**
      * @param userId    用户id

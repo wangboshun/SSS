@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author WBS
@@ -62,8 +61,7 @@ public class MenuController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public SaResult get(@PathVariable String id) {
-        MenuModel model = menuApplication.getById(id);
-        return SaResult.data(model);
+        return SaResult.data(menuApplication.getMenuById(id));
     }
 
     /**

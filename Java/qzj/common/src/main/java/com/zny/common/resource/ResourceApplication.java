@@ -10,12 +10,17 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.enums.ResourceEnum;
 import com.zny.common.enums.UserTypeEnum;
 import com.zny.common.model.PageResult;
+import com.zny.common.result.MessageCodeEnum;
+import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author WBS
@@ -51,13 +56,13 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
             list.add(resourceModel);
         }
         if (slaveId.length > 0 && list.size() < 1) {
-            return SaResult.error("所添加的资源已存在！");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "资源已存在！");
         }
         if (saveOrUpdateBatch(list)) {
             return SaResult.ok("添加资源成功！");
         }
         else {
-            return SaResult.error("添加资源失败！");
+            return SaResultEx.error(MessageCodeEnum.DB_ERROR, "添加资源失败！");
         }
     }
 
@@ -82,12 +87,12 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
                 return SaResult.ok("删除资源信息成功！");
             }
             else {
-                return SaResult.error("删除资源信息失败！");
+                return SaResultEx.error(MessageCodeEnum.DB_ERROR, "删除资源信息失败！");
             }
         }
         catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return SaResult.error("删除资源信息失败！");
+            return SaResultEx.error(MessageCodeEnum.EXCEPTION, "删除资源信息失败！");
         }
     }
 
@@ -180,7 +185,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
             return SaResult.ok("更新资源信息成功！");
         }
         else {
-            return SaResult.error("更新资源信息失败！");
+            return SaResultEx.error(MessageCodeEnum.DB_ERROR, "更新资源信息失败！");
         }
     }
 
@@ -249,8 +254,8 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
      * 根据用户查看是否有权限
      *
      * @param wrapper   构建条件
-     * @param id        id
-     * @param idField   id字段
+     * @param id        资源id
+     * @param idField   资源id字段名
      * @param slaveType 副资源类型
      */
     public boolean haveResource(QueryWrapper wrapper, String id, String idField, ResourceEnum slaveType) {
@@ -281,6 +286,37 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
         }
         else {
             wrapper.eq(id != null, idField, id);
+        }
+        return true;
+    }
+
+    /**
+     * 根据用户查看是否有权限
+     *
+     * @param id        资源id
+     * @param slaveType 副资源类型
+     */
+    public boolean haveResource(String id, ResourceEnum slaveType) {
+        return haveResource(id, "id", slaveType);
+    }
+
+    /**
+     * 根据用户查看是否有权限
+     *
+     * @param id        资源id
+     * @param idField   资源id字段名
+     * @param slaveType 副资源类型
+     */
+    public boolean haveResource(String id, String idField, ResourceEnum slaveType) {
+        Object userType = StpUtil.getSession().get("userType");
+        //如果不是超级管理员
+        if (!userType.equals(UserTypeEnum.SUPER.getIndex())) {
+            String userId = (String) StpUtil.getSession().get("userId");
+            List<String> ids = getIdsByUser(userId, slaveType);
+            if (ids.size() < 1) {
+                return false;
+            }
+            return ids.stream().anyMatch(x -> x.equals(id));
         }
         return true;
     }

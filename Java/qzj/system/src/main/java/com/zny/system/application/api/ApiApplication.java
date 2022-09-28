@@ -9,6 +9,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.enums.ResourceEnum;
 import com.zny.common.model.PageResult;
 import com.zny.common.resource.ResourceApplication;
+import com.zny.common.result.MessageCodeEnum;
+import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.ReflectUtils;
 import com.zny.system.mapper.api.ApiMapper;
@@ -48,6 +50,24 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
     public ApiApplication(WebApplicationContext applicationContext, ResourceApplication resourceApplication) {
         this.applicationContext = applicationContext;
         this.resourceApplication = resourceApplication;
+    }
+
+    /**
+     * 根据id获取api信息
+     *
+     * @param id id
+     */
+    public SaResult getApiById(String id) {
+        if (resourceApplication.haveResource(id, ResourceEnum.API)) {
+            ApiModel model = this.getById(id);
+            if (model == null) {
+                return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "api不存在");
+            }
+            return SaResult.data(model);
+        }
+        else {
+            return SaResultEx.error(MessageCodeEnum.AUTH_INVALID);
+        }
     }
 
     /**
@@ -201,14 +221,14 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
         ApiModel model = this.getOne(wrapper);
 
         if (model == null) {
-            return SaResult.error("接口不存在！");
+            return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "接口不存在！");
         }
         model.setApi_status(ApiStatusEnum.OFF.getIndex());
         if (updateById(model)) {
             return SaResult.ok("禁用接口成功！");
         }
         else {
-            return SaResult.error("禁用接口失败！");
+            return SaResultEx.error(MessageCodeEnum.DB_ERROR, "禁用接口失败！");
         }
     }
 
@@ -223,7 +243,7 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
         ApiModel model = this.getOne(wrapper);
 
         if (model == null) {
-            return SaResult.error("接口不存在！");
+            return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "接口不存在！");
         }
 
         model.setApi_status(ApiStatusEnum.ON.getIndex());
@@ -231,7 +251,7 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
             return SaResult.ok("启用接口成功！");
         }
         else {
-            return SaResult.error("启用接口失败！");
+            return SaResultEx.error(MessageCodeEnum.DB_ERROR, "启用接口失败！");
         }
     }
 
@@ -288,7 +308,7 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
      */
     public SaResult bindApiByUser(String userId, String[] apiId) {
         if (apiId == null || apiId.length == 0) {
-            return SaResult.error("请输入资源id");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
         return resourceApplication.addResource(userId, ResourceEnum.USER.getIndex(), apiId, ResourceEnum.API.getIndex());
     }
@@ -301,7 +321,7 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
      */
     public SaResult bindApiByRole(String roleId, String[] apiId) {
         if (apiId == null || apiId.length == 0) {
-            return SaResult.error("请输入资源id");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
         return resourceApplication.addResource(roleId, ResourceEnum.ROLE.getIndex(), apiId, ResourceEnum.API.getIndex());
     }
@@ -314,7 +334,7 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
      */
     public SaResult unBindApiByUser(String userId, String[] apiId) {
         if (apiId == null || apiId.length == 0) {
-            return SaResult.error("请输入资源id");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
         return resourceApplication.deleteResource(null, userId, ResourceEnum.USER.getIndex(), apiId, ResourceEnum.API.getIndex());
     }
@@ -327,7 +347,7 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
      */
     public SaResult unBindApiByRole(String roleId, String[] apiId) {
         if (apiId == null || apiId.length == 0) {
-            return SaResult.error("请输入资源id");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
         return resourceApplication.deleteResource(null, roleId, ResourceEnum.ROLE.getIndex(), apiId, ResourceEnum.API.getIndex());
     }

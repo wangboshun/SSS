@@ -8,14 +8,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.enums.ResourceEnum;
 import com.zny.common.model.PageResult;
 import com.zny.common.resource.ResourceApplication;
+import com.zny.common.result.MessageCodeEnum;
+import com.zny.common.result.SaResultEx;
 import com.zny.iot.mapper.StationBaseSetMapper;
 import com.zny.iot.model.StationBaseSetModel;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author WBS
@@ -33,13 +33,31 @@ public class StationBaseSetApplication extends ServiceImpl<StationBaseSetMapper,
     }
 
     /**
+     * 根据id获取测站信息
+     *
+     * @param id id
+     */
+    public SaResult getStationBaseSetById(String id) {
+        if (resourceApplication.haveResource(id, "StationID", ResourceEnum.Station)) {
+            StationBaseSetModel model = this.getById(id);
+            if (model == null) {
+                return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "测站不存在！");
+            }
+            return SaResult.data(model);
+        }
+        else {
+            return SaResultEx.error(MessageCodeEnum.AUTH_INVALID);
+        }
+    }
+
+    /**
      * 获取测站列表
      *
      * @param stationId 测站id
      * @param pageIndex 页码
      * @param pageSize  分页大小
      */
-    public PageResult getStationPage(String stationId, Integer pageIndex, Integer pageSize) {
+    public PageResult getStationBaseSetPage(String stationId, Integer pageIndex, Integer pageSize) {
         if (pageSize == null) {
             pageSize = 10;
         }
@@ -114,7 +132,7 @@ public class StationBaseSetApplication extends ServiceImpl<StationBaseSetMapper,
      */
     public SaResult bindStationBaseSetByUser(String userId, String[] stationBaseSetId) {
         if (stationBaseSetId == null || stationBaseSetId.length == 0) {
-            return SaResult.error("请输入资源id");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
         return resourceApplication.addResource(userId, ResourceEnum.USER.getIndex(), stationBaseSetId, ResourceEnum.Station.getIndex());
     }
@@ -127,7 +145,7 @@ public class StationBaseSetApplication extends ServiceImpl<StationBaseSetMapper,
      */
     public SaResult bindStationBaseSetByRole(String roleId, String[] stationBaseSetId) {
         if (stationBaseSetId == null || stationBaseSetId.length == 0) {
-            return SaResult.error("请输入资源id");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
         return resourceApplication.addResource(roleId, ResourceEnum.ROLE.getIndex(), stationBaseSetId, ResourceEnum.Station.getIndex());
     }
@@ -140,7 +158,7 @@ public class StationBaseSetApplication extends ServiceImpl<StationBaseSetMapper,
      */
     public SaResult unBindStationBaseSetByUser(String userId, String[] stationBaseSetId) {
         if (stationBaseSetId == null || stationBaseSetId.length == 0) {
-            return SaResult.error("请输入资源id");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
         return resourceApplication.deleteResource(null, userId, ResourceEnum.USER.getIndex(), stationBaseSetId, ResourceEnum.Station.getIndex());
     }
@@ -153,7 +171,7 @@ public class StationBaseSetApplication extends ServiceImpl<StationBaseSetMapper,
      */
     public SaResult unBindStationBaseSetByRole(String roleId, String[] stationBaseSetId) {
         if (stationBaseSetId == null || stationBaseSetId.length == 0) {
-            return SaResult.error("请输入资源id");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
         return resourceApplication.deleteResource(null, roleId, ResourceEnum.ROLE.getIndex(), stationBaseSetId, ResourceEnum.Station.getIndex());
     }

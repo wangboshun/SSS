@@ -61,8 +61,7 @@ public class PermissionController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public SaResult get(@PathVariable String id) {
-        PermissionModel model = permissionApplication.getById(id);
-        return SaResult.data(model);
+        return SaResult.data(permissionApplication.getPermissionById(id));
     }
 
     /**

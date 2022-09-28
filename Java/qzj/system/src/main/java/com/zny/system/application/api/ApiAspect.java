@@ -1,8 +1,9 @@
 package com.zny.system.application.api;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.dev33.satoken.util.SaResult;
 import com.zny.common.enums.UserTypeEnum;
+import com.zny.common.result.MessageCodeEnum;
+import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.ReflectUtils;
 import com.zny.system.model.api.ApiModel;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -58,7 +59,7 @@ public class ApiAspect {
                     String userId = (String) StpUtil.getSession().get("userId");
                     //检测api
                     if (!checkApi(userId, pjp)) {
-                        return SaResult.get(500, "没有权限！", null);
+                        return SaResultEx.error(MessageCodeEnum.AUTH_INVALID);
                     }
                 }
             }
@@ -66,7 +67,7 @@ public class ApiAspect {
         }
         catch (Throwable e) {
             logger.error(e.getMessage());
-            result = SaResult.error("内部异常！");
+            result = SaResultEx.error(MessageCodeEnum.EXCEPTION);
         }
 
         return result;

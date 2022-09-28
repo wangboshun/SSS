@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author WBS
@@ -33,8 +32,7 @@ public class StationController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public SaResult get(@PathVariable String id) {
-        StationBaseSetModel model = stationBaseSetApplication.getById(id);
-        return SaResult.data(model);
+        return stationBaseSetApplication.getStationBaseSetById(id);
     }
 
     /**
@@ -47,7 +45,7 @@ public class StationController {
     public SaResult list(
             @RequestParam(required = false) String stationId, @RequestParam(required = false) Integer pageIndex,
             @RequestParam(required = false) Integer pageSize) {
-        PageResult result = stationBaseSetApplication.getStationPage(stationId, pageIndex, pageSize);
+        PageResult result = stationBaseSetApplication.getStationBaseSetPage(stationId, pageIndex, pageSize);
         return SaResult.data(result);
     }
 

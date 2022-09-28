@@ -9,6 +9,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.enums.ResourceEnum;
 import com.zny.common.model.PageResult;
 import com.zny.common.resource.ResourceApplication;
+import com.zny.common.result.MessageCodeEnum;
+import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
 import com.zny.user.mapper.MenuMapper;
 import com.zny.user.model.menu.MenuModel;
@@ -16,7 +18,9 @@ import com.zny.user.model.menu.MenuTreeModel;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author WBS
@@ -31,6 +35,24 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
 
     public MenuApplication(ResourceApplication resourceApplication) {
         this.resourceApplication = resourceApplication;
+    }
+
+    /**
+     * 根据id获取菜单信息
+     *
+     * @param id id
+     */
+    public SaResult getMenuById(String id) {
+        if (resourceApplication.haveResource(id, ResourceEnum.MENU)) {
+            MenuModel model = this.getById(id);
+            if (model == null) {
+                return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "菜单不存在！");
+            }
+            return SaResult.data(model);
+        }
+        else {
+            return SaResultEx.error(MessageCodeEnum.AUTH_INVALID);
+        }
     }
 
     /**
@@ -67,7 +89,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
             return SaResult.ok("添加菜单成功！");
         }
         else {
-            return SaResult.error("添加菜单失败！");
+            return SaResultEx.error(MessageCodeEnum.DB_ERROR, "添加菜单失败！");
         }
     }
 
@@ -163,13 +185,13 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
         MenuModel model = this.getOne(wrapper);
 
         if (model == null) {
-            return SaResult.error("菜单不存在！");
+            return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "菜单不存在！");
         }
         if (removeById(id)) {
             return SaResult.ok("删除菜单成功！");
         }
         else {
-            return SaResult.error("删除菜单失败！");
+            return SaResultEx.error(MessageCodeEnum.DB_ERROR, "删除菜单失败！");
         }
     }
 
@@ -193,7 +215,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
         MenuModel menuModel = this.getOne(wrapper);
 
         if (menuModel == null) {
-            return SaResult.error("菜单不存在！");
+            return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "菜单不存在！");
         }
         menuModel.setMenu_name(menuName);
         menuModel.setMenu_code(menuCode);
@@ -206,7 +228,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
             return SaResult.ok("更新菜单信息成功！");
         }
         else {
-            return SaResult.error("删除菜单信息失败！");
+            return SaResultEx.error(MessageCodeEnum.DB_ERROR, "删除菜单信息失败！");
         }
     }
 
@@ -262,7 +284,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      */
     public SaResult bindMenuByUser(String userId, String[] menuId) {
         if (menuId == null || menuId.length == 0) {
-            return SaResult.error("请输入资源id");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
         return resourceApplication.addResource(userId, ResourceEnum.USER.getIndex(), menuId, ResourceEnum.MENU.getIndex());
     }
@@ -275,7 +297,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      */
     public SaResult bindMenuByRole(String roleId, String[] menuId) {
         if (menuId == null || menuId.length == 0) {
-            return SaResult.error("请输入资源id");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
         return resourceApplication.addResource(roleId, ResourceEnum.ROLE.getIndex(), menuId, ResourceEnum.MENU.getIndex());
     }
@@ -288,7 +310,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      */
     public SaResult unBindMenuByUser(String userId, String[] menuId) {
         if (menuId == null || menuId.length == 0) {
-            return SaResult.error("请输入资源id");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
         return resourceApplication.deleteResource(null, userId, ResourceEnum.USER.getIndex(), menuId, ResourceEnum.MENU.getIndex());
     }
@@ -301,7 +323,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      */
     public SaResult unBindMenuByRole(String roleId, String[] menuId) {
         if (menuId == null || menuId.length == 0) {
-            return SaResult.error("请输入资源id");
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
         return resourceApplication.deleteResource(null, roleId, ResourceEnum.ROLE.getIndex(), menuId, ResourceEnum.MENU.getIndex());
     }
