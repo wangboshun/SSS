@@ -12,6 +12,7 @@ import com.zny.common.resource.ResourceApplication;
 import com.zny.common.result.MessageCodeEnum;
 import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
+import com.zny.common.utils.PageUtils;
 import com.zny.common.utils.ReflectUtils;
 import com.zny.system.mapper.api.ApiMapper;
 import com.zny.system.model.api.ApiModel;
@@ -129,13 +130,14 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
 
             for (ApiModel news : newsList) {
                 Optional<ApiModel> apiModel = oldList.stream().filter(x -> x.getApi_code().equals(news.getApi_code())).findFirst();
+                //如果存在，除了id和状态以外都需要更新
                 if (apiModel.isPresent()) {
-                    //如果存在，除了id和状态以外都需要更新
                     ApiModel model = apiModel.get();
                     news.setId(model.getId());
                     news.setApi_status(model.getApi_status());
                     updateList.add(news);
                 }
+                //如果不存在，新增
                 else {
                     news.setId(UUID.randomUUID().toString());
                     news.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
@@ -187,12 +189,8 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
      */
     public PageResult getApiPage(
             String apiId, String apiName, String apiCode, Integer pageIndex, Integer pageSize) {
-        if (pageSize == null) {
-            pageSize = 10;
-        }
-        if (pageIndex == null || pageIndex < 1) {
-            pageIndex = 1;
-        }
+        pageSize = PageUtils.getPageSize(pageSize);
+        pageIndex = PageUtils.getPageIndex(pageIndex);
         QueryWrapper<ApiModel> wrapper = new QueryWrapper<ApiModel>();
         if (!resourceApplication.haveResource(wrapper, apiId, "id", ResourceEnum.API)) {
             return null;
@@ -292,38 +290,41 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
      * @param ids 资源id
      */
     private List<ApiModel> getApiByIds(Set<String> ids) {
-        List<ApiModel> apiList = new ArrayList<ApiModel>();
+        List<ApiModel> list = new ArrayList<ApiModel>();
+        if (ids == null || ids.isEmpty()) {
+            return list;
+        }
         for (String id : ids) {
             ApiModel apiModel = this.getById(id);
-            apiList.add(apiModel);
+            list.add(apiModel);
         }
-        return apiList;
+        return list;
     }
 
     /**
      * 绑定api到用户
      *
-     * @param userId 用户id
-     * @param apiId  id
+     * @param userIds 用户id
+     * @param apiIds  id
      */
-    public SaResult bindApiByUser(String userId, String[] apiId) {
-        if (apiId == null || apiId.length == 0) {
+    public SaResult bindApiByUser(String[] userIds, String[] apiIds) {
+        if (apiIds == null || apiIds.length == 0) {
             return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
-        return resourceApplication.addResource(userId, ResourceEnum.USER.getIndex(), apiId, ResourceEnum.API.getIndex());
+        return resourceApplication.addResource(userIds, ResourceEnum.USER.getIndex(), apiIds, ResourceEnum.API.getIndex());
     }
 
     /**
      * 绑定api到角色
      *
-     * @param roleId 角色id
-     * @param apiId  id
+     * @param roleIds 角色id
+     * @param apiIds  id
      */
-    public SaResult bindApiByRole(String roleId, String[] apiId) {
-        if (apiId == null || apiId.length == 0) {
+    public SaResult bindApiByRole(String[] roleIds, String[] apiIds) {
+        if (apiIds == null || apiIds.length == 0) {
             return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
-        return resourceApplication.addResource(roleId, ResourceEnum.ROLE.getIndex(), apiId, ResourceEnum.API.getIndex());
+        return resourceApplication.addResource(roleIds, ResourceEnum.ROLE.getIndex(), apiIds, ResourceEnum.API.getIndex());
     }
 
     /**
@@ -332,7 +333,7 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
      * @param userId 用户id
      * @param apiId  id
      */
-    public SaResult unBindApiByUser(String userId, String[] apiId) {
+    public SaResult unBindApiByUser(String[] userId, String[] apiId) {
         if (apiId == null || apiId.length == 0) {
             return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
@@ -345,7 +346,7 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
      * @param roleId 角色id
      * @param apiId  id
      */
-    public SaResult unBindApiByRole(String roleId, String[] apiId) {
+    public SaResult unBindApiByRole(String[] roleId, String[] apiId) {
         if (apiId == null || apiId.length == 0) {
             return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }

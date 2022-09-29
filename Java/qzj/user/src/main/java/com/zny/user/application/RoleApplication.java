@@ -10,6 +10,7 @@ import com.zny.common.model.PageResult;
 import com.zny.common.result.MessageCodeEnum;
 import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
+import com.zny.common.utils.PageUtils;
 import com.zny.user.mapper.RoleMapper;
 import com.zny.user.model.role.RoleModel;
 import com.zny.user.model.role.RoleTreeModel;
@@ -115,16 +116,13 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
      */
     public PageResult getRolePage(
             String roleId, String roleName, String roleCode, Integer pageIndex, Integer pageSize) {
-        if (pageSize == null) {
-            pageSize = 10;
-        }
-        if (pageIndex == null || pageIndex < 1) {
-            pageIndex = 1;
-        }
+        pageSize = PageUtils.getPageSize(pageSize);
+        pageIndex = PageUtils.getPageIndex(pageIndex);
         QueryWrapper<RoleModel> wrapper = new QueryWrapper<RoleModel>();
         wrapper.eq(StringUtils.isNotBlank(roleId), "id", roleId);
         wrapper.eq(StringUtils.isNotBlank(roleName), "role_name", roleName);
         wrapper.eq(StringUtils.isNotBlank(roleCode), "role_code", roleCode);
+        wrapper.orderByDesc("create_time");
         Page<RoleModel> page = new Page<>(pageIndex, pageSize);
         Page<RoleModel> result = this.page(page, wrapper);
         Map<String, Object> map = new HashMap<>(4);

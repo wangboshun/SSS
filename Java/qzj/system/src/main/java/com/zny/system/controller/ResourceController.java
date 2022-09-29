@@ -58,15 +58,15 @@ public class ResourceController {
     /**
      * 添加资源
      *
-     * @param mainId    主id
+     * @param mainIds   主id
      * @param mainType  主类型
-     * @param slaveId   副id
+     * @param slaveIds  副id
      * @param slaveType 副类型
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public SaResult add(
-            String mainId, int mainType, @RequestParam(required = false) String[] slaveId, int slaveType) {
-        return resourceApplication.addResource(mainId, mainType, slaveId, slaveType);
+            String[] mainIds, int mainType, @RequestParam(required = false) String[] slaveIds, int slaveType) {
+        return resourceApplication.addResource(mainIds, mainType, slaveIds, slaveType);
     }
 
     /**

@@ -12,6 +12,7 @@ import com.zny.common.resource.ResourceApplication;
 import com.zny.common.result.MessageCodeEnum;
 import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
+import com.zny.common.utils.PageUtils;
 import com.zny.iot.mapper.*;
 import com.zny.iot.model.*;
 import com.zny.iot.model.input.StationInputDto;
@@ -81,18 +82,14 @@ public class StationApplication extends ServiceImpl<StationBaseSetMapper, Statio
      * @param pageSize  分页大小
      */
     public SaResult getStationBaseSetPage(String stationId, Integer pageIndex, Integer pageSize) {
-        if (pageSize == null) {
-            pageSize = 10;
-        }
-        if (pageIndex == null || pageIndex < 1) {
-            pageIndex = 1;
-        }
-
+        pageSize = PageUtils.getPageSize(pageSize);
+        pageIndex = PageUtils.getPageIndex(pageIndex);
         QueryWrapper<StationBaseSetModel> wrapper = new QueryWrapper<StationBaseSetModel>();
         if (!resourceApplication.haveResource(wrapper, stationId, "StationID", ResourceEnum.Station)) {
             return SaResultEx.error(MessageCodeEnum.AUTH_INVALID);
         }
 
+        wrapper.orderByAsc("StationID");
         Page<StationBaseSetModel> page = new Page<>(pageIndex, pageSize);
         Page<StationBaseSetModel> result = this.page(page, wrapper);
         PageResult pageResult = new PageResult();
@@ -134,43 +131,46 @@ public class StationApplication extends ServiceImpl<StationBaseSetMapper, Statio
     }
 
     /**
-     * 根据资源映射获取菜单
+     * 根据资源映射获取测站
      *
      * @param ids 资源id
      */
     private List<StationBaseSetModel> getStationBaseSetByIds(Set<String> ids) {
-        List<StationBaseSetModel> menuList = new ArrayList<StationBaseSetModel>();
+        List<StationBaseSetModel> list = new ArrayList<StationBaseSetModel>();
+        if (ids == null || ids.isEmpty()) {
+            return list;
+        }
         for (String id : ids) {
             StationBaseSetModel model = this.getById(id);
-            menuList.add(model);
+            list.add(model);
         }
-        return menuList;
+        return list;
     }
 
     /**
      * 绑定测站到用户
      *
-     * @param userId           用户id
-     * @param stationBaseSetId 测站id
+     * @param userIds           用户id
+     * @param stationBaseSetIds 测站id
      */
-    public SaResult bindStationBaseSetByUser(String userId, String[] stationBaseSetId) {
-        if (stationBaseSetId == null || stationBaseSetId.length == 0) {
+    public SaResult bindStationBaseSetByUser(String[] userIds, String[] stationBaseSetIds) {
+        if (stationBaseSetIds == null || stationBaseSetIds.length == 0) {
             return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
-        return resourceApplication.addResource(userId, ResourceEnum.USER.getIndex(), stationBaseSetId, ResourceEnum.Station.getIndex());
+        return resourceApplication.addResource(userIds, ResourceEnum.USER.getIndex(), stationBaseSetIds, ResourceEnum.Station.getIndex());
     }
 
     /**
      * 绑定测站到角色
      *
-     * @param roleId           角色id
-     * @param stationBaseSetId 测站id
+     * @param roleIds           角色id
+     * @param stationBaseSetIds 测站id
      */
-    public SaResult bindStationBaseSetByRole(String roleId, String[] stationBaseSetId) {
-        if (stationBaseSetId == null || stationBaseSetId.length == 0) {
+    public SaResult bindStationBaseSetByRole(String[] roleIds, String[] stationBaseSetIds) {
+        if (stationBaseSetIds == null || stationBaseSetIds.length == 0) {
             return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
-        return resourceApplication.addResource(roleId, ResourceEnum.ROLE.getIndex(), stationBaseSetId, ResourceEnum.Station.getIndex());
+        return resourceApplication.addResource(roleIds, ResourceEnum.ROLE.getIndex(), stationBaseSetIds, ResourceEnum.Station.getIndex());
     }
 
     /**
@@ -179,7 +179,7 @@ public class StationApplication extends ServiceImpl<StationBaseSetMapper, Statio
      * @param userId           用户id
      * @param stationBaseSetId id
      */
-    public SaResult unBindStationBaseSetByUser(String userId, String[] stationBaseSetId) {
+    public SaResult unBindStationBaseSetByUser(String[] userId, String[] stationBaseSetId) {
         if (stationBaseSetId == null || stationBaseSetId.length == 0) {
             return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
@@ -192,7 +192,7 @@ public class StationApplication extends ServiceImpl<StationBaseSetMapper, Statio
      * @param roleId           角色id
      * @param stationBaseSetId id
      */
-    public SaResult unBindStationBaseSetByRole(String roleId, String[] stationBaseSetId) {
+    public SaResult unBindStationBaseSetByRole(String[] roleId, String[] stationBaseSetId) {
         if (stationBaseSetId == null || stationBaseSetId.length == 0) {
             return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
@@ -261,12 +261,8 @@ public class StationApplication extends ServiceImpl<StationBaseSetMapper, Statio
      */
     public SaResult getRealData(
             Integer stationId, Integer pointId, String start, String end, Integer pageIndex, Integer pageSize) {
-        if (pageSize == null) {
-            pageSize = 10;
-        }
-        if (pageIndex == null || pageIndex < 1) {
-            pageIndex = 1;
-        }
+        pageSize = PageUtils.getPageSize(pageSize);
+        pageIndex = PageUtils.getPageIndex(pageIndex);
 
         QueryWrapper<StationBaseSetModel> stationWrapper = new QueryWrapper<StationBaseSetModel>();
         if (!resourceApplication.haveResource(stationWrapper, stationId, "StationID", ResourceEnum.Station)) {
@@ -322,7 +318,7 @@ public class StationApplication extends ServiceImpl<StationBaseSetMapper, Statio
 
         realWrapper.ge("DataTime", start);
         realWrapper.le("DataTime", end);
-
+        realWrapper.orderByDesc("DataTime");
         Page<RealAppDataModel> page = new Page<>(pageIndex, pageSize);
         Page<RealAppDataModel> result = realAppDataMapper.selectPage(page, realWrapper);
         PageResult pageResult = new PageResult();
@@ -345,13 +341,8 @@ public class StationApplication extends ServiceImpl<StationBaseSetMapper, Statio
      */
     public SaResult getPeriodData(
             Integer stationId, Integer pointId, String start, String end, Integer pageIndex, Integer pageSize) {
-        if (pageSize == null) {
-            pageSize = 10;
-        }
-        if (pageIndex == null || pageIndex < 1) {
-            pageIndex = 1;
-        }
-
+        pageSize = PageUtils.getPageSize(pageSize);
+        pageIndex = PageUtils.getPageIndex(pageIndex);
         QueryWrapper<StationBaseSetModel> stationWrapper = new QueryWrapper<StationBaseSetModel>();
         if (!resourceApplication.haveResource(stationWrapper, stationId, "StationID", ResourceEnum.Station)) {
             return SaResultEx.error(MessageCodeEnum.AUTH_INVALID);
@@ -406,7 +397,7 @@ public class StationApplication extends ServiceImpl<StationBaseSetMapper, Statio
 
         realWrapper.ge("DataTime", start);
         realWrapper.le("DataTime", end);
-
+        realWrapper.orderByDesc("DataTime");
         Page<PeriodAppDataModel> page = new Page<>(pageIndex, pageSize);
         Page<PeriodAppDataModel> result = periodAppDataMapper.selectPage(page, realWrapper);
         PageResult pageResult = new PageResult();

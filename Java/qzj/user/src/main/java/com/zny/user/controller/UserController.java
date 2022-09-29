@@ -144,22 +144,22 @@ public class UserController {
     /**
      * 绑定用户到角色
      *
-     * @param roleId 角色id
-     * @param userId 用户id
+     * @param roleIds 角色id
+     * @param userIds 用户id
      */
     @RequestMapping(value = "/bind_by_role", method = RequestMethod.POST)
-    public SaResult bindUserByRole(String roleId, String[] userId) {
-        return userApplication.bindUserByRole(roleId, userId);
+    public SaResult bindUserByRole(String[] roleIds, String[] userIds) {
+        return userApplication.bindUserByRole(roleIds, userIds);
     }
 
     /**
      * 解绑用户到角色
      *
-     * @param roleId 角色id
-     * @param userId id
+     * @param roleIds 角色id
+     * @param userIds id
      */
     @RequestMapping(value = "/unbind_by_role", method = RequestMethod.POST)
-    public SaResult unBindUserByRole(String roleId, String[] userId) {
-        return userApplication.unBindUserByRole(roleId, userId);
+    public SaResult unBindUserByRole(String[] roleIds, String[] userIds) {
+        return userApplication.unBindUserByRole(roleIds, userIds);
     }
 }

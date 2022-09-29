@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.model.PageResult;
+import com.zny.common.utils.PageUtils;
 import com.zny.system.mapper.apilog.ApiLogMapper;
 import com.zny.system.model.apilog.ApiLogModel;
 import org.springframework.stereotype.Service;
@@ -29,16 +30,13 @@ public class ApiLogApplication extends ServiceImpl<ApiLogMapper, ApiLogModel> {
      */
     public PageResult getApiLogPage(
             String userId, String apiName, String method, String ip, Integer pageIndex, Integer pageSize) {
-        if (pageSize == null) {
-            pageSize = 10;
-        }
-        if (pageIndex == null || pageIndex < 1) {
-            pageIndex = 1;
-        }
+        pageSize = PageUtils.getPageSize(pageSize);
+        pageIndex = PageUtils.getPageIndex(pageIndex);
         QueryWrapper<ApiLogModel> wrapper = new QueryWrapper<ApiLogModel>();
         wrapper.eq(StringUtils.isNotBlank(apiName), "api_name", apiName);
         wrapper.eq(StringUtils.isNotBlank(userId), "user_id", userId);
         wrapper.eq(StringUtils.isNotBlank(ip), "ip", ip);
+        wrapper.orderByDesc("start_time");
         wrapper.eq(StringUtils.isNotBlank(method), "method", method);
         Page<ApiLogModel> page = new Page<>(pageIndex, pageSize);
         Page<ApiLogModel> result = this.page(page, wrapper);

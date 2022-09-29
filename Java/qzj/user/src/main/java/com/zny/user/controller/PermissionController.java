@@ -127,44 +127,44 @@ public class PermissionController {
     /**
      * 绑定权限到用户
      *
-     * @param userId 用户id
-     * @param menuId 权限id
+     * @param userIds 用户id
+     * @param menuIds 权限id
      */
     @RequestMapping(value = "/bind_by_user", method = RequestMethod.POST)
-    public SaResult bindPermissionByUser(String userId, String[] menuId) {
-        return permissionApplication.bindPermissionByUser(userId, menuId);
+    public SaResult bindPermissionByUser(String[] userIds, String[] menuIds) {
+        return permissionApplication.bindPermissionByUser(userIds, menuIds);
     }
 
     /**
      * 绑定权限到角色
      *
-     * @param roleId 角色id
-     * @param menuId 权限id
+     * @param roleIds 角色id
+     * @param menuIds 权限id
      */
     @RequestMapping(value = "/bind_by_role", method = RequestMethod.POST)
-    public SaResult bindPermissionByRole(String roleId, String[] menuId) {
-        return permissionApplication.bindPermissionByRole(roleId, menuId);
+    public SaResult bindPermissionByRole(String[] roleIds, String[] menuIds) {
+        return permissionApplication.bindPermissionByRole(roleIds, menuIds);
     }
 
     /**
      * 解绑权限到用户
      *
-     * @param userId       用户id
-     * @param permissionId id
+     * @param userIds       用户id
+     * @param permissionIds id
      */
     @RequestMapping(value = "/unbind_by_user", method = RequestMethod.POST)
-    public SaResult unBindPermissionByUser(String userId, String[] permissionId) {
-        return permissionApplication.unBindPermissionByUser(userId, permissionId);
+    public SaResult unBindPermissionByUser(String[] userIds, String[] permissionIds) {
+        return permissionApplication.unBindPermissionByUser(userIds, permissionIds);
     }
 
     /**
      * 解绑权限到角色
      *
-     * @param roleId       角色id
-     * @param permissionId id
+     * @param roleIds       角色id
+     * @param permissionIds id
      */
     @RequestMapping(value = "/unbind_by_role", method = RequestMethod.POST)
-    public SaResult unBindPermissionByRole(String roleId, String[] permissionId) {
-        return permissionApplication.unBindPermissionByRole(roleId, permissionId);
+    public SaResult unBindPermissionByRole(String[] roleIds, String[] permissionIds) {
+        return permissionApplication.unBindPermissionByRole(roleIds, permissionIds);
     }
 }

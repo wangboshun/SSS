@@ -54,12 +54,8 @@ public class TemplateApplication extends ServiceImpl<TemplateMapper, TemplateMod
      */
     public PageResult getTemplatePage(String templateId, String templateName, Integer pageIndex, Integer
     pageSize) {
-        if (pageSize == null) {
-            pageSize = 10;
-        }
-        if (pageIndex == null || pageIndex < 1) {
-            pageIndex = 1;
-        }
+        pageSize = PageUtils.getPageSize(pageSize);
+        pageIndex = PageUtils.getPageIndex(pageIndex);
         QueryWrapper<TemplateModel> wrapper = new QueryWrapper<TemplateModel>();
         wrapper.eq(StringUtils.isNotBlank(templateId), "id", templateId);
         wrapper.eq(StringUtils.isNotBlank(templateName), "template_name", templateName);

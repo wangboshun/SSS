@@ -13,7 +13,9 @@ import com.zny.common.model.PageResult;
 import com.zny.common.result.MessageCodeEnum;
 import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
+import com.zny.common.utils.PageUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.time.LocalDateTime;
@@ -31,28 +33,31 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
     /**
      * 添加资源
      *
-     * @param mainId    主id
+     * @param mainIds   主id
      * @param mainType  主类型
-     * @param slaveId   副id
+     * @param slaveIds  副id
      * @param slaveType 副类型
      */
-    public SaResult addResource(String mainId, int mainType, String[] slaveId, int slaveType) {
+    public SaResult addResource(String[] mainIds, int mainType, String[] slaveIds, int slaveType) {
         List<ResourceModel> list = new ArrayList<>();
-        for (String item : slaveId) {
-            List<ResourceModel> resourceList = getResourceList(null, mainId, mainType, item, slaveType);
-            if (resourceList != null && resourceList.size() > 0) {
-                continue;
+        for (String mainIdItem : mainIds) {
+            for (String slaveIdItem : slaveIds) {
+                List<ResourceModel> resourceList = getResourceList(null, mainIdItem, mainType, slaveIdItem, slaveType);
+                if (resourceList != null && resourceList.size() > 0) {
+                    continue;
+                }
+                ResourceModel resourceModel = new ResourceModel();
+                resourceModel.setId(UUID.randomUUID().toString());
+                resourceModel.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
+                resourceModel.setMain_id(mainIdItem);
+                resourceModel.setMain_type(mainType);
+                resourceModel.setSlave_id(slaveIdItem);
+                resourceModel.setSlave_type(slaveType);
+                list.add(resourceModel);
             }
-            ResourceModel resourceModel = new ResourceModel();
-            resourceModel.setId(UUID.randomUUID().toString());
-            resourceModel.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
-            resourceModel.setMain_id(mainId);
-            resourceModel.setMain_type(mainType);
-            resourceModel.setSlave_id(item);
-            resourceModel.setSlave_type(slaveType);
-            list.add(resourceModel);
         }
-        if (slaveId.length > 0 && list.size() < 1) {
+
+        if (slaveIds.length > 0 && list.size() < 1) {
             return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "资源已存在！");
         }
         if (saveOrUpdateBatch(list)) {
@@ -67,25 +72,28 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
      * 删除资源信息
      *
      * @param id        id
-     * @param mainId    主id
+     * @param mainIds   主id
      * @param mainType  主类型
-     * @param slaveId   副id
+     * @param slaveIds  副id
      * @param slaveType 副类型
      */
-    public SaResult deleteResource(String id, String mainId, Integer mainType, String[] slaveId, Integer slaveType) {
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    public SaResult deleteResource(
+            String id, String[] mainIds, Integer mainType, String[] slaveIds, Integer slaveType) {
         try {
-            QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
-            wrapper.eq(StringUtils.isNotBlank(id), "id", id);
-            wrapper.eq(StringUtils.isNotBlank(mainId), "main_id", mainId);
-            wrapper.eq(mainType != null, "main_type", mainType);
-            wrapper.in("slave_id", new ArrayList<>(Arrays.asList(slaveId)));
-            wrapper.eq(slaveType != null, "slave_type", slaveType);
-            if (remove(wrapper)) {
-                return SaResult.ok("删除资源信息成功！");
+            for (String mainIdItem : mainIds) {
+                QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
+                wrapper.eq(StringUtils.isNotBlank(id), "id", id);
+                wrapper.eq(StringUtils.isNotBlank(mainIdItem), "main_id", mainIdItem);
+                wrapper.eq(mainType != null, "main_type", mainType);
+                wrapper.in("slave_id", new ArrayList<>(Arrays.asList(slaveIds)));
+                wrapper.eq(slaveType != null, "slave_type", slaveType);
+                if (!remove(wrapper)) {
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                    return SaResultEx.error(MessageCodeEnum.DB_ERROR, "删除资源信息失败！");
+                }
             }
-            else {
-                return SaResultEx.error(MessageCodeEnum.DB_ERROR, "删除资源信息失败！");
-            }
+            return SaResult.ok("删除资源信息成功！");
         }
         catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -106,12 +114,8 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
     public PageResult getResourcePage(
             String id, String mainId, Integer mainType, String slaveId, Integer slaveType, Integer pageIndex,
             Integer pageSize) {
-        if (pageSize == null) {
-            pageSize = 10;
-        }
-        if (pageIndex == null || pageIndex < 1) {
-            pageIndex = 1;
-        }
+        pageSize = PageUtils.getPageSize(pageSize);
+        pageIndex = PageUtils.getPageIndex(pageIndex);
         QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
         wrapper.eq(StringUtils.isNotBlank(id), "id", id);
         wrapper.eq(StringUtils.isNotBlank(mainId), "main_id", mainId);
@@ -207,15 +211,14 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
      * @param userId 用户id
      */
     public Set<String> getIdsByUser(String userId, ResourceEnum slaveType) {
+        Set<String> ids = new HashSet<>();
+
         //获取用户关联的资源id
         List<ResourceModel> resourceList = getResourceList(userId, ResourceEnum.USER.getIndex(), slaveType.getIndex());
-        if (resourceList == null || resourceList.isEmpty()) {
-            return null;
-        }
-
-        Set<String> ids =new HashSet<>();
-        for (ResourceModel resourceModel : resourceList) {
-            ids.add(resourceModel.getSlave_id());
+        if (resourceList != null && resourceList.size() > 0) {
+            for (ResourceModel resourceModel : resourceList) {
+                ids.add(resourceModel.getSlave_id());
+            }
         }
 
         //获取所有角色
@@ -261,12 +264,12 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
         if (!userType.equals(UserTypeEnum.SUPER.getIndex())) {
             String userId = (String) StpUtil.getSession().get("userId");
             Set<String> ids = getIdsByUser(userId, slaveType);
-            if (ids.size() < 1) {
+            if (ids == null || ids.size() < 1) {
                 return false;
             }
             else {
                 //如果有前端where条件
-                if (id != null) {
+                if (id != null && StringUtils.isNotBlank(id.toString())) {
                     //判断在资源范围内
                     if (ids.stream().anyMatch(x -> x.equals(id))) {
                         wrapper.eq(idField, id);
@@ -282,7 +285,9 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
             }
         }
         else {
-            wrapper.eq(id != null, idField, id);
+            if (id != null && StringUtils.isNotBlank(id.toString())) {
+                wrapper.eq(idField, id);
+            }
         }
         return true;
     }

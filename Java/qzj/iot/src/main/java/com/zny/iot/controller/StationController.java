@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/iot/station")
-@Tag(name = "station", description = "测站模块")
+@Tag(name = "station", description = "前置机模块")
 public class StationController {
 
     private final StationApplication stationBaseSetApplication;
@@ -120,44 +120,44 @@ public class StationController {
     /**
      * 绑定测站到用户
      *
-     * @param userId           用户id
-     * @param stationBaseSetId 测站id
+     * @param userIds           用户id
+     * @param stationBaseSetIds 测站id
      */
     @RequestMapping(value = "/bind_by_user", method = RequestMethod.POST)
-    public SaResult bindStationBaseSetByUser(String userId, String[] stationBaseSetId) {
-        return stationBaseSetApplication.bindStationBaseSetByUser(userId, stationBaseSetId);
+    public SaResult bindStationBaseSetByUser(String[] userIds, String[] stationBaseSetIds) {
+        return stationBaseSetApplication.bindStationBaseSetByUser(userIds, stationBaseSetIds);
     }
 
     /**
      * 绑定测站到角色
      *
-     * @param roleId           角色id
-     * @param stationBaseSetId 测站id
+     * @param roleIds           角色id
+     * @param stationBaseSetIds 测站id
      */
     @RequestMapping(value = "/bind_by_role", method = RequestMethod.POST)
-    public SaResult bindStationBaseSetByRole(String roleId, String[] stationBaseSetId) {
-        return stationBaseSetApplication.bindStationBaseSetByRole(roleId, stationBaseSetId);
+    public SaResult bindStationBaseSetByRole(String[] roleIds, String[] stationBaseSetIds) {
+        return stationBaseSetApplication.bindStationBaseSetByRole(roleIds, stationBaseSetIds);
     }
 
     /**
      * 解绑测站到用户
      *
-     * @param userId           用户id
-     * @param stationBaseSetId id
+     * @param userIds           用户id
+     * @param stationBaseSetIds id
      */
     @RequestMapping(value = "/unbind_by_user", method = RequestMethod.POST)
-    public SaResult unBindStationBaseSetByUser(String userId, String[] stationBaseSetId) {
-        return stationBaseSetApplication.unBindStationBaseSetByUser(userId, stationBaseSetId);
+    public SaResult unBindStationBaseSetByUser(String[] userIds, String[] stationBaseSetIds) {
+        return stationBaseSetApplication.unBindStationBaseSetByUser(userIds, stationBaseSetIds);
     }
 
     /**
      * 解绑测站到角色
      *
-     * @param roleId           角色id
-     * @param stationBaseSetId id
+     * @param roleIds           角色id
+     * @param stationBaseSetIds id
      */
     @RequestMapping(value = "/unbind_by_role", method = RequestMethod.POST)
-    public SaResult unBindStationBaseSetByRole(String roleId, String[] stationBaseSetId) {
-        return stationBaseSetApplication.unBindStationBaseSetByRole(roleId, stationBaseSetId);
+    public SaResult unBindStationBaseSetByRole(String[] roleIds, String[] stationBaseSetIds) {
+        return stationBaseSetApplication.unBindStationBaseSetByRole(roleIds, stationBaseSetIds);
     }
 }

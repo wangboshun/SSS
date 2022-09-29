@@ -52,17 +52,17 @@ public class ApiAspect {
         Object result;
         try {
             Object[] args = pjp.getArgs();
-            if (StpUtil.isLogin()) {
-                Object userType = StpUtil.getSession().get("userType");
-                //不是超级管理员
-                if (!userType.equals(UserTypeEnum.SUPER.getIndex())) {
-                    String userId = (String) StpUtil.getSession().get("userId");
-                    //检测api
-                    if (!checkApi(userId, pjp)) {
-                        return SaResultEx.error(MessageCodeEnum.AUTH_INVALID);
-                    }
-                }
-            }
+//            if (StpUtil.isLogin()) {
+//                Object userType = StpUtil.getSession().get("userType");
+//                //不是超级管理员
+//                if (!userType.equals(UserTypeEnum.SUPER.getIndex())) {
+//                    String userId = (String) StpUtil.getSession().get("userId");
+//                    //检测api
+//                    if (!checkApi(userId, pjp)) {
+//                        return SaResultEx.error(MessageCodeEnum.AUTH_INVALID);
+//                    }
+//                }
+//            }
             result = pjp.proceed(args);
         }
         catch (Throwable e) {

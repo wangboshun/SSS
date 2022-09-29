@@ -96,44 +96,44 @@ public class ApiController {
     /**
      * 绑定api到用户
      *
-     * @param userId 用户id
-     * @param apiId  id
+     * @param userIds 用户id
+     * @param apiIds  id
      */
     @RequestMapping(value = "/bind_by_user", method = RequestMethod.POST)
-    public SaResult bindApiByUser(String userId, String[] apiId) {
-        return apiApplication.bindApiByUser(userId, apiId);
+    public SaResult bindApiByUser(String[] userIds, String[] apiIds) {
+        return apiApplication.bindApiByUser(userIds, apiIds);
     }
 
     /**
      * 绑定api到角色
      *
-     * @param roleId 角色id
-     * @param apiId  id
+     * @param roleIds 角色id
+     * @param apiIds  id
      */
     @RequestMapping(value = "/bind_by_role", method = RequestMethod.POST)
-    public SaResult bindApiByRole(String roleId, String[] apiId) {
-        return apiApplication.bindApiByRole(roleId, apiId);
+    public SaResult bindApiByRole(String[] roleIds, String[] apiIds) {
+        return apiApplication.bindApiByRole(roleIds, apiIds);
     }
 
     /**
      * 解绑api到用户
      *
-     * @param userId 用户id
-     * @param apiId  id
+     * @param userIds 用户id
+     * @param apiIds  id
      */
     @RequestMapping(value = "/unbind_by_user", method = RequestMethod.POST)
-    public SaResult unBindApiByUser(String userId, String[] apiId) {
-        return apiApplication.unBindApiByUser(userId, apiId);
+    public SaResult unBindApiByUser(String[] userIds, String[] apiIds) {
+        return apiApplication.unBindApiByUser(userIds, apiIds);
     }
 
     /**
      * 解绑api到角色
      *
-     * @param roleId 角色id
-     * @param apiId  id
+     * @param roleIds 角色id
+     * @param apiIds  id
      */
     @RequestMapping(value = "/unbind_by_role", method = RequestMethod.POST)
-    public SaResult unBindApiByRole(String roleId, String[] apiId) {
-        return apiApplication.unBindApiByRole(roleId, apiId);
+    public SaResult unBindApiByRole(String[] roleIds, String[] apiIds) {
+        return apiApplication.unBindApiByRole(roleIds, apiIds);
     }
 }

@@ -16,5 +16,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 @DS("iot")
 public interface SensorSetMapper extends BaseMapper<SensorSetModel> {
-
+    @Select("select top 1 * from SensorSet order by SensorID desc ")
+    Integer getMaxId();
 }

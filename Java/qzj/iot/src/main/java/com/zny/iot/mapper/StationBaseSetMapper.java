@@ -16,6 +16,6 @@ import org.springframework.stereotype.Repository;
 @DS("iot")
 public interface StationBaseSetMapper extends BaseMapper<StationBaseSetModel> {
 
-    @Select("select top 1 * from StationBaseSet order by stationId desc ")
+    @Select("select top 1 * from StationBaseSet order by StationID desc ")
     Integer getMaxId();
 }

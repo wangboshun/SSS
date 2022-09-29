@@ -16,6 +16,7 @@ import com.zny.common.resource.ResourceApplication;
 import com.zny.common.result.MessageCodeEnum;
 import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
+import com.zny.common.utils.PageUtils;
 import com.zny.user.mapper.UserMapper;
 import com.zny.user.model.user.UserModel;
 import com.zny.user.model.user.UserTreeModel;
@@ -127,15 +128,12 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
      * @param pageSize  分页大小
      */
     public PageResult getUserPage(String userId, String userName, Integer pageIndex, Integer pageSize) {
-        if (pageSize == null) {
-            pageSize = 10;
-        }
-        if (pageIndex == null || pageIndex < 1) {
-            pageIndex = 1;
-        }
+        pageSize = PageUtils.getPageSize(pageSize);
+        pageIndex = PageUtils.getPageIndex(pageIndex);
         QueryWrapper<UserModel> wrapper = new QueryWrapper<UserModel>();
         wrapper.eq(StringUtils.isNotBlank(userId), "id", userId);
         wrapper.eq(StringUtils.isNotBlank(userName), "user_name", userName);
+        wrapper.orderByDesc("create_time");
         Page<UserModel> page = new Page<>(pageIndex, pageSize);
         Page<UserModel> result = this.page(page, wrapper);
         PageResult pageResult = new PageResult();
@@ -266,25 +264,28 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
      * @param ids 资源id
      */
     private List<UserModel> getUserByIds(Set<String> ids) {
-        List<UserModel> userList = new ArrayList<UserModel>();
+        List<UserModel> list = new ArrayList<UserModel>();
+        if (ids == null || ids.isEmpty()) {
+            return list;
+        }
         for (String id : ids) {
             UserModel userModel = this.getById(id);
-            userList.add(userModel);
+            list.add(userModel);
         }
-        return userList;
+        return list;
     }
 
     /**
      * 绑定菜单到角色
      *
-     * @param roleId 角色id
-     * @param userId 用户id
+     * @param roleIds 角色id
+     * @param userIds 用户id
      */
-    public SaResult bindUserByRole(String roleId, String[] userId) {
-        if (userId == null || userId.length == 0) {
+    public SaResult bindUserByRole(String[] roleIds, String[] userIds) {
+        if (userIds == null || userIds.length == 0) {
             return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
-        return resourceApplication.addResource(roleId, ResourceEnum.ROLE.getIndex(), userId, ResourceEnum.USER.getIndex());
+        return resourceApplication.addResource(roleIds, ResourceEnum.ROLE.getIndex(), userIds, ResourceEnum.USER.getIndex());
     }
 
     /**
@@ -293,7 +294,7 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
      * @param roleId 角色id
      * @param userId id
      */
-    public SaResult unBindUserByRole(String roleId, String[] userId) {
+    public SaResult unBindUserByRole(String[] roleId, String[] userId) {
         if (userId == null || userId.length == 0) {
             return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }

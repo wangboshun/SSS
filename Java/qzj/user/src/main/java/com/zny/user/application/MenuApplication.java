@@ -12,6 +12,7 @@ import com.zny.common.resource.ResourceApplication;
 import com.zny.common.result.MessageCodeEnum;
 import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
+import com.zny.common.utils.PageUtils;
 import com.zny.user.mapper.MenuMapper;
 import com.zny.user.model.menu.MenuModel;
 import com.zny.user.model.menu.MenuTreeModel;
@@ -153,18 +154,15 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      */
     public PageResult getMenuPage(
             String menuId, String menuName, String menuCode, Integer pageIndex, Integer pageSize) {
-        if (pageSize == null) {
-            pageSize = 10;
-        }
-        if (pageIndex == null || pageIndex < 1) {
-            pageIndex = 1;
-        }
+        pageSize = PageUtils.getPageSize(pageSize);
+        pageIndex = PageUtils.getPageIndex(pageIndex);
         QueryWrapper<MenuModel> wrapper = new QueryWrapper<MenuModel>();
         if (!resourceApplication.haveResource(wrapper, menuId, "id", ResourceEnum.MENU)) {
             return null;
         }
         wrapper.eq(StringUtils.isNotBlank(menuName), "menu_name", menuName);
         wrapper.eq(StringUtils.isNotBlank(menuCode), "menu_code", menuCode);
+        wrapper.orderByDesc("create_time");
         Page<MenuModel> page = new Page<>(pageIndex, pageSize);
         Page<MenuModel> result = this.page(page, wrapper);
         PageResult pageResult = new PageResult();
@@ -269,38 +267,41 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      * @param ids 资源id
      */
     private List<MenuModel> getMenuByIds(Set<String> ids) {
-        List<MenuModel> menuList = new ArrayList<MenuModel>();
+        List<MenuModel> list = new ArrayList<MenuModel>();
+        if (ids == null || ids.isEmpty()) {
+            return list;
+        }
         for (String id : ids) {
             MenuModel menuModel = this.getById(id);
-            menuList.add(menuModel);
+            list.add(menuModel);
         }
-        return menuList;
+        return list;
     }
 
     /**
      * 绑定菜单到用户
      *
-     * @param userId 用户id
-     * @param menuId 菜单id
+     * @param userIds 用户id
+     * @param menuIds 菜单id
      */
-    public SaResult bindMenuByUser(String userId, String[] menuId) {
-        if (menuId == null || menuId.length == 0) {
+    public SaResult bindMenuByUser(String[] userIds, String[] menuIds) {
+        if (menuIds == null || menuIds.length == 0) {
             return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
-        return resourceApplication.addResource(userId, ResourceEnum.USER.getIndex(), menuId, ResourceEnum.MENU.getIndex());
+        return resourceApplication.addResource(userIds, ResourceEnum.USER.getIndex(), menuIds, ResourceEnum.MENU.getIndex());
     }
 
     /**
      * 绑定菜单到角色
      *
-     * @param roleId 角色id
-     * @param menuId 菜单id
+     * @param roleIds 角色id
+     * @param menuIds 菜单id
      */
-    public SaResult bindMenuByRole(String roleId, String[] menuId) {
-        if (menuId == null || menuId.length == 0) {
+    public SaResult bindMenuByRole(String[] roleIds, String[] menuIds) {
+        if (menuIds == null || menuIds.length == 0) {
             return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
-        return resourceApplication.addResource(roleId, ResourceEnum.ROLE.getIndex(), menuId, ResourceEnum.MENU.getIndex());
+        return resourceApplication.addResource(roleIds, ResourceEnum.ROLE.getIndex(), menuIds, ResourceEnum.MENU.getIndex());
     }
 
     /**
@@ -309,7 +310,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      * @param userId 用户id
      * @param menuId id
      */
-    public SaResult unBindMenuByUser(String userId, String[] menuId) {
+    public SaResult unBindMenuByUser(String[] userId, String[] menuId) {
         if (menuId == null || menuId.length == 0) {
             return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
@@ -322,7 +323,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      * @param roleId 角色id
      * @param menuId id
      */
-    public SaResult unBindMenuByRole(String roleId, String[] menuId) {
+    public SaResult unBindMenuByRole(String[] roleId, String[] menuId) {
         if (menuId == null || menuId.length == 0) {
             return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
