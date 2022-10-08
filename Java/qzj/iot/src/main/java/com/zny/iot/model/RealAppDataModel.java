@@ -2,8 +2,6 @@ package com.zny.iot.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
-import java.time.LocalDateTime;
-
 /**
  * @author WBS
  * Date:2022/9/28

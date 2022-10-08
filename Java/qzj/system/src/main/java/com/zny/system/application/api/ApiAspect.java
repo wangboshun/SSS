@@ -1,7 +1,5 @@
 package com.zny.system.application.api;
 
-import cn.dev33.satoken.stp.StpUtil;
-import com.zny.common.enums.UserTypeEnum;
 import com.zny.common.result.MessageCodeEnum;
 import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.ReflectUtils;

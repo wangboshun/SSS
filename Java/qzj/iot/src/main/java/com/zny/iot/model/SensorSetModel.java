@@ -15,6 +15,15 @@ public class SensorSetModel {
     public Integer sensorId;
     public Integer sensorTypeId;
     private Integer stationId;
+    private String dataName;
+
+    public String getDataName() {
+        return dataName;
+    }
+
+    public void setDataName(String dataName) {
+        this.dataName = dataName;
+    }
 
     public Integer getSensorId() {
         return sensorId;

@@ -14,11 +14,11 @@ import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.PageUtils;
 import com.zny.iot.mapper.*;
-import com.zny.iot.model.*;
-import com.zny.iot.model.input.StationInputDto;
+import com.zny.iot.model.PeriodAppDataModel;
+import com.zny.iot.model.RealAppDataModel;
+import com.zny.iot.model.SensorSetModel;
+import com.zny.iot.model.StationBaseSetModel;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public class StationApplication extends ServiceImpl<StationBaseSetMapper, Statio
      *
      * @param id id
      */
-    public SaResult getStationBaseSetById(String id) {
+    public SaResult getStationById(String id) {
         if (resourceApplication.haveResource(id, "StationID", ResourceEnum.Station)) {
             StationBaseSetModel model = this.getById(id);
             if (model == null) {
@@ -75,13 +75,45 @@ public class StationApplication extends ServiceImpl<StationBaseSetMapper, Statio
     }
 
     /**
+     * 根据id获取传感器信息
+     *
+     * @param id id
+     */
+    public SaResult getSensorById(String id) {
+        QueryWrapper<StationBaseSetModel> wrapper = new QueryWrapper<StationBaseSetModel>();
+        if (!resourceApplication.haveResource(wrapper, null, "StationID", ResourceEnum.Station)) {
+            return SaResultEx.error(MessageCodeEnum.AUTH_INVALID);
+        }
+        List<StationBaseSetModel> stationList = this.list(wrapper);
+        List<Integer> stationIds = new ArrayList<>();
+        for (StationBaseSetModel station : stationList) {
+            stationIds.add(station.getStationId());
+        }
+
+        if (stationIds.size() < 1) {
+            return SaResultEx.error(MessageCodeEnum.AUTH_INVALID);
+        }
+
+        QueryWrapper<SensorSetModel> sensorWrapper = new QueryWrapper<SensorSetModel>();
+        sensorWrapper.in("StationID", stationIds);
+        sensorWrapper.eq("sensorID", id);
+        SensorSetModel model = sensorSetMapper.selectOne(sensorWrapper);
+        if (model == null) {
+            return SaResultEx.error(MessageCodeEnum.NOT_FOUND);
+        }
+        else {
+            return SaResult.data(model);
+        }
+    }
+
+    /**
      * 获取测站列表
      *
      * @param stationId 测站id
      * @param pageIndex 页码
      * @param pageSize  分页大小
      */
-    public SaResult getStationBaseSetPage(String stationId, Integer pageIndex, Integer pageSize) {
+    public SaResult getStationPage(String stationId, Integer pageIndex, Integer pageSize) {
         pageSize = PageUtils.getPageSize(pageSize);
         pageIndex = PageUtils.getPageIndex(pageIndex);
         QueryWrapper<StationBaseSetModel> wrapper = new QueryWrapper<StationBaseSetModel>();
@@ -92,6 +124,43 @@ public class StationApplication extends ServiceImpl<StationBaseSetMapper, Statio
         wrapper.orderByAsc("StationID");
         Page<StationBaseSetModel> page = new Page<>(pageIndex, pageSize);
         Page<StationBaseSetModel> result = this.page(page, wrapper);
+        PageResult pageResult = new PageResult();
+        pageResult.setPages(result.getPages());
+        pageResult.setRows(result.getRecords());
+        pageResult.setTotal(result.getTotal());
+        pageResult.setCurrent(result.getCurrent());
+        return SaResult.data(pageResult);
+    }
+
+    /**
+     * 获取传感器列表
+     *
+     * @param sensorId  传感器id
+     * @param pageIndex 页码
+     * @param pageSize  分页大小
+     */
+    public SaResult getSensorPage(String sensorId, Integer pageIndex, Integer pageSize) {
+        pageSize = PageUtils.getPageSize(pageSize);
+        pageIndex = PageUtils.getPageIndex(pageIndex);
+        QueryWrapper<StationBaseSetModel> wrapper = new QueryWrapper<StationBaseSetModel>();
+        if (!resourceApplication.haveResource(wrapper, null, "StationID", ResourceEnum.Station)) {
+            return SaResultEx.error(MessageCodeEnum.AUTH_INVALID);
+        }
+        List<StationBaseSetModel> stationList = this.list(wrapper);
+        List<Integer> stationIds = new ArrayList<>();
+        for (StationBaseSetModel station : stationList) {
+            stationIds.add(station.getStationId());
+        }
+
+        if (stationIds.size() < 1) {
+            return SaResultEx.error(MessageCodeEnum.AUTH_INVALID);
+        }
+
+        QueryWrapper<SensorSetModel> sensorWrapper = new QueryWrapper<SensorSetModel>();
+        sensorWrapper.in("StationID", stationIds);
+        sensorWrapper.eq(StringUtils.isNotBlank(sensorId), "sensorID", sensorId);
+        Page<SensorSetModel> page = new Page<>(pageIndex, pageSize);
+        Page<SensorSetModel> result = sensorSetMapper.selectPage(page, sensorWrapper);
         PageResult pageResult = new PageResult();
         pageResult.setPages(result.getPages());
         pageResult.setRows(result.getRecords());
@@ -197,56 +266,6 @@ public class StationApplication extends ServiceImpl<StationBaseSetMapper, Statio
             return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
         return resourceApplication.deleteResource(null, roleId, ResourceEnum.ROLE.getIndex(), stationBaseSetId, ResourceEnum.Station.getIndex());
-    }
-
-    /**
-     * 添加站点
-     *
-     * @param input dto
-     */
-    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
-    public SaResult addStationBaseSet(StationInputDto input) {
-        StationBaseSetModel stationBaseSetModel = new StationBaseSetModel();
-        Integer stationId = stationBaseSetMapper.getMaxId() + 1;
-        stationBaseSetModel.setStationId(stationId);
-        stationBaseSetModel.setStationName(input.getStationName());
-        stationBaseSetModel.setStationNum(input.getStationNum());
-        stationBaseSetModel.setParentId(input.getParentId());
-        stationBaseSetModel.setRegionNum(input.getRegionNum());
-
-        BXModel bxModel = new BXModel();
-        bxModel.setStationId(stationId);
-        bxModel.setStcd(input.getStcd());
-
-        EquipmentModel equipmentModel = new EquipmentModel();
-        equipmentModel.setStationId(stationId);
-        equipmentModel.setUserAddress(input.getUserAddress());
-
-        try {
-            stationBaseSetMapper.insert(stationBaseSetModel);
-        }
-        catch (Exception e) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return SaResultEx.error(MessageCodeEnum.DB_ERROR, "Set表新增失败");
-        }
-
-        try {
-            bxMapper.insert(bxModel);
-        }
-        catch (Exception e) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return SaResultEx.error(MessageCodeEnum.DB_ERROR, "BX表新增失败");
-        }
-
-        try {
-            equipmentMapper.insert(equipmentModel);
-        }
-        catch (Exception e) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return SaResultEx.error(MessageCodeEnum.DB_ERROR, "EQ表新增失败");
-        }
-
-        return SaResult.ok("站点新增成功！");
     }
 
     /**
@@ -407,4 +426,6 @@ public class StationApplication extends ServiceImpl<StationBaseSetMapper, Statio
         pageResult.setCurrent(result.getCurrent());
         return SaResult.data(pageResult);
     }
+
+
 }

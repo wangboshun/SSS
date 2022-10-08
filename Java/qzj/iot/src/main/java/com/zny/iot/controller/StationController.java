@@ -3,7 +3,6 @@ package com.zny.iot.controller;
 import cn.dev33.satoken.util.SaResult;
 import com.zny.iot.application.StationApplication;
 import com.zny.iot.model.StationBaseSetModel;
-import com.zny.iot.model.input.StationInputDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,10 +18,10 @@ import java.util.List;
 @Tag(name = "station", description = "前置机模块")
 public class StationController {
 
-    private final StationApplication stationBaseSetApplication;
+    private final StationApplication stationApplication;
 
-    public StationController(StationApplication stationBaseSetApplication) {
-        this.stationBaseSetApplication = stationBaseSetApplication;
+    public StationController(StationApplication stationApplication) {
+        this.stationApplication = stationApplication;
     }
 
     /**
@@ -30,9 +29,19 @@ public class StationController {
      *
      * @param id 测站id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public SaResult get(@PathVariable String id) {
-        return stationBaseSetApplication.getStationBaseSetById(id);
+    @RequestMapping(value = "/station/{id}", method = RequestMethod.GET)
+    public SaResult getStation(@PathVariable String id) {
+        return stationApplication.getStationById(id);
+    }
+
+    /**
+     * 获取传感器信息
+     *
+     * @param id 传感器id
+     */
+    @RequestMapping(value = "/sensor/{id}", method = RequestMethod.GET)
+    public SaResult getSensor(@PathVariable String id) {
+        return stationApplication.getSensorById(id);
     }
 
     /**
@@ -42,21 +51,25 @@ public class StationController {
      * @param pageSize  分页大小
      * @param pageIndex 页码
      */
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public SaResult list(
+    @RequestMapping(value = "/station_list", method = RequestMethod.GET)
+    public SaResult stationList(
             @RequestParam(required = false) String stationId, @RequestParam(required = false) Integer pageIndex,
             @RequestParam(required = false) Integer pageSize) {
-        return stationBaseSetApplication.getStationBaseSetPage(stationId, pageIndex, pageSize);
+        return stationApplication.getStationPage(stationId, pageIndex, pageSize);
     }
 
     /**
-     * 添加测站
+     * 获取传感器列表
      *
-     * @param input dto
+     * @param sensorId 传感器id
+     * @param pageSize  分页大小
+     * @param pageIndex 页码
      */
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public SaResult add(@RequestBody StationInputDto input) {
-        return stationBaseSetApplication.addStationBaseSet(input);
+    @RequestMapping(value = "/sensor_list", method = RequestMethod.GET)
+    public SaResult sensorList(
+            @RequestParam(required = false) String sensorId, @RequestParam(required = false) Integer pageIndex,
+            @RequestParam(required = false) Integer pageSize) {
+        return stationApplication.getSensorPage(sensorId, pageIndex, pageSize);
     }
 
     /**
@@ -74,7 +87,7 @@ public class StationController {
             @RequestParam(required = false) Integer stationId, @RequestParam(required = false) Integer pointId,
             @RequestParam(required = false) String start, @RequestParam(required = false) String end,
             @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
-        return stationBaseSetApplication.getRealData(stationId, pointId, start, end, pageIndex, pageSize);
+        return stationApplication.getRealData(stationId, pointId, start, end, pageIndex, pageSize);
     }
 
     /**
@@ -92,7 +105,7 @@ public class StationController {
             @RequestParam(required = false) Integer stationId, @RequestParam(required = false) Integer pointId,
             @RequestParam(required = false) String start, @RequestParam(required = false) String end,
             @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
-        return stationBaseSetApplication.getPeriodData(stationId, pointId, start, end, pageIndex, pageSize);
+        return stationApplication.getPeriodData(stationId, pointId, start, end, pageIndex, pageSize);
     }
 
     /**
@@ -102,7 +115,7 @@ public class StationController {
      */
     @RequestMapping(value = "/by_user", method = RequestMethod.GET)
     public SaResult getStationBaseSetByUser(String userId) {
-        List<StationBaseSetModel> list = stationBaseSetApplication.getStationBaseSetByUser(userId);
+        List<StationBaseSetModel> list = stationApplication.getStationBaseSetByUser(userId);
         return SaResult.data(list);
     }
 
@@ -113,7 +126,7 @@ public class StationController {
      */
     @RequestMapping(value = "/by_role", method = RequestMethod.GET)
     public SaResult getStationBaseSetByRole(String roleId) {
-        List<StationBaseSetModel> list = stationBaseSetApplication.getStationBaseSetByRole(roleId);
+        List<StationBaseSetModel> list = stationApplication.getStationBaseSetByRole(roleId);
         return SaResult.data(list);
     }
 
@@ -125,7 +138,7 @@ public class StationController {
      */
     @RequestMapping(value = "/bind_by_user", method = RequestMethod.POST)
     public SaResult bindStationBaseSetByUser(String[] userIds, String[] stationBaseSetIds) {
-        return stationBaseSetApplication.bindStationBaseSetByUser(userIds, stationBaseSetIds);
+        return stationApplication.bindStationBaseSetByUser(userIds, stationBaseSetIds);
     }
 
     /**
@@ -136,7 +149,7 @@ public class StationController {
      */
     @RequestMapping(value = "/bind_by_role", method = RequestMethod.POST)
     public SaResult bindStationBaseSetByRole(String[] roleIds, String[] stationBaseSetIds) {
-        return stationBaseSetApplication.bindStationBaseSetByRole(roleIds, stationBaseSetIds);
+        return stationApplication.bindStationBaseSetByRole(roleIds, stationBaseSetIds);
     }
 
     /**
@@ -147,7 +160,7 @@ public class StationController {
      */
     @RequestMapping(value = "/unbind_by_user", method = RequestMethod.POST)
     public SaResult unBindStationBaseSetByUser(String[] userIds, String[] stationBaseSetIds) {
-        return stationBaseSetApplication.unBindStationBaseSetByUser(userIds, stationBaseSetIds);
+        return stationApplication.unBindStationBaseSetByUser(userIds, stationBaseSetIds);
     }
 
     /**
@@ -158,6 +171,6 @@ public class StationController {
      */
     @RequestMapping(value = "/unbind_by_role", method = RequestMethod.POST)
     public SaResult unBindStationBaseSetByRole(String[] roleIds, String[] stationBaseSetIds) {
-        return stationBaseSetApplication.unBindStationBaseSetByRole(roleIds, stationBaseSetIds);
+        return stationApplication.unBindStationBaseSetByRole(roleIds, stationBaseSetIds);
     }
 }

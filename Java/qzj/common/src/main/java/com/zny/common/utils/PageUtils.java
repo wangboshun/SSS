@@ -7,14 +7,14 @@ package com.zny.common.utils;
 
 public class PageUtils {
 
-    public static Integer getPageSize(Integer pageSize){
+    public static Integer getPageSize(Integer pageSize) {
         if (pageSize == null) {
             pageSize = 10;
         }
         return pageSize;
     }
 
-    public static Integer getPageIndex(Integer pageIndex){
+    public static Integer getPageIndex(Integer pageIndex) {
         if (pageIndex == null || pageIndex < 1) {
             pageIndex = 1;
         }

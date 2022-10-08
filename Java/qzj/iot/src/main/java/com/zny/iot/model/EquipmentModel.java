@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 public class EquipmentModel implements Serializable {
 
     @TableId
-     private Integer stationId;
+    private Integer stationId;
     /**
      *
      */
