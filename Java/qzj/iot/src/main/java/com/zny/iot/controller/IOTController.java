@@ -14,13 +14,13 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/iot/station")
-@Tag(name = "station", description = "前置机模块")
-public class StationController {
+@RequestMapping("/iot")
+@Tag(name = "iot", description = "IoT模块")
+public class IOTController {
 
     private final StationApplication stationApplication;
 
-    public StationController(StationApplication stationApplication) {
+    public IOTController(StationApplication stationApplication) {
         this.stationApplication = stationApplication;
     }
 
@@ -113,7 +113,7 @@ public class StationController {
      *
      * @param userId 用户id
      */
-    @RequestMapping(value = "/by_user", method = RequestMethod.GET)
+    @RequestMapping(value = "/station/by_user", method = RequestMethod.GET)
     public SaResult getStationBaseSetByUser(String userId) {
         List<StationBaseSetModel> list = stationApplication.getStationBaseSetByUser(userId);
         return SaResult.data(list);
@@ -124,7 +124,7 @@ public class StationController {
      *
      * @param roleId 角色id
      */
-    @RequestMapping(value = "/by_role", method = RequestMethod.GET)
+    @RequestMapping(value = "/station/by_role", method = RequestMethod.GET)
     public SaResult getStationBaseSetByRole(String roleId) {
         List<StationBaseSetModel> list = stationApplication.getStationBaseSetByRole(roleId);
         return SaResult.data(list);
@@ -136,7 +136,7 @@ public class StationController {
      * @param userIds           用户id
      * @param stationBaseSetIds 测站id
      */
-    @RequestMapping(value = "/bind_by_user", method = RequestMethod.POST)
+    @RequestMapping(value = "/station/bind_by_user", method = RequestMethod.POST)
     public SaResult bindStationBaseSetByUser(String[] userIds, String[] stationBaseSetIds) {
         return stationApplication.bindStationBaseSetByUser(userIds, stationBaseSetIds);
     }
@@ -147,7 +147,7 @@ public class StationController {
      * @param roleIds           角色id
      * @param stationBaseSetIds 测站id
      */
-    @RequestMapping(value = "/bind_by_role", method = RequestMethod.POST)
+    @RequestMapping(value = "/station/bind_by_role", method = RequestMethod.POST)
     public SaResult bindStationBaseSetByRole(String[] roleIds, String[] stationBaseSetIds) {
         return stationApplication.bindStationBaseSetByRole(roleIds, stationBaseSetIds);
     }
@@ -158,7 +158,7 @@ public class StationController {
      * @param userIds           用户id
      * @param stationBaseSetIds id
      */
-    @RequestMapping(value = "/unbind_by_user", method = RequestMethod.POST)
+    @RequestMapping(value = "/station/unbind_by_user", method = RequestMethod.POST)
     public SaResult unBindStationBaseSetByUser(String[] userIds, String[] stationBaseSetIds) {
         return stationApplication.unBindStationBaseSetByUser(userIds, stationBaseSetIds);
     }
@@ -169,7 +169,7 @@ public class StationController {
      * @param roleIds           角色id
      * @param stationBaseSetIds id
      */
-    @RequestMapping(value = "/unbind_by_role", method = RequestMethod.POST)
+    @RequestMapping(value = "/station/unbind_by_role", method = RequestMethod.POST)
     public SaResult unBindStationBaseSetByRole(String[] roleIds, String[] stationBaseSetIds) {
         return stationApplication.unBindStationBaseSetByRole(roleIds, stationBaseSetIds);
     }

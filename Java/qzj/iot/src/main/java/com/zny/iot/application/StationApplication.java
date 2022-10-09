@@ -13,7 +13,10 @@ import com.zny.common.result.MessageCodeEnum;
 import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.PageUtils;
-import com.zny.iot.mapper.*;
+import com.zny.iot.mapper.PeriodAppDataMapper;
+import com.zny.iot.mapper.RealAppDataMapper;
+import com.zny.iot.mapper.SensorSetMapper;
+import com.zny.iot.mapper.StationBaseSetMapper;
 import com.zny.iot.model.PeriodAppDataModel;
 import com.zny.iot.model.RealAppDataModel;
 import com.zny.iot.model.SensorSetModel;
@@ -36,21 +39,14 @@ import java.util.Set;
 public class StationApplication extends ServiceImpl<StationBaseSetMapper, StationBaseSetModel> {
 
     private final ResourceApplication resourceApplication;
-    private final StationBaseSetMapper stationBaseSetMapper;
-    private final BXMapper bxMapper;
-    private final EquipmentMapper equipmentMapper;
     private final RealAppDataMapper realAppDataMapper;
     private final PeriodAppDataMapper periodAppDataMapper;
     private final SensorSetMapper sensorSetMapper;
 
     public StationApplication(
-            ResourceApplication resourceApplication, StationBaseSetMapper stationBaseSetMapper, BXMapper bxMapper,
-            EquipmentMapper equipmentMapper, RealAppDataMapper realAppDataMapper,
+            ResourceApplication resourceApplication, RealAppDataMapper realAppDataMapper,
             PeriodAppDataMapper periodAppDataMapper, SensorSetMapper sensorSetMapper) {
         this.resourceApplication = resourceApplication;
-        this.stationBaseSetMapper = stationBaseSetMapper;
-        this.bxMapper = bxMapper;
-        this.equipmentMapper = equipmentMapper;
         this.realAppDataMapper = realAppDataMapper;
         this.periodAppDataMapper = periodAppDataMapper;
         this.sensorSetMapper = sensorSetMapper;
@@ -159,6 +155,7 @@ public class StationApplication extends ServiceImpl<StationBaseSetMapper, Statio
         QueryWrapper<SensorSetModel> sensorWrapper = new QueryWrapper<SensorSetModel>();
         sensorWrapper.in("StationID", stationIds);
         sensorWrapper.eq(StringUtils.isNotBlank(sensorId), "sensorID", sensorId);
+        sensorWrapper.orderByAsc("sensorID");
         Page<SensorSetModel> page = new Page<>(pageIndex, pageSize);
         Page<SensorSetModel> result = sensorSetMapper.selectPage(page, sensorWrapper);
         PageResult pageResult = new PageResult();
