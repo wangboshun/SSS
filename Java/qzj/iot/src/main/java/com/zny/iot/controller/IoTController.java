@@ -16,11 +16,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/iot")
 @Tag(name = "iot", description = "IoT模块")
-public class IOTController {
+public class IoTController {
 
     private final StationApplication stationApplication;
 
-    public IOTController(StationApplication stationApplication) {
+    public IoTController(StationApplication stationApplication) {
         this.stationApplication = stationApplication;
     }
 
