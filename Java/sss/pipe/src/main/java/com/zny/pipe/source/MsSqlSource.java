@@ -24,7 +24,6 @@ import java.util.Map;
 
 @Component
 public class MsSqlSource implements SourceBase {
-    private SQLServerDataSource sqlServerDataSource;
     private Connection connection;
 
     private final RabbitTemplate rabbitTemplate;
@@ -33,9 +32,12 @@ public class MsSqlSource implements SourceBase {
         this.rabbitTemplate = rabbitTemplate;
     }
 
+    /**
+     * 配置数据源
+     */
     private void configDataSource() {
         String connectStr = "jdbc:sqlserver://127.0.0.1:1433;database=test1;integratedSecurity=false;encrypt=true;trustServerCertificate=true";
-        sqlServerDataSource = new SQLServerDataSource();
+        SQLServerDataSource sqlServerDataSource = new SQLServerDataSource();
         sqlServerDataSource.setURL(connectStr);
         sqlServerDataSource.setUser("sa");
         sqlServerDataSource.setPassword("123456");
@@ -46,6 +48,9 @@ public class MsSqlSource implements SourceBase {
         }
     }
 
+    /**
+     * 结束
+     */
     @Override
     public void start() {
         try {
@@ -56,6 +61,9 @@ public class MsSqlSource implements SourceBase {
         }
     }
 
+    /**
+     * 开始
+     */
     @Override
     public void stop() {
         try {
@@ -83,7 +91,8 @@ public class MsSqlSource implements SourceBase {
      */
     private void getData() {
         try {
-            Statement stmt = connection.createStatement();
+            Statement stmt = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+            stmt.setFetchSize(Integer.MAX_VALUE);
             ResultSet result = stmt.executeQuery("select top 1000 * from Test1 ");
             List<Map<String, Object>> list = new ArrayList<>();
             List<String> filedList = DbEx.getField(result);

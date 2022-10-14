@@ -10,4 +10,5 @@ public interface SourceBase {
     void start();
 
     void stop();
+
 }

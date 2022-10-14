@@ -24,18 +24,19 @@ import java.util.Map;
 
 @Component
 public class MySqlSource implements SourceBase {
-    private MysqlDataSource mysqlDataSource;
     private Connection connection;
-
     private final RabbitTemplate rabbitTemplate;
 
     public MySqlSource(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
     }
 
+    /**
+     * 配置数据源
+     */
     private void configDataSource() {
         String connectStr = "jdbc:mysql://127.0.0.1:3306/test1?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
-        mysqlDataSource = new MysqlDataSource();
+        MysqlDataSource mysqlDataSource = new MysqlDataSource();
         mysqlDataSource.setURL(connectStr);
         mysqlDataSource.setUser("root");
         mysqlDataSource.setPassword("123456");
@@ -46,6 +47,9 @@ public class MySqlSource implements SourceBase {
         }
     }
 
+    /**
+     * 开始
+     */
     @Override
     public void start() {
         try {
@@ -56,6 +60,9 @@ public class MySqlSource implements SourceBase {
         }
     }
 
+    /**
+     * 结束
+     */
     @Override
     public void stop() {
         try {
@@ -83,7 +90,8 @@ public class MySqlSource implements SourceBase {
      */
     private void getData() {
         try {
-            Statement stmt = connection.createStatement();
+            Statement stmt = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+            stmt.setFetchSize(Integer.MAX_VALUE);
             ResultSet result = stmt.executeQuery("select * from Test1 limit 100");
             List<Map<String, Object>> list = new ArrayList<>();
             List<String> filedList = DbEx.getField(result);
