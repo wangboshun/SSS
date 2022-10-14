@@ -25,4 +25,9 @@ public class SwaggerConfig {
     public GroupedOpenApi systemApi() {
         return GroupedOpenApi.builder().group("system").pathsToMatch("/system/**").build();
     }
+
+    @Bean
+    public GroupedOpenApi pipeApi() {
+        return GroupedOpenApi.builder().group("pipe").pathsToMatch("/pipe/**").build();
+    }
 }

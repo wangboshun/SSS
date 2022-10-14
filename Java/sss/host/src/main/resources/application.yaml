@@ -62,7 +62,12 @@ spring:
           username: sa
           password: 123456
           driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-          url: jdbc:sqlserver://127.0.0.1:1433;database=pbgSQTX_3;integratedSecurity=true;encrypt=true;trustServerCertificate=true
+          url: jdbc:sqlserver://127.0.0.1:1433;database=pbgSQTX_3;integratedSecurity=false;encrypt=true;trustServerCertificate=true
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: admin
+    password: 123456
 
 sa-token:
   # token 名称 (同时也是cookie名称)
