@@ -9,6 +9,7 @@ import java.util.Scanner;
 /**
  * @author WBS
  * Date:2022/9/7
+ * 代码生成器类
  */
 
 public class CodeMain {

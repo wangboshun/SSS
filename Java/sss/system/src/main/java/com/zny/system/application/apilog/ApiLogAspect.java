@@ -31,8 +31,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author WBS
- * 控制器拦截
  * Date:2022/9/1
+ * api日志拦截器
  */
 
 @Aspect

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 /**
  * @author WBS
  * Date:2022/9/28
+ * 传感器类
  */
 
 @TableName("SensorSet")

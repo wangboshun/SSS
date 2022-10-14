@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 /**
  * @author WBS
  * Date:2022/9/8
+ * 远程访问配置类
  */
 
 @Configuration

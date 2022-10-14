@@ -19,7 +19,9 @@ import java.util.Map;
 /**
  * @author WBS
  * Date:2022/10/14
+ * mssql源端服务类
  */
+
 @Component
 public class MsSqlSource implements SourceBase {
     private SQLServerDataSource sqlServerDataSource;

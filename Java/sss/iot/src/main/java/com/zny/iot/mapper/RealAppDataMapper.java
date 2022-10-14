@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 /**
  * @author WBS
  * Date:2022/9/26
+ * 实时数据mapper
  */
 
 

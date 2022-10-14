@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 /**
  * @author WBS
  * Date:2022/9/6
+ * 菜单类
  */
 @TableName("sys_menu")
 public class MenuModel {

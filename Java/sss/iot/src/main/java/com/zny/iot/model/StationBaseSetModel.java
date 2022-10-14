@@ -8,6 +8,7 @@ import java.io.Serializable;
 /**
  * @author WBS
  * Date:2022/9/26
+ * 测站类
  */
 
 @TableName("StationBaseSet")

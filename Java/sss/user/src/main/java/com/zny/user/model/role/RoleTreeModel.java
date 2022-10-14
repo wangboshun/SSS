@@ -3,6 +3,7 @@ package com.zny.user.model.role;
 /**
  * @author WBS
  * Date:2022/9/14
+ * 角色树形类
  */
 
 public class RoleTreeModel {

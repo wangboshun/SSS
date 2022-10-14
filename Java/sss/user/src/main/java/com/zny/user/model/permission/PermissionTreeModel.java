@@ -3,6 +3,7 @@ package com.zny.user.model.permission;
 /**
  * @author WBS
  * Date:2022/9/14
+ * 权限树形类
  */
 
 public class PermissionTreeModel {

@@ -8,6 +8,7 @@ import java.io.Serializable;
 /**
  * @author WBS
  * Date:2022/9/9
+ * api类
  */
 
 @TableName("sys_api")

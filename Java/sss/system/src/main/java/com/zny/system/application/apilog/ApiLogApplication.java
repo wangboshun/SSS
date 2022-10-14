@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 /**
  * @author WBS
  * Date:2022/9/2
+ * api日志服务类
  */
 
 @Service

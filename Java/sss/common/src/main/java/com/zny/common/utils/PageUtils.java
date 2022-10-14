@@ -3,6 +3,7 @@ package com.zny.common.utils;
 /**
  * @author WBS
  * Date:2022/9/29
+ * 分页帮助类
  */
 
 public class PageUtils {

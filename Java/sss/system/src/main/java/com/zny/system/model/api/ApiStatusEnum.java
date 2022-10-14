@@ -3,6 +3,7 @@ package com.zny.system.model.api;
 /**
  * @author WBS
  * Date:2022/9/6
+ * api状态类型枚举
  */
 
 public enum ApiStatusEnum {

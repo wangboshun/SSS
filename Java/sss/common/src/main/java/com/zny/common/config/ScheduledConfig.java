@@ -11,6 +11,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 /**
  * @author WBS
  * Date:2022/9/5
+ * 定时器配置类
  */
 
 @Configuration

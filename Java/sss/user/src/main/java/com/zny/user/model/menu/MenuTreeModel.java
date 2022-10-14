@@ -3,6 +3,7 @@ package com.zny.user.model.menu;
 /**
  * @author WBS
  * Date:2022/9/14
+ * 菜单树形类
  */
 
 public class MenuTreeModel {

@@ -7,6 +7,7 @@ import java.io.Serializable;
 /**
  * @author WBS
  * Date:2022/9/2
+ * 角色类
  */
 
 @TableName("sys_role")

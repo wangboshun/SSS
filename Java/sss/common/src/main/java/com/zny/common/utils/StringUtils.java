@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 /**
  * @author WBS
  * Date:2022/9/7
+ * 字符串帮助类
  */
 
 public class StringUtils {
@@ -48,7 +49,7 @@ public class StringUtils {
      * 驼峰 -> 下划线格式 默认小写,存在第二个形参且为true时大写.
      */
     public static String humpToLowerLine(String humpStr, boolean... defaultUppercaseAndTrueLowercase) {
-        Matcher matcher = humpPattern.matcher(humpStr);
+        Matcher matcher = Pattern.compile("[A-Z]").matcher(humpStr);
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
             matcher.appendReplacement(sb, "_" + matcher.group(0).toLowerCase());

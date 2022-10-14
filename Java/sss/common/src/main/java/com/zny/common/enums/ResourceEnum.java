@@ -3,6 +3,7 @@ package com.zny.common.enums;
 /**
  * @author WBS
  * Date:2022/9/6
+ * 资源类型枚举
  */
 
 public enum ResourceEnum {

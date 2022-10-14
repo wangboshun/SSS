@@ -6,6 +6,12 @@ import com.google.gson.GsonBuilder;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+/**
+ * @author WBS
+ * Date:2022/10/13
+ * Gson扩展类
+ */
+
 public class GsonEx {
 
     public static Gson getInstance() {

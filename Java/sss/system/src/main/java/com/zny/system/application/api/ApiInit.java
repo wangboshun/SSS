@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 /**
  * @author WBS
  * Date:2022/9/26
+ * api初始化
  */
 
 @Component

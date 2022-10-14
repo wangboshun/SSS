@@ -27,6 +27,7 @@ import java.util.UUID;
 /**
  * @author WBS
  * Date:2022/9/2
+ * 权限服务类
  */
 
 @Service

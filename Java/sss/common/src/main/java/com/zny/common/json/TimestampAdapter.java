@@ -10,6 +10,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
+ * @author WBS
+ * Date:2022/10/14
  * Timestamp序列化
  */
 public class TimestampAdapter implements JsonSerializer<Timestamp>, JsonDeserializer<Timestamp> {

@@ -19,7 +19,9 @@ import java.util.Map;
 /**
  * @author WBS
  * Date:2022/10/12
+ * mysql源端服务类
  */
+
 @Component
 public class MySqlSource implements SourceBase {
     private MysqlDataSource mysqlDataSource;
@@ -73,7 +75,7 @@ public class MySqlSource implements SourceBase {
     private void sendData(List<Map<String, Object>> list) {
         Gson gson = GsonEx.getInstance();
         String json = gson.toJson(list);
-        rabbitTemplate.convertAndSend( "Pipe_Exchange","MySql_RoutKey", json);
+        rabbitTemplate.convertAndSend("Pipe_Exchange", "MySql_RoutKey", json);
     }
 
     /**

@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @author WBS
- * 分页拦截配置
  * Date:2022/9/2
+ * 分页拦截配置
  */
 
 @EnableTransactionManagement(proxyTargetClass = true)

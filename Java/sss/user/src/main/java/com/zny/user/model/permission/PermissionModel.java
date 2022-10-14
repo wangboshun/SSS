@@ -7,6 +7,7 @@ import java.io.Serializable;
 /**
  * @author WBS
  * Date:2022/9/6
+ * 权限类
  */
 @TableName("sys_permission")
 public class PermissionModel implements Serializable {

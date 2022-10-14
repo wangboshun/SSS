@@ -7,6 +7,7 @@ import java.io.Serializable;
 /**
  * @author WBS
  * Date:2022/9/2
+ * 用户类
  */
 
 @TableName("sys_user")

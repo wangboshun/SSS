@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author WBS
  * Date:2022/10/12
+ * mysql目的服务类
  */
 
 @Component

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 /**
  * @author WBS
  * Date:2022/9/26
+ * 传感器mapper
  */
 
 

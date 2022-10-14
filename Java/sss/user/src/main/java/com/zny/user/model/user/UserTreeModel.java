@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * @author WBS
  * Date:2022/9/14
+ * 用户树形类
  */
 
 public class UserTreeModel implements Serializable {

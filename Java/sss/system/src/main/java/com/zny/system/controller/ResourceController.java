@@ -12,6 +12,7 @@ import java.util.Arrays;
 /**
  * @author WBS
  * Date:2022/9/6
+ * 资源控制器
  */
 
 @RestController

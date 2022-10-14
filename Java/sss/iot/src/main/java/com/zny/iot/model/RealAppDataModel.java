@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 /**
  * @author WBS
  * Date:2022/9/28
+ * 实时数据类
  */
 
 @TableName("RealAppData")

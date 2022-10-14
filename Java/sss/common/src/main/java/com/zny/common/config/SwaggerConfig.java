@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author WBS
  * Date:2022/9/1
+ * swagger配置类
  */
 
 @Configuration

@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * @author WBS
  * Date:2022/9/28
+ * 分页结果类
  */
 
 public class PageResult implements Serializable {

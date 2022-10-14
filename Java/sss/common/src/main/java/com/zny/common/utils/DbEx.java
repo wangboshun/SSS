@@ -9,7 +9,9 @@ import java.util.List;
 /**
  * @author WBS
  * Date:2022/10/12
+ * 数据库操作帮助类
  */
+
 public class DbEx {
 
     /**

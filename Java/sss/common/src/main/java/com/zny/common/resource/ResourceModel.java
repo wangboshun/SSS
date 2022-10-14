@@ -7,6 +7,7 @@ import java.io.Serializable;
 /**
  * @author WBS
  * Date:2022/9/6
+ * 资源类
  */
 
 @TableName("sys_resource")

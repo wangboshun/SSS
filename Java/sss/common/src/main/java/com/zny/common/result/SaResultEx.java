@@ -5,6 +5,7 @@ import cn.dev33.satoken.util.SaResult;
 /**
  * @author WBS
  * Date:2022/9/28
+ * 返回值扩展类
  */
 
 public class SaResultEx extends SaResult {

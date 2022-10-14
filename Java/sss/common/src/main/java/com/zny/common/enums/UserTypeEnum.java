@@ -3,6 +3,7 @@ package com.zny.common.enums;
 /**
  * @author WBS
  * Date:2022/9/15
+ * 用户类型枚举
  */
 
 public enum UserTypeEnum {

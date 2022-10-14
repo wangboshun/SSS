@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author WBS
  * Date:2022/10/12
+ * sink目的控制器
  */
 
 @RestController
