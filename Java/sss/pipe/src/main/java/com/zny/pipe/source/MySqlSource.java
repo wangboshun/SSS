@@ -73,7 +73,7 @@ public class MySqlSource implements SourceBase {
     private void sendData(List<Map<String, Object>> list) {
         Gson gson = GsonEx.getInstance();
         String json = gson.toJson(list);
-        rabbitTemplate.convertAndSend( "Pipe_Exchange","MySql_RoutKey", "mysql hello world!");
+        rabbitTemplate.convertAndSend( "Pipe_Exchange","MySql_RoutKey", json);
     }
 
     /**

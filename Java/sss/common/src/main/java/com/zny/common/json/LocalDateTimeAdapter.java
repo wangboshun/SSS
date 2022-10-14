@@ -16,7 +16,12 @@ public class LocalDateTimeAdapter implements JsonSerializer<LocalDateTime>, Json
      */
     @Override
     public JsonElement serialize(LocalDateTime localDateTime, Type type, JsonSerializationContext jsonSerializationContext) {
-        return new JsonPrimitive(localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        String format = "yyyy-MM-dd HH:mm:ss";
+        //毫秒
+        if (localDateTime.getNano() > 0) {
+            format += ":SSS";
+        }
+        return new JsonPrimitive(localDateTime.format(DateTimeFormatter.ofPattern(format)));
     }
 
     /**
@@ -24,7 +29,13 @@ public class LocalDateTimeAdapter implements JsonSerializer<LocalDateTime>, Json
      */
     @Override
     public LocalDateTime deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-        return LocalDateTime.parse(jsonElement.getAsJsonPrimitive().getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String tm = jsonElement.getAsJsonPrimitive().getAsString();
+        String format = "yyyy-MM-dd HH:mm:ss";
+        //毫秒
+        if (tm.length() > 20) {
+            format += ":SSS";
+        }
+        return LocalDateTime.parse(tm, DateTimeFormatter.ofPattern(format));
     }
 }
 

@@ -73,7 +73,7 @@ public class MsSqlSource implements SourceBase {
     private void sendData(List<Map<String, Object>> list) {
         Gson gson = GsonEx.getInstance();
         String json = gson.toJson(list);
-        rabbitTemplate.convertAndSend("Pipe_Exchange", "MsSql_RoutKey", "mssql hello world!");
+        rabbitTemplate.convertAndSend("Pipe_Exchange", "MsSql_RoutKey", json);
     }
 
     /**
