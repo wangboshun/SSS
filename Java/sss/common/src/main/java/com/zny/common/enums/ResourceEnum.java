@@ -40,7 +40,27 @@ public enum ResourceEnum {
     /**
      * 传感器
      */
-    Sensor(6);
+    Sensor(6),
+
+    /**
+     * 目的节点
+     */
+    Sink(7),
+
+    /**
+     * 源节点
+     */
+    Source(8),
+
+    /**
+     * 管道任务
+     */
+    Task(9),
+
+    /**
+     * 链接
+     */
+    Connect(10);
 
     public Integer index;
 

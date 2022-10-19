@@ -96,21 +96,20 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
         if (model != null) {
             return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "用户已存在！");
         }
-        UserModel userModel = new UserModel();
-        userModel.setId(UUID.randomUUID().toString());
-        userModel.setUser_name(username);
+        model = new UserModel();
+        model.setId(UUID.randomUUID().toString());
+        model.setUser_name(username);
+        model.setPassword(SecureUtil.md5(password));
+        model.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
         if (StringUtils.isNotBlank(parentId)) {
-            userModel.setParent_id(parentId);
+            model.setParent_id(parentId);
         }
         if (userType != null) {
-            userModel.setUser_type(userType);
+            model.setUser_type(userType);
         } else {
-            userModel.setUser_type(UserTypeEnum.COMMON.getIndex());
+            model.setUser_type(UserTypeEnum.COMMON.getIndex());
         }
-
-        userModel.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
-        userModel.setPassword(SecureUtil.md5(password));
-        if (save(userModel)) {
+        if (save(model)) {
             return SaResult.ok("添加用户成功！");
         } else {
             return SaResultEx.error(MessageCodeEnum.DB_ERROR, "添加用户失败！");
@@ -234,8 +233,13 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
         if (StringUtils.isNotBlank(parentId)) {
             model.setParent_id(parentId);
         }
-        model.setPassword(SecureUtil.md5(password));
-        model.setUser_name(username);
+        if (StringUtils.isNotBlank(password)) {
+            model.setPassword(SecureUtil.md5(password));
+        }
+        if (StringUtils.isNotBlank(username)) {
+            model.setUser_name(username);
+        }
+
         if (updateById(model)) {
             return SaResult.ok("更新用户信息成功！");
         } else {
@@ -264,8 +268,8 @@ public class UserApplication extends ServiceImpl<UserMapper, UserModel> {
             return list;
         }
         for (String id : ids) {
-            UserModel userModel = this.getById(id);
-            list.add(userModel);
+            UserModel model = this.getById(id);
+            list.add(model);
         }
         return list;
     }

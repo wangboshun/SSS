@@ -71,13 +71,13 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
         if (model != null) {
             return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "权限已存在！");
         }
-        PermissionModel permissionModel = new PermissionModel();
-        permissionModel.setId(UUID.randomUUID().toString());
-        permissionModel.setPermission_name(permissionName);
-        permissionModel.setParent_id(parentId);
-        permissionModel.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
-        permissionModel.setPermission_code(permissionCode);
-        if (save(permissionModel)) {
+        model = new PermissionModel();
+        model.setId(UUID.randomUUID().toString());
+        model.setPermission_name(permissionName);
+        model.setParent_id(parentId);
+        model.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
+        model.setPermission_code(permissionCode);
+        if (save(model)) {
             return SaResult.ok("添加权限成功！");
         } else {
             return SaResultEx.error(MessageCodeEnum.DB_ERROR, "添加权限失败！");
@@ -201,8 +201,13 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
         if (StringUtils.isNotBlank(parentId)) {
             model.setParent_id(parentId);
         }
-        model.setPermission_name(permissionName);
-        model.setPermission_code(permissionCode);
+        if (StringUtils.isNotBlank(permissionName)) {
+            model.setPermission_name(permissionName);
+        }
+        if (StringUtils.isNotBlank(permissionCode)) {
+            model.setPermission_code(permissionCode);
+        }
+
         if (updateById(model)) {
             return SaResult.ok("更新权限信息成功！");
         } else {
@@ -251,8 +256,8 @@ public class PermissionApplication extends ServiceImpl<PermissionMapper, Permiss
             return list;
         }
         for (String id : ids) {
-            PermissionModel permissionModel = this.getById(id);
-            list.add(permissionModel);
+            PermissionModel model = this.getById(id);
+            list.add(model);
         }
         return list;
     }

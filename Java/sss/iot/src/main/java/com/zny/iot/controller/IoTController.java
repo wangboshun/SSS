@@ -1,8 +1,8 @@
 package com.zny.iot.controller;
 
 import cn.dev33.satoken.util.SaResult;
-import com.zny.iot.application.StationApplication;
 import com.zny.iot.model.StationBaseSetModel;
+import com.zny.iot.application.StationApplication;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 

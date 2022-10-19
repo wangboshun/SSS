@@ -1,4 +1,4 @@
-package com.zny.pipe.sink;
+package com.zny.pipe.component.sink;
 
 import com.google.gson.Gson;
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;

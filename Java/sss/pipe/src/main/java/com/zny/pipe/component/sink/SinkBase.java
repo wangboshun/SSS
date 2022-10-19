@@ -1,4 +1,4 @@
-package com.zny.pipe.sink;
+package com.zny.pipe.component.sink;
 
 /**
  * @author WBS

@@ -292,8 +292,8 @@ public class ApiApplication extends ServiceImpl<ApiMapper, ApiModel> {
             return list;
         }
         for (String id : ids) {
-            ApiModel apiModel = this.getById(id);
-            list.add(apiModel);
+            ApiModel model = this.getById(id);
+            list.add(model);
         }
         return list;
     }

@@ -43,13 +43,13 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
         if (model != null) {
             return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "角色已存在！");
         }
-        RoleModel roleModel = new RoleModel();
-        roleModel.setId(UUID.randomUUID().toString());
-        roleModel.setRole_name(roleName);
-        roleModel.setParent_id(parentId);
-        roleModel.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
-        roleModel.setRole_code(roleCode);
-        if (save(roleModel)) {
+        model = new RoleModel();
+        model.setId(UUID.randomUUID().toString());
+        model.setRole_name(roleName);
+        model.setParent_id(parentId);
+        model.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
+        model.setRole_code(roleCode);
+        if (save(model)) {
             return SaResult.ok("添加角色成功！");
         } else {
             return SaResultEx.error(MessageCodeEnum.DB_ERROR, "添加角色失败！");
@@ -113,8 +113,7 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
      * @param pageIndex 页码
      * @param pageSize  分页大小
      */
-    public PageResult getRolePage(
-            String roleId, String roleName, String roleCode, Integer pageIndex, Integer pageSize) {
+    public PageResult getRolePage(String roleId, String roleName, String roleCode, Integer pageIndex, Integer pageSize) {
         pageSize = PageUtils.getPageSize(pageSize);
         pageIndex = PageUtils.getPageIndex(pageIndex);
         QueryWrapper<RoleModel> wrapper = new QueryWrapper<RoleModel>();
@@ -172,8 +171,13 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
         if (StringUtils.isNotBlank(parentId)) {
             model.setParent_id(parentId);
         }
-        model.setRole_name(roleName);
-        model.setRole_code(roleCode);
+        if (StringUtils.isNotBlank(roleName)) {
+            model.setRole_name(roleName);
+        }
+        if (StringUtils.isNotBlank(roleCode)) {
+            model.setRole_code(roleCode);
+        }
+
         if (updateById(model)) {
             return SaResult.ok("更新角色信息成功！");
         } else {

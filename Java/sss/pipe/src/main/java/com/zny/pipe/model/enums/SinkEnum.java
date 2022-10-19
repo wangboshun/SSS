@@ -1,4 +1,4 @@
-package com.zny.enums;
+package com.zny.pipe.model.enums;
 
 /**
  * @author WBS

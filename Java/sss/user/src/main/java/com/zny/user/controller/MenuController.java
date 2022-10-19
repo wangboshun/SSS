@@ -109,7 +109,7 @@ public class MenuController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
     public SaResult update(
-            @PathVariable String id, String menuName, String menuCode, @RequestParam(required = false) String parentId,
+            @PathVariable String id, @RequestParam(required = false) String menuName, @RequestParam(required = false) String menuCode, @RequestParam(required = false) String parentId,
             @RequestParam(required = false) Integer menuIndex, @RequestParam(required = false) String menuUrl,
             @RequestParam(required = false) String menuIcon, @RequestParam(required = false) Integer menuType) {
         return menuApplication.updateMenu(id, menuName, menuCode, parentId, menuIndex, menuUrl, menuIcon, menuType);

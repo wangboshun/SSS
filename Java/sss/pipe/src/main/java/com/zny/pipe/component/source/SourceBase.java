@@ -1,4 +1,4 @@
-package com.zny.pipe.source;
+package com.zny.pipe.component.source;
 
 /**
  * @author WBS

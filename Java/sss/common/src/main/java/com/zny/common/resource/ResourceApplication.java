@@ -47,14 +47,14 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
                 if (resourceList != null && resourceList.size() > 0) {
                     continue;
                 }
-                ResourceModel resourceModel = new ResourceModel();
-                resourceModel.setId(UUID.randomUUID().toString());
-                resourceModel.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
-                resourceModel.setMain_id(mainIdItem);
-                resourceModel.setMain_type(mainType);
-                resourceModel.setSlave_id(slaveIdItem);
-                resourceModel.setSlave_type(slaveType);
-                list.add(resourceModel);
+                ResourceModel model = new ResourceModel();
+                model.setId(UUID.randomUUID().toString());
+                model.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
+                model.setMain_id(mainIdItem);
+                model.setMain_type(mainType);
+                model.setSlave_id(slaveIdItem);
+                model.setSlave_type(slaveType);
+                list.add(model);
             }
         }
 
@@ -78,8 +78,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
      * @param slaveType 副类型
      */
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
-    public SaResult deleteResource(
-            String id, String[] mainIds, Integer mainType, String[] slaveIds, Integer slaveType) {
+    public SaResult deleteResource(String id, String[] mainIds, Integer mainType, String[] slaveIds, Integer slaveType) {
         try {
             for (String mainIdItem : mainIds) {
                 QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
@@ -110,9 +109,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
      * @param pageIndex 页码
      * @param pageSize  分页大小
      */
-    public PageResult getResourcePage(
-            String id, String mainId, Integer mainType, String slaveId, Integer slaveType, Integer pageIndex,
-            Integer pageSize) {
+    public PageResult getResourcePage(String id, String mainId, Integer mainType, String slaveId, Integer slaveType, Integer pageIndex, Integer pageSize) {
         pageSize = PageUtils.getPageSize(pageSize);
         pageIndex = PageUtils.getPageIndex(pageIndex);
         QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
@@ -142,8 +139,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
      * @param slaveId   副id
      * @param slaveType 副类型
      */
-    public List<ResourceModel> getResourceList(
-            String id, String mainId, Integer mainType, String slaveId, Integer slaveType) {
+    public List<ResourceModel> getResourceList(String id, String mainId, Integer mainType, String slaveId, Integer slaveType) {
         QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
         wrapper.eq(StringUtils.isNotBlank(id), "id", id);
         wrapper.eq(StringUtils.isNotBlank(mainId), "main_id", mainId);
@@ -163,7 +159,6 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
     public List<ResourceModel> getResourceList(String mainId, Integer mainType, Integer slaveType) {
         return getResourceList(null, mainId, mainType, null, slaveType);
     }
-
     /**
      * 更新资源信息
      *
@@ -177,10 +172,19 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
         QueryWrapper<ResourceModel> wrapper = new QueryWrapper<ResourceModel>();
         wrapper.eq("id", id);
         ResourceModel model = this.getOne(wrapper);
-        model.setMain_id(mainId);
-        model.setMain_type(mainType);
-        model.setSlave_id(slaveId);
-        model.setSlave_type(slaveType);
+        if (StringUtils.isNotBlank(mainId)) {
+            model.setMain_id(mainId);
+        }
+        if (mainType != null) {
+            model.setMain_type(mainType);
+        }
+        if (StringUtils.isNotBlank(slaveId)) {
+            model.setSlave_id(slaveId);
+        }
+        if (slaveType != null) {
+            model.setSlave_type(slaveType);
+        }
+
         if (updateById(model)) {
             return SaResult.ok("更新资源信息成功！");
         } else {

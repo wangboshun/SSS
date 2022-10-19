@@ -50,7 +50,7 @@ spring:
             update-allow: true  #更新操作被开启，如果为false，则全部更新被拦截，默认也是true
     type: com.alibaba.druid.pool.DruidDataSource
     dynamic:
-      primary: host
+      primary: main
       strict: false
       datasource:
         main:

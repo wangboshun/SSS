@@ -68,26 +68,24 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      * @param menuIcon  菜单图标
      * @param menuType  菜单类型：链接、按钮
      */
-    public SaResult addMenu(
-            String menuName, String menuCode, String parentId, Integer menuIndex, String menuUrl, String menuIcon,
-            Integer menuType) {
+    public SaResult addMenu(String menuName, String menuCode, String parentId, Integer menuIndex, String menuUrl, String menuIcon, Integer menuType) {
         QueryWrapper<MenuModel> wrapper = new QueryWrapper<MenuModel>();
         wrapper.eq("menu_name", menuName);
         MenuModel model = this.getOne(wrapper);
         if (model != null) {
             return SaResult.error("菜单名已存在！");
         }
-        MenuModel menuModel = new MenuModel();
-        menuModel.setId(UUID.randomUUID().toString());
-        menuModel.setMenu_name(menuName);
-        menuModel.setMenu_code(menuCode);
-        menuModel.setParent_id(parentId);
-        menuModel.setMenu_index(menuIndex);
-        menuModel.setMenu_url(menuUrl);
-        menuModel.setMenu_icon(menuIcon);
-        menuModel.setMenu_type(menuType);
-        menuModel.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
-        if (save(menuModel)) {
+        model = new MenuModel();
+        model.setId(UUID.randomUUID().toString());
+        model.setMenu_name(menuName);
+        model.setMenu_code(menuCode);
+        model.setParent_id(parentId);
+        model.setMenu_index(menuIndex);
+        model.setMenu_url(menuUrl);
+        model.setMenu_icon(menuIcon);
+        model.setMenu_type(menuType);
+        model.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
+        if (save(model)) {
             return SaResult.ok("添加菜单成功！");
         } else {
             return SaResultEx.error(MessageCodeEnum.DB_ERROR, "添加菜单失败！");
@@ -150,8 +148,7 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      * @param pageIndex 页码
      * @param pageSize  分页大小
      */
-    public PageResult getMenuPage(
-            String menuId, String menuName, String menuCode, Integer pageIndex, Integer pageSize) {
+    public PageResult getMenuPage(String menuId, String menuName, String menuCode, Integer pageIndex, Integer pageSize) {
         pageSize = PageUtils.getPageSize(pageSize);
         pageIndex = PageUtils.getPageIndex(pageIndex);
         QueryWrapper<MenuModel> wrapper = new QueryWrapper<MenuModel>();
@@ -203,24 +200,38 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
      * @param menuIcon  菜单图标
      * @param menuType  菜单类型：链接、按钮
      */
-    public SaResult updateMenu(
-            String id, String menuName, String menuCode, String parentId, Integer menuIndex, String menuUrl,
-            String menuIcon, Integer menuType) {
+    public SaResult updateMenu(String id, String menuName, String menuCode, String parentId, Integer menuIndex, String menuUrl, String menuIcon, Integer menuType) {
         QueryWrapper<MenuModel> wrapper = new QueryWrapper<MenuModel>();
         wrapper.eq("id", id);
-        MenuModel menuModel = this.getOne(wrapper);
+        MenuModel model = this.getOne(wrapper);
 
-        if (menuModel == null) {
+        if (model == null) {
             return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "菜单不存在！");
         }
-        menuModel.setMenu_name(menuName);
-        menuModel.setMenu_code(menuCode);
-        menuModel.setParent_id(parentId);
-        menuModel.setMenu_index(menuIndex);
-        menuModel.setMenu_url(menuUrl);
-        menuModel.setMenu_icon(menuIcon);
-        menuModel.setMenu_type(menuType);
-        if (updateById(menuModel)) {
+        if (StringUtils.isNotBlank(menuName)) {
+            model.setMenu_name(menuName);
+        }
+
+        if (StringUtils.isNotBlank(menuCode)) {
+            model.setMenu_code(menuCode);
+        }
+        if (StringUtils.isNotBlank(parentId)) {
+            model.setParent_id(parentId);
+        }
+        if (menuIndex != null) {
+            model.setMenu_index(menuIndex);
+        }
+        if (StringUtils.isNotBlank(menuUrl)) {
+            model.setMenu_url(menuUrl);
+        }
+        if (StringUtils.isNotBlank(menuIcon)) {
+            model.setMenu_icon(menuIcon);
+        }
+        if (menuType != null) {
+            model.setMenu_type(menuType);
+        }
+
+        if (updateById(model)) {
             return SaResult.ok("更新菜单信息成功！");
         } else {
             return SaResultEx.error(MessageCodeEnum.DB_ERROR, "删除菜单信息失败！");
@@ -268,8 +279,8 @@ public class MenuApplication extends ServiceImpl<MenuMapper, MenuModel> {
             return list;
         }
         for (String id : ids) {
-            MenuModel menuModel = this.getById(id);
-            list.add(menuModel);
+            MenuModel model = this.getById(id);
+            list.add(model);
         }
         return list;
     }

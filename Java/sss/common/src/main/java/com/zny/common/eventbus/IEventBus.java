@@ -7,15 +7,15 @@ package com.zny.common.eventbus;
  */
 
 public interface IEventBus<L, E> {
-    public Registration<L> register(String topic, L listener);
+    Registration<L> register(String topic, L listener);
 
-    public void unregister(Registration<L> registration);
+    void unregister(Registration<L> registration);
 
-    public void unregister(String topic, L listener);
+    void unregister(String topic, L listener);
 
-    public void post(String topic, E event);
+    void post(String topic, E event);
 
-    public class Registration<L> {
+    class Registration<L> {
 
         private String topic;
 

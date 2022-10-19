@@ -1,7 +1,7 @@
-package com.zny.pipe.source;
+package com.zny.pipe.component.source;
 
 import com.google.gson.Gson;
-import com.mysql.cj.jdbc.MysqlDataSource;
+import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 import com.zny.common.json.GsonEx;
 import com.zny.common.utils.DbEx;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -18,16 +18,17 @@ import java.util.Map;
 
 /**
  * @author WBS
- * Date:2022/10/12
- * mysql源端服务类
+ * Date:2022/10/14
+ * mssql源端服务类
  */
 
 @Component
-public class MySqlSource implements SourceBase {
+public class MsSqlSource implements SourceBase {
     private Connection connection;
+
     private final RabbitTemplate rabbitTemplate;
 
-    public MySqlSource(RabbitTemplate rabbitTemplate) {
+    public MsSqlSource(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
     }
 
@@ -35,20 +36,20 @@ public class MySqlSource implements SourceBase {
      * 配置数据源
      */
     private void configDataSource() {
-        String connectStr = "jdbc:mysql://127.0.0.1:3306/test1?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
-        MysqlDataSource mysqlDataSource = new MysqlDataSource();
-        mysqlDataSource.setURL(connectStr);
-        mysqlDataSource.setUser("root");
-        mysqlDataSource.setPassword("123456");
+        String connectStr = "jdbc:sqlserver://127.0.0.1:1433;database=test1;integratedSecurity=false;encrypt=true;trustServerCertificate=true";
+        SQLServerDataSource sqlServerDataSource = new SQLServerDataSource();
+        sqlServerDataSource.setURL(connectStr);
+        sqlServerDataSource.setUser("sa");
+        sqlServerDataSource.setPassword("123456");
         try {
-            connection = mysqlDataSource.getConnection();
+            connection = sqlServerDataSource.getConnection();
         } catch (SQLException e) {
             System.out.println("Exception:" + e.getMessage());
         }
     }
 
     /**
-     * 开始
+     * 结束
      */
     @Override
     public void start() {
@@ -61,7 +62,7 @@ public class MySqlSource implements SourceBase {
     }
 
     /**
-     * 结束
+     * 开始
      */
     @Override
     public void stop() {
@@ -82,7 +83,7 @@ public class MySqlSource implements SourceBase {
     private void sendData(List<Map<String, Object>> list) {
         Gson gson = GsonEx.getInstance();
         String json = gson.toJson(list);
-        rabbitTemplate.convertAndSend("Pipe_Exchange", "MySql_RoutKey", json);
+        rabbitTemplate.convertAndSend("Pipe_Exchange", "MsSql_RoutKey", json);
     }
 
     /**
@@ -92,7 +93,7 @@ public class MySqlSource implements SourceBase {
         try {
             Statement stmt = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             stmt.setFetchSize(Integer.MAX_VALUE);
-            ResultSet result = stmt.executeQuery("select * from Test1 limit 100");
+            ResultSet result = stmt.executeQuery("select top 1000 * from Test1 ");
             List<Map<String, Object>> list = new ArrayList<>();
             List<String> filedList = DbEx.getField(result);
             while (result.next()) {

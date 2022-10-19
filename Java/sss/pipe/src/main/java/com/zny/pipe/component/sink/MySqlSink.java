@@ -1,4 +1,4 @@
-package com.zny.pipe.sink;
+package com.zny.pipe.component.sink;
 
 import com.google.gson.Gson;
 import com.mysql.cj.jdbc.MysqlDataSource;
@@ -71,26 +71,34 @@ public class MySqlSink implements SinkBase {
 
     private void setData(List<Map<String, Object>> list) {
         try {
-            long begin = 1;
-            long bathSize = 100;
-            long end = begin + bathSize;
-            PreparedStatement pstm = connection.prepareStatement("");
-            for (Map<String, Object> item : list) {
-                while (begin < end) {
-                    Set<String> fieldSet = item.keySet();
-                    int index = 0;
-                    for (String field : fieldSet) {
-                        pstm.setObject(index, field);
-                        index++;
-                    }
-                    pstm.addBatch();
-                    begin++;
-                }
-                pstm.executeBatch();
-                end += bathSize;
-            }
-        } catch (SQLException e) {
+            connection.setAutoCommit(false);
+            Set<String> fieldSet = list.get(0).keySet();
+            String fieldSql = "";
+            String valueSql = "";
 
+            for (String field : fieldSet) {
+                fieldSql += "`" + field + "`,";
+                valueSql += "?,";
+            }
+
+            fieldSql = fieldSql.substring(0, fieldSql.length() - 1);
+            valueSql = valueSql.substring(0, valueSql.length() - 1);
+            String sql = "INSERT INTO test2 (" + fieldSql + ") VALUES (" + valueSql + ")";
+            PreparedStatement pstm = connection.prepareStatement(sql);
+
+            for (Map<String, Object> item : list) {
+                int index = 1;
+                for (String field : fieldSet) {
+                    pstm.setObject(index, item.get(field));
+                    index++;
+                }
+                pstm.addBatch();
+            }
+            pstm.executeBatch();
+            pstm.clearBatch();
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
     }
 }

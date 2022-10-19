@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  */
 
 public class StringUtils {
-    private static Pattern humpPattern = Pattern.compile("[A-Z]");
+    private static final Pattern humpPattern = Pattern.compile("[A-Z]");
 
     /**
      * 下划线格式 -> 驼峰  大小写均可
