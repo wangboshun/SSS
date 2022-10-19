@@ -50,16 +50,18 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
     /**
      * 添加任务
      *
-     * @param taskName   任务名
-     * @param sinkId     目的节点id
-     * @param sourceId   源节点id
-     * @param startTime  开始时间
-     * @param endTime    结束时间
-     * @param timeStep   步长
-     * @param insertType 插入方式
-     * @param whereParam 查询条件
+     * @param taskName     任务名
+     * @param sinkId       目的节点id
+     * @param sourceId     源节点id
+     * @param startTime    开始时间
+     * @param endTime      结束时间
+     * @param timeStep     步长
+     * @param insertType   插入方式
+     * @param whereParam   查询条件
+     * @param executeType  执行类型
+     * @param executeParam 执行参数
      */
-    public SaResult addTask(String taskName, String sinkId, String sourceId, String startTime, String endTime, Integer timeStep, Integer insertType, String whereParam) {
+    public SaResult addTask(String taskName, String sinkId, String sourceId, String startTime, String endTime, Integer timeStep, Integer insertType, String whereParam, Integer executeType, String executeParam) {
         QueryWrapper<TaskConfigModel> wrapper = new QueryWrapper<TaskConfigModel>();
         wrapper.eq("task_name", taskName);
         TaskConfigModel model = this.getOne(wrapper);
@@ -76,6 +78,8 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
         model.setTime_step(timeStep);
         model.setInsert_type(insertType);
         model.setWhere_param(whereParam);
+        model.setExecute_type(executeType);
+        model.setExecute_param(executeParam);
         model.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
         if (save(model)) {
             return SaResult.ok("添加任务成功！");
@@ -133,16 +137,18 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
     /**
      * 更新任务信息
      *
-     * @param taskName   任务名
-     * @param sinkId     目的节点id
-     * @param sourceId   源节点id
-     * @param startTime  开始时间
-     * @param endTime    结束时间
-     * @param timeStep   步长
-     * @param insertType 插入方式
-     * @param whereParam 查询条件
+     * @param taskName     任务名
+     * @param sinkId       目的节点id
+     * @param sourceId     源节点id
+     * @param startTime    开始时间
+     * @param endTime      结束时间
+     * @param timeStep     步长
+     * @param insertType   插入方式
+     * @param whereParam   查询条件
+     * @param executeType  执行类型
+     * @param executeParam 执行参数
      */
-    public SaResult updateTask(String id, String taskName, String sinkId, String sourceId, String startTime, String endTime, Integer timeStep, Integer insertType, String whereParam) {
+    public SaResult updateTask(String id, String taskName, String sinkId, String sourceId, String startTime, String endTime, Integer timeStep, Integer insertType, String whereParam, Integer executeType, String executeParam) {
         QueryWrapper<TaskConfigModel> wrapper = new QueryWrapper<TaskConfigModel>();
         wrapper.eq("id", id);
         TaskConfigModel model = this.getOne(wrapper);
@@ -168,11 +174,17 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
         if (StringUtils.isNotBlank(whereParam)) {
             model.setWhere_param(whereParam);
         }
+        if (StringUtils.isNotBlank(executeParam)) {
+            model.setExecute_param(executeParam);
+        }
         if (timeStep != null) {
             model.setTime_step(timeStep);
         }
         if (insertType != null) {
             model.setInsert_type(insertType);
+        }
+        if (executeType != null) {
+            model.setExecute_type(executeType);
         }
 
         if (updateById(model)) {

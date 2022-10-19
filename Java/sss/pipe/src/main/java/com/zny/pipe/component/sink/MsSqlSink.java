@@ -1,16 +1,16 @@
 package com.zny.pipe.component.sink;
 
 import com.google.gson.Gson;
-import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 import com.zny.common.json.GsonEx;
 import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.stereotype.Component;
 
-import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author WBS
@@ -20,25 +20,7 @@ import java.util.Map;
 
 @Component
 @RabbitListener(bindings = {@QueueBinding(value = @Queue(value = "MsSql_Queue", durable = "true"), exchange = @Exchange(value = "Pipe_Exchange"), key = "MsSql_RoutKey")})
-public class MsSqlSink implements SinkBase {
-
-    private Connection connection;
-
-    /**
-     * 配置数据源
-     */
-    private void configDataSource() {
-        String connectStr = "jdbc:sqlserver://127.0.0.1:1433;database=test1;integratedSecurity=false;encrypt=true;trustServerCertificate=true";
-        SQLServerDataSource sqlServerDataSource = new SQLServerDataSource();
-        sqlServerDataSource.setURL(connectStr);
-        sqlServerDataSource.setUser("sa");
-        sqlServerDataSource.setPassword("123456");
-        try {
-            connection = sqlServerDataSource.getConnection();
-        } catch (SQLException e) {
-            System.out.println("Exception:" + e.getMessage());
-        }
-    }
+public class MsSqlSink extends SinkAbstract {
 
     @RabbitHandler
     public void onMessage(String message) {
@@ -49,25 +31,50 @@ public class MsSqlSink implements SinkBase {
         setData(list);
     }
 
-    @Override
-    public void start() {
-        try {
-            configDataSource();
-        } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
-        }
-    }
-
-    @Override
-    public void stop() {
-        try {
-
-        } catch (Exception e) {
-
-        }
-    }
-
     private void setData(List<Map<String, Object>> list) {
+        try {
+            connection.setAutoCommit(false);
+            Set<String> fieldSet = list.get(0).keySet();
+            String fieldSql = "";
+            String valueSql = "";
 
+            for (String field : fieldSet) {
+                fieldSql += "[" + field + "],";
+                valueSql += "?,";
+            }
+
+            fieldSql = fieldSql.substring(0, fieldSql.length() - 1);
+            valueSql = valueSql.substring(0, valueSql.length() - 1);
+            String sql = "INSERT INTO " + this.sinkConfig.getTable_name() + " (" + fieldSql + ") VALUES (" + valueSql + ")";
+
+            //存在即跳过
+            if (taskConfig.getInsert_type() == 0) {
+//            sql = sql.replace("INSERT IGNORE INTO ", "");
+            }
+
+            PreparedStatement pstm = connection.prepareStatement(sql);
+
+            for (Map<String, Object> item : list) {
+                int index = 1;
+                for (String field : fieldSet) {
+                    pstm.setObject(index, item.get(field));
+                    index++;
+                }
+                pstm.addBatch();
+            }
+            pstm.executeBatch();
+            pstm.clearBatch();
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (!connection.isClosed()) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+
+            }
+        }
     }
 }

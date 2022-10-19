@@ -1,5 +1,9 @@
 package com.zny.pipe.component.sink;
 
+import com.zny.pipe.model.ConnectConfigModel;
+import com.zny.pipe.model.SinkConfigModel;
+import com.zny.pipe.model.TaskConfigModel;
+
 /**
  * @author WBS
  * Date:2022/10/12
@@ -7,6 +11,8 @@ package com.zny.pipe.component.sink;
  */
 
 public interface SinkBase {
+
+    void config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig);
 
     void start();
 

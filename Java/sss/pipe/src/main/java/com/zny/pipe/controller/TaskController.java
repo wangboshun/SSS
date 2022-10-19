@@ -52,18 +52,20 @@ public class TaskController {
     /**
      * 添加任务
      *
-     * @param taskName   任务名
-     * @param sinkId     目的节点id
-     * @param sourceId   源节点id
-     * @param startTime  开始时间
-     * @param endTime    结束时间
-     * @param timeStep   步长
-     * @param insertType 插入方式
-     * @param whereParam 查询条件
+     * @param taskName     任务名
+     * @param sinkId       目的节点id
+     * @param sourceId     源节点id
+     * @param startTime    开始时间
+     * @param endTime      结束时间
+     * @param timeStep     步长
+     * @param insertType   插入方式
+     * @param whereParam   查询条件
+     * @param executeType  执行类型
+     * @param executeParam 执行参数
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public SaResult add(String taskName, String sinkId, String sourceId, String startTime, String endTime, Integer timeStep, Integer insertType, String whereParam) {
-        return taskConfigApplication.addTask(taskName, sinkId, sourceId, startTime, endTime, timeStep, insertType, whereParam);
+    public SaResult add(String taskName, String sinkId, String sourceId, String startTime, String endTime, Integer timeStep, Integer insertType, String whereParam, Integer executeType, String executeParam) {
+        return taskConfigApplication.addTask(taskName, sinkId, sourceId, startTime, endTime, timeStep, insertType, whereParam, executeType, executeParam);
     }
 
 
@@ -80,19 +82,21 @@ public class TaskController {
     /**
      * 更新任务信息
      *
-     * @param id         任务id
-     * @param taskName   任务名
-     * @param sinkId     目的节点id
-     * @param sourceId   源节点id
-     * @param startTime  开始时间
-     * @param endTime    结束时间
-     * @param timeStep   步长
-     * @param insertType 插入方式
-     * @param whereParam 查询条件
+     * @param id           任务id
+     * @param taskName     任务名
+     * @param sinkId       目的节点id
+     * @param sourceId     源节点id
+     * @param startTime    开始时间
+     * @param endTime      结束时间
+     * @param timeStep     步长
+     * @param insertType   插入方式
+     * @param whereParam   查询条件
+     * @param executeType  执行类型
+     * @param executeParam 执行参数
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
-    public SaResult update(@PathVariable String id, String taskName, String sinkId, String sourceId, String startTime, String endTime, Integer timeStep, Integer insertType, String whereParam) {
-        return taskConfigApplication.updateTask(id, taskName, sinkId, sourceId, startTime, endTime, timeStep, insertType, whereParam);
+    public SaResult update(@PathVariable String id, String taskName, String sinkId, String sourceId, String startTime, String endTime, Integer timeStep, Integer insertType, String whereParam, Integer executeType, String executeParam) {
+        return taskConfigApplication.updateTask(id, taskName, sinkId, sourceId, startTime, endTime, timeStep, insertType, whereParam, executeType, executeParam);
     }
 
     /**

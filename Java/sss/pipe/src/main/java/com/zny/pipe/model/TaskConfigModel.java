@@ -51,6 +51,33 @@ public class TaskConfigModel implements Serializable {
      */
     private String where_param;
 
+    /**
+     * 任务执行类型
+     * 0为间隔时间、1为cron
+     */
+    private Integer execute_type;
+
+    /**
+     * 执行参数
+     * 0为间隔时间，单位秒、1为cron表达式
+     */
+    private String execute_param;
+
+    public Integer getExecute_type() {
+        return execute_type;
+    }
+
+    public void setExecute_type(Integer execute_type) {
+        this.execute_type = execute_type;
+    }
+
+    public String getExecute_param() {
+        return execute_param;
+    }
+
+    public void setExecute_param(String execute_param) {
+        this.execute_param = execute_param;
+    }
 
     public String getWhere_param() {
         return where_param;
