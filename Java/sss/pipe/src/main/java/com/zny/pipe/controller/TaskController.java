@@ -62,10 +62,11 @@ public class TaskController {
      * @param whereParam   查询条件
      * @param executeType  执行类型
      * @param executeParam 执行参数
+     * @param addType      新增方式
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public SaResult add(String taskName, String sinkId, String sourceId, String startTime, String endTime, Integer timeStep, Integer insertType, String whereParam, Integer executeType, String executeParam) {
-        return taskConfigApplication.addTask(taskName, sinkId, sourceId, startTime, endTime, timeStep, insertType, whereParam, executeType, executeParam);
+    public SaResult add(String taskName, String sinkId, String sourceId, String startTime, String endTime, Integer timeStep, Integer insertType, String whereParam, Integer executeType, String executeParam, Integer addType) {
+        return taskConfigApplication.addTask(taskName, sinkId, sourceId, startTime, endTime, timeStep, insertType, whereParam, executeType, executeParam,addType);
     }
 
 
@@ -93,10 +94,11 @@ public class TaskController {
      * @param whereParam   查询条件
      * @param executeType  执行类型
      * @param executeParam 执行参数
+     * @param addType      新增方式
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
-    public SaResult update(@PathVariable String id, String taskName, String sinkId, String sourceId, String startTime, String endTime, Integer timeStep, Integer insertType, String whereParam, Integer executeType, String executeParam) {
-        return taskConfigApplication.updateTask(id, taskName, sinkId, sourceId, startTime, endTime, timeStep, insertType, whereParam, executeType, executeParam);
+    public SaResult update(@PathVariable String id, String taskName, String sinkId, String sourceId, String startTime, String endTime, Integer timeStep, Integer insertType, String whereParam, Integer executeType, String executeParam, Integer addType) {
+        return taskConfigApplication.updateTask(id, taskName, sinkId, sourceId, startTime, endTime, timeStep, insertType, whereParam, executeType, executeParam, addType);
     }
 
     /**

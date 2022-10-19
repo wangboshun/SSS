@@ -60,8 +60,9 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
      * @param whereParam   查询条件
      * @param executeType  执行类型
      * @param executeParam 执行参数
+     * @param addType      新增方式
      */
-    public SaResult addTask(String taskName, String sinkId, String sourceId, String startTime, String endTime, Integer timeStep, Integer insertType, String whereParam, Integer executeType, String executeParam) {
+    public SaResult addTask(String taskName, String sinkId, String sourceId, String startTime, String endTime, Integer timeStep, Integer insertType, String whereParam, Integer executeType, String executeParam, Integer addType) {
         QueryWrapper<TaskConfigModel> wrapper = new QueryWrapper<TaskConfigModel>();
         wrapper.eq("task_name", taskName);
         TaskConfigModel model = this.getOne(wrapper);
@@ -80,6 +81,7 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
         model.setWhere_param(whereParam);
         model.setExecute_type(executeType);
         model.setExecute_param(executeParam);
+        model.setAdd_type(addType);
         model.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
         if (save(model)) {
             return SaResult.ok("添加任务成功！");
@@ -147,8 +149,9 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
      * @param whereParam   查询条件
      * @param executeType  执行类型
      * @param executeParam 执行参数
+     * @param addType      新增方式
      */
-    public SaResult updateTask(String id, String taskName, String sinkId, String sourceId, String startTime, String endTime, Integer timeStep, Integer insertType, String whereParam, Integer executeType, String executeParam) {
+    public SaResult updateTask(String id, String taskName, String sinkId, String sourceId, String startTime, String endTime, Integer timeStep, Integer insertType, String whereParam, Integer executeType, String executeParam, Integer addType) {
         QueryWrapper<TaskConfigModel> wrapper = new QueryWrapper<TaskConfigModel>();
         wrapper.eq("id", id);
         TaskConfigModel model = this.getOne(wrapper);
@@ -185,6 +188,9 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
         }
         if (executeType != null) {
             model.setExecute_type(executeType);
+        }
+        if (addType != null) {
+            model.setAdd_type(addType);
         }
 
         if (updateById(model)) {

@@ -13,9 +13,7 @@ import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.PageUtils;
 import com.zny.pipe.mapper.SourceConfigMapper;
-import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SourceConfigModel;
-import com.zny.pipe.model.TaskConfigModel;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -288,16 +286,5 @@ public class SourceConfigApplication extends ServiceImpl<SourceConfigMapper, Sou
             return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
         }
         return resourceApplication.deleteResource(null, roleId, ResourceEnum.ROLE.getIndex(), sourceId, ResourceEnum.Source.getIndex());
-    }
-
-    /**
-     * 获取
-     *
-     * @param sourceConfig  数据源配置
-     * @param connectConfig 链接配置
-     * @param taskConfig    任务配置
-     */
-    public String getNextSql(SourceConfigModel sourceConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig) {
-
     }
 }

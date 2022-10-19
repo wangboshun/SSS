@@ -63,6 +63,20 @@ public class TaskConfigModel implements Serializable {
      */
     private String execute_param;
 
+    /**
+     * 新增方式
+     * 0为增量、1为全量
+     */
+    private Integer add_type;
+
+    public Integer getAdd_type() {
+        return add_type;
+    }
+
+    public void setAdd_type(Integer add_type) {
+        this.add_type = add_type;
+    }
+
     public Integer getExecute_type() {
         return execute_type;
     }
