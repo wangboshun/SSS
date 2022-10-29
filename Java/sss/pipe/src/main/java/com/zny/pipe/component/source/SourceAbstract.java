@@ -67,6 +67,11 @@ public class SourceAbstract implements SourceBase {
 
     }
 
+    @Override
+    public String getName() {
+        return "SourceAbstract";
+    }
+
     /**
      * 获取需要查询的SQL
      */

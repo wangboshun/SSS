@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.zny.common.enums.DbTypeEnum;
 import com.zny.common.json.GsonEx;
 import org.springframework.amqp.rabbit.annotation.*;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ import java.util.Map;
 
 @Component
 @RabbitListener(bindings = {@QueueBinding(value = @Queue(value = "MsSQL_Queue", durable = "true"), exchange = @Exchange(value = "Pipe_Exchange"), key = "MsSQL_RoutKey")})
-public class MsSqlSink extends SinkAbstract implements InitializingBean {
+public class MsSqlSink extends SinkAbstract {
 
     @RabbitHandler
     public void onMessage(String message) {
@@ -34,7 +33,7 @@ public class MsSqlSink extends SinkAbstract implements InitializingBean {
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-        SinkFactory.register(DbTypeEnum.MsSQL, this);
+    public String getName() {
+        return DbTypeEnum.MsSQL.toString();
     }
 }

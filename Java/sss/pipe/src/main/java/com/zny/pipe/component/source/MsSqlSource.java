@@ -4,7 +4,6 @@ import com.zny.common.enums.DbTypeEnum;
 import com.zny.common.utils.DbEx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
@@ -22,9 +21,14 @@ import java.util.Map;
  */
 
 @Component
-public class MsSqlSource extends SourceAbstract implements InitializingBean {
+public class MsSqlSource extends SourceAbstract {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Override
+    public String getName() {
+        return DbTypeEnum.MsSQL.toString();
+    }
 
     /**
      * 结束
@@ -78,10 +82,5 @@ public class MsSqlSource extends SourceAbstract implements InitializingBean {
                 System.out.println("MsSql getData: " + e.getMessage());
             }
         }
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        SourceFactory.register(DbTypeEnum.MsSQL, this);
     }
 }

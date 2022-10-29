@@ -12,8 +12,8 @@ import com.zny.common.result.MessageCodeEnum;
 import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.PageUtils;
-import com.zny.pipe.component.sink.SinkFactory;
-import com.zny.pipe.component.source.SourceFactory;
+import com.zny.pipe.component.sink.SinkStrategy;
+import com.zny.pipe.component.source.SourceStrategy;
 import com.zny.pipe.mapper.TaskConfigMapper;
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SinkConfigModel;
@@ -33,12 +33,16 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
     private final SinkConfigApplication sinkConfigApplication;
     private final SourceConfigApplication sourceConfigApplication;
     private final ConnectConfigApplication connectConfigApplication;
+    private final SourceStrategy sourceStrategy;
+    private final SinkStrategy sinkStrategy;
 
-    public TaskConfigApplication(ResourceApplication resourceApplication, SinkConfigApplication sinkConfigApplication, SourceConfigApplication sourceConfigApplication, ConnectConfigApplication connectConfigApplication) {
+    public TaskConfigApplication(ResourceApplication resourceApplication, SinkConfigApplication sinkConfigApplication, SourceConfigApplication sourceConfigApplication, ConnectConfigApplication connectConfigApplication, SourceStrategy sourceStrategy, SinkStrategy sinkStrategy) {
         this.resourceApplication = resourceApplication;
         this.sinkConfigApplication = sinkConfigApplication;
         this.sourceConfigApplication = sourceConfigApplication;
         this.connectConfigApplication = connectConfigApplication;
+        this.sourceStrategy = sourceStrategy;
+        this.sinkStrategy = sinkStrategy;
     }
 
     public SaResult run(String taskId) {
@@ -48,8 +52,8 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
         ConnectConfigModel sinkConnectConfig = connectConfigApplication.getById(sinkConfig.getConnect_id());
         ConnectConfigModel sourceConnectConfig = connectConfigApplication.getById(sourceConfig.getConnect_id());
 
-        SinkFactory.run(taskConfig, sinkConfig, sinkConnectConfig);
-        SourceFactory.run(taskConfig, sourceConfig, sourceConnectConfig);
+        sinkStrategy.run(taskConfig, sinkConfig, sinkConnectConfig);
+        sourceStrategy.run(taskConfig, sourceConfig, sourceConnectConfig);
 
         return SaResult.ok("run");
     }

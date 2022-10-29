@@ -18,4 +18,5 @@ public interface SourceBase {
 
     void stop();
 
+    String getName();
 }

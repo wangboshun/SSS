@@ -4,7 +4,6 @@ import com.zny.common.enums.DbTypeEnum;
 import com.zny.common.utils.DbEx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
@@ -22,9 +21,14 @@ import java.util.Map;
  */
 
 @Component
-public class MySqlSource extends SourceAbstract implements InitializingBean {
+public class MySqlSource extends SourceAbstract {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Override
+    public String getName() {
+        return DbTypeEnum.MySQL.toString();
+    }
 
     /**
      * 开始
@@ -78,10 +82,5 @@ public class MySqlSource extends SourceAbstract implements InitializingBean {
                 System.out.println("MySql getData: " + e.getMessage());
             }
         }
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        SourceFactory.register(DbTypeEnum.MySQL, this);
     }
 }

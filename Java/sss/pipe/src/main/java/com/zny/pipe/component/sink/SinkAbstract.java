@@ -47,6 +47,11 @@ public class SinkAbstract implements SinkBase {
     }
 
     @Override
+    public String getName() {
+        return "SinkAbstract";
+    }
+
+    @Override
     public void stop() {
 
     }

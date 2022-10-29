@@ -17,4 +17,6 @@ public interface SinkBase {
     void start();
 
     void stop();
+
+    String getName();
 }
