@@ -20,6 +20,18 @@ public class SinkConfigModel implements Serializable {
      */
     private String table_name;
 
+    /**
+     * 主键，以逗号分割
+     */
+    private String primary_field;
+
+    public String getPrimary_field() {
+        return primary_field;
+    }
+
+    public void setPrimary_field(String primary_field) {
+        this.primary_field = primary_field;
+    }
 
     public String getTable_name() {
         return table_name;

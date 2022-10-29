@@ -18,10 +18,19 @@ public class TaskConfigModel implements Serializable {
     private String sink_id;
 
     /**
+     * 目的节点类型
+     */
+    private Integer sink_type;
+
+    /**
      * 源节点
      */
     private String source_id;
 
+    /**
+     * 源节点类型
+     */
+    private Integer source_type;
     /**
      * 开始时间
      */
@@ -68,6 +77,22 @@ public class TaskConfigModel implements Serializable {
      * 0为增量、1为全量
      */
     private Integer add_type;
+
+    public Integer getSink_type() {
+        return sink_type;
+    }
+
+    public void setSink_type(Integer sink_type) {
+        this.sink_type = sink_type;
+    }
+
+    public Integer getSource_type() {
+        return source_type;
+    }
+
+    public void setSource_type(Integer source_type) {
+        this.source_type = source_type;
+    }
 
     public Integer getAdd_type() {
         return add_type;

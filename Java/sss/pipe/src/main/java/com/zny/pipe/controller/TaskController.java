@@ -26,6 +26,11 @@ public class TaskController {
         this.taskConfigApplication = taskConfigApplication;
     }
 
+    @GetMapping(value = "/test")
+    public SaResult run(String taskId) {
+        return this.taskConfigApplication.run(taskId);
+    }
+
     /**
      * 获取任务列表
      *
@@ -33,7 +38,7 @@ public class TaskController {
      * @param taskName 任务名
      * @param pageSize 分页大小
      */
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping(value = "/list")
     public SaResult list(@RequestParam(required = false) String taskId, @RequestParam(required = false) String taskName, @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
         PageResult result = taskConfigApplication.getTaskPage(taskId, taskName, pageIndex, pageSize);
         return SaResult.data(result);
@@ -44,7 +49,7 @@ public class TaskController {
      *
      * @param id 任务id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
     public SaResult get(@PathVariable String id) {
         return SaResult.data(taskConfigApplication.getTaskById(id));
     }
@@ -64,18 +69,17 @@ public class TaskController {
      * @param executeParam 执行参数
      * @param addType      新增方式
      */
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @PostMapping(value = "/add")
     public SaResult add(String taskName, String sinkId, String sourceId, String startTime, String endTime, Integer timeStep, Integer insertType, String whereParam, Integer executeType, String executeParam, Integer addType) {
-        return taskConfigApplication.addTask(taskName, sinkId, sourceId, startTime, endTime, timeStep, insertType, whereParam, executeType, executeParam,addType);
+        return taskConfigApplication.addTask(taskName, sinkId, sourceId, startTime, endTime, timeStep, insertType, whereParam, executeType, executeParam, addType);
     }
-
 
     /**
      * 删除任务
      *
      * @param id 任务id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{id}")
     public SaResult delete(@PathVariable String id) {
         return taskConfigApplication.deleteTask(id);
     }
@@ -96,7 +100,7 @@ public class TaskController {
      * @param executeParam 执行参数
      * @param addType      新增方式
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
+    @PatchMapping(value = "/{id}")
     public SaResult update(@PathVariable String id, String taskName, String sinkId, String sourceId, String startTime, String endTime, Integer timeStep, Integer insertType, String whereParam, Integer executeType, String executeParam, Integer addType) {
         return taskConfigApplication.updateTask(id, taskName, sinkId, sourceId, startTime, endTime, timeStep, insertType, whereParam, executeType, executeParam, addType);
     }
@@ -106,7 +110,7 @@ public class TaskController {
      *
      * @param userId 用户id
      */
-    @RequestMapping(value = "/by_user", method = RequestMethod.GET)
+    @GetMapping(value = "/by_user")
     public SaResult getTaskByUser(String userId) {
         List<TaskConfigModel> list = taskConfigApplication.getTaskByUser(userId);
         return SaResult.data(list);
@@ -117,7 +121,7 @@ public class TaskController {
      *
      * @param roleId 角色id
      */
-    @RequestMapping(value = "/by_role", method = RequestMethod.GET)
+    @GetMapping(value = "/by_role")
     public SaResult getTaskByRole(String roleId) {
         List<TaskConfigModel> list = taskConfigApplication.getTaskByRole(roleId);
         return SaResult.data(list);
@@ -130,7 +134,7 @@ public class TaskController {
      * @param userIds 用户id
      * @param taskIds 任务id
      */
-    @RequestMapping(value = "/bind_by_user", method = RequestMethod.POST)
+    @PostMapping(value = "/bind_by_user")
     public SaResult bindTaskByUser(String[] userIds, String[] taskIds) {
         return taskConfigApplication.bindTaskByUser(userIds, taskIds);
     }
@@ -141,7 +145,7 @@ public class TaskController {
      * @param roleIds 角色id
      * @param taskIds 任务id
      */
-    @RequestMapping(value = "/bind_by_role", method = RequestMethod.POST)
+    @PostMapping(value = "/bind_by_role")
     public SaResult bindTaskByRole(String[] roleIds, String[] taskIds) {
         return taskConfigApplication.bindTaskByRole(roleIds, taskIds);
     }
@@ -152,7 +156,7 @@ public class TaskController {
      * @param userIds 用户id
      * @param taskIds id
      */
-    @RequestMapping(value = "/unbind_by_user", method = RequestMethod.POST)
+    @PostMapping(value = "/unbind_by_user")
     public SaResult unBindTaskByUser(String[] userIds, String[] taskIds) {
         return taskConfigApplication.unBindTaskByUser(userIds, taskIds);
     }
@@ -163,7 +167,7 @@ public class TaskController {
      * @param roleIds 角色id
      * @param taskIds id
      */
-    @RequestMapping(value = "/unbind_by_role", method = RequestMethod.POST)
+    @PostMapping(value = "/unbind_by_role")
     public SaResult unBindTaskByRole(String[] roleIds, String[] taskIds) {
         return taskConfigApplication.unBindTaskByRole(roleIds, taskIds);
     }

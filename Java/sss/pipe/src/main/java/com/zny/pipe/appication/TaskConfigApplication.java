@@ -12,7 +12,12 @@ import com.zny.common.result.MessageCodeEnum;
 import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.PageUtils;
+import com.zny.pipe.component.sink.SinkFactory;
+import com.zny.pipe.component.source.SourceFactory;
 import com.zny.pipe.mapper.TaskConfigMapper;
+import com.zny.pipe.model.ConnectConfigModel;
+import com.zny.pipe.model.SinkConfigModel;
+import com.zny.pipe.model.SourceConfigModel;
 import com.zny.pipe.model.TaskConfigModel;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +30,28 @@ import java.util.UUID;
 @Service
 public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskConfigModel> {
     private final ResourceApplication resourceApplication;
+    private final SinkConfigApplication sinkConfigApplication;
+    private final SourceConfigApplication sourceConfigApplication;
+    private final ConnectConfigApplication connectConfigApplication;
 
-    public TaskConfigApplication(ResourceApplication resourceApplication) {
+    public TaskConfigApplication(ResourceApplication resourceApplication, SinkConfigApplication sinkConfigApplication, SourceConfigApplication sourceConfigApplication, ConnectConfigApplication connectConfigApplication) {
         this.resourceApplication = resourceApplication;
+        this.sinkConfigApplication = sinkConfigApplication;
+        this.sourceConfigApplication = sourceConfigApplication;
+        this.connectConfigApplication = connectConfigApplication;
+    }
+
+    public SaResult run(String taskId) {
+        TaskConfigModel taskConfig = this.getById(taskId);
+        SinkConfigModel sinkConfig = sinkConfigApplication.getById(taskConfig.getSink_id());
+        SourceConfigModel sourceConfig = sourceConfigApplication.getById(taskConfig.getSource_id());
+        ConnectConfigModel sinkConnectConfig = connectConfigApplication.getById(sinkConfig.getConnect_id());
+        ConnectConfigModel sourceConnectConfig = connectConfigApplication.getById(sourceConfig.getConnect_id());
+
+        SinkFactory.run(taskConfig, sinkConfig, sinkConnectConfig);
+        SourceFactory.run(taskConfig, sourceConfig, sourceConnectConfig);
+
+        return SaResult.ok("run");
     }
 
     /**

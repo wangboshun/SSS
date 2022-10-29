@@ -2,7 +2,7 @@ package com.zny.common.code.template;
 
 import cn.dev33.satoken.util.SaResult;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import com.zny.common.model.PageResult;
+import model.common.com.zny.pipe.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

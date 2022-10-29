@@ -1,11 +1,15 @@
 package com.zny.pipe.component.source;
 
+import com.zny.common.enums.DbTypeEnum;
 import com.zny.common.utils.DbEx;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +22,9 @@ import java.util.Map;
  */
 
 @Component
-public class MySqlSource extends SourceAbstract {
+public class MySqlSource extends SourceAbstract implements InitializingBean {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * 开始
@@ -28,7 +34,8 @@ public class MySqlSource extends SourceAbstract {
         try {
             getData();
         } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
+            logger.error("MySql start", e);
+            System.out.println("MySql start: " + e.getMessage());
         }
     }
 
@@ -37,9 +44,10 @@ public class MySqlSource extends SourceAbstract {
      */
     private void getData() {
         try {
-            Statement stmt = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-            stmt.setFetchSize(Integer.MAX_VALUE);
-            ResultSet result = stmt.executeQuery(getNextSql());
+            String sql = getNextSql();
+            PreparedStatement stmt = connection.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+            stmt.setFetchSize(Integer.MIN_VALUE);
+            ResultSet result = stmt.executeQuery();
             List<Map<String, Object>> list = new ArrayList<>();
             List<String> filedList = DbEx.getField(result);
             while (result.next()) {
@@ -58,15 +66,22 @@ public class MySqlSource extends SourceAbstract {
                 list.clear();
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            logger.error("MySql getData", e);
+            System.out.println("MySql getData: " + e.getMessage());
         } finally {
             try {
                 if (!connection.isClosed()) {
                     connection.close();
                 }
             } catch (SQLException e) {
-
+                logger.error("MySql getData", e);
+                System.out.println("MySql getData: " + e.getMessage());
             }
         }
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        SourceFactory.register(DbTypeEnum.MySQL, this);
     }
 }
