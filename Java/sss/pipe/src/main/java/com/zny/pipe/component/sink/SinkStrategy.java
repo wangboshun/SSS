@@ -31,12 +31,10 @@ public class SinkStrategy implements ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        Map<String, SinkBase> beans = applicationContext.getBeansOfType(SinkBase.class);
-        for (String key : beans.keySet()) {
-            if ("sinkBase".equals(key) || "sinkAbstract".equals(key)) {
-                continue;
-            }
-            sinkMap.put(beans.get(key).getName(), beans.get(key));
-        }
+        applicationContext.getBeansWithAnnotation(SinkType.class).entrySet().iterator().forEachRemaining(entrySet -> {
+            Class<SinkBase> entity = (Class<SinkBase>) entrySet.getValue().getClass();
+            DbTypeEnum e = entity.getAnnotation(SinkType.class).value();
+            sinkMap.put(e.toString(), applicationContext.getBean(entity));
+        });
     }
 }

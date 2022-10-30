@@ -18,6 +18,7 @@ import java.util.Map;
 
 @Component
 @RabbitListener(bindings = {@QueueBinding(value = @Queue(value = "MySQL_Queue", durable = "true"), exchange = @Exchange(value = "Pipe_Exchange"), key = "MySQL_RoutKey")})
+@SinkType(DbTypeEnum.MySQL)
 public class MySqlSink extends SinkAbstract {
 
     @RabbitHandler

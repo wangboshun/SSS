@@ -21,6 +21,7 @@ import java.util.Map;
  */
 
 @Component
+@SourceType(DbTypeEnum.MsSQL)
 public class MsSqlSource extends SourceAbstract {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());

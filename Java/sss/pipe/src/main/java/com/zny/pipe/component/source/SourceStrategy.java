@@ -24,19 +24,17 @@ public class SourceStrategy implements ApplicationContextAware {
 
     public void run(TaskConfigModel taskConfig, SourceConfigModel sourceConfig, ConnectConfigModel connectConfig) {
         DbTypeEnum e = DbTypeEnum.values()[connectConfig.getDb_type()];
-        SourceBase sink = sourceMap.get(e.toString());
-        sink.config(sourceConfig, connectConfig, taskConfig);
-        sink.start();
+        SourceBase source = sourceMap.get(e.toString());
+        source.config(sourceConfig, connectConfig, taskConfig);
+        source.start();
     }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        Map<String, SourceBase> beans = applicationContext.getBeansOfType(SourceBase.class);
-        for (String key : beans.keySet()) {
-            if ("sourceBase".equals(key) || "sourceAbstract".equals(key)) {
-                continue;
-            }
-            sourceMap.put(beans.get(key).getName(), beans.get(key));
-        }
+        applicationContext.getBeansWithAnnotation(SourceType.class).entrySet().iterator().forEachRemaining(entrySet -> {
+            Class<SourceBase> entity = (Class<SourceBase>) entrySet.getValue().getClass();
+            DbTypeEnum e = entity.getAnnotation(SourceType.class).value();
+            sourceMap.put(e.toString(), applicationContext.getBean(entity));
+        });
     }
 }

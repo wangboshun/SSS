@@ -21,6 +21,7 @@ import java.util.Map;
  */
 
 @Component
+@SourceType(DbTypeEnum.MySQL)
 public class MySqlSource extends SourceAbstract {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());

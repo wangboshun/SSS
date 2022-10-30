@@ -18,6 +18,7 @@ import java.util.Map;
 
 @Component
 @RabbitListener(bindings = {@QueueBinding(value = @Queue(value = "MsSQL_Queue", durable = "true"), exchange = @Exchange(value = "Pipe_Exchange"), key = "MsSQL_RoutKey")})
+@SinkType(DbTypeEnum.MsSQL)
 public class MsSqlSink extends SinkAbstract {
 
     @RabbitHandler
