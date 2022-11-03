@@ -1,6 +1,8 @@
-package com.zny.pipe.component.sink;
+package com.zny.pipe.component;
 
 import com.zny.common.enums.DbTypeEnum;
+import com.zny.pipe.component.base.SinkBase;
+import com.zny.pipe.component.enums.SinkTypeEnum;
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SinkConfigModel;
 import com.zny.pipe.model.TaskConfigModel;
@@ -31,10 +33,11 @@ public class SinkStrategy implements ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        applicationContext.getBeansWithAnnotation(SinkType.class).entrySet().iterator().forEachRemaining(entrySet -> {
-            Class<SinkBase> entity = (Class<SinkBase>) entrySet.getValue().getClass();
-            DbTypeEnum e = entity.getAnnotation(SinkType.class).value();
+        Map<String, Object> beans = applicationContext.getBeansWithAnnotation(SinkTypeEnum.class);
+        for (Object bean : beans.values()) {
+            Class<SinkBase> entity = (Class<SinkBase>) bean.getClass();
+            DbTypeEnum e = entity.getAnnotation(SinkTypeEnum.class).value();
             sinkMap.put(e.toString(), applicationContext.getBean(entity));
-        });
+        }
     }
 }

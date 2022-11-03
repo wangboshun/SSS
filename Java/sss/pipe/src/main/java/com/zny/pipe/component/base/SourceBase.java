@@ -1,4 +1,4 @@
-package com.zny.pipe.component.source;
+package com.zny.pipe.component.base;
 
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SourceConfigModel;
@@ -17,6 +17,4 @@ public interface SourceBase {
     void start();
 
     void stop();
-
-    String getName();
 }

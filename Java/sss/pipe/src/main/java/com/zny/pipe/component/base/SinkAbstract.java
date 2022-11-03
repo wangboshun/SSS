@@ -1,9 +1,12 @@
-package com.zny.pipe.component.sink;
+package com.zny.pipe.component.base;
 
+import com.google.gson.Gson;
 import com.zny.common.enums.DbTypeEnum;
 import com.zny.common.enums.InsertTypeEnum;
+import com.zny.common.json.GsonEx;
 import com.zny.common.utils.DbEx;
 import com.zny.pipe.component.ConnectionFactory;
+import com.zny.pipe.component.enums.TaskStatusEnum;
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SinkConfigModel;
 import com.zny.pipe.model.TaskConfigModel;
@@ -13,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,7 +34,7 @@ public class SinkAbstract implements SinkBase {
     public TaskConfigModel taskConfig;
     public Connection connection;
 
-    public Integer sinkStatus = 0;
+    public TaskStatusEnum sinkStatus;
 
     @Override
     public void config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig) {
@@ -38,34 +42,46 @@ public class SinkAbstract implements SinkBase {
         this.connectConfig = connectConfig;
         this.taskConfig = taskConfig;
         connection = ConnectionFactory.getConnection(connectConfig);
+        this.sinkStatus = TaskStatusEnum.Create;
     }
 
     @Override
     public void start() {
         System.out.println("sink start");
-        sinkStatus = 1;
-    }
-
-    @Override
-    public String getName() {
-        return "SinkAbstract";
+        sinkStatus = TaskStatusEnum.Running;
     }
 
     @Override
     public void stop() {
+        sinkStatus = TaskStatusEnum.Complete;
+    }
 
+    /**
+     * 检查数据库链接
+     */
+    public void checkConnection() {
+        try {
+            if (connection == null || connection.isClosed()) {
+                connection = ConnectionFactory.getConnection(connectConfig);
+            }
+        } catch (Exception e) {
+            logger.error("SourceAbstract checkConnection", e);
+            System.out.println("SourceAbstract checkConnection " + e.getMessage());
+        }
     }
 
     /**
      * 保存数据
      *
-     * @param list 数据集
+     * @param message 数据消息
      */
-    public void setData(List<Map<String, Object>> list) {
+    public void setData(String message) {
+        this.checkConnection();
+        Gson gson = GsonEx.getInstance();
+        List<Map<String, Object>> list = new ArrayList<>();
+        list = gson.fromJson(message, list.getClass());
+        PreparedStatement pstm = null;
         try {
-            if (connection.isClosed()) {
-                connection = ConnectionFactory.getConnection(connectConfig);
-            }
             String[] primaryField = this.sinkConfig.getPrimary_field().split(",");
             String tableName = this.sinkConfig.getTable_name();
             DbTypeEnum dbType = DbTypeEnum.values()[this.connectConfig.getDb_type()];
@@ -94,7 +110,7 @@ public class SinkAbstract implements SinkBase {
             String sql = String.format("INSERT INTO %s (%s) VALUES (%s)", tableName, fieldSql, valueSql);
 
             this.connection.setAutoCommit(false);
-            PreparedStatement pstm = connection.prepareStatement(sql);
+            pstm = connection.prepareStatement(sql);
 
             for (Map<String, Object> item : list) {
                 switch (insertType) {
@@ -122,16 +138,47 @@ public class SinkAbstract implements SinkBase {
             pstm.clearBatch();
             connection.commit();
         } catch (SQLException e) {
-            try {
-                if (!connection.isClosed()) {
-                    connection.close();
-                }
-            } catch (SQLException e2) {
-                logger.error("sink setData", e2);
-                System.out.println("sink setData: " + e2.getMessage());
-            }
+            release(connection, pstm);
+            logger.error("SinkAbstract setData", e);
+            System.out.println("SinkAbstract setData: " + e.getMessage());
         } finally {
+            release(pstm);
+        }
+    }
 
+    /**
+     * 释放资源
+     *
+     * @param connection 数据库链接
+     * @param pstm       声明
+     */
+    private void release(Connection connection, PreparedStatement pstm) {
+        try {
+            if (pstm != null) {
+                pstm.close();
+            }
+            if (!connection.isClosed()) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            logger.error("SinkAbstract release", e);
+            System.out.println("SinkAbstract release: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 释放资源
+     *
+     * @param pstm 声明
+     */
+    private void release(PreparedStatement pstm) {
+        try {
+            if (pstm != null) {
+                pstm.close();
+            }
+        } catch (SQLException e) {
+            logger.error("SinkAbstract release", e);
+            System.out.println("SinkAbstract release: " + e.getMessage());
         }
     }
 }

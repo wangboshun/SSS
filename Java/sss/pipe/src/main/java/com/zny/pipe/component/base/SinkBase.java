@@ -1,4 +1,4 @@
-package com.zny.pipe.component.sink;
+package com.zny.pipe.component.base;
 
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SinkConfigModel;
@@ -17,6 +17,4 @@ public interface SinkBase {
     void start();
 
     void stop();
-
-    String getName();
 }

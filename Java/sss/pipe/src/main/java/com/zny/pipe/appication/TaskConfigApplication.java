@@ -12,13 +12,14 @@ import com.zny.common.result.MessageCodeEnum;
 import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.PageUtils;
-import com.zny.pipe.component.sink.SinkStrategy;
-import com.zny.pipe.component.source.SourceStrategy;
+import com.zny.pipe.component.SinkStrategy;
+import com.zny.pipe.component.SourceStrategy;
 import com.zny.pipe.mapper.TaskConfigMapper;
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SinkConfigModel;
 import com.zny.pipe.model.SourceConfigModel;
 import com.zny.pipe.model.TaskConfigModel;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -45,17 +46,24 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
         this.sinkStrategy = sinkStrategy;
     }
 
+    /**
+     * 运行任务
+     *
+     * @param taskId 任务id
+     */
+    @Async
     public SaResult run(String taskId) {
         TaskConfigModel taskConfig = this.getById(taskId);
         SinkConfigModel sinkConfig = sinkConfigApplication.getById(taskConfig.getSink_id());
-        SourceConfigModel sourceConfig = sourceConfigApplication.getById(taskConfig.getSource_id());
         ConnectConfigModel sinkConnectConfig = connectConfigApplication.getById(sinkConfig.getConnect_id());
+
+        SourceConfigModel sourceConfig = sourceConfigApplication.getById(taskConfig.getSource_id());
         ConnectConfigModel sourceConnectConfig = connectConfigApplication.getById(sourceConfig.getConnect_id());
 
         sinkStrategy.run(taskConfig, sinkConfig, sinkConnectConfig);
         sourceStrategy.run(taskConfig, sourceConfig, sourceConnectConfig);
 
-        return SaResult.ok("run");
+        return SaResult.ok("ok");
     }
 
     /**

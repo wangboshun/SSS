@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @author WBS
  * Date:2022/10/12
- * task目的控制器
+ * task控制器
  */
 
 @RestController
@@ -26,7 +26,12 @@ public class TaskController {
         this.taskConfigApplication = taskConfigApplication;
     }
 
-    @GetMapping(value = "/test")
+    /**
+     * 运行任务
+     *
+     * @param taskId 任务id
+     */
+    @GetMapping(value = "/run")
     public SaResult run(String taskId) {
         return this.taskConfigApplication.run(taskId);
     }

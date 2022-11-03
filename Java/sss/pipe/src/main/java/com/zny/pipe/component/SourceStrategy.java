@@ -1,6 +1,8 @@
-package com.zny.pipe.component.source;
+package com.zny.pipe.component;
 
 import com.zny.common.enums.DbTypeEnum;
+import com.zny.pipe.component.base.SourceBase;
+import com.zny.pipe.component.enums.SourceTypeEnum;
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SourceConfigModel;
 import com.zny.pipe.model.TaskConfigModel;
@@ -31,10 +33,11 @@ public class SourceStrategy implements ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        applicationContext.getBeansWithAnnotation(SourceType.class).entrySet().iterator().forEachRemaining(entrySet -> {
-            Class<SourceBase> entity = (Class<SourceBase>) entrySet.getValue().getClass();
-            DbTypeEnum e = entity.getAnnotation(SourceType.class).value();
+        Map<String, Object> beans = applicationContext.getBeansWithAnnotation(SourceTypeEnum.class);
+        for (Object bean : beans.values()) {
+            Class<SourceBase> entity = (Class<SourceBase>) bean.getClass();
+            DbTypeEnum e = entity.getAnnotation(SourceTypeEnum.class).value();
             sourceMap.put(e.toString(), applicationContext.getBean(entity));
-        });
+        }
     }
 }

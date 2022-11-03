@@ -2,6 +2,9 @@ package com.zny.pipe.component.source;
 
 import com.zny.common.enums.DbTypeEnum;
 import com.zny.common.utils.DbEx;
+import com.zny.pipe.component.base.SourceAbstract;
+import com.zny.pipe.component.enums.SourceTypeEnum;
+import com.zny.pipe.component.enums.TaskStatusEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -21,15 +24,10 @@ import java.util.Map;
  */
 
 @Component
-@SourceType(DbTypeEnum.MsSQL)
+@SourceTypeEnum(DbTypeEnum.MsSQL)
 public class MsSqlSource extends SourceAbstract {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
-    @Override
-    public String getName() {
-        return DbTypeEnum.MsSQL.toString();
-    }
 
     /**
      * 结束
@@ -37,10 +35,12 @@ public class MsSqlSource extends SourceAbstract {
     @Override
     public void start() {
         try {
+            this.sourceStatus = TaskStatusEnum.Running;
+            this.checkConnection();
             getData();
         } catch (Exception e) {
-            logger.error("MsSql start", e);
-            System.out.println("MsSql start: " + e.getMessage());
+            logger.error("MsSqlSource start", e);
+            System.out.println("MsSqlSource start: " + e.getMessage());
         }
     }
 
@@ -48,11 +48,12 @@ public class MsSqlSource extends SourceAbstract {
      * 获取数据
      */
     private void getData() {
+        PreparedStatement pstm = null;
         try {
             String sql = getNextSql();
-            PreparedStatement stmt = connection.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-            stmt.setFetchSize(Integer.MIN_VALUE);
-            ResultSet result = stmt.executeQuery();
+            pstm = connection.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+            pstm.setFetchSize(Integer.MIN_VALUE);
+            ResultSet result = pstm.executeQuery();
             List<Map<String, Object>> list = new ArrayList<>();
             List<String> filedList = DbEx.getField(result);
             while (result.next()) {
@@ -67,21 +68,16 @@ public class MsSqlSource extends SourceAbstract {
                     sendData(msg);
                 }
             }
-            if (list.size() > 0) {
+            if (!list.isEmpty()) {
                 sendData(list);
             }
         } catch (SQLException e) {
-            logger.error("MsSql getData", e);
-            System.out.println("MsSql getData: " + e.getMessage());
+            release(connection, pstm);
+            logger.error("MsSqlSource getData", e);
+            System.out.println("MsSqlSource getData: " + e.getMessage());
         } finally {
-            try {
-                if (!connection.isClosed()) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                logger.error("MsSql getData", e);
-                System.out.println("MsSql getData: " + e.getMessage());
-            }
+            release(pstm);
         }
+        this.stop();
     }
 }
