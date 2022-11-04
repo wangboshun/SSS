@@ -14,19 +14,17 @@ import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.PageUtils;
 import com.zny.pipe.component.SinkStrategy;
 import com.zny.pipe.component.SourceStrategy;
+import com.zny.pipe.component.enums.TaskStatusEnum;
 import com.zny.pipe.mapper.TaskConfigMapper;
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SinkConfigModel;
 import com.zny.pipe.model.SourceConfigModel;
 import com.zny.pipe.model.TaskConfigModel;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskConfigModel> {
@@ -34,14 +32,16 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
     private final SinkConfigApplication sinkConfigApplication;
     private final SourceConfigApplication sourceConfigApplication;
     private final ConnectConfigApplication connectConfigApplication;
+    private final ThreadPoolTaskExecutor defaultExecutor;
     private final SourceStrategy sourceStrategy;
     private final SinkStrategy sinkStrategy;
 
-    public TaskConfigApplication(ResourceApplication resourceApplication, SinkConfigApplication sinkConfigApplication, SourceConfigApplication sourceConfigApplication, ConnectConfigApplication connectConfigApplication, SourceStrategy sourceStrategy, SinkStrategy sinkStrategy) {
+    public TaskConfigApplication(ResourceApplication resourceApplication, SinkConfigApplication sinkConfigApplication, SourceConfigApplication sourceConfigApplication, ConnectConfigApplication connectConfigApplication, ThreadPoolTaskExecutor defaultExecutor, SourceStrategy sourceStrategy, SinkStrategy sinkStrategy) {
         this.resourceApplication = resourceApplication;
         this.sinkConfigApplication = sinkConfigApplication;
         this.sourceConfigApplication = sourceConfigApplication;
         this.connectConfigApplication = connectConfigApplication;
+        this.defaultExecutor = defaultExecutor;
         this.sourceStrategy = sourceStrategy;
         this.sinkStrategy = sinkStrategy;
     }
@@ -51,19 +51,48 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
      *
      * @param taskId 任务id
      */
-    @Async
     public SaResult run(String taskId) {
+        if (StringUtils.isBlank(taskId)) {
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
+        }
+        if (!resourceApplication.haveResource(taskId, ResourceEnum.Source)) {
+            return SaResultEx.error(MessageCodeEnum.AUTH_INVALID);
+        }
         TaskConfigModel taskConfig = this.getById(taskId);
-        SinkConfigModel sinkConfig = sinkConfigApplication.getById(taskConfig.getSink_id());
-        ConnectConfigModel sinkConnectConfig = connectConfigApplication.getById(sinkConfig.getConnect_id());
+        defaultExecutor.execute(() -> {
+            SinkConfigModel sinkConfig = sinkConfigApplication.getById(taskConfig.getSink_id());
+            ConnectConfigModel sinkConnectConfig = connectConfigApplication.getById(sinkConfig.getConnect_id());
 
-        SourceConfigModel sourceConfig = sourceConfigApplication.getById(taskConfig.getSource_id());
-        ConnectConfigModel sourceConnectConfig = connectConfigApplication.getById(sourceConfig.getConnect_id());
+            SourceConfigModel sourceConfig = sourceConfigApplication.getById(taskConfig.getSource_id());
+            ConnectConfigModel sourceConnectConfig = connectConfigApplication.getById(sourceConfig.getConnect_id());
 
-        sinkStrategy.run(taskConfig, sinkConfig, sinkConnectConfig);
-        sourceStrategy.run(taskConfig, sourceConfig, sourceConnectConfig);
+            sinkStrategy.run(taskConfig, sinkConfig, sinkConnectConfig);
+            sourceStrategy.run(taskConfig, sourceConfig, sourceConnectConfig);
+        });
 
         return SaResult.ok("ok");
+    }
+
+    /**
+     * 获取任务状态
+     *
+     * @param taskId 任务id
+     */
+    public SaResult getTaskStatus(String taskId) {
+        if (StringUtils.isBlank(taskId)) {
+            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
+        }
+        if (!resourceApplication.haveResource(taskId, ResourceEnum.Source)) {
+            return SaResultEx.error(MessageCodeEnum.AUTH_INVALID);
+        }
+        TaskConfigModel taskConfig = this.getById(taskId);
+        TaskStatusEnum sinkStatus = sinkStrategy.getSinkStatus(taskConfig.getSink_id());
+        TaskStatusEnum sourceStatus = sourceStrategy.getSourceStatus(taskConfig.getSource_id());
+
+        Map<String, TaskStatusEnum> statusMap = new HashMap<>(2);
+        statusMap.put("Sink", sinkStatus);
+        statusMap.put("Source", sourceStatus);
+        return SaResult.data(statusMap);
     }
 
     /**

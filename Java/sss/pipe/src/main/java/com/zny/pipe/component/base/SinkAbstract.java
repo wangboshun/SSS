@@ -42,18 +42,23 @@ public class SinkAbstract implements SinkBase {
         this.connectConfig = connectConfig;
         this.taskConfig = taskConfig;
         connection = ConnectionFactory.getConnection(connectConfig);
-        this.sinkStatus = TaskStatusEnum.Create;
+        this.sinkStatus = TaskStatusEnum.CREATE;
     }
 
     @Override
     public void start() {
         System.out.println("sink start");
-        sinkStatus = TaskStatusEnum.Running;
+        sinkStatus = TaskStatusEnum.RUNNING;
     }
 
     @Override
     public void stop() {
-        sinkStatus = TaskStatusEnum.Complete;
+        sinkStatus = TaskStatusEnum.COMPLETE;
+    }
+
+    @Override
+    public TaskStatusEnum getStatus() {
+        return sinkStatus;
     }
 
     /**
@@ -65,8 +70,8 @@ public class SinkAbstract implements SinkBase {
                 connection = ConnectionFactory.getConnection(connectConfig);
             }
         } catch (Exception e) {
-            logger.error("SourceAbstract checkConnection", e);
-            System.out.println("SourceAbstract checkConnection " + e.getMessage());
+            logger.error("SinkAbstract checkConnection", e);
+            System.out.println("SinkAbstract checkConnection " + e.getMessage());
         }
     }
 

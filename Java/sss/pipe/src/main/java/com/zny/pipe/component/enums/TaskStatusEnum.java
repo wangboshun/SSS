@@ -9,22 +9,27 @@ package com.zny.pipe.component.enums;
 public enum TaskStatusEnum {
 
     /**
+     * 无状态
+     */
+    NONE,
+
+    /**
      * 已创建，未运行
      */
-    Create,
+    CREATE,
 
     /**
      * 运行中
      */
-    Running,
+    RUNNING,
 
     /**
      * 已完成
      */
-    Complete,
+    COMPLETE,
 
     /**
      * 已取消
      */
-    Cancel;
+    CANCEL;
 }

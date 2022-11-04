@@ -105,4 +105,38 @@ public class DbEx {
         return false;
     }
 
+    /**
+     * 释放资源
+     *
+     * @param connection 数据库链接
+     * @param pstm       声明
+     */
+    public static void release(Connection connection, PreparedStatement pstm) {
+        try {
+            if (pstm != null) {
+                pstm.close();
+            }
+            if (!connection.isClosed()) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            System.out.println("DbEx release: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 释放资源
+     *
+     * @param pstm 声明
+     */
+    public static void release(PreparedStatement pstm) {
+        try {
+            if (pstm != null) {
+                pstm.close();
+            }
+        } catch (SQLException e) {
+            System.out.println("DbEx release: " + e.getMessage());
+        }
+    }
+
 }

@@ -3,6 +3,7 @@ package com.zny.pipe.component;
 import com.zny.common.enums.DbTypeEnum;
 import com.zny.pipe.component.base.SinkBase;
 import com.zny.pipe.component.enums.SinkTypeEnum;
+import com.zny.pipe.component.enums.TaskStatusEnum;
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SinkConfigModel;
 import com.zny.pipe.model.TaskConfigModel;
@@ -23,10 +24,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class SinkStrategy implements ApplicationContextAware {
     private final Map<String, SinkBase> sinkMap = new ConcurrentHashMap<>();
+    private final Map<String, SinkBase> sinkBaseMap = new ConcurrentHashMap<>();
 
     public void run(TaskConfigModel taskConfig, SinkConfigModel sinkConfig, ConnectConfigModel connectConfig) {
         DbTypeEnum e = DbTypeEnum.values()[connectConfig.getDb_type()];
         SinkBase sink = sinkMap.get(e.toString());
+        sinkBaseMap.put(sinkConfig.getId(), sink);
         sink.config(sinkConfig, connectConfig, taskConfig);
         sink.start();
     }
@@ -39,5 +42,13 @@ public class SinkStrategy implements ApplicationContextAware {
             DbTypeEnum e = entity.getAnnotation(SinkTypeEnum.class).value();
             sinkMap.put(e.toString(), applicationContext.getBean(entity));
         }
+    }
+
+    public TaskStatusEnum getSinkStatus(String sinkId) {
+        SinkBase sink = sinkBaseMap.get(sinkId);
+        if(sink == null) {
+            return TaskStatusEnum.NONE;
+        }
+        return sink.getStatus();
     }
 }

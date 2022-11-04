@@ -37,6 +37,16 @@ public class TaskController {
     }
 
     /**
+     * 任务状态
+     *
+     * @param taskId 任务id
+     */
+    @GetMapping(value = "/status")
+    public SaResult status(String taskId) {
+        return this.taskConfigApplication.getTaskStatus(taskId);
+    }
+
+    /**
      * 获取任务列表
      *
      * @param taskId   任务id

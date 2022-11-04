@@ -19,8 +19,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +49,7 @@ public class SourceAbstract implements SourceBase {
         this.connectConfig = connectConfig;
         this.taskConfig = taskConfig;
         connection = ConnectionFactory.getConnection(connectConfig);
-        this.sourceStatus = TaskStatusEnum.Create;
+        this.sourceStatus = TaskStatusEnum.CREATE;
     }
 
     /**
@@ -81,13 +79,19 @@ public class SourceAbstract implements SourceBase {
 
     @Override
     public void start() {
-        this.sourceStatus = TaskStatusEnum.Running;
+        this.sourceStatus = TaskStatusEnum.RUNNING;
         System.out.println("source start");
     }
 
     @Override
     public void stop() {
-        this.sourceStatus = TaskStatusEnum.Complete;
+        setNextTime();
+        this.sourceStatus = TaskStatusEnum.COMPLETE;
+    }
+
+    @Override
+    public TaskStatusEnum getStatus() {
+        return sourceStatus;
     }
 
     /**
@@ -100,22 +104,8 @@ public class SourceAbstract implements SourceBase {
 
             //如果是增量
             if (taskConfig.getAdd_type() == 0) {
-                String startTime = "";
-                String endTime = "";
-                Object cache = redisTemplate.opsForHash().get(RedisKeyEnum.PipeTimeCache.toString(), taskConfig.getId());
-                //如果没有缓存时间
-                if (cache != null) {
-                    startTime = cache.toString();
-                } else {
-                    startTime = taskConfig.getStart_time();
-                }
-
-                //如果配置了结束时间
-                if (StringUtils.isNotBlank(taskConfig.getEnd_time())) {
-                    endTime = taskConfig.getEnd_time();
-                } else {
-                    endTime = DateUtils.dateToStr(DateUtils.strToDate(startTime).plusMinutes(taskConfig.getTime_step().longValue()));
-                }
+                String startTime = getStartTime();
+                String endTime = getEndTime(startTime);
 
                 //按wrtm获取
                 if (sourceConfig.getGet_type() == 0) {
@@ -171,38 +161,38 @@ public class SourceAbstract implements SourceBase {
     }
 
     /**
-     * 释放资源
-     *
-     * @param connection 数据库链接
-     * @param pstm       声明
+     * 设置下次开始时间
      */
-    public void release(Connection connection, PreparedStatement pstm) {
-        try {
-            if (pstm != null) {
-                pstm.close();
-            }
-            if (!connection.isClosed()) {
-                connection.close();
-            }
-        } catch (SQLException e) {
-            logger.error("SourceAbstract release", e);
-            System.out.println("SourceAbstract release: " + e.getMessage());
+    private void setNextTime() {
+        String startTime = getStartTime();
+        startTime = DateUtils.dateToStr(DateUtils.strToDate(startTime).plusMinutes(taskConfig.getTime_step().longValue()));
+        redisTemplate.opsForHash().put(RedisKeyEnum.PipeTimeCache.toString(), taskConfig.getId(), startTime);
+    }
+
+    /**
+     * 获取开始时间
+     */
+    private String getStartTime() {
+        Object cache = redisTemplate.opsForHash().get(RedisKeyEnum.PipeTimeCache.toString(), taskConfig.getId());
+        //如果没有缓存时间
+        if (cache != null) {
+            return cache.toString();
+        } else {
+            return taskConfig.getStart_time();
         }
     }
 
     /**
-     * 释放资源
+     * 获取结束时间
      *
-     * @param pstm 声明
+     * @param startTime 开始时间
      */
-    public void release(PreparedStatement pstm) {
-        try {
-            if (pstm != null) {
-                pstm.close();
-            }
-        } catch (SQLException e) {
-            logger.error("SourceAbstract release", e);
-            System.out.println("SourceAbstract release: " + e.getMessage());
+    private String getEndTime(String startTime) {
+        //如果配置了结束时间
+        if (StringUtils.isNotBlank(taskConfig.getEnd_time())) {
+            return taskConfig.getEnd_time();
+        } else {
+            return DateUtils.dateToStr(DateUtils.strToDate(startTime).plusMinutes(taskConfig.getTime_step().longValue()));
         }
     }
 }

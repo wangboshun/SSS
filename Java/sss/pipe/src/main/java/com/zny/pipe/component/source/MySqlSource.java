@@ -35,7 +35,7 @@ public class MySqlSource extends SourceAbstract {
     @Override
     public void start() {
         try {
-            this.sourceStatus = TaskStatusEnum.Running;
+            this.sourceStatus = TaskStatusEnum.RUNNING;
             this.checkConnection();
             getData();
         } catch (Exception e) {
@@ -72,11 +72,11 @@ public class MySqlSource extends SourceAbstract {
                 list.clear();
             }
         } catch (SQLException e) {
-            release(connection, pstm);
+            DbEx.release(connection, pstm);
             logger.error("MySqlSource getData", e);
             System.out.println("MySqlSource getData: " + e.getMessage());
         } finally {
-            release(pstm);
+            DbEx.release(pstm);
         }
         this.stop();
     }

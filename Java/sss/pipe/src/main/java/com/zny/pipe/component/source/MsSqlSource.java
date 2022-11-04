@@ -35,7 +35,7 @@ public class MsSqlSource extends SourceAbstract {
     @Override
     public void start() {
         try {
-            this.sourceStatus = TaskStatusEnum.Running;
+            this.sourceStatus = TaskStatusEnum.RUNNING;
             this.checkConnection();
             getData();
         } catch (Exception e) {
@@ -72,11 +72,11 @@ public class MsSqlSource extends SourceAbstract {
                 sendData(list);
             }
         } catch (SQLException e) {
-            release(connection, pstm);
+            DbEx.release(connection, pstm);
             logger.error("MsSqlSource getData", e);
             System.out.println("MsSqlSource getData: " + e.getMessage());
         } finally {
-            release(pstm);
+            DbEx.release(pstm);
         }
         this.stop();
     }

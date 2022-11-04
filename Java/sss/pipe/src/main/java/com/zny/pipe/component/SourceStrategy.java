@@ -3,6 +3,7 @@ package com.zny.pipe.component;
 import com.zny.common.enums.DbTypeEnum;
 import com.zny.pipe.component.base.SourceBase;
 import com.zny.pipe.component.enums.SourceTypeEnum;
+import com.zny.pipe.component.enums.TaskStatusEnum;
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SourceConfigModel;
 import com.zny.pipe.model.TaskConfigModel;
@@ -23,10 +24,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class SourceStrategy implements ApplicationContextAware {
     private final Map<String, SourceBase> sourceMap = new ConcurrentHashMap<>();
+    private final Map<String, SourceBase> sourceBaseMap = new ConcurrentHashMap<>();
 
     public void run(TaskConfigModel taskConfig, SourceConfigModel sourceConfig, ConnectConfigModel connectConfig) {
         DbTypeEnum e = DbTypeEnum.values()[connectConfig.getDb_type()];
         SourceBase source = sourceMap.get(e.toString());
+        sourceBaseMap.put(sourceConfig.getId(), source);
         source.config(sourceConfig, connectConfig, taskConfig);
         source.start();
     }
@@ -39,5 +42,13 @@ public class SourceStrategy implements ApplicationContextAware {
             DbTypeEnum e = entity.getAnnotation(SourceTypeEnum.class).value();
             sourceMap.put(e.toString(), applicationContext.getBean(entity));
         }
+    }
+
+    public TaskStatusEnum getSourceStatus(String sourceId) {
+        SourceBase source = sourceBaseMap.get(sourceId);
+        if(source == null){
+            return TaskStatusEnum.NONE;
+        }
+        return source.getStatus();
     }
 }
