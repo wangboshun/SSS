@@ -1,9 +1,11 @@
 package com.zny.pipe.component.base;
 
-import com.zny.pipe.component.enums.TaskStatusEnum;
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SinkConfigModel;
 import com.zny.pipe.model.TaskConfigModel;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author WBS
@@ -15,9 +17,7 @@ public interface SinkBase {
 
     void config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig);
 
-    void start();
+    void start(List<Map<String, Object>> list);
 
     void stop();
-
-    TaskStatusEnum getStatus();
 }

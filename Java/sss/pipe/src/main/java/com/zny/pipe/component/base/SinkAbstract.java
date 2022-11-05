@@ -1,9 +1,8 @@
 package com.zny.pipe.component.base;
 
-import com.google.gson.Gson;
 import com.zny.common.enums.DbTypeEnum;
 import com.zny.common.enums.InsertTypeEnum;
-import com.zny.common.json.GsonEx;
+import com.zny.common.enums.RedisKeyEnum;
 import com.zny.common.utils.DbEx;
 import com.zny.pipe.component.ConnectionFactory;
 import com.zny.pipe.component.enums.TaskStatusEnum;
@@ -12,11 +11,12 @@ import com.zny.pipe.model.SinkConfigModel;
 import com.zny.pipe.model.TaskConfigModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,58 +33,50 @@ public class SinkAbstract implements SinkBase {
     public ConnectConfigModel connectConfig;
     public TaskConfigModel taskConfig;
     public Connection connection;
-
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
     public TaskStatusEnum sinkStatus;
 
+    /**
+     * 配置
+     *
+     * @param sinkConfig    目的信息
+     * @param connectConfig 链接信息
+     * @param taskConfig    任务信息
+     */
     @Override
     public void config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig) {
         this.sinkConfig = sinkConfig;
         this.connectConfig = connectConfig;
         this.taskConfig = taskConfig;
         connection = ConnectionFactory.getConnection(connectConfig);
-        this.sinkStatus = TaskStatusEnum.CREATE;
-    }
-
-    @Override
-    public void start() {
-        System.out.println("sink start");
-        sinkStatus = TaskStatusEnum.RUNNING;
-    }
-
-    @Override
-    public void stop() {
-        sinkStatus = TaskStatusEnum.COMPLETE;
-    }
-
-    @Override
-    public TaskStatusEnum getStatus() {
-        return sinkStatus;
+        if (connection != null) {
+            this.sinkStatus = TaskStatusEnum.CREATE;
+        } else {
+            this.sinkStatus = TaskStatusEnum.CONNECT_FAIL;
+        }
+        setStatus();
     }
 
     /**
-     * 检查数据库链接
+     * 开始
+     *
+     * @param list 数据消息
      */
-    public void checkConnection() {
-        try {
-            if (connection == null || connection.isClosed()) {
-                connection = ConnectionFactory.getConnection(connectConfig);
-            }
-        } catch (Exception e) {
-            logger.error("SinkAbstract checkConnection", e);
-            System.out.println("SinkAbstract checkConnection " + e.getMessage());
-        }
+    @Override
+    public void start(List<Map<String, Object>> list) {
+        System.out.println("sink start");
+        sinkStatus = TaskStatusEnum.RUNNING;
+        setStatus();
+        setData(list);
     }
 
     /**
      * 保存数据
      *
-     * @param message 数据消息
+     * @param list 数据消息
      */
-    public void setData(String message) {
-        this.checkConnection();
-        Gson gson = GsonEx.getInstance();
-        List<Map<String, Object>> list = new ArrayList<>();
-        list = gson.fromJson(message, list.getClass());
+    public void setData(List<Map<String, Object>> list) {
         PreparedStatement pstm = null;
         try {
             String[] primaryField = this.sinkConfig.getPrimary_field().split(",");
@@ -147,7 +139,23 @@ public class SinkAbstract implements SinkBase {
             logger.error("SinkAbstract setData", e);
             System.out.println("SinkAbstract setData: " + e.getMessage());
         } finally {
-            DbEx.release(pstm);
+            DbEx.release(connection, pstm);
         }
+    }
+
+    /**
+     * 结束
+     */
+    @Override
+    public void stop() {
+        sinkStatus = TaskStatusEnum.COMPLETE;
+        setStatus();
+    }
+
+    /**
+     * 设置状态
+     */
+    private void setStatus() {
+        redisTemplate.opsForHash().put(RedisKeyEnum.SINK_STATUS_CACHE.toString(), taskConfig.getId(), this.sinkStatus.toString());
     }
 }

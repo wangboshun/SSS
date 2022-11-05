@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zny.common.enums.DbTypeEnum;
 import com.zny.common.enums.ResourceEnum;
 import com.zny.common.model.PageResult;
 import com.zny.common.resource.ResourceApplication;
@@ -12,38 +13,35 @@ import com.zny.common.result.MessageCodeEnum;
 import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.PageUtils;
-import com.zny.pipe.component.SinkStrategy;
-import com.zny.pipe.component.SourceStrategy;
-import com.zny.pipe.component.enums.TaskStatusEnum;
+import com.zny.pipe.component.PipeStrategy;
+import com.zny.pipe.component.base.SourceBase;
 import com.zny.pipe.mapper.TaskConfigMapper;
 import com.zny.pipe.model.ConnectConfigModel;
-import com.zny.pipe.model.SinkConfigModel;
 import com.zny.pipe.model.SourceConfigModel;
 import com.zny.pipe.model.TaskConfigModel;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskConfigModel> {
     private final ResourceApplication resourceApplication;
-    private final SinkConfigApplication sinkConfigApplication;
     private final SourceConfigApplication sourceConfigApplication;
     private final ConnectConfigApplication connectConfigApplication;
     private final ThreadPoolTaskExecutor defaultExecutor;
-    private final SourceStrategy sourceStrategy;
-    private final SinkStrategy sinkStrategy;
+    private final PipeStrategy pipeStrategy;
 
-    public TaskConfigApplication(ResourceApplication resourceApplication, SinkConfigApplication sinkConfigApplication, SourceConfigApplication sourceConfigApplication, ConnectConfigApplication connectConfigApplication, ThreadPoolTaskExecutor defaultExecutor, SourceStrategy sourceStrategy, SinkStrategy sinkStrategy) {
+    public TaskConfigApplication(ResourceApplication resourceApplication, SourceConfigApplication sourceConfigApplication, ConnectConfigApplication connectConfigApplication, ThreadPoolTaskExecutor defaultExecutor, PipeStrategy pipeStrategy) {
         this.resourceApplication = resourceApplication;
-        this.sinkConfigApplication = sinkConfigApplication;
         this.sourceConfigApplication = sourceConfigApplication;
         this.connectConfigApplication = connectConfigApplication;
         this.defaultExecutor = defaultExecutor;
-        this.sourceStrategy = sourceStrategy;
-        this.sinkStrategy = sinkStrategy;
+        this.pipeStrategy = pipeStrategy;
     }
 
     /**
@@ -60,14 +58,12 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
         }
         TaskConfigModel taskConfig = this.getById(taskId);
         defaultExecutor.execute(() -> {
-            SinkConfigModel sinkConfig = sinkConfigApplication.getById(taskConfig.getSink_id());
-            ConnectConfigModel sinkConnectConfig = connectConfigApplication.getById(sinkConfig.getConnect_id());
-
             SourceConfigModel sourceConfig = sourceConfigApplication.getById(taskConfig.getSource_id());
-            ConnectConfigModel sourceConnectConfig = connectConfigApplication.getById(sourceConfig.getConnect_id());
-
-            sinkStrategy.run(taskConfig, sinkConfig, sinkConnectConfig);
-            sourceStrategy.run(taskConfig, sourceConfig, sourceConnectConfig);
+            ConnectConfigModel connectConfig = connectConfigApplication.getById(sourceConfig.getConnect_id());
+            DbTypeEnum e = DbTypeEnum.values()[connectConfig.getDb_type()];
+            SourceBase source = pipeStrategy.getSource(e);
+            source.config(sourceConfig, connectConfig, taskConfig);
+            source.start();
         });
 
         return SaResult.ok("ok");
@@ -79,20 +75,7 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
      * @param taskId 任务id
      */
     public SaResult getTaskStatus(String taskId) {
-        if (StringUtils.isBlank(taskId)) {
-            return SaResultEx.error(MessageCodeEnum.PARAM_VALID_ERROR, "请输入id");
-        }
-        if (!resourceApplication.haveResource(taskId, ResourceEnum.Source)) {
-            return SaResultEx.error(MessageCodeEnum.AUTH_INVALID);
-        }
-        TaskConfigModel taskConfig = this.getById(taskId);
-        TaskStatusEnum sinkStatus = sinkStrategy.getSinkStatus(taskConfig.getSink_id());
-        TaskStatusEnum sourceStatus = sourceStrategy.getSourceStatus(taskConfig.getSource_id());
-
-        Map<String, TaskStatusEnum> statusMap = new HashMap<>(2);
-        statusMap.put("Sink", sinkStatus);
-        statusMap.put("Source", sourceStatus);
-        return SaResult.data(statusMap);
+        return SaResult.ok("");
     }
 
     /**

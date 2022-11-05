@@ -120,7 +120,7 @@ public class DbEx {
             if (stmt != null) {
                 stmt.close();
             }
-            if (!connection.isClosed()) {
+            if (connection != null && !connection.isClosed()) {
                 connection.close();
             }
         } catch (SQLException e) {

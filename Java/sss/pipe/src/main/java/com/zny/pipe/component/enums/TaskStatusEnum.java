@@ -19,6 +19,11 @@ public enum TaskStatusEnum {
     CREATE,
 
     /**
+     * 连接失败
+     */
+    CONNECT_FAIL,
+
+    /**
      * 运行中
      */
     RUNNING,

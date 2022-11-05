@@ -11,5 +11,15 @@ public enum RedisKeyEnum {
     /**
      * 管道同步时间Key
      */
-    PipeTimeCache;
+    PIPE_TIME_CACHE,
+
+    /**
+     * Sink状态key
+     */
+    SINK_STATUS_CACHE,
+
+    /**
+     * Source状态key
+     */
+    SOURCE_STATUS_CACHE;
 }
