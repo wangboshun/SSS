@@ -109,12 +109,16 @@ public class DbEx {
      * 释放资源
      *
      * @param connection 数据库链接
-     * @param pstm       声明
+     * @param stmt       声明
+     * @param rs         结果集
      */
-    public static void release(Connection connection, PreparedStatement pstm) {
+    public static void release(Connection connection, Statement stmt, ResultSet rs) {
         try {
-            if (pstm != null) {
-                pstm.close();
+            if (rs != null) {
+                rs.close();
+            }
+            if (stmt != null) {
+                stmt.close();
             }
             if (!connection.isClosed()) {
                 connection.close();
@@ -127,16 +131,30 @@ public class DbEx {
     /**
      * 释放资源
      *
-     * @param pstm 声明
+     * @param connection 数据库链接
+     * @param stmt       声明
      */
-    public static void release(PreparedStatement pstm) {
-        try {
-            if (pstm != null) {
-                pstm.close();
-            }
-        } catch (SQLException e) {
-            System.out.println("DbEx release: " + e.getMessage());
-        }
+    public static void release(Connection connection, Statement stmt) {
+        release(connection, stmt, null);
+    }
+
+    /**
+     * 释放资源
+     *
+     * @param stmt 声明
+     */
+    public static void release(Statement stmt) {
+        release(null, stmt, null);
+    }
+
+    /**
+     * 释放资源
+     *
+     * @param stmt 声明
+     * @param rs   结果集
+     */
+    public static void release(Statement stmt, ResultSet rs) {
+        release(null, stmt, rs);
     }
 
 }

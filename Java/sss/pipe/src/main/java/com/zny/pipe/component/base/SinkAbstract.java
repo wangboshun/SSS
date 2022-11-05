@@ -143,47 +143,11 @@ public class SinkAbstract implements SinkBase {
             pstm.clearBatch();
             connection.commit();
         } catch (SQLException e) {
-            release(connection, pstm);
+            DbEx.release(connection, pstm);
             logger.error("SinkAbstract setData", e);
             System.out.println("SinkAbstract setData: " + e.getMessage());
         } finally {
-            release(pstm);
-        }
-    }
-
-    /**
-     * 释放资源
-     *
-     * @param connection 数据库链接
-     * @param pstm       声明
-     */
-    private void release(Connection connection, PreparedStatement pstm) {
-        try {
-            if (pstm != null) {
-                pstm.close();
-            }
-            if (!connection.isClosed()) {
-                connection.close();
-            }
-        } catch (SQLException e) {
-            logger.error("SinkAbstract release", e);
-            System.out.println("SinkAbstract release: " + e.getMessage());
-        }
-    }
-
-    /**
-     * 释放资源
-     *
-     * @param pstm 声明
-     */
-    private void release(PreparedStatement pstm) {
-        try {
-            if (pstm != null) {
-                pstm.close();
-            }
-        } catch (SQLException e) {
-            logger.error("SinkAbstract release", e);
-            System.out.println("SinkAbstract release: " + e.getMessage());
+            DbEx.release(pstm);
         }
     }
 }

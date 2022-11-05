@@ -49,11 +49,12 @@ public class MsSqlSource extends SourceAbstract {
      */
     private void getData() {
         PreparedStatement pstm = null;
+        ResultSet result = null;
         try {
             String sql = getNextSql();
             pstm = connection.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             pstm.setFetchSize(Integer.MIN_VALUE);
-            ResultSet result = pstm.executeQuery();
+            result = pstm.executeQuery();
             List<Map<String, Object>> list = new ArrayList<>();
             List<String> filedList = DbEx.getField(result);
             while (result.next()) {
@@ -72,11 +73,11 @@ public class MsSqlSource extends SourceAbstract {
                 sendData(list);
             }
         } catch (SQLException e) {
-            DbEx.release(connection, pstm);
+            DbEx.release(connection, pstm, result);
             logger.error("MsSqlSource getData", e);
             System.out.println("MsSqlSource getData: " + e.getMessage());
         } finally {
-            DbEx.release(pstm);
+            DbEx.release(pstm, result);
         }
         this.stop();
     }
