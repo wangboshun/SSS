@@ -52,11 +52,26 @@ public class QueueAbstract {
             ConnectConfigModel connectConfig = connectConfigApplication.getById(sinkConfig.getConnect_id());
             DbTypeEnum dbTypeEnum = DbTypeEnum.values()[connectConfig.getDb_type()];
             SinkBase sink = pipeStrategy.getSink(dbTypeEnum);
+            boolean isStart = false;
+            boolean isEnd = false;
+            //如果当前条数批量大小或者小于批量大小，表示是刚开始
+            if (body.getCurrent().equals(body.getBatch_size()) || body.getCurrent() < body.getBatch_size()) {
+                isStart = true;
+            }
+            if (isStart) {
+                sink.setStatus(TaskStatusEnum.CREATE, body.getVersion());
+            }
             sink.config(sinkConfig, connectConfig, taskConfig);
+            if (isStart) {
+                sink.setStatus(TaskStatusEnum.RUNNING, body.getVersion());
+            }
             sink.start(body.getData());
-            TaskStatusEnum taskStatusEnum = TaskStatusEnum.values()[body.getStatus()];
-            if (taskStatusEnum == TaskStatusEnum.COMPLETE) {
-                sink.stop();
+            //如果当前条数等于总条目，表示是结束
+            if (body.getCurrent().equals(body.getTotal())) {
+                isEnd = true;
+            }
+            if (isEnd) {
+                sink.setStatus(TaskStatusEnum.COMPLETE, body.getVersion());
             }
         } catch (Exception e) {
 

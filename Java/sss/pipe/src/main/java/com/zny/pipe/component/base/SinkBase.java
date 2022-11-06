@@ -1,5 +1,6 @@
 package com.zny.pipe.component.base;
 
+import com.zny.pipe.component.enums.TaskStatusEnum;
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SinkConfigModel;
 import com.zny.pipe.model.TaskConfigModel;
@@ -20,4 +21,6 @@ public interface SinkBase {
     void start(List<Map<String, Object>> list);
 
     void stop();
+
+    void setStatus(TaskStatusEnum e, Integer version);
 }

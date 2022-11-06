@@ -21,6 +21,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,12 +40,13 @@ public class SourceAbstract implements SourceBase {
     public TaskConfigModel taskConfig;
     public Connection connection;
     public TaskStatusEnum sourceStatus;
-    public Integer rowCount;
+    public int rowCount;
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
+    private static final int BATCH_SIZE = 100;
+    public Map<String, String> sourceTime = new HashMap<>();
+    public int version;
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
-
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
@@ -56,17 +58,16 @@ public class SourceAbstract implements SourceBase {
      * @param taskConfig    任务信息
      */
     @Override
-    public void config(SourceConfigModel sourceConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig) {
+    public void config(SourceConfigModel sourceConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, int version) {
         this.sourceConfig = sourceConfig;
         this.connectConfig = connectConfig;
         this.taskConfig = taskConfig;
+        this.version = version;
         connection = ConnectionFactory.getConnection(connectConfig);
         if (connection != null) {
             this.sourceStatus = TaskStatusEnum.CREATE;
-        } else {
-            this.sourceStatus = TaskStatusEnum.CONNECT_FAIL;
+            setStatus();
         }
-        setStatus();
     }
 
     /**
@@ -102,7 +103,7 @@ public class SourceAbstract implements SourceBase {
                 }
                 list.add(rowData);
                 currentIndex++;
-                if (list.size() >= 100) {
+                if (list.size() >= BATCH_SIZE) {
                     sendData(list, currentIndex);
                     list.clear();
                 }
@@ -131,11 +132,15 @@ public class SourceAbstract implements SourceBase {
         MessageBodyModel model = new MessageBodyModel();
         model.setTaskId(this.taskConfig.getId());
         model.setData(list);
-        model.setCount(rowCount);
-        if (currentIndex == rowCount) {
+        model.setBatch_size(BATCH_SIZE);
+        model.setTotal(rowCount);
+        model.setCurrent(currentIndex);
+        model.setVersion(version);
+        //如果数量相等或小于批次，设置为已完成
+        if (currentIndex == rowCount || currentIndex < BATCH_SIZE) {
             model.setStatus(TaskStatusEnum.COMPLETE.ordinal());
         } else {
-            model.setStatus(this.sourceStatus.ordinal());
+            model.setStatus(TaskStatusEnum.RUNNING.ordinal());
         }
         String json = gson.toJson(model);
         rabbitTemplate.convertAndSend(exchange, routingKey, json);
@@ -237,7 +242,7 @@ public class SourceAbstract implements SourceBase {
      * 获取开始时间
      */
     private String getStartTime() {
-        Object cache = redisTemplate.opsForHash().get(RedisKeyEnum.PIPE_TIME_CACHE.toString(), taskConfig.getId());
+        Object cache = redisTemplate.opsForHash().get(RedisKeyEnum.TASK_TIME_CACHE.toString(), taskConfig.getId());
         //如果没有缓存时间
         if (cache != null) {
             return cache.toString();
@@ -266,7 +271,7 @@ public class SourceAbstract implements SourceBase {
     private void setNextTime() {
         String startTime = getStartTime();
         startTime = DateUtils.dateToStr(DateUtils.strToDate(startTime).plusMinutes(taskConfig.getTime_step().longValue()));
-        redisTemplate.opsForHash().put(RedisKeyEnum.PIPE_TIME_CACHE.toString(), taskConfig.getId(), startTime);
+        redisTemplate.opsForHash().put(RedisKeyEnum.TASK_TIME_CACHE.toString(), taskConfig.getId(), startTime);
     }
 
     @Override
@@ -280,6 +285,10 @@ public class SourceAbstract implements SourceBase {
      * 设置状态
      */
     private void setStatus() {
-        redisTemplate.opsForHash().put(RedisKeyEnum.SOURCE_STATUS_CACHE.toString(), taskConfig.getId(), this.sourceStatus.toString());
+        sourceTime.put(this.sourceStatus.toString(), DateUtils.dateToStr(LocalDateTime.now()));
+        if (this.sourceStatus == TaskStatusEnum.COMPLETE) {
+            sourceTime.put("ROW_COUNT", rowCount + "");
+            sourceTime.forEach((key, value) -> redisTemplate.opsForHash().put(RedisKeyEnum.SOURCE_STATUS_CACHE + ":" + taskConfig.getId() + ":" + version, key, value));
+        }
     }
 }

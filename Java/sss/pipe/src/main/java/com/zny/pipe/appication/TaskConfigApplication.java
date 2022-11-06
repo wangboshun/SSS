@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.enums.DbTypeEnum;
+import com.zny.common.enums.RedisKeyEnum;
 import com.zny.common.enums.ResourceEnum;
 import com.zny.common.model.PageResult;
 import com.zny.common.resource.ResourceApplication;
@@ -19,6 +20,7 @@ import com.zny.pipe.mapper.TaskConfigMapper;
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SourceConfigModel;
 import com.zny.pipe.model.TaskConfigModel;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
@@ -35,13 +37,15 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
     private final ConnectConfigApplication connectConfigApplication;
     private final ThreadPoolTaskExecutor defaultExecutor;
     private final PipeStrategy pipeStrategy;
+     private RedisTemplate<String, String> redisTemplate;
 
-    public TaskConfigApplication(ResourceApplication resourceApplication, SourceConfigApplication sourceConfigApplication, ConnectConfigApplication connectConfigApplication, ThreadPoolTaskExecutor defaultExecutor, PipeStrategy pipeStrategy) {
+    public TaskConfigApplication(ResourceApplication resourceApplication, SourceConfigApplication sourceConfigApplication, ConnectConfigApplication connectConfigApplication, ThreadPoolTaskExecutor defaultExecutor, PipeStrategy pipeStrategy, RedisTemplate<String, String> redisTemplate) {
         this.resourceApplication = resourceApplication;
         this.sourceConfigApplication = sourceConfigApplication;
         this.connectConfigApplication = connectConfigApplication;
         this.defaultExecutor = defaultExecutor;
         this.pipeStrategy = pipeStrategy;
+        this.redisTemplate = redisTemplate;
     }
 
     /**
@@ -62,7 +66,9 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
             ConnectConfigModel connectConfig = connectConfigApplication.getById(sourceConfig.getConnect_id());
             DbTypeEnum e = DbTypeEnum.values()[connectConfig.getDb_type()];
             SourceBase source = pipeStrategy.getSource(e);
-            source.config(sourceConfig, connectConfig, taskConfig);
+            Double score = redisTemplate.opsForZSet().incrementScore(RedisKeyEnum.TASK_COUNT_CACHE.toString(), taskConfig.getId(), 1);
+            int version = score.intValue();
+            source.config(sourceConfig, connectConfig, taskConfig,version);
             source.start();
         });
 

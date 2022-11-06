@@ -9,9 +9,9 @@ package com.zny.common.enums;
 public enum RedisKeyEnum {
 
     /**
-     * 管道同步时间Key
+     * 任务同步时间Key
      */
-    PIPE_TIME_CACHE,
+    TASK_TIME_CACHE,
 
     /**
      * Sink状态key
@@ -21,5 +21,10 @@ public enum RedisKeyEnum {
     /**
      * Source状态key
      */
-    SOURCE_STATUS_CACHE;
+    SOURCE_STATUS_CACHE,
+
+    /**
+     * 任务次数key
+     */
+    TASK_COUNT_CACHE;
 }

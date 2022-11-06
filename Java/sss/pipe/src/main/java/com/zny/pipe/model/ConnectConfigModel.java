@@ -3,8 +3,10 @@ package com.zny.pipe.model;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import java.io.Serializable;
+
 @TableName("pipe_connect_config")
-public class ConnectConfigModel {
+public class ConnectConfigModel implements Serializable {
 
     @TableId
     private String id;

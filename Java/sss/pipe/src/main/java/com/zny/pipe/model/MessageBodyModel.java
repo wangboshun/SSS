@@ -1,5 +1,6 @@
 package com.zny.pipe.model;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -9,14 +10,44 @@ import java.util.Map;
  * MessageBodyModel
  */
 
-public class MessageBodyModel {
+public class MessageBodyModel implements Serializable {
 
     List<Map<String, Object>> data;
     String taskId;
 
-    Integer count;
+    Integer total;
 
     Integer status;
+
+    Integer current;
+
+    Integer batch_size;
+
+    Integer version;
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
+    public Integer getBatch_size() {
+        return batch_size;
+    }
+
+    public void setBatch_size(Integer batch_size) {
+        this.batch_size = batch_size;
+    }
+
+    public Integer getCurrent() {
+        return current;
+    }
+
+    public void setCurrent(Integer current) {
+        this.current = current;
+    }
 
     public List<Map<String, Object>> getData() {
         return data;
@@ -34,12 +65,12 @@ public class MessageBodyModel {
         this.taskId = taskId;
     }
 
-    public Integer getCount() {
-        return count;
+    public Integer getTotal() {
+        return total;
     }
 
-    public void setCount(Integer count) {
-        this.count = count;
+    public void setTotal(Integer total) {
+        this.total = total;
     }
 
     public Integer getStatus() {

@@ -12,7 +12,7 @@ import com.zny.pipe.model.TaskConfigModel;
 
 public interface SourceBase {
 
-    void config(SourceConfigModel sourceConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig);
+    void config(SourceConfigModel sourceConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig,int version);
 
     void start();
 

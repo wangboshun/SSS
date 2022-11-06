@@ -3,6 +3,7 @@ package com.zny.pipe.component.base;
 import com.zny.common.enums.DbTypeEnum;
 import com.zny.common.enums.InsertTypeEnum;
 import com.zny.common.enums.RedisKeyEnum;
+import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.DbEx;
 import com.zny.pipe.component.ConnectionFactory;
 import com.zny.pipe.component.enums.TaskStatusEnum;
@@ -17,6 +18,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,7 +37,6 @@ public class SinkAbstract implements SinkBase {
     public Connection connection;
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
-    public TaskStatusEnum sinkStatus;
 
     /**
      * 配置
@@ -50,12 +51,6 @@ public class SinkAbstract implements SinkBase {
         this.connectConfig = connectConfig;
         this.taskConfig = taskConfig;
         connection = ConnectionFactory.getConnection(connectConfig);
-        if (connection != null) {
-            this.sinkStatus = TaskStatusEnum.CREATE;
-        } else {
-            this.sinkStatus = TaskStatusEnum.CONNECT_FAIL;
-        }
-        setStatus();
     }
 
     /**
@@ -66,8 +61,6 @@ public class SinkAbstract implements SinkBase {
     @Override
     public void start(List<Map<String, Object>> list) {
         System.out.println("sink start");
-        sinkStatus = TaskStatusEnum.RUNNING;
-        setStatus();
         setData(list);
     }
 
@@ -148,14 +141,15 @@ public class SinkAbstract implements SinkBase {
      */
     @Override
     public void stop() {
-        sinkStatus = TaskStatusEnum.COMPLETE;
-        setStatus();
     }
 
     /**
      * 设置状态
+     *
+     * @param e       状态
+     * @param version 版本号
      */
-    private void setStatus() {
-        redisTemplate.opsForHash().put(RedisKeyEnum.SINK_STATUS_CACHE.toString(), taskConfig.getId(), this.sinkStatus.toString());
+    public void setStatus(TaskStatusEnum e, Integer version) {
+        redisTemplate.opsForHash().put(RedisKeyEnum.SINK_STATUS_CACHE + ":" + taskConfig.getId() + ":" + version, e.toString(), DateUtils.dateToStr(LocalDateTime.now()));
     }
 }
