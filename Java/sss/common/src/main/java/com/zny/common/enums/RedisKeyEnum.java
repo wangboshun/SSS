@@ -14,14 +14,14 @@ public enum RedisKeyEnum {
     TASK_TIME_CACHE,
 
     /**
-     * Sink状态key
+     * Sink状态日志key
      */
-    SINK_STATUS_CACHE,
+    SINK_TIME_CACHE,
 
     /**
-     * Source状态key
+     * Source状态日志key
      */
-    SOURCE_STATUS_CACHE,
+    SOURCE_TIME_CACHE,
 
     /**
      * 任务次数key

@@ -16,11 +16,11 @@ import java.util.Map;
 
 public interface SinkBase {
 
-    void config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig);
+    void config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig,Integer version);
 
     void start(List<Map<String, Object>> list);
 
     void stop();
 
-    void setStatus(TaskStatusEnum e, Integer version);
+    void setStatus(TaskStatusEnum e);
 }

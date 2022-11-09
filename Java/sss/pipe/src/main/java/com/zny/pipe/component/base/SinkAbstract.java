@@ -35,6 +35,7 @@ public class SinkAbstract implements SinkBase {
     public ConnectConfigModel connectConfig;
     public TaskConfigModel taskConfig;
     public Connection connection;
+    private String cacheKey;
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
@@ -46,10 +47,11 @@ public class SinkAbstract implements SinkBase {
      * @param taskConfig    任务信息
      */
     @Override
-    public void config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig) {
+    public void config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, Integer version) {
         this.sinkConfig = sinkConfig;
         this.connectConfig = connectConfig;
         this.taskConfig = taskConfig;
+        this.cacheKey = RedisKeyEnum.SINK_TIME_CACHE + ":" + taskConfig.getId() + ":" + version;
         connection = ConnectionFactory.getConnection(connectConfig);
     }
 
@@ -60,7 +62,7 @@ public class SinkAbstract implements SinkBase {
      */
     @Override
     public void start(List<Map<String, Object>> list) {
-        System.out.println("sink start");
+        System.out.println("SinkAbstract start");
         setData(list);
     }
 
@@ -71,6 +73,8 @@ public class SinkAbstract implements SinkBase {
      */
     public void setData(List<Map<String, Object>> list) {
         PreparedStatement pstm = null;
+        Integer addCount = 0;
+        Integer ignoreCount = 0;
         try {
             String[] primaryField = this.sinkConfig.getPrimary_field().split(",");
             String tableName = this.sinkConfig.getTable_name();
@@ -98,15 +102,14 @@ public class SinkAbstract implements SinkBase {
             fieldSql.deleteCharAt(fieldSql.length() - 1);
             valueSql.deleteCharAt(valueSql.length() - 1);
             String sql = String.format("INSERT INTO %s (%s) VALUES (%s)", tableName, fieldSql, valueSql);
-
             this.connection.setAutoCommit(false);
             pstm = connection.prepareStatement(sql);
-
             for (Map<String, Object> item : list) {
                 switch (insertType) {
                     case IGNORE:
                         //数据是否已存在
                         if (DbEx.hasData(connection, tableName, item, primaryField, dbType)) {
+                            ignoreCount++;
                             continue;
                         }
                         break;
@@ -123,6 +126,7 @@ public class SinkAbstract implements SinkBase {
                     index++;
                 }
                 pstm.addBatch();
+                addCount++;
             }
             pstm.executeBatch();
             pstm.clearBatch();
@@ -134,6 +138,32 @@ public class SinkAbstract implements SinkBase {
         } finally {
             DbEx.release(connection, pstm);
         }
+        //忽略数据缓存
+        if (ignoreCount > 0) {
+            Object cacheIgnoreCount = redisTemplate.opsForHash().get(cacheKey, "IGNORE_COUNT");
+            if (cacheIgnoreCount != null) {
+                ignoreCount += Integer.parseInt(cacheIgnoreCount.toString());
+            }
+            redisTemplate.opsForHash().put(cacheKey, "IGNORE_COUNT", ignoreCount + "");
+        }
+
+        //添加数据缓存
+        if (addCount > 0) {
+            Object cacheAddCount = redisTemplate.opsForHash().get(cacheKey, "ADD_COUNT");
+            if (cacheAddCount != null) {
+                addCount += Integer.parseInt(cacheAddCount.toString());
+            }
+            redisTemplate.opsForHash().put(cacheKey, "ADD_COUNT", addCount + "");
+        }
+    }
+
+    /**
+     * 设置状态
+     *
+     * @param e 状态
+     */
+    public void setStatus(TaskStatusEnum e) {
+        redisTemplate.opsForHash().put(this.cacheKey, e.toString(), DateUtils.dateToStr(LocalDateTime.now()));
     }
 
     /**
@@ -141,15 +171,6 @@ public class SinkAbstract implements SinkBase {
      */
     @Override
     public void stop() {
-    }
-
-    /**
-     * 设置状态
-     *
-     * @param e       状态
-     * @param version 版本号
-     */
-    public void setStatus(TaskStatusEnum e, Integer version) {
-        redisTemplate.opsForHash().put(RedisKeyEnum.SINK_STATUS_CACHE + ":" + taskConfig.getId() + ":" + version, e.toString(), DateUtils.dateToStr(LocalDateTime.now()));
+        this.setStatus(TaskStatusEnum.COMPLETE);
     }
 }

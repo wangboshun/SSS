@@ -77,7 +77,7 @@ public class SourceAbstract implements SourceBase {
     public void start() {
         this.sourceStatus = TaskStatusEnum.RUNNING;
         setStatus();
-        System.out.println("source start");
+        System.out.println("SourceAbstract start");
         getData();
     }
 
@@ -232,8 +232,8 @@ public class SourceAbstract implements SourceBase {
                 sql += " DESC ";
             }
         } catch (Exception e) {
-            logger.error("source getNextSql", e);
-            System.out.println("source getNextSql: " + e.getMessage());
+            logger.error("SourceAbstract getNextSql", e);
+            System.out.println("SourceAbstract getNextSql: " + e.getMessage());
         }
         return sql;
     }
@@ -288,7 +288,7 @@ public class SourceAbstract implements SourceBase {
         sourceTime.put(this.sourceStatus.toString(), DateUtils.dateToStr(LocalDateTime.now()));
         if (this.sourceStatus == TaskStatusEnum.COMPLETE) {
             sourceTime.put("ROW_COUNT", rowCount + "");
-            sourceTime.forEach((key, value) -> redisTemplate.opsForHash().put(RedisKeyEnum.SOURCE_STATUS_CACHE + ":" + taskConfig.getId() + ":" + version, key, value));
+            sourceTime.forEach((key, value) -> redisTemplate.opsForHash().put(RedisKeyEnum.SOURCE_TIME_CACHE + ":" + taskConfig.getId() + ":" + version, key, value));
         }
     }
 }

@@ -2,6 +2,7 @@ package com.zny.pipe.component.queue;
 
 import com.google.gson.Gson;
 import com.zny.common.enums.DbTypeEnum;
+import com.zny.common.enums.RedisKeyEnum;
 import com.zny.common.json.GsonEx;
 import com.zny.pipe.appication.ConnectConfigApplication;
 import com.zny.pipe.appication.SinkConfigApplication;
@@ -14,6 +15,7 @@ import com.zny.pipe.model.MessageBodyModel;
 import com.zny.pipe.model.SinkConfigModel;
 import com.zny.pipe.model.TaskConfigModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 /**
@@ -37,6 +39,9 @@ public class QueueAbstract {
     @Autowired
     public PipeStrategy pipeStrategy;
 
+    @Autowired
+    public RedisTemplate<String, String> redisTemplate;
+
     /**
      * 数据处理
      *
@@ -52,26 +57,23 @@ public class QueueAbstract {
             ConnectConfigModel connectConfig = connectConfigApplication.getById(sinkConfig.getConnect_id());
             DbTypeEnum dbTypeEnum = DbTypeEnum.values()[connectConfig.getDb_type()];
             SinkBase sink = pipeStrategy.getSink(dbTypeEnum);
-            boolean isStart = false;
-            boolean isEnd = false;
-            //如果当前条数批量大小或者小于批量大小，表示是刚开始
-            if (body.getCurrent().equals(body.getBatch_size()) || body.getCurrent() < body.getBatch_size()) {
-                isStart = true;
-            }
-            if (isStart) {
-                sink.setStatus(TaskStatusEnum.CREATE, body.getVersion());
-            }
-            sink.config(sinkConfig, connectConfig, taskConfig);
-            if (isStart) {
-                sink.setStatus(TaskStatusEnum.RUNNING, body.getVersion());
+            TaskStatusEnum status = TaskStatusEnum.values()[body.getStatus()];
+            sink.config(sinkConfig, connectConfig, taskConfig, body.getVersion());
+            String cacheKey = RedisKeyEnum.SINK_TIME_CACHE + ":" + taskConfig.getId() + ":" + body.getVersion();
+            Boolean hasKey = redisTemplate.hasKey(cacheKey);
+            //如果缓存没有这个key，缓存状态
+            if (Boolean.FALSE.equals(hasKey)) {
+                if (status == TaskStatusEnum.RUNNING) {
+                    sink.setStatus(TaskStatusEnum.CREATE);
+                }
+                sink.start(body.getData());
+                if (status == TaskStatusEnum.RUNNING) {
+                    sink.setStatus(TaskStatusEnum.RUNNING);
+                }
             }
             sink.start(body.getData());
-            //如果当前条数等于总条目，表示是结束
-            if (body.getCurrent().equals(body.getTotal())) {
-                isEnd = true;
-            }
-            if (isEnd) {
-                sink.setStatus(TaskStatusEnum.COMPLETE, body.getVersion());
+            if (status == TaskStatusEnum.COMPLETE) {
+                sink.stop();
             }
         } catch (Exception e) {
 

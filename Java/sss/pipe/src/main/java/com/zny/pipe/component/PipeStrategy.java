@@ -72,7 +72,7 @@ public class PipeStrategy implements ApplicationContextAware {
      * @param taskId 任务id
      */
     public TaskStatusEnum getSinkStatus(String taskId) {
-        Object cache = redisTemplate.opsForHash().get(RedisKeyEnum.SINK_STATUS_CACHE.toString(), taskId);
+        Object cache = redisTemplate.opsForHash().get(RedisKeyEnum.SINK_TIME_CACHE.toString(), taskId);
         if (cache != null) {
             return TaskStatusEnum.valueOf(cache.toString());
         }
@@ -85,7 +85,7 @@ public class PipeStrategy implements ApplicationContextAware {
      * @param taskId 任务id
      */
     public TaskStatusEnum getSourceStatus(String taskId) {
-        Object cache = redisTemplate.opsForHash().get(RedisKeyEnum.SOURCE_STATUS_CACHE.toString(), taskId);
+        Object cache = redisTemplate.opsForHash().get(RedisKeyEnum.SOURCE_TIME_CACHE.toString(), taskId);
         if (cache != null) {
             return TaskStatusEnum.valueOf(cache.toString());
         }
