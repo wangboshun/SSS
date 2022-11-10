@@ -141,6 +141,15 @@ public class DbEx {
     /**
      * 释放资源
      *
+     * @param connection 链接
+     */
+    public static void release(Connection connection) {
+        release(connection, null, null);
+    }
+
+    /**
+     * 释放资源
+     *
      * @param stmt 声明
      */
     public static void release(Statement stmt) {

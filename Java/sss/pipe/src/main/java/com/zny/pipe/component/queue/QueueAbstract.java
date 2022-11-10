@@ -61,17 +61,14 @@ public class QueueAbstract {
             sink.config(sinkConfig, connectConfig, taskConfig, body.getVersion());
             String cacheKey = RedisKeyEnum.SINK_TIME_CACHE + ":" + taskConfig.getId() + ":" + body.getVersion();
             Boolean hasKey = redisTemplate.hasKey(cacheKey);
-            //如果缓存没有这个key，缓存状态
+            //如果缓存没有这个key，说明任务刚开始
             if (Boolean.FALSE.equals(hasKey)) {
-                if (status == TaskStatusEnum.RUNNING) {
-                    sink.setStatus(TaskStatusEnum.CREATE);
-                }
+                sink.setStatus(TaskStatusEnum.CREATE);
                 sink.start(body.getData());
-                if (status == TaskStatusEnum.RUNNING) {
-                    sink.setStatus(TaskStatusEnum.RUNNING);
-                }
+                sink.setStatus(TaskStatusEnum.RUNNING);
+            } else {
+                sink.start(body.getData());
             }
-            sink.start(body.getData());
             if (status == TaskStatusEnum.COMPLETE) {
                 sink.stop();
             }

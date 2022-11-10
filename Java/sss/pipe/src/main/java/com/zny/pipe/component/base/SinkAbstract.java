@@ -19,9 +19,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author WBS
@@ -72,15 +70,67 @@ public class SinkAbstract implements SinkBase {
      * @param list 数据消息
      */
     public void setData(List<Map<String, Object>> list) {
-        PreparedStatement pstm = null;
         Integer addCount = 0;
         Integer ignoreCount = 0;
+        Integer updateCount = 0;
         try {
             String[] primaryField = this.sinkConfig.getPrimary_field().split(",");
             String tableName = this.sinkConfig.getTable_name();
             DbTypeEnum dbType = DbTypeEnum.values()[this.connectConfig.getDb_type()];
             InsertTypeEnum insertType = InsertTypeEnum.values()[this.taskConfig.getInsert_type()];
 
+            List<Map<String, Object>> ignoreList = new ArrayList<>();
+            List<Map<String, Object>> addList = new ArrayList<>();
+            List<Map<String, Object>> updateList = new ArrayList<>();
+
+            for (Map<String, Object> item : list) {
+                //数据是否已存在
+                boolean hasData = DbEx.hasData(connection, tableName, item, primaryField, dbType);
+                switch (insertType) {
+                    case IGNORE:
+                        if (hasData) {
+                            ignoreList.add(item);
+                        } else {
+                            addList.add(item);
+                        }
+                        break;
+                    case UPDATE:
+                        if (hasData) {
+                            updateList.add(item);
+                        } else {
+                            addList.add(item);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            ignoreCount += ignoreList.size();
+            addCount += addList.size();
+            updateCount += updateList.size();
+
+            if (!addList.isEmpty()) {
+                addData(addList);
+            }
+            if (!updateList.isEmpty()) {
+                updateData(updateList, Arrays.asList(primaryField));
+            }
+        } catch (Exception e) {
+            logger.error("SinkAbstract setData", e);
+            System.out.println("SinkAbstract setData: " + e.getMessage());
+        } finally {
+            DbEx.release(connection);
+        }
+
+        //更新数量缓存
+        updateCountCache(ignoreCount, addCount, updateCount);
+    }
+
+    private Boolean addData(List<Map<String, Object>> list) {
+        PreparedStatement pstm = null;
+        try {
+            String tableName = this.sinkConfig.getTable_name();
+            DbTypeEnum dbType = DbTypeEnum.values()[this.connectConfig.getDb_type()];
             Set<String> fieldSet = list.get(0).keySet();
             StringBuilder fieldSql = new StringBuilder();
             StringBuilder valueSql = new StringBuilder();
@@ -105,39 +155,112 @@ public class SinkAbstract implements SinkBase {
             this.connection.setAutoCommit(false);
             pstm = connection.prepareStatement(sql);
             for (Map<String, Object> item : list) {
-                switch (insertType) {
-                    case IGNORE:
-                        //数据是否已存在
-                        if (DbEx.hasData(connection, tableName, item, primaryField, dbType)) {
-                            ignoreCount++;
-                            continue;
-                        }
-                        break;
-                    case UPDATE:
-
-                        break;
-                    default:
-                        break;
-                }
-
                 int index = 1;
                 for (String field : fieldSet) {
                     pstm.setObject(index, item.get(field));
                     index++;
                 }
                 pstm.addBatch();
-                addCount++;
             }
             pstm.executeBatch();
             pstm.clearBatch();
             connection.commit();
         } catch (SQLException e) {
-            DbEx.release(connection, pstm);
+            DbEx.release(pstm);
             logger.error("SinkAbstract setData", e);
             System.out.println("SinkAbstract setData: " + e.getMessage());
         } finally {
-            DbEx.release(connection, pstm);
+            DbEx.release(pstm);
         }
+        return true;
+    }
+
+    private Boolean updateData(List<Map<String, Object>> list, List<String> primaryField) {
+        PreparedStatement pstm = null;
+        try {
+            String tableName = this.sinkConfig.getTable_name();
+            DbTypeEnum dbType = DbTypeEnum.values()[this.connectConfig.getDb_type()];
+            Set<String> fieldSet = list.get(0).keySet();
+            StringBuilder fieldSql = new StringBuilder();
+            StringBuilder whereSql = new StringBuilder();
+
+            for (String field : fieldSet) {
+
+                //主键
+                if (primaryField.contains(field)) {
+                    switch (dbType) {
+                        case MySQL:
+                            whereSql.append("`").append(field).append("`=? AND ");
+                            break;
+                        case MsSQL:
+                            whereSql.append("[").append(field).append("]=? AND ");
+                            break;
+                        default:
+                            break;
+                    }
+
+                }
+                //非主键
+                else {
+                    switch (dbType) {
+                        case MySQL:
+                            fieldSql.append("`").append(field).append("`=?,");
+                            break;
+                        case MsSQL:
+                            fieldSql.append("[").append(field).append("]=?,");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            fieldSql.deleteCharAt(fieldSql.length() - 1);
+            whereSql.delete(whereSql.length() - 4, whereSql.length());
+            String sql = String.format("UPDATE %s SET %s WHERE %s", tableName, fieldSql, whereSql);
+            this.connection.setAutoCommit(false);
+            pstm = connection.prepareStatement(sql);
+            for (Map<String, Object> item : list) {
+                int index = 1;
+
+                //这里设置数据下标有讲究，因为拼sql的时候非主键set数据在前，所以需要先设置非主键的数据，然后设置主键的数据
+                for (String field : fieldSet) {
+                    //非主键
+                    if (!primaryField.contains(field)) {
+                        pstm.setObject(index, item.get(field));
+                        index++;
+                    }
+                }
+                for (String field : fieldSet) {
+                    //主键
+                    if (primaryField.contains(field)) {
+                        pstm.setObject(index, item.get(field));
+                        index++;
+                    }
+                }
+                pstm.addBatch();
+            }
+            pstm.executeBatch();
+            pstm.clearBatch();
+            connection.commit();
+        } catch (SQLException e) {
+            DbEx.release(pstm);
+            logger.error("SinkAbstract setData", e);
+            System.out.println("SinkAbstract setData: " + e.getMessage());
+        } finally {
+            DbEx.release(pstm);
+        }
+        return true;
+    }
+
+    /**
+     * 更新添加数和忽略数缓存
+     *
+     * @param ignoreCount 忽略数
+     * @param addCount    添加数
+     * @param updateCount 更新数
+     */
+    private void updateCountCache(Integer ignoreCount, Integer addCount, Integer updateCount) {
         //忽略数据缓存
         if (ignoreCount > 0) {
             Object cacheIgnoreCount = redisTemplate.opsForHash().get(cacheKey, "IGNORE_COUNT");
@@ -154,6 +277,15 @@ public class SinkAbstract implements SinkBase {
                 addCount += Integer.parseInt(cacheAddCount.toString());
             }
             redisTemplate.opsForHash().put(cacheKey, "ADD_COUNT", addCount + "");
+        }
+
+        //更新数据缓存
+        if (updateCount > 0) {
+            Object cacheUpdateCount = redisTemplate.opsForHash().get(cacheKey, "UPDATE_COUNT");
+            if (cacheUpdateCount != null) {
+                updateCount += Integer.parseInt(cacheUpdateCount.toString());
+            }
+            redisTemplate.opsForHash().put(cacheKey, "UPDATE_COUNT", updateCount + "");
         }
     }
 
