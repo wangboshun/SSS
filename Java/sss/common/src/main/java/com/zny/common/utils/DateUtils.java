@@ -31,4 +31,51 @@ public class DateUtils {
     public static @NotNull LocalDateTime strToDate(String str) {
         return strToDate(str, "yyyy-MM-dd HH:mm:ss");
     }
+
+    /**
+     * 时间加减处理
+     *
+     * @param time   时间
+     * @param number 数量
+     * @param unit   单位:year(年),month(月),day(日),hour(时),minute(分),second(秒)
+     * @param symbol 操作符:+ -
+     */
+    public static LocalDateTime operate(LocalDateTime time, int number, String unit, String symbol) {
+        if (symbol.equals("+")) {
+            switch (unit) {
+                case "year":
+                    return time.plusYears(number);
+                case "month":
+                    return time.plusMonths(number);
+                case "day":
+                    return time.plusDays(number);
+                case "hour":
+                    return time.plusHours(number);
+                case "minute":
+                    return time.plusMinutes(number);
+                case "second":
+                    return time.plusSeconds(number);
+                default:
+                    break;
+            }
+        } else if (symbol.equals("-")) {
+            switch (unit) {
+                case "year":
+                    return time.minusYears(number);
+                case "month":
+                    return time.minusMonths(number);
+                case "day":
+                    return time.minusDays(number);
+                case "hour":
+                    return time.minusHours(number);
+                case "minute":
+                    return time.minusMinutes(number);
+                case "second":
+                    return time.minusSeconds(number);
+                default:
+                    break;
+            }
+        }
+        return null;
+    }
 }

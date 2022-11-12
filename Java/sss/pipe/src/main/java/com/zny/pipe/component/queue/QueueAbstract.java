@@ -4,19 +4,22 @@ import com.google.gson.Gson;
 import com.zny.common.enums.DbTypeEnum;
 import com.zny.common.enums.RedisKeyEnum;
 import com.zny.common.json.GsonEx;
-import com.zny.pipe.appication.ConnectConfigApplication;
-import com.zny.pipe.appication.SinkConfigApplication;
-import com.zny.pipe.appication.TaskConfigApplication;
+import com.zny.pipe.appication.*;
 import com.zny.pipe.component.PipeStrategy;
 import com.zny.pipe.component.base.SinkBase;
 import com.zny.pipe.component.enums.TaskStatusEnum;
-import com.zny.pipe.model.ConnectConfigModel;
-import com.zny.pipe.model.MessageBodyModel;
-import com.zny.pipe.model.SinkConfigModel;
-import com.zny.pipe.model.TaskConfigModel;
+import com.zny.pipe.component.filter.CompareFilter;
+import com.zny.pipe.component.filter.FilterBase;
+import com.zny.pipe.component.transform.TransformAbstract;
+import com.zny.pipe.component.transform.TransformBase;
+import com.zny.pipe.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * @author WBS
@@ -37,10 +40,17 @@ public class QueueAbstract {
     public ConnectConfigApplication connectConfigApplication;
 
     @Autowired
+    private FilterConfigApplication filterConfigApplication;
+    
+    @Autowired
+    private ConvertConfigApplication convertConfigApplication;
+
+    @Autowired
     public PipeStrategy pipeStrategy;
 
     @Autowired
     public RedisTemplate<String, String> redisTemplate;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * 数据处理
@@ -58,7 +68,18 @@ public class QueueAbstract {
             DbTypeEnum dbTypeEnum = DbTypeEnum.values()[connectConfig.getDb_type()];
             SinkBase sink = pipeStrategy.getSink(dbTypeEnum);
             TaskStatusEnum status = TaskStatusEnum.values()[body.getStatus()];
-            sink.config(sinkConfig, connectConfig, taskConfig, body.getVersion());
+
+            //数值筛选配置
+            List<FilterConfigModel> filterConfig = filterConfigApplication.getFilterByTaskId(taskConfig.getId());
+            FilterBase filter = new CompareFilter();
+            filter.config(filterConfig);
+
+            //数值转换配置
+            List<ConvertConfigModel> convertConfig = convertConfigApplication.getConvertByTaskId(taskConfig.getId());
+            TransformBase transform = new TransformAbstract();
+            transform.config(convertConfig);
+
+            sink.config(sinkConfig, connectConfig, taskConfig, body.getVersion(), filter, transform);
             String cacheKey = RedisKeyEnum.SINK_TIME_CACHE + ":" + taskConfig.getId() + ":" + body.getVersion();
             Boolean hasKey = redisTemplate.hasKey(cacheKey);
             //如果缓存没有这个key，说明任务刚开始
@@ -73,7 +94,8 @@ public class QueueAbstract {
                 sink.stop();
             }
         } catch (Exception e) {
-
+            logger.error("QueueAbstract process", e);
+            System.out.println("QueueAbstract process: " + e.getMessage());
         }
     }
 }

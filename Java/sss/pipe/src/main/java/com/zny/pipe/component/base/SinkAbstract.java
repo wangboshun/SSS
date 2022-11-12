@@ -7,6 +7,8 @@ import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.DbEx;
 import com.zny.pipe.component.ConnectionFactory;
 import com.zny.pipe.component.enums.TaskStatusEnum;
+import com.zny.pipe.component.filter.FilterBase;
+import com.zny.pipe.component.transform.TransformBase;
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SinkConfigModel;
 import com.zny.pipe.model.TaskConfigModel;
@@ -34,6 +36,12 @@ public class SinkAbstract implements SinkBase {
     public TaskConfigModel taskConfig;
     public Connection connection;
     private String cacheKey;
+    private DbTypeEnum dbType;
+    private String tableName;
+
+    private FilterBase filter;
+    private TransformBase transform;
+
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
@@ -45,12 +53,16 @@ public class SinkAbstract implements SinkBase {
      * @param taskConfig    任务信息
      */
     @Override
-    public void config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, Integer version) {
+    public void config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, Integer version, FilterBase filter, TransformBase transform) {
         this.sinkConfig = sinkConfig;
         this.connectConfig = connectConfig;
         this.taskConfig = taskConfig;
+        this.filter = filter;
+        this.transform = transform;
         this.cacheKey = RedisKeyEnum.SINK_TIME_CACHE + ":" + taskConfig.getId() + ":" + version;
         connection = ConnectionFactory.getConnection(connectConfig);
+        dbType = DbTypeEnum.values()[this.connectConfig.getDb_type()];
+        tableName = this.sinkConfig.getTable_name();
     }
 
     /**
@@ -70,19 +82,18 @@ public class SinkAbstract implements SinkBase {
      * @param list 数据消息
      */
     public void setData(List<Map<String, Object>> list) {
-        Integer addCount = 0;
-        Integer ignoreCount = 0;
-        Integer updateCount = 0;
+        //筛选
+        list = filter.filter(list);
+
+        //转换
+        list = transform.convert(list);
+
+        List<Map<String, Object>> ignoreList = new ArrayList<>();
+        List<Map<String, Object>> addList = new ArrayList<>();
+        List<Map<String, Object>> updateList = new ArrayList<>();
         try {
             String[] primaryField = this.sinkConfig.getPrimary_field().split(",");
-            String tableName = this.sinkConfig.getTable_name();
-            DbTypeEnum dbType = DbTypeEnum.values()[this.connectConfig.getDb_type()];
             InsertTypeEnum insertType = InsertTypeEnum.values()[this.taskConfig.getInsert_type()];
-
-            List<Map<String, Object>> ignoreList = new ArrayList<>();
-            List<Map<String, Object>> addList = new ArrayList<>();
-            List<Map<String, Object>> updateList = new ArrayList<>();
-
             for (Map<String, Object> item : list) {
                 //数据是否已存在
                 boolean hasData = DbEx.hasData(connection, tableName, item, primaryField, dbType);
@@ -105,9 +116,6 @@ public class SinkAbstract implements SinkBase {
                         break;
                 }
             }
-            ignoreCount += ignoreList.size();
-            addCount += addList.size();
-            updateCount += updateList.size();
 
             if (!addList.isEmpty()) {
                 addData(addList);
@@ -123,14 +131,17 @@ public class SinkAbstract implements SinkBase {
         }
 
         //更新数量缓存
-        updateCountCache(ignoreCount, addCount, updateCount);
+        updateCountCache(ignoreList.size(), addList.size(), updateList.size());
     }
 
+    /**
+     * 添加数据
+     *
+     * @param list 数据集
+     */
     private Boolean addData(List<Map<String, Object>> list) {
         PreparedStatement pstm = null;
         try {
-            String tableName = this.sinkConfig.getTable_name();
-            DbTypeEnum dbType = DbTypeEnum.values()[this.connectConfig.getDb_type()];
             Set<String> fieldSet = list.get(0).keySet();
             StringBuilder fieldSql = new StringBuilder();
             StringBuilder valueSql = new StringBuilder();
@@ -175,11 +186,15 @@ public class SinkAbstract implements SinkBase {
         return true;
     }
 
+    /**
+     * 更新数据
+     *
+     * @param list         数据集
+     * @param primaryField 主键字段
+     */
     private Boolean updateData(List<Map<String, Object>> list, List<String> primaryField) {
         PreparedStatement pstm = null;
         try {
-            String tableName = this.sinkConfig.getTable_name();
-            DbTypeEnum dbType = DbTypeEnum.values()[this.connectConfig.getDb_type()];
             Set<String> fieldSet = list.get(0).keySet();
             StringBuilder fieldSql = new StringBuilder();
             StringBuilder whereSql = new StringBuilder();
