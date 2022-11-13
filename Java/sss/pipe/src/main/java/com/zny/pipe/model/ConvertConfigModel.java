@@ -14,12 +14,29 @@ public class ConvertConfigModel {
     @TableId
     private String id;
     private String task_id;
+
+    /**
+     * 转换字段
+     */
     private String convert_field;
-    private String convert_after;
-    private String convert_before;
+
+    /**
+     * 操作值
+     */
+    private String convert_value;
+
+    /**
+     * 计算值
+     */
+    private String convert_number;
     private String create_time;
     private Integer convert_status;
-    private String filter_symbol;
+
+    /**
+     * 操作符号
+     * 加减符号:+、-、*、/
+     * 如果是String类型，是这样：int+、int-、int*、int/
+     */
     private String convert_symbol;
 
     public String getConvert_symbol() {
@@ -30,20 +47,12 @@ public class ConvertConfigModel {
         this.convert_symbol = convert_symbol;
     }
 
-    public String getFilter_symbol() {
-        return filter_symbol;
+    public String getConvert_number() {
+        return convert_number;
     }
 
-    public void setFilter_symbol(String filter_symbol) {
-        this.filter_symbol = filter_symbol;
-    }
-
-    public String getConvert_before() {
-        return convert_before;
-    }
-
-    public void setConvert_before(String convert_before) {
-        this.convert_before = convert_before;
+    public void setConvert_number(String convert_number) {
+        this.convert_number = convert_number;
     }
 
     public String getId() {
@@ -70,12 +79,12 @@ public class ConvertConfigModel {
         this.convert_field = convert_field;
     }
 
-    public String getConvert_after() {
-        return convert_after;
+    public String getConvert_value() {
+        return convert_value;
     }
 
-    public void setConvert_after(String convert_after) {
-        this.convert_after = convert_after;
+    public void setConvert_value(String convert_value) {
+        this.convert_value = convert_value;
     }
 
     public String getCreate_time() {

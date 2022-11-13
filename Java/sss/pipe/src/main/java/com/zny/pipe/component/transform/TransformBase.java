@@ -1,6 +1,7 @@
 package com.zny.pipe.component.transform;
 
 import com.zny.pipe.model.ConvertConfigModel;
+import com.zny.pipe.model.FilterConfigModel;
 
 import java.util.List;
 import java.util.Map;

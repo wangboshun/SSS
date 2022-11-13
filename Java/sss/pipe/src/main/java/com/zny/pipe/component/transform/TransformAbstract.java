@@ -1,9 +1,10 @@
 package com.zny.pipe.component.transform;
 
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.zny.common.utils.DataUtils;
+import com.zny.pipe.component.filter.FilterUtils;
 import com.zny.pipe.model.ConvertConfigModel;
+import com.zny.pipe.model.FilterConfigModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,21 +37,24 @@ public class TransformAbstract implements TransformBase {
                 Object value = item.getValue();
                 List<ConvertConfigModel> list = transformConfig.stream().filter(x -> x.getConvert_field().equals(field)).collect(Collectors.toList());
                 for (ConvertConfigModel model : list) {
-                    String filterSymbol = model.getFilter_symbol();
-                    Object afterValue = model.getConvert_after();
-                    Object beforeValue = model.getConvert_before();
+                    Object afterValue = model.getConvert_value();
+                    Object beforeValue = model.getConvert_number();
                     String convertSymbol = model.getConvert_symbol();
 
                     //如果判断值为空，则所有值都进行更改
                     if (ObjectUtils.isEmpty(afterValue)) {
                         temp.put(field, DataUtils.operate(value, beforeValue, convertSymbol));
                     } else {
-                        //如果没有过滤条件，默认给等于符合
-                        if (!StringUtils.isNotBlank(filterSymbol)) {
-                            filterSymbol = "==";
-                        }
-                        if (DataUtils.compare(value, afterValue, filterSymbol)) {
-                            temp.put(field, DataUtils.operate(value, beforeValue, convertSymbol));
+                        FilterConfigModel filterModel = new FilterConfigModel();
+                        filterModel.setFilter_symbol("==");
+                        filterModel.setFilter_field(field);
+                        filterModel.setFilter_type("AND");
+                        filterModel.setFilter_value(afterValue.toString());
+                        List<FilterConfigModel> filterConfig = new ArrayList<>();
+                        filterConfig.add(filterModel);
+
+                        if (FilterUtils.haveData(map, filterConfig)) {
+                            temp.put(field, DataUtils.operate(afterValue, beforeValue, convertSymbol));
                         }
                     }
                 }

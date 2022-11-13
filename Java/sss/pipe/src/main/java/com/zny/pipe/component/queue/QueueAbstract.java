@@ -20,6 +20,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author WBS
@@ -41,7 +42,7 @@ public class QueueAbstract {
 
     @Autowired
     private FilterConfigApplication filterConfigApplication;
-    
+
     @Autowired
     private ConvertConfigApplication convertConfigApplication;
 
@@ -72,11 +73,13 @@ public class QueueAbstract {
             //数值筛选配置
             List<FilterConfigModel> filterConfig = filterConfigApplication.getFilterByTaskId(taskConfig.getId());
             FilterBase filter = new CompareFilter();
-            filter.config(filterConfig);
+            //传递过滤参数配置
+            filter.config(filterConfig.stream().filter(x -> x.getUse_type() == 0).collect(Collectors.toList()));
 
             //数值转换配置
             List<ConvertConfigModel> convertConfig = convertConfigApplication.getConvertByTaskId(taskConfig.getId());
             TransformBase transform = new TransformAbstract();
+            //传递转换参数和过滤参数配置
             transform.config(convertConfig);
 
             sink.config(sinkConfig, connectConfig, taskConfig, body.getVersion(), filter, transform);

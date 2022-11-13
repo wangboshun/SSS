@@ -171,6 +171,8 @@ public class DataUtils {
             return value1.equals(value2);
         } else if ("!=".equals(symbol)) {
             return !value1.equals(value2);
+        } else if ("contains".equals(symbol)) {
+            return !value1.contains(value2);
         } else if (symbol.contains("int")) {
             return intCompare(value, compareValue, symbol.replace("int", ""));
         } else if (symbol.contains("float")) {
@@ -339,5 +341,7 @@ public class DataUtils {
         }
         return value1;
     }
+
+
 
 }

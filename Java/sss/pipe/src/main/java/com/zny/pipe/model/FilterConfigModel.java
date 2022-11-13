@@ -14,11 +14,53 @@ public class FilterConfigModel {
     @TableId
     private String id;
     private String task_id;
+
+    /**
+     * 筛选字段
+     */
     private String filter_field;
+
+    /**
+     * 筛选符号
+     * 符号:==、!=、>、<、>=、<=、contains
+     * 如果是String类型，是这样：int==、int>、int<
+     */
     private String filter_symbol;
+
+    /**
+     * 筛选值
+     */
     private String filter_value;
     private String create_time;
     private Integer filter_status;
+
+    /**
+     * 筛选类型
+     * AND、OR
+     */
+    private String filter_type;
+
+    /**
+     * 使用场景类型
+     * 0为数据筛选、1为转换筛选
+     */
+    private Integer use_type;
+
+    public Integer getUse_type() {
+        return use_type;
+    }
+
+    public void setUse_type(Integer use_type) {
+        this.use_type = use_type;
+    }
+
+    public String getFilter_type() {
+        return filter_type;
+    }
+
+    public void setFilter_type(String filter_type) {
+        this.filter_type = filter_type;
+    }
 
     public String getId() {
         return id;

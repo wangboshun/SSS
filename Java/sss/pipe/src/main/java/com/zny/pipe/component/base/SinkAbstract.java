@@ -1,5 +1,6 @@
 package com.zny.pipe.component.base;
 
+import com.nhl.dflib.DataFrame;
 import com.zny.common.enums.DbTypeEnum;
 import com.zny.common.enums.InsertTypeEnum;
 import com.zny.common.enums.RedisKeyEnum;
@@ -22,6 +23,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.IntStream;
 
 /**
  * @author WBS

@@ -49,12 +49,11 @@ public class ConvertConfigApplication extends ServiceImpl<ConvertConfigMapper, C
     /**
      * 添加转换条件
      */
-    public SaResult addConvert(String taskId, String convertField, String filterSymbol, String convertAfter,String convertSymbol, String convertBefore) {
+    public SaResult addConvert(String taskId, String convertField, String convertValue, String convertSymbol, String convertNumber) {
         QueryWrapper<ConvertConfigModel> wrapper = new QueryWrapper<>();
         wrapper.eq("task_id", taskId);
         wrapper.eq("convert_field", convertField);
-        wrapper.eq("filter_symbol", filterSymbol);
-        wrapper.eq("convert_after", convertAfter);
+        wrapper.eq("convert_value", convertValue);
         wrapper.eq("convert_symbol", convertSymbol);
         ConvertConfigModel model = this.getOne(wrapper);
         if (model != null) {
@@ -64,10 +63,9 @@ public class ConvertConfigApplication extends ServiceImpl<ConvertConfigMapper, C
         model.setId(UUID.randomUUID().toString());
         model.setTask_id(taskId);
         model.setConvert_field(convertField);
-        model.setFilter_symbol(filterSymbol);
-        model.setConvert_after(convertAfter);
+        model.setConvert_value(convertValue);
         model.setConvert_symbol(convertSymbol);
-        model.setConvert_before(convertBefore);
+        model.setConvert_number(convertNumber);
         model.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
         if (save(model)) {
             return SaResult.ok("添加转换条件成功！");
@@ -99,7 +97,7 @@ public class ConvertConfigApplication extends ServiceImpl<ConvertConfigMapper, C
     /**
      * 更新转换条件信息
      */
-    public SaResult updateConvert(String id, String convertField, String filterSymbol, String convertAfter, String convertSymbol, String convertBefore) {
+    public SaResult updateConvert(String id, String convertField, String convertValue, String convertSymbol, String convertNumber) {
         QueryWrapper<ConvertConfigModel> wrapper = new QueryWrapper<>();
         wrapper.eq("id", id);
         ConvertConfigModel model = this.getOne(wrapper);
@@ -110,17 +108,14 @@ public class ConvertConfigApplication extends ServiceImpl<ConvertConfigMapper, C
         if (StringUtils.isNotBlank(convertField)) {
             model.setConvert_field(convertField);
         }
-        if (StringUtils.isNotBlank(filterSymbol)) {
-            model.setFilter_symbol(filterSymbol);
-        }
-        if (StringUtils.isNotBlank(convertAfter)) {
-            model.setConvert_after(convertAfter);
+        if (StringUtils.isNotBlank(convertValue)) {
+            model.setConvert_value(convertValue);
         }
         if (StringUtils.isNotBlank(convertSymbol)) {
             model.setConvert_symbol(convertSymbol);
         }
-        if (StringUtils.isNotBlank(convertBefore)) {
-            model.setConvert_before(convertBefore);
+        if (StringUtils.isNotBlank(convertNumber)) {
+            model.setConvert_number(convertNumber);
         }
         if (updateById(model)) {
             return SaResult.ok("更新转换条件信息成功！");
