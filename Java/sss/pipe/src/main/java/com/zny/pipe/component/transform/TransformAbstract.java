@@ -37,24 +37,26 @@ public class TransformAbstract implements TransformBase {
                 Object value = item.getValue();
                 List<ConvertConfigModel> list = transformConfig.stream().filter(x -> x.getConvert_field().equals(field)).collect(Collectors.toList());
                 for (ConvertConfigModel model : list) {
-                    Object afterValue = model.getConvert_value();
-                    Object beforeValue = model.getConvert_number();
+                    Object convertValue = model.getConvert_value();
+                    Object convertNumber = model.getConvert_number();
                     String convertSymbol = model.getConvert_symbol();
 
                     //如果判断值为空，则所有值都进行更改
-                    if (ObjectUtils.isEmpty(afterValue)) {
-                        temp.put(field, DataUtils.operate(value, beforeValue, convertSymbol));
-                    } else {
+                    if (ObjectUtils.isEmpty(convertValue)) {
+                        temp.put(field, DataUtils.operate(value, convertNumber, convertSymbol));
+                    }
+                    //给指定值进行数据转换
+                    else {
                         FilterConfigModel filterModel = new FilterConfigModel();
                         filterModel.setFilter_symbol("==");
                         filterModel.setFilter_field(field);
                         filterModel.setFilter_type("AND");
-                        filterModel.setFilter_value(afterValue.toString());
+                        filterModel.setFilter_value(convertValue.toString());
                         List<FilterConfigModel> filterConfig = new ArrayList<>();
                         filterConfig.add(filterModel);
 
                         if (FilterUtils.haveData(map, filterConfig)) {
-                            temp.put(field, DataUtils.operate(afterValue, beforeValue, convertSymbol));
+                            temp.put(field, DataUtils.operate(convertValue, convertNumber, convertSymbol));
                         }
                     }
                 }
