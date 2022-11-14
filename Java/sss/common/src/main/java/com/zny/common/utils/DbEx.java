@@ -166,4 +166,12 @@ public class DbEx {
         release(null, stmt, rs);
     }
 
+    /**
+     * 释放资源
+     *
+     * @param rs 结果集
+     */
+    public static void release(ResultSet rs) {
+        release(null, null, rs);
+    }
 }
