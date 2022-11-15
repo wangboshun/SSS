@@ -18,7 +18,11 @@ import java.util.Map;
 
 public interface SinkBase {
 
-    void config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, Integer version, FilterBase filter, TransformBase transform);
+    void config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, Integer version);
+
+    void filter(FilterBase filter);
+
+    void transform(TransformBase transform);
 
     void start(List<Map<String, Object>> list);
 

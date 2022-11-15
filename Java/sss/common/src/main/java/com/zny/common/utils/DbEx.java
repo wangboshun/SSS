@@ -16,9 +16,9 @@ import java.util.Map;
 public class DbEx {
 
     /**
-     * 获取表的所有列
+     * 获取表的所有列名
      */
-    public static List<String> getField(ResultSet result) {
+    public static List<String> getColumnName(ResultSet result) {
         List<String> fieldList = new ArrayList<>();
         try {
             ResultSetMetaData meta = result.getMetaData();

@@ -1,6 +1,5 @@
 package com.zny.pipe.component.base;
 
-import com.nhl.dflib.DataFrame;
 import com.zny.common.enums.DbTypeEnum;
 import com.zny.common.enums.InsertTypeEnum;
 import com.zny.common.enums.RedisKeyEnum;
@@ -39,10 +38,8 @@ public class SinkAbstract implements SinkBase {
     private String cacheKey;
     private DbTypeEnum dbType;
     private String tableName;
-
     private FilterBase filter;
     private TransformBase transform;
-
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
@@ -54,16 +51,24 @@ public class SinkAbstract implements SinkBase {
      * @param taskConfig    任务信息
      */
     @Override
-    public void config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, Integer version, FilterBase filter, TransformBase transform) {
+    public void config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, Integer version) {
         this.sinkConfig = sinkConfig;
         this.connectConfig = connectConfig;
         this.taskConfig = taskConfig;
-        this.filter = filter;
-        this.transform = transform;
         this.cacheKey = RedisKeyEnum.SINK_TIME_CACHE + ":" + taskConfig.getId() + ":" + version;
         connection = ConnectionFactory.getConnection(connectConfig);
         dbType = DbTypeEnum.values()[this.connectConfig.getDb_type()];
         tableName = this.sinkConfig.getTable_name();
+    }
+
+    @Override
+    public void filter(FilterBase filter) {
+        this.filter = filter;
+    }
+
+    @Override
+    public void transform(TransformBase transform) {
+        this.transform = transform;
     }
 
     /**

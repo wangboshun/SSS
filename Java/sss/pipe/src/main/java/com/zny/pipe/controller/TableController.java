@@ -2,8 +2,11 @@ package com.zny.pipe.controller;
 
 import cn.dev33.satoken.util.SaResult;
 import com.zny.pipe.appication.TableConfigApplication;
+import com.zny.pipe.model.TableConfigModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author WBS
@@ -28,7 +31,12 @@ public class TableController {
 
     @GetMapping(value = "/get_by_connect")
     public SaResult get(String connectId, String tableName) {
-        return tableConfigApplication.getByConnectId(connectId, tableName);
+        List<TableConfigModel> list = tableConfigApplication.getByConnectId(connectId, tableName);
+        if (list.isEmpty()) {
+            return SaResult.error("表信息不存在！");
+        } else {
+            return SaResult.data(list);
+        }
     }
 
     @PostMapping(value = "/add")

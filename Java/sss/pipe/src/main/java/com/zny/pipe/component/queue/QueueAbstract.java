@@ -20,6 +20,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -82,7 +83,15 @@ public class QueueAbstract {
             //传递转换参数和过滤参数配置
             transform.config(convertConfig);
 
-            sink.config(sinkConfig, connectConfig, taskConfig, body.getVersion(), filter, transform);
+            //基础配置
+            sink.config(sinkConfig, connectConfig, taskConfig, body.getVersion());
+
+            //2.过滤配置
+            sink.filter(filter);
+
+            //3.转换配置
+            sink.transform(transform);
+
             String cacheKey = RedisKeyEnum.SINK_TIME_CACHE + ":" + taskConfig.getId() + ":" + body.getVersion();
             Boolean hasKey = redisTemplate.hasKey(cacheKey);
             //如果缓存没有这个key，说明任务刚开始

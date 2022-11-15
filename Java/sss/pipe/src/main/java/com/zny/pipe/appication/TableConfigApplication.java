@@ -19,9 +19,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -44,16 +42,26 @@ public class TableConfigApplication extends ServiceImpl<TableConfigMapper, Table
      * @param connectId 连接id
      * @param tableName 表名
      */
-    public SaResult getByConnectId(String connectId, String tableName) {
+    public List<TableConfigModel> getByConnectId(String connectId, String tableName) {
         QueryWrapper<TableConfigModel> wrapper = new QueryWrapper<>();
         wrapper.eq("connect_id", connectId);
         wrapper.eq("table_name", tableName);
-        List<TableConfigModel> list = this.list(wrapper);
-        if (list.isEmpty()) {
-            return SaResult.error("表信息不存在！");
-        } else {
-            return SaResult.data(list);
+        return this.list(wrapper);
+    }
+
+    /**
+     * 获取表字段和类型
+     *
+     * @param connectId 连接id
+     * @param tableName 表名
+     */
+    public Map<String, String> getTableColumnType(String connectId, String tableName) {
+        List<TableConfigModel> list = getByConnectId(connectId, tableName);
+        Map<String, String> map = new HashMap<>();
+        for (TableConfigModel item : list) {
+            map.put(item.getField_name(), item.getData_type());
         }
+        return map;
     }
 
     /**

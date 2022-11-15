@@ -7,12 +7,10 @@ import com.zny.common.enums.RedisKeyEnum;
 import com.zny.common.json.GsonEx;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.DbEx;
+import com.zny.pipe.appication.TableConfigApplication;
 import com.zny.pipe.component.ConnectionFactory;
 import com.zny.pipe.component.enums.TaskStatusEnum;
-import com.zny.pipe.model.ConnectConfigModel;
-import com.zny.pipe.model.MessageBodyModel;
-import com.zny.pipe.model.SourceConfigModel;
-import com.zny.pipe.model.TaskConfigModel;
+import com.zny.pipe.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -44,6 +42,7 @@ public class SourceAbstract implements SourceBase {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private static final int BATCH_SIZE = 100;
     public Map<String, String> sourceTime = new HashMap<>();
+
     public int version;
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
@@ -58,7 +57,8 @@ public class SourceAbstract implements SourceBase {
      * @param taskConfig    任务信息
      */
     @Override
-    public void config(SourceConfigModel sourceConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, int version) {
+    public void config(SourceConfigModel sourceConfig, ConnectConfigModel connectConfig,
+                       TaskConfigModel taskConfig, int version) {
         this.sourceConfig = sourceConfig;
         this.connectConfig = connectConfig;
         this.taskConfig = taskConfig;
@@ -94,11 +94,11 @@ public class SourceAbstract implements SourceBase {
             pstm.setFetchSize(Integer.MIN_VALUE);
             result = pstm.executeQuery();
             List<Map<String, Object>> list = new ArrayList<>();
-            List<String> filedList = DbEx.getField(result);
+            List<String> columnNameList = DbEx.getColumnName(result);
             int currentIndex = 0;  //数据记录号
             while (result.next()) {
-                Map<String, Object> rowData = new HashMap<>(filedList.size());
-                for (String x : filedList) {
+                Map<String, Object> rowData = new HashMap<>(columnNameList.size());
+                for (String x : columnNameList) {
                     rowData.put(x, result.getObject(x));
                 }
                 list.add(rowData);
