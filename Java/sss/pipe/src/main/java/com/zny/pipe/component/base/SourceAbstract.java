@@ -139,7 +139,7 @@ public class SourceAbstract implements SourceBase {
         model.setBatch_size(BATCH_SIZE);
         model.setTotal(rowCount);
         model.setCurrent(currentIndex);
-        model.setVersion(version); 
+        model.setVersion(version);
         //如果数量相等或小于批次，设置为已完成
         if (currentIndex == rowCount || currentIndex < BATCH_SIZE) {
             model.setStatus(TaskStatusEnum.COMPLETE.ordinal());

@@ -3,6 +3,8 @@ package com.zny.pipe.model;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import java.io.Serializable;
+
 /**
  * @author WBS
  * Date 2022-11-14 15:43
@@ -10,7 +12,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
  */
 
 @TableName("pipe_table_config")
-public class TableConfigModel {
+public class TableConfigModel  implements Serializable {
     @TableId
     private String id;
     private String connect_id;
