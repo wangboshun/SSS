@@ -10,8 +10,12 @@ import org.springframework.stereotype.Component;
  * mysql目的服务类
  */
 
+/**
+ * MySql消息接受者
+ * 默认不持久化消息
+ */
 @Component
-@RabbitListener(bindings = {@QueueBinding(value = @Queue(value = "MySQL_Queue", durable = "true"), exchange = @Exchange(value = "Pipe_Exchange"), key = "MySQL_RoutKey")})
+@RabbitListener(bindings = {@QueueBinding(value = @Queue(value = "MySQL_Queue", durable = "false"), exchange = @Exchange(value = "Pipe_Exchange"), key = "MySQL_RoutKey")})
 public class MySqlQueue extends QueueBase {
 
     public MySqlQueue(TransformAbstract transformAbstract) {

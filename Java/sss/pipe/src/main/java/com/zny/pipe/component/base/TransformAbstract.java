@@ -56,6 +56,7 @@ public class TransformAbstract {
         TaskStatusEnum status = TaskStatusEnum.values()[body.getStatus()];
         String taskId = body.getTaskId();
         TaskConfigModel taskConfig = taskConfigApplication.getById(taskId);
+        String cacheKey = RedisKeyEnum.SINK_TIME_CACHE + ":" + taskConfig.getId() + ":" + body.getVersion();
         filterConfig = filterConfigApplication.getFilterByTaskId(taskConfig.getId());
         convertConfig = convertConfigApplication.getConvertByTaskId(taskConfig.getId());
         List<Map<String, Object>> bodyData = body.getData();
@@ -71,7 +72,6 @@ public class TransformAbstract {
         DbTypeEnum dbTypeEnum = DbTypeEnum.values()[connectConfig.getDb_type()];
         SinkBase sink = pipeStrategy.getSink(dbTypeEnum);
         sink.config(sinkConfig, connectConfig, taskConfig, body.getVersion());
-        String cacheKey = RedisKeyEnum.SINK_TIME_CACHE + ":" + taskConfig.getId() + ":" + body.getVersion();
         Boolean hasKey = redisTemplate.hasKey(cacheKey);
         //如果缓存没有这个key，说明任务刚开始
         if (Boolean.FALSE.equals(hasKey)) {

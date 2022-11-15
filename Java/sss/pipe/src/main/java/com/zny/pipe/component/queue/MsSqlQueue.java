@@ -10,8 +10,12 @@ import org.springframework.stereotype.Component;
  * mssql目的服务类
  */
 
+/**
+ * MsSql消息接受者
+ * 默认不持久化消息
+ */
 @Component
-@RabbitListener(bindings = {@QueueBinding(value = @Queue(value = "MsSQL_Queue", durable = "true"), exchange = @Exchange(value = "Pipe_Exchange"), key = "MsSQL_RoutKey")})
+@RabbitListener(bindings = {@QueueBinding(value = @Queue(value = "MsSQL_Queue", durable = "false"), exchange = @Exchange(value = "Pipe_Exchange"), key = "MsSQL_RoutKey")})
 public class MsSqlQueue extends QueueBase {
 
     public MsSqlQueue(TransformAbstract transformAbstract) {
