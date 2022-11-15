@@ -1,5 +1,6 @@
 package com.zny.pipe.component.queue;
 
+import com.zny.pipe.component.base.TransformAbstract;
 import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RabbitListener(bindings = {@QueueBinding(value = @Queue(value = "MsSQL_Queue", durable = "true"), exchange = @Exchange(value = "Pipe_Exchange"), key = "MsSQL_RoutKey")})
-public class MsSqlQueue extends QueueAbstract {
+public class MsSqlQueue extends QueueBase {
+
+    public MsSqlQueue(TransformAbstract transformAbstract) {
+        super(transformAbstract);
+    }
 
     /**
      * 监听消息
@@ -20,6 +25,6 @@ public class MsSqlQueue extends QueueAbstract {
      */
     @RabbitHandler
     public void onMessage(String message) {
-        process(message);
+        this.process(message);
     }
 }

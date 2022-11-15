@@ -65,30 +65,4 @@ public class PipeStrategy implements ApplicationContextAware {
     public SourceBase getSource(DbTypeEnum e) {
         return sourceMap.get(e.toString());
     }
-
-    /**
-     * 获取目的状态
-     *
-     * @param taskId 任务id
-     */
-    public TaskStatusEnum getSinkStatus(String taskId) {
-        Object cache = redisTemplate.opsForHash().get(RedisKeyEnum.SINK_TIME_CACHE.toString(), taskId);
-        if (cache != null) {
-            return TaskStatusEnum.valueOf(cache.toString());
-        }
-        return TaskStatusEnum.NONE;
-    }
-
-    /**
-     * 获取数据源状态
-     *
-     * @param taskId 任务id
-     */
-    public TaskStatusEnum getSourceStatus(String taskId) {
-        Object cache = redisTemplate.opsForHash().get(RedisKeyEnum.SOURCE_TIME_CACHE.toString(), taskId);
-        if (cache != null) {
-            return TaskStatusEnum.valueOf(cache.toString());
-        }
-        return TaskStatusEnum.NONE;
-    }
 }

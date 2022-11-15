@@ -7,10 +7,12 @@ import com.zny.common.enums.RedisKeyEnum;
 import com.zny.common.json.GsonEx;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.DbEx;
-import com.zny.pipe.appication.TableConfigApplication;
 import com.zny.pipe.component.ConnectionFactory;
 import com.zny.pipe.component.enums.TaskStatusEnum;
-import com.zny.pipe.model.*;
+import com.zny.pipe.model.ConnectConfigModel;
+import com.zny.pipe.model.MessageBodyModel;
+import com.zny.pipe.model.SourceConfigModel;
+import com.zny.pipe.model.TaskConfigModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -18,7 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,8 +62,7 @@ public class SourceAbstract implements SourceBase {
      * @param taskConfig    任务信息
      */
     @Override
-    public void config(SourceConfigModel sourceConfig, ConnectConfigModel connectConfig,
-                       TaskConfigModel taskConfig, int version) {
+    public void config(SourceConfigModel sourceConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, int version) {
         this.sourceConfig = sourceConfig;
         this.connectConfig = connectConfig;
         this.taskConfig = taskConfig;
@@ -89,7 +93,7 @@ public class SourceAbstract implements SourceBase {
         ResultSet result = null;
         try {
             String sql = getNextSql();
-            queryCount(sql);
+            rowCount = DbEx.getCount(connection, sql);
             pstm = connection.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             pstm.setFetchSize(Integer.MIN_VALUE);
             result = pstm.executeQuery();
@@ -144,32 +148,6 @@ public class SourceAbstract implements SourceBase {
         }
         String json = gson.toJson(model);
         rabbitTemplate.convertAndSend(exchange, routingKey, json);
-    }
-
-    /**
-     * 统计总条数
-     *
-     * @param sql 查询语句
-     */
-    private void queryCount(String sql) {
-        Statement stmt = null;
-        ResultSet result = null;
-        try {
-            int index = sql.indexOf("ORDER BY");
-            sql = sql.substring(0, index);
-            sql = sql.replace("*", "count(0)");
-            stmt = connection.createStatement();
-            result = stmt.executeQuery(sql);
-            if (result.next()) {
-                rowCount = result.getInt(1);
-            }
-        } catch (Exception e) {
-            DbEx.release(connection, stmt, result);
-            logger.error("SourceAbstract getCount", e);
-            System.out.println("SourceAbstract getCount: " + e.getMessage());
-        } finally {
-            DbEx.release(stmt, result);
-        }
     }
 
     /**

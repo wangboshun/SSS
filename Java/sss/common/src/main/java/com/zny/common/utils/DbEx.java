@@ -43,7 +43,7 @@ public class DbEx {
      */
     public static boolean hasData(Connection connection, String tableName, Map<String, Object> data, String[] primaryField, DbTypeEnum dbType) {
         int number = 0;
-        ResultSet resultSet = null;
+        ResultSet result = null;
         PreparedStatement pstm = null;
         try {
             String sql = "";
@@ -80,9 +80,9 @@ public class DbEx {
                 index++;
             }
 
-            resultSet = pstm.executeQuery();
-            while (resultSet.next()) {
-                number = resultSet.getInt("number");
+            result = pstm.executeQuery();
+            while (result.next()) {
+                number = result.getInt("number");
             }
 
             if (number > 0) {
@@ -91,18 +91,49 @@ public class DbEx {
         } catch (SQLException e) {
             System.out.println("hasData: " + e.getMessage());
         } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (pstm != null) {
-                    pstm.close();
-                }
-            } catch (SQLException e) {
-                System.out.println("hasData: " + e.getMessage());
-            }
+            release(pstm, result);
         }
         return false;
+    }
+
+    /**
+     * 根据sql查询记录条数
+     *
+     * @param connection 连接
+     * @param sql        sql
+     */
+    public static int getCount(Connection connection, String sql) {
+        Statement stmt = null;
+        ResultSet result = null;
+        int count = 0;
+        try {
+            int index = sql.indexOf("ORDER BY");
+            sql = sql.substring(0, index);
+            if (sql.contains("*")) {
+                sql = sql.replace("*", " count(0) ");
+            } else {
+                int selectIndex = sql.indexOf("select");
+                if (selectIndex < 0) {
+                    selectIndex = sql.indexOf("SELECT");
+                }
+                int fromIndex = sql.indexOf("from");
+                if (fromIndex < 0) {
+                    fromIndex = sql.indexOf("FROM");
+                }
+                String str = sql.substring(selectIndex + 6, fromIndex);
+                sql = sql.replace(str, " count(0) ");
+            }
+            stmt = connection.createStatement();
+            result = stmt.executeQuery(sql);
+            if (result.next()) {
+                count = result.getInt(1);
+            }
+        } catch (Exception e) {
+            System.out.println("SourceAbstract getCount: " + e.getMessage());
+        } finally {
+            release(stmt, result);
+        }
+        return count;
     }
 
     /**

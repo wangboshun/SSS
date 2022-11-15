@@ -7,8 +7,6 @@ import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.DbEx;
 import com.zny.pipe.component.ConnectionFactory;
 import com.zny.pipe.component.enums.TaskStatusEnum;
-import com.zny.pipe.component.filter.FilterBase;
-import com.zny.pipe.component.transform.TransformBase;
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SinkConfigModel;
 import com.zny.pipe.model.TaskConfigModel;
@@ -38,8 +36,6 @@ public class SinkAbstract implements SinkBase {
     private String cacheKey;
     private DbTypeEnum dbType;
     private String tableName;
-    private FilterBase filter;
-    private TransformBase transform;
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
@@ -61,16 +57,6 @@ public class SinkAbstract implements SinkBase {
         tableName = this.sinkConfig.getTable_name();
     }
 
-    @Override
-    public void filter(FilterBase filter) {
-        this.filter = filter;
-    }
-
-    @Override
-    public void transform(TransformBase transform) {
-        this.transform = transform;
-    }
-
     /**
      * 开始
      *
@@ -79,21 +65,15 @@ public class SinkAbstract implements SinkBase {
     @Override
     public void start(List<Map<String, Object>> list) {
         System.out.println("SinkAbstract start");
-        setData(list);
+        splitData(list);
     }
 
     /**
-     * 保存数据
+     * 拆分数据
      *
      * @param list 数据消息
      */
-    public void setData(List<Map<String, Object>> list) {
-        //筛选
-        list = filter.filter(list);
-
-        //转换
-        list = transform.convert(list);
-
+    public void splitData(List<Map<String, Object>> list) {
         List<Map<String, Object>> ignoreList = new ArrayList<>();
         List<Map<String, Object>> addList = new ArrayList<>();
         List<Map<String, Object>> updateList = new ArrayList<>();
