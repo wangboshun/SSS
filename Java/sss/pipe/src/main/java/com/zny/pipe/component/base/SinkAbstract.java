@@ -78,11 +78,11 @@ public class SinkAbstract implements SinkBase {
         List<Map<String, Object>> addList = new ArrayList<>();
         List<Map<String, Object>> updateList = new ArrayList<>();
         try {
-            String[] primaryField = this.sinkConfig.getPrimary_field().split(",");
+            String[] primaryColumn = this.sinkConfig.getPrimary_column().split(",");
             InsertTypeEnum insertType = InsertTypeEnum.values()[this.taskConfig.getInsert_type()];
             for (Map<String, Object> item : list) {
                 //数据是否已存在
-                boolean hasData = DbEx.hasData(connection, tableName, item, primaryField, dbType);
+                boolean hasData = DbEx.hasData(connection, tableName, item, primaryColumn, dbType);
                 switch (insertType) {
                     case IGNORE:
                         if (hasData) {
@@ -107,7 +107,7 @@ public class SinkAbstract implements SinkBase {
                 addData(addList);
             }
             if (!updateList.isEmpty()) {
-                updateData(updateList, Arrays.asList(primaryField));
+                updateData(updateList, Arrays.asList(primaryColumn));
             }
         } catch (Exception e) {
             logger.error("SinkAbstract setData", e);
@@ -128,17 +128,17 @@ public class SinkAbstract implements SinkBase {
     private Boolean addData(List<Map<String, Object>> list) {
         PreparedStatement pstm = null;
         try {
-            Set<String> fieldSet = list.get(0).keySet();
-            StringBuilder fieldSql = new StringBuilder();
+            Set<String> columnSet = list.get(0).keySet();
+            StringBuilder columnSql = new StringBuilder();
             StringBuilder valueSql = new StringBuilder();
 
-            for (String field : fieldSet) {
+            for (String column : columnSet) {
                 switch (dbType) {
                     case MySQL:
-                        fieldSql.append("`").append(field).append("`,");
+                        columnSql.append("`").append(column).append("`,");
                         break;
                     case MsSQL:
-                        fieldSql.append("[").append(field).append("],");
+                        columnSql.append("[").append(column).append("],");
                         break;
                     default:
                         break;
@@ -146,15 +146,15 @@ public class SinkAbstract implements SinkBase {
                 valueSql.append("?,");
             }
 
-            fieldSql.deleteCharAt(fieldSql.length() - 1);
+            columnSql.deleteCharAt(columnSql.length() - 1);
             valueSql.deleteCharAt(valueSql.length() - 1);
-            String sql = String.format("INSERT INTO %s (%s) VALUES (%s)", tableName, fieldSql, valueSql);
+            String sql = String.format("INSERT INTO %s (%s) VALUES (%s)", tableName, columnSql, valueSql);
             this.connection.setAutoCommit(false);
             pstm = connection.prepareStatement(sql);
             for (Map<String, Object> item : list) {
                 int index = 1;
-                for (String field : fieldSet) {
-                    pstm.setObject(index, item.get(field));
+                for (String column : columnSet) {
+                    pstm.setObject(index, item.get(column));
                     index++;
                 }
                 pstm.addBatch();
@@ -176,25 +176,25 @@ public class SinkAbstract implements SinkBase {
      * 更新数据
      *
      * @param list         数据集
-     * @param primaryField 主键字段
+     * @param primaryColumn 主键字段
      */
-    private Boolean updateData(List<Map<String, Object>> list, List<String> primaryField) {
+    private Boolean updateData(List<Map<String, Object>> list, List<String> primaryColumn) {
         PreparedStatement pstm = null;
         try {
-            Set<String> fieldSet = list.get(0).keySet();
-            StringBuilder fieldSql = new StringBuilder();
+            Set<String> columnSet = list.get(0).keySet();
+            StringBuilder columnSql = new StringBuilder();
             StringBuilder whereSql = new StringBuilder();
 
-            for (String field : fieldSet) {
+            for (String column : columnSet) {
 
                 //主键
-                if (primaryField.contains(field)) {
+                if (primaryColumn.contains(column)) {
                     switch (dbType) {
                         case MySQL:
-                            whereSql.append("`").append(field).append("`=? AND ");
+                            whereSql.append("`").append(column).append("`=? AND ");
                             break;
                         case MsSQL:
-                            whereSql.append("[").append(field).append("]=? AND ");
+                            whereSql.append("[").append(column).append("]=? AND ");
                             break;
                         default:
                             break;
@@ -205,10 +205,10 @@ public class SinkAbstract implements SinkBase {
                 else {
                     switch (dbType) {
                         case MySQL:
-                            fieldSql.append("`").append(field).append("`=?,");
+                            columnSql.append("`").append(column).append("`=?,");
                             break;
                         case MsSQL:
-                            fieldSql.append("[").append(field).append("]=?,");
+                            columnSql.append("[").append(column).append("]=?,");
                             break;
                         default:
                             break;
@@ -216,26 +216,26 @@ public class SinkAbstract implements SinkBase {
                 }
             }
 
-            fieldSql.deleteCharAt(fieldSql.length() - 1);
+            columnSql.deleteCharAt(columnSql.length() - 1);
             whereSql.delete(whereSql.length() - 4, whereSql.length());
-            String sql = String.format("UPDATE %s SET %s WHERE %s", tableName, fieldSql, whereSql);
+            String sql = String.format("UPDATE %s SET %s WHERE %s", tableName, columnSql, whereSql);
             this.connection.setAutoCommit(false);
             pstm = connection.prepareStatement(sql);
             for (Map<String, Object> item : list) {
                 int index = 1;
 
                 //这里设置数据下标有讲究，因为拼sql的时候非主键set数据在前，所以需要先设置非主键的数据，然后设置主键的数据
-                for (String field : fieldSet) {
+                for (String column : columnSet) {
                     //非主键
-                    if (!primaryField.contains(field)) {
-                        pstm.setObject(index, item.get(field));
+                    if (!primaryColumn.contains(column)) {
+                        pstm.setObject(index, item.get(column));
                         index++;
                     }
                 }
-                for (String field : fieldSet) {
+                for (String column : columnSet) {
                     //主键
-                    if (primaryField.contains(field)) {
-                        pstm.setObject(index, item.get(field));
+                    if (primaryColumn.contains(column)) {
+                        pstm.setObject(index, item.get(column));
                         index++;
                     }
                 }

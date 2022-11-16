@@ -19,17 +19,17 @@ public class DbEx {
      * 获取表的所有列名
      */
     public static List<String> getColumnName(ResultSet result) {
-        List<String> fieldList = new ArrayList<>();
+        List<String> columnList = new ArrayList<>();
         try {
             ResultSetMetaData meta = result.getMetaData();
             int columnCount = meta.getColumnCount();
             for (int i = 1; i <= columnCount; i++) {
-                fieldList.add(meta.getColumnName(i));
+                columnList.add(meta.getColumnName(i));
             }
         } catch (SQLException e) {
             System.out.println("getField error:" + e.getMessage());
         }
-        return fieldList;
+        return columnList;
     }
 
     /**
@@ -38,10 +38,10 @@ public class DbEx {
      * @param connection   链接
      * @param tableName    表名
      * @param data         数据
-     * @param primaryField 主键
+     * @param primaryColumn 主键
      * @param dbType       数据类型
      */
-    public static boolean hasData(Connection connection, String tableName, Map<String, Object> data, String[] primaryField, DbTypeEnum dbType) {
+    public static boolean hasData(Connection connection, String tableName, Map<String, Object> data, String[] primaryColumn, DbTypeEnum dbType) {
         int number = 0;
         ResultSet result = null;
         PreparedStatement pstm = null;
@@ -49,13 +49,13 @@ public class DbEx {
             String sql = "";
             StringBuilder whereSql = new StringBuilder(" WHERE ");
 
-            for (String field : primaryField) {
+            for (String column : primaryColumn) {
                 switch (dbType) {
                     case MySQL:
-                        whereSql.append(" `").append(field).append("`=? ");
+                        whereSql.append(" `").append(column).append("`=? ");
                         break;
                     case MsSQL:
-                        whereSql.append(" [").append(field).append("]=? ");
+                        whereSql.append(" [").append(column).append("]=? ");
                         break;
                     default:
                         break;
@@ -75,8 +75,8 @@ public class DbEx {
             }
             pstm = connection.prepareStatement(sql);
             int index = 1;
-            for (String field : primaryField) {
-                pstm.setObject(index, data.get(field));
+            for (String column : primaryColumn) {
+                pstm.setObject(index, data.get(column));
                 index++;
             }
 

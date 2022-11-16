@@ -53,14 +53,14 @@ public class SourceConfigApplication extends ServiceImpl<SourceConfigMapper, Sou
      * @param sourceName   源节点名
      * @param connectId    连接id
      * @param tableName    表名
-     * @param primaryField 主键字段
-     * @param timeField    数据时间字段
-     * @param wrtmField    写入时间字段
-     * @param orderField   排序字段
+     * @param primaryColumn 主键字段
+     * @param timeColumn    数据时间字段
+     * @param wrtmColumn    写入时间字段
+     * @param orderColumn   排序字段
      * @param orderType    排序类型
      * @param getType      获取数据的方式
      */
-    public SaResult addSource(String sourceName, String connectId, String tableName, String primaryField, String timeField, String wrtmField, String orderField, Integer orderType, Integer getType) {
+    public SaResult addSource(String sourceName, String connectId, String tableName, String primaryColumn, String timeColumn, String wrtmColumn, String orderColumn, Integer orderType, Integer getType) {
         QueryWrapper<SourceConfigModel> wrapper = new QueryWrapper<SourceConfigModel>();
         wrapper.eq("source_name", sourceName);
         SourceConfigModel model = this.getOne(wrapper);
@@ -72,10 +72,10 @@ public class SourceConfigApplication extends ServiceImpl<SourceConfigMapper, Sou
         model.setSource_name(sourceName);
         model.setConnect_id(connectId);
         model.setTable_name(tableName);
-        model.setPrimary_field(primaryField);
-        model.setTime_field(timeField);
-        model.setWrtm_field(wrtmField);
-        model.setOrder_field(orderField);
+        model.setPrimary_column(primaryColumn);
+        model.setTime_column(timeColumn);
+        model.setWrtm_column(wrtmColumn);
+        model.setOrder_column(orderColumn);
         model.setOrder_type(orderType);
         model.setGet_type(getType);
         model.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
@@ -139,14 +139,14 @@ public class SourceConfigApplication extends ServiceImpl<SourceConfigMapper, Sou
      * @param sourceName   源节点名
      * @param connectId    连接id
      * @param tableName    表名
-     * @param primaryField 主键字段
-     * @param timeField    数据时间字段
-     * @param wrtmField    写入时间字段
-     * @param orderField   排序字段
+     * @param primaryColumn 主键字段
+     * @param timeColumn    数据时间字段
+     * @param wrtmColumn    写入时间字段
+     * @param orderColumn   排序字段
      * @param orderType    排序类型
      * @param getType      获取数据的方式
      */
-    public SaResult updateSource(String id, String sourceName, String connectId, String tableName, String primaryField, String timeField, String wrtmField, String orderField, Integer orderType, Integer getType) {
+    public SaResult updateSource(String id, String sourceName, String connectId, String tableName, String primaryColumn, String timeColumn, String wrtmColumn, String orderColumn, Integer orderType, Integer getType) {
         QueryWrapper<SourceConfigModel> wrapper = new QueryWrapper<SourceConfigModel>();
         wrapper.eq("id", id);
         SourceConfigModel model = this.getOne(wrapper);
@@ -163,17 +163,17 @@ public class SourceConfigApplication extends ServiceImpl<SourceConfigMapper, Sou
         if (StringUtils.isNotBlank(tableName)) {
             model.setTable_name(tableName);
         }
-        if (StringUtils.isNotBlank(primaryField)) {
-            model.setPrimary_field(primaryField);
+        if (StringUtils.isNotBlank(primaryColumn)) {
+            model.setPrimary_column(primaryColumn);
         }
-        if (StringUtils.isNotBlank(timeField)) {
-            model.setTime_field(timeField);
+        if (StringUtils.isNotBlank(timeColumn)) {
+            model.setTime_column(timeColumn);
         }
-        if (StringUtils.isNotBlank(wrtmField)) {
-            model.setWrtm_field(wrtmField);
+        if (StringUtils.isNotBlank(wrtmColumn)) {
+            model.setWrtm_column(wrtmColumn);
         }
-        if (StringUtils.isNotBlank(orderField)) {
-            model.setOrder_field(orderField);
+        if (StringUtils.isNotBlank(orderColumn)) {
+            model.setOrder_column(orderColumn);
         }
         if (orderType != null) {
             model.setOrder_type(orderType);

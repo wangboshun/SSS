@@ -50,10 +50,10 @@ public class ConvertConfigApplication extends ServiceImpl<ConvertConfigMapper, C
     /**
      * 添加转换条件
      */
-    public SaResult addConvert(String taskId, String convertField, String convertValue, String convertSymbol, String convertNumber, Integer convertIndex) {
+    public SaResult addConvert(String taskId, String convertColumn, String convertValue, String convertSymbol, String convertNumber, Integer convertIndex) {
         QueryWrapper<ConvertConfigModel> wrapper = new QueryWrapper<>();
         wrapper.eq("task_id", taskId);
-        wrapper.eq("convert_field", convertField);
+        wrapper.eq("convert_column", convertColumn);
         wrapper.eq("convert_value", convertValue);
         wrapper.eq("convert_symbol", convertSymbol);
         ConvertConfigModel model = this.getOne(wrapper);
@@ -63,7 +63,7 @@ public class ConvertConfigApplication extends ServiceImpl<ConvertConfigMapper, C
         model = new ConvertConfigModel();
         model.setId(UUID.randomUUID().toString());
         model.setTask_id(taskId);
-        model.setConvert_field(convertField);
+        model.setConvert_column(convertColumn);
         model.setConvert_value(convertValue);
         model.setConvert_symbol(convertSymbol);
         model.setConvert_number(convertNumber);
@@ -99,7 +99,7 @@ public class ConvertConfigApplication extends ServiceImpl<ConvertConfigMapper, C
     /**
      * 更新转换条件信息
      */
-    public SaResult updateConvert(String id, String convertField, String convertValue, String convertSymbol, String convertNumber, Integer convertIndex) {
+    public SaResult updateConvert(String id, String convertColumn, String convertValue, String convertSymbol, String convertNumber, Integer convertIndex) {
         QueryWrapper<ConvertConfigModel> wrapper = new QueryWrapper<>();
         wrapper.eq("id", id);
         ConvertConfigModel model = this.getOne(wrapper);
@@ -107,8 +107,8 @@ public class ConvertConfigApplication extends ServiceImpl<ConvertConfigMapper, C
         if (model == null) {
             return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "转换条件不存在！");
         }
-        if (StringUtils.isNotBlank(convertField)) {
-            model.setConvert_field(convertField);
+        if (StringUtils.isNotBlank(convertColumn)) {
+            model.setConvert_column(convertColumn);
         }
         if (StringUtils.isNotBlank(convertValue)) {
             model.setConvert_value(convertValue);

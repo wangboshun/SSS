@@ -165,11 +165,11 @@ public class SourceAbstract implements SourceBase {
 
                 //按wrtm获取
                 if (sourceConfig.getGet_type() == 0) {
-                    sql += " AND " + sourceConfig.getWrtm_field() + ">='" + startTime + "' AND " + sourceConfig.getWrtm_field() + "<='" + endTime + "' ";
+                    sql += " AND " + sourceConfig.getWrtm_column() + ">='" + startTime + "' AND " + sourceConfig.getWrtm_column() + "<='" + endTime + "' ";
                 }
                 //按数据时间获取
                 else if (sourceConfig.getGet_type() == 1) {
-                    sql += " AND " + sourceConfig.getTime_field() + ">='" + startTime + "' AND " + sourceConfig.getTime_field() + "<='" + endTime + "' ";
+                    sql += " AND " + sourceConfig.getTime_column() + ">='" + startTime + "' AND " + sourceConfig.getTime_column() + "<='" + endTime + "' ";
                 }
             }
 
@@ -179,18 +179,18 @@ public class SourceAbstract implements SourceBase {
             }
 
             //如果排序字段不为空
-            if (StringUtils.isNotBlank(sourceConfig.getOrder_field())) {
-                sql += " ORDER BY " + sourceConfig.getOrder_field();
+            if (StringUtils.isNotBlank(sourceConfig.getOrder_column())) {
+                sql += " ORDER BY " + sourceConfig.getOrder_column();
             }
             //如果排序字段为空
             else {
                 //如果wrtm字段不为空，设置wrtm为排序字段
-                if (StringUtils.isNotBlank(sourceConfig.getWrtm_field())) {
-                    sql += " ORDER BY " + sourceConfig.getWrtm_field();
+                if (StringUtils.isNotBlank(sourceConfig.getWrtm_column())) {
+                    sql += " ORDER BY " + sourceConfig.getWrtm_column();
                 }
                 //否则设置数据时间字段为排序字段
                 else {
-                    sql += " ORDER BY " + sourceConfig.getTime_field();
+                    sql += " ORDER BY " + sourceConfig.getTime_column();
                 }
             }
 

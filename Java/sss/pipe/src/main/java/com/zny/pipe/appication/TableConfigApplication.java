@@ -59,7 +59,7 @@ public class TableConfigApplication extends ServiceImpl<TableConfigMapper, Table
         List<TableConfigModel> list = getByConnectId(connectId, tableName);
         Map<String, String> map = new HashMap<>();
         for (TableConfigModel item : list) {
-            map.put(item.getField_name(), item.getData_type());
+            map.put(item.getColumn_name(), item.getData_type());
         }
         return map;
     }
@@ -126,7 +126,7 @@ public class TableConfigApplication extends ServiceImpl<TableConfigMapper, Table
                 model.setId(UUID.randomUUID().toString());
                 model.setConnect_id(connectId);
                 model.setTable_name(tableName);
-                model.setField_name(columnName);
+                model.setColumn_name(columnName);
                 model.setData_type(className[className.length - 1]);
                 model.setJdbc_type(meta.getColumnTypeName(i));
                 model.setIs_null(meta.isNullable(i));

@@ -33,9 +33,9 @@ public class TransformUtils {
         List<Boolean> flagList = new ArrayList<>();
         List<String> fliterTypeList = new ArrayList<>();
         for (Map.Entry<String, Object> item : data.entrySet()) {
-            String field = item.getKey();
+            String column = item.getKey();
             Object value = item.getValue();
-            List<FilterConfigModel> list = filterConfig.stream().filter(x -> x.getFilter_field().equals(field)).collect(Collectors.toList());
+            List<FilterConfigModel> list = filterConfig.stream().filter(x -> x.getFilter_column().equals(column)).collect(Collectors.toList());
             for (FilterConfigModel model : list) {
                 fliterTypeList.add(model.getFilter_type().toUpperCase());
                 Object filterValue = model.getFilter_value();
@@ -68,9 +68,9 @@ public class TransformUtils {
      */
     public static Map<String, Object> convertData(Map<String, Object> data, List<ConvertConfigModel> convertConfig) {
         for (Map.Entry<String, Object> item : data.entrySet()) {
-            String field = item.getKey();
+            String column = item.getKey();
             Object value = item.getValue();
-            List<ConvertConfigModel> list = convertConfig.stream().filter(x -> x.getConvert_field().equals(field)).collect(Collectors.toList());
+            List<ConvertConfigModel> list = convertConfig.stream().filter(x -> x.getConvert_column().equals(column)).collect(Collectors.toList());
             for (ConvertConfigModel model : list) {
                 Object convertValue = model.getConvert_value();
                 Object convertNumber = model.getConvert_number();
@@ -78,20 +78,20 @@ public class TransformUtils {
 
                 //如果判断值为空，则所有值都进行更改
                 if (ObjectUtils.isEmpty(convertValue)) {
-                    data.put(field, DataUtils.operate(value, convertNumber, convertSymbol));
+                    data.put(column, DataUtils.operate(value, convertNumber, convertSymbol));
                 }
                 //给指定值进行数据转换
                 else {
                     FilterConfigModel filterModel = new FilterConfigModel();
                     filterModel.setFilter_symbol("==");
-                    filterModel.setFilter_field(field);
+                    filterModel.setFilter_column(column);
                     filterModel.setFilter_type("AND");
                     filterModel.setFilter_value(convertValue.toString());
                     List<FilterConfigModel> filterConfig = new ArrayList<>();
                     filterConfig.add(filterModel);
 
                     if (haveData(data, filterConfig)) {
-                        data.put(field, DataUtils.operate(convertValue, convertNumber, convertSymbol));
+                        data.put(column, DataUtils.operate(convertValue, convertNumber, convertSymbol));
                     }
                 }
             }

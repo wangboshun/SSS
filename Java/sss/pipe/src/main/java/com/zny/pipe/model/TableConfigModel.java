@@ -17,7 +17,7 @@ public class TableConfigModel implements Serializable {
     private String id;
     private String connect_id;
     private String table_name;
-    private String field_name;
+    private String column_name;
     private String data_type;
     private Integer is_primary;
     private Integer is_null;
@@ -57,12 +57,12 @@ public class TableConfigModel implements Serializable {
         this.table_name = table_name;
     }
 
-    public String getField_name() {
-        return field_name;
+    public String getColumn_name() {
+        return column_name;
     }
 
-    public void setField_name(String field_name) {
-        this.field_name = field_name;
+    public void setColumn_name(String column_name) {
+        this.column_name = column_name;
     }
 
     public String getData_type() {

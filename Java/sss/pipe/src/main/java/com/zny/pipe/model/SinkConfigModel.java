@@ -23,14 +23,14 @@ public class SinkConfigModel implements Serializable {
     /**
      * 主键，以逗号分割
      */
-    private String primary_field;
+    private String primary_column;
 
-    public String getPrimary_field() {
-        return primary_field;
+    public String getPrimary_column() {
+        return primary_column;
     }
 
-    public void setPrimary_field(String primary_field) {
-        this.primary_field = primary_field;
+    public void setPrimary_column(String primary_column) {
+        this.primary_column = primary_column;
     }
 
     public String getTable_name() {

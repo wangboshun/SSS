@@ -52,19 +52,19 @@ public class SourceController {
     /**
      * 添加源节点
      *
-     * @param sourceName   源节点名
-     * @param connectId    连接id
-     * @param tableName    表名
-     * @param primaryField 主键字段
-     * @param timeField    数据时间字段
-     * @param wrtmField    写入时间字段
-     * @param orderField   排序字段
-     * @param orderType    排序类型
-     * @param getType      获取数据的方式
+     * @param sourceName    源节点名
+     * @param connectId     连接id
+     * @param tableName     表名
+     * @param primaryColumn 主键字段
+     * @param timeColumn    数据时间字段
+     * @param wrtmColumn    写入时间字段
+     * @param orderColumn    排序字段
+     * @param orderType     排序类型
+     * @param getType       获取数据的方式
      */
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public SaResult add(String sourceName, String connectId, String tableName, String primaryField, String timeField, String wrtmField, String orderField, Integer orderType, Integer getType) {
-        return sourceConfigApplication.addSource(sourceName, connectId, tableName, primaryField, timeField, wrtmField, orderField, orderType, getType);
+    public SaResult add(String sourceName, String connectId, String tableName, String primaryColumn, String timeColumn, String wrtmColumn, String orderColumn, Integer orderType, Integer getType) {
+        return sourceConfigApplication.addSource(sourceName, connectId, tableName, primaryColumn, timeColumn, wrtmColumn, orderColumn, orderType, getType);
     }
 
 
@@ -81,20 +81,19 @@ public class SourceController {
     /**
      * 更新源节点信息
      *
-     * @param id           源节点id
-     * @param sourceName   源节点名
-     * @param connectId    连接id
-     * @param tableName    表名
-     * @param primaryField 主键字段
-     * @param timeField    数据时间字段
-     * @param wrtmField    写入时间字段
-     * @param orderField   排序字段
-     * @param orderType    排序类型
-     * @param getType      获取数据的方式
+     * @param id            源节点id
+     * @param sourceName    源节点名
+     * @param connectId     连接id
+     * @param tableName     表名
+     * @param primaryColumn 主键字段
+     * @param timeColumn    数据时间字段
+     * @param wrtmColumn    写入时间字段
+     * @param orderColumn   排序字段
+     * @param orderType     排序类型
+     * @param getType       获取数据的方式
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
-    public SaResult update(@PathVariable String id, @RequestParam(required = false) String sourceName, @RequestParam(required = false) String connectId, @RequestParam(required = false) String tableName, @RequestParam(required = false) String primaryField, @RequestParam(required = false) String timeField, @RequestParam(required = false) String wrtmField, @RequestParam(required = false) String orderField, @RequestParam(required = false) Integer orderType, @RequestParam(required = false) Integer getType) {
-        return sourceConfigApplication.updateSource(id, sourceName, connectId, tableName, primaryField, timeField, wrtmField, orderField, orderType, getType);
+    public SaResult update(@PathVariable String id, @RequestParam(required = false) String sourceName, @RequestParam(required = false) String connectId, @RequestParam(required = false) String tableName, @RequestParam(required = false) String primaryColumn, @RequestParam(required = false) String timeColumn, @RequestParam(required = false) String wrtmColumn, @RequestParam(required = false) String orderColumn, @RequestParam(required = false) Integer orderType, @RequestParam(required = false) Integer getType) {
+        return sourceConfigApplication.updateSource(id, sourceName, connectId, tableName, primaryColumn, timeColumn, wrtmColumn, orderColumn, orderType, getType);
     }
 
     /**

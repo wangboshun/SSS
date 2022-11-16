@@ -18,7 +18,7 @@ public class ConvertConfigModel {
     /**
      * 转换字段
      */
-    private String convert_field;
+    private String convert_column;
 
     /**
      * 操作值
@@ -85,12 +85,12 @@ public class ConvertConfigModel {
         this.task_id = task_id;
     }
 
-    public String getConvert_field() {
-        return convert_field;
+    public String getConvert_column() {
+        return convert_column;
     }
 
-    public void setConvert_field(String convert_field) {
-        this.convert_field = convert_field;
+    public void setConvert_column(String convert_column) {
+        this.convert_column = convert_column;
     }
 
     public String getConvert_value() {

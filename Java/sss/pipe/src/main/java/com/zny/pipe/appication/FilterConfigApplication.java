@@ -49,10 +49,10 @@ public class FilterConfigApplication extends ServiceImpl<FilterConfigMapper, Fil
     /**
      * 添加过滤条件
      */
-    public SaResult addFilter(String taskId, String filterField, String filterSymbol, String filterValue, String filterType, Integer useType) {
+    public SaResult addFilter(String taskId, String filterColumn, String filterSymbol, String filterValue, String filterType, Integer useType) {
         QueryWrapper<FilterConfigModel> wrapper = new QueryWrapper<>();
         wrapper.eq("task_id", taskId);
-        wrapper.eq("filter_field", filterField);
+        wrapper.eq("filter_column", filterColumn);
         wrapper.eq("filter_symbol", filterSymbol);
         wrapper.eq("use_type", useType);
         FilterConfigModel model = this.getOne(wrapper);
@@ -61,7 +61,7 @@ public class FilterConfigApplication extends ServiceImpl<FilterConfigMapper, Fil
         }
         model = new FilterConfigModel();
         model.setId(UUID.randomUUID().toString());
-        model.setFilter_field(filterField);
+        model.setFilter_column(filterColumn);
         model.setTask_id(taskId);
         model.setFilter_symbol(filterSymbol);
         model.setFilter_value(filterValue);
@@ -98,7 +98,7 @@ public class FilterConfigApplication extends ServiceImpl<FilterConfigMapper, Fil
     /**
      * 更新过滤条件信息
      */
-    public SaResult updateFilter(String id, String filterField, String filterSymbol, String filterValue, String filterType, Integer useType) {
+    public SaResult updateFilter(String id, String filterColumn, String filterSymbol, String filterValue, String filterType, Integer useType) {
         QueryWrapper<FilterConfigModel> wrapper = new QueryWrapper<>();
         wrapper.eq("id", id);
         FilterConfigModel model = this.getOne(wrapper);
@@ -106,8 +106,8 @@ public class FilterConfigApplication extends ServiceImpl<FilterConfigMapper, Fil
         if (model == null) {
             return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "过滤条件不存在！");
         }
-        if (StringUtils.isNotBlank(filterField)) {
-            model.setFilter_field(filterField);
+        if (StringUtils.isNotBlank(filterColumn)) {
+            model.setFilter_column(filterColumn);
         }
         if (StringUtils.isNotBlank(filterSymbol)) {
             model.setFilter_symbol(filterSymbol);

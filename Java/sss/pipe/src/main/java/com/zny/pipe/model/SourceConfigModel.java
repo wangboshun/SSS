@@ -23,17 +23,17 @@ public class SourceConfigModel implements Serializable {
     /**
      * 主键，以逗号分割
      */
-    private String primary_field;
+    private String primary_column;
 
     /**
      * 数据时间字段
      */
-    private String time_field;
+    private String time_column;
 
     /**
      * 写入时间字段
      */
-    private String wrtm_field;
+    private String wrtm_column;
 
     /**
      * 排序类型
@@ -44,7 +44,7 @@ public class SourceConfigModel implements Serializable {
     /**
      * 排序字段
      */
-    private String order_field;
+    private String order_column;
 
     /**
      * 获取数据的方式
@@ -53,28 +53,28 @@ public class SourceConfigModel implements Serializable {
     private Integer get_type;
 
 
-    public String getPrimary_field() {
-        return primary_field;
+    public String getPrimary_column() {
+        return primary_column;
     }
 
-    public void setPrimary_field(String primary_field) {
-        this.primary_field = primary_field;
+    public void setPrimary_column(String primary_column) {
+        this.primary_column = primary_column;
     }
 
-    public String getTime_field() {
-        return time_field;
+    public String getTime_column() {
+        return time_column;
     }
 
-    public void setTime_field(String time_field) {
-        this.time_field = time_field;
+    public void setTime_column(String time_column) {
+        this.time_column = time_column;
     }
 
-    public String getWrtm_field() {
-        return wrtm_field;
+    public String getWrtm_column() {
+        return wrtm_column;
     }
 
-    public void setWrtm_field(String wrtm_field) {
-        this.wrtm_field = wrtm_field;
+    public void setWrtm_column(String wrtm_column) {
+        this.wrtm_column = wrtm_column;
     }
 
     public Integer getOrder_type() {
@@ -85,12 +85,12 @@ public class SourceConfigModel implements Serializable {
         this.order_type = order_type;
     }
 
-    public String getOrder_field() {
-        return order_field;
+    public String getOrder_column() {
+        return order_column;
     }
 
-    public void setOrder_field(String order_field) {
-        this.order_field = order_field;
+    public void setOrder_column(String order_column) {
+        this.order_column = order_column;
     }
 
     public Integer getGet_type() {

@@ -18,7 +18,7 @@ public class FilterConfigModel {
     /**
      * 筛选字段
      */
-    private String filter_field;
+    private String filter_column;
 
     /**
      * 筛选符号
@@ -78,12 +78,12 @@ public class FilterConfigModel {
         this.task_id = task_id;
     }
 
-    public String getFilter_field() {
-        return filter_field;
+    public String getFilter_column() {
+        return filter_column;
     }
 
-    public void setFilter_field(String filter_field) {
-        this.filter_field = filter_field;
+    public void setFilter_column(String filter_column) {
+        this.filter_column = filter_column;
     }
 
     public String getFilter_symbol() {
