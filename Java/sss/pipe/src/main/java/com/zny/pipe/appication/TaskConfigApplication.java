@@ -37,7 +37,7 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
     private final ConnectConfigApplication connectConfigApplication;
     private final ThreadPoolTaskExecutor defaultExecutor;
     private final PipeStrategy pipeStrategy;
-     private RedisTemplate<String, String> redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
 
     public TaskConfigApplication(ResourceApplication resourceApplication, SourceConfigApplication sourceConfigApplication, ConnectConfigApplication connectConfigApplication, ThreadPoolTaskExecutor defaultExecutor, PipeStrategy pipeStrategy, RedisTemplate<String, String> redisTemplate) {
         this.resourceApplication = resourceApplication;
@@ -68,7 +68,7 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
             SourceBase source = pipeStrategy.getSource(e);
             Double score = redisTemplate.opsForZSet().incrementScore(RedisKeyEnum.TASK_COUNT_CACHE.toString(), taskConfig.getId(), 1);
             int version = score.intValue();
-            source.config(sourceConfig, connectConfig, taskConfig,version);
+            source.config(sourceConfig, connectConfig, taskConfig, version);
             source.start();
         });
 

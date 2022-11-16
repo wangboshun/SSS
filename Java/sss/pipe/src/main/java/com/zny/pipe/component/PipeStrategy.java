@@ -1,12 +1,10 @@
 package com.zny.pipe.component;
 
 import com.zny.common.enums.DbTypeEnum;
-import com.zny.common.enums.RedisKeyEnum;
 import com.zny.pipe.component.base.SinkBase;
 import com.zny.pipe.component.base.SourceBase;
 import com.zny.pipe.component.enums.SinkTypeEnum;
 import com.zny.pipe.component.enums.SourceTypeEnum;
-import com.zny.pipe.component.enums.TaskStatusEnum;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;

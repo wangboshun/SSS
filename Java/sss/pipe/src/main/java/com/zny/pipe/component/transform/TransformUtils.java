@@ -2,10 +2,12 @@ package com.zny.pipe.component.transform;
 
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.zny.common.utils.DataUtils;
+import com.zny.pipe.model.ColumnConfigModel;
 import com.zny.pipe.model.ConvertConfigModel;
 import com.zny.pipe.model.FilterConfigModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -17,7 +19,7 @@ import java.util.stream.Collectors;
  */
 
 /**
- * 过滤帮助类
+ * 转换帮助类
  */
 public class TransformUtils {
 
@@ -64,7 +66,7 @@ public class TransformUtils {
      * @param data          数值
      * @param convertConfig 转换配置
      */
-    public static Map<String, Object> updateData(Map<String, Object> data, List<ConvertConfigModel> convertConfig) {
+    public static Map<String, Object> convertData(Map<String, Object> data, List<ConvertConfigModel> convertConfig) {
         for (Map.Entry<String, Object> item : data.entrySet()) {
             String field = item.getKey();
             Object value = item.getValue();
@@ -95,5 +97,24 @@ public class TransformUtils {
             }
         }
         return data;
+    }
+
+    /**
+     * 字段映射
+     *
+     * @param data         数值
+     * @param columnConfig 字段配置
+     */
+    public static Map<String, Object> mapperData(Map<String, Object> data, List<ColumnConfigModel> columnConfig) {
+        Map<String, Object> result = new HashMap<>(columnConfig.size());
+        for (ColumnConfigModel model : columnConfig) {
+            String sinkColumn = model.getSink_column();
+            String sourceColumn = model.getSource_column();
+            if (data.containsKey(sourceColumn)) {
+                Object value = data.get(sourceColumn);
+                result.put(sinkColumn, value);
+            }
+        }
+        return result;
     }
 }

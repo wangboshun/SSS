@@ -159,6 +159,7 @@ public class ResourceApplication extends ServiceImpl<ResourceMapper, ResourceMod
     public List<ResourceModel> getResourceList(String mainId, Integer mainType, Integer slaveType) {
         return getResourceList(null, mainId, mainType, null, slaveType);
     }
+
     /**
      * 更新资源信息
      *

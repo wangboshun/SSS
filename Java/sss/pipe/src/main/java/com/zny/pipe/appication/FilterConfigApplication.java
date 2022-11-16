@@ -118,7 +118,7 @@ public class FilterConfigApplication extends ServiceImpl<FilterConfigMapper, Fil
         if (StringUtils.isNotBlank(filterType)) {
             model.setFilter_type(filterType);
         }
-        if (useType != null){
+        if (useType != null) {
             model.setUse_type(useType);
         }
         if (updateById(model)) {

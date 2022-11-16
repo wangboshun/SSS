@@ -39,6 +39,20 @@ public class ConvertConfigModel {
      */
     private String convert_symbol;
 
+
+    /**
+     * 转换顺序，按照从小到大的次序进行转换
+     */
+    private Integer convert_index;
+
+    public Integer getConvert_index() {
+        return convert_index;
+    }
+
+    public void setConvert_index(Integer convert_index) {
+        this.convert_index = convert_index;
+    }
+
     public String getConvert_symbol() {
         return convert_symbol;
     }

@@ -194,9 +194,13 @@ public class DataUtils {
      * @param symbol      操作符号
      */
     public static Object operate(Object afterValue, Object beforeValue, String symbol) {
-        if (symbol.equals("==")) {
+
+        //赋值
+        if ("=".equals(symbol) || "==".equals(symbol)) {
             return beforeValue;
-        } else {
+        }
+        //加、减、乘、除 操作
+        else {
             //String类型
             if (afterValue.getClass().isAssignableFrom(String.class)) {
                 return stringOperate(afterValue, beforeValue, symbol);
@@ -242,6 +246,7 @@ public class DataUtils {
             case "/":
                 return value1 / value2;
             default:
+                value2 = value1;
                 break;
         }
         return value2;
@@ -267,6 +272,7 @@ public class DataUtils {
             case "/":
                 return value1 / value2;
             default:
+                value2 = value1;
                 break;
         }
         return value2;
@@ -292,6 +298,7 @@ public class DataUtils {
             case "/":
                 return value1 / value2;
             default:
+                value2 = value1;
                 break;
         }
         return value2;
@@ -306,7 +313,7 @@ public class DataUtils {
      */
     public static LocalDateTime dateOperate(Object afterValue, Object beforeValue, String symbol) {
         //数据格式为: 数据_单位
-        //单位：year(年),month(月),day(日),hour(时),minute(分),second(秒)
+        //单位：year(年),month(月),day(日),hour(时),minute(分),second(秒
         String[] array = beforeValue.toString().split("_");
         LocalDateTime value1 = DateUtils.strToDate(afterValue.toString());
         LocalDateTime value2 = DateUtils.operate(value1, Integer.parseInt(array[0]), array[1], symbol);
@@ -328,6 +335,45 @@ public class DataUtils {
         String value2 = beforeValue.toString();
         if ("+".equals(symbol)) {
             return value1 + value2;
+        }
+        //截取  例如：1_5，截取第1位到第5位中间的字符
+        else if (symbol.equals("sub")) {
+            String[] array = beforeValue.toString().split("_");
+            int start = Integer.parseInt(array[0]) - 1;
+            int end = Integer.parseInt(array[1]) - 1;
+            if (start <= 0) {
+                start = 0;
+            }
+            if (end > value1.length() - 1) {
+                end = value1.length() - 1;
+            }
+            return value1.substring(start, end);
+        }
+        //插入  例如：1_5，在最前面插入字符5
+        else if (symbol.equals("insert")) {
+            String[] array = beforeValue.toString().split("_");
+            int start = Integer.parseInt(array[0]);
+            //前面插入
+            if (start == 0 || start == 1) {
+                return array[1] + value1;
+            }
+            //末尾插入
+            else if (start == -1) {
+                return value1 + array[1];
+            }
+            //其他位置插入
+            else {
+                String left = value1.substring(0, start - 1);
+                String right = value1.substring(start - 1);
+                return left + array[1] + right;
+            }
+        }
+        //替换 例如：123_000，把123改为000
+        else if (symbol.equals("replace")) {
+            String[] array = beforeValue.toString().split("_");
+            if (value1.contains(array[0])) {
+                return value1.replaceAll(array[0], array[1]);
+            }
         } else if ("-".equals(symbol)) {
             return value1.replace(value2, "");
         } else if (symbol.contains("int")) {
@@ -341,7 +387,4 @@ public class DataUtils {
         }
         return value1;
     }
-
-
-
 }

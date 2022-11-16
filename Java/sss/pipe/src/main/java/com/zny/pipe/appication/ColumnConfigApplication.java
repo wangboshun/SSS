@@ -55,7 +55,7 @@ public class ColumnConfigApplication extends ServiceImpl<ColumnConfigMapper, Col
      *
      * @param cloumnData 配置集合
      */
-    public SaResult addColumn(  List<ColumnConfigDto> cloumnData) {
+    public SaResult addColumn(List<ColumnConfigDto> cloumnData) {
         String taskId = cloumnData.get(0).getTask_id();
         QueryWrapper<ColumnConfigModel> wrapper = new QueryWrapper<>();
         wrapper.eq("task_id", taskId);
@@ -128,7 +128,7 @@ public class ColumnConfigApplication extends ServiceImpl<ColumnConfigMapper, Col
      * @param cloumnData 配置集合
      */
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
-    public SaResult updateColumn( List<ColumnConfigDto> cloumnData) {
+    public SaResult updateColumn(List<ColumnConfigDto> cloumnData) {
         String taskId = cloumnData.get(0).getTask_id();
         QueryWrapper<ColumnConfigModel> wrapper = new QueryWrapper<>();
         wrapper.eq("task_id", taskId);
@@ -137,7 +137,7 @@ public class ColumnConfigApplication extends ServiceImpl<ColumnConfigMapper, Col
             return SaResult.error("字段配置不存在！");
         } else {
             if (this.removeBatchByIds(list.stream().map(ColumnConfigModel::getId).collect(Collectors.toList()))) {
-                return addColumn( cloumnData);
+                return addColumn(cloumnData);
             } else {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
                 return SaResultEx.error(MessageCodeEnum.DB_ERROR, "修改字段配置失败！");

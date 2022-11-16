@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 
 @TableName("pipe_table_config")
-public class TableConfigModel  implements Serializable {
+public class TableConfigModel implements Serializable {
     @TableId
     private String id;
     private String connect_id;

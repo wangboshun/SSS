@@ -20,6 +20,9 @@ import java.util.Map;
  * @author WBS
  * Date 2022-10-28 15:18
  * Transform抽象类
+ * 1.过滤
+ * 2.替换
+ * 3.映射
  */
 
 @Component
@@ -34,6 +37,7 @@ public class TransformAbstract {
     public final FilterConfigApplication filterConfigApplication;
 
     public final ConvertConfigApplication convertConfigApplication;
+    public final ColumnConfigApplication columnConfigApplication;
     public final PipeStrategy pipeStrategy;
     public final RedisTemplate<String, String> redisTemplate;
 
@@ -42,12 +46,15 @@ public class TransformAbstract {
     private List<ConvertConfigModel> convertConfig;
     private List<FilterConfigModel> filterConfig;
 
-    public TransformAbstract(TaskConfigApplication taskConfigApplication, SinkConfigApplication sinkConfigApplication, ConnectConfigApplication connectConfigApplication, FilterConfigApplication filterConfigApplication, ConvertConfigApplication convertConfigApplication, PipeStrategy pipeStrategy, RedisTemplate<String, String> redisTemplate) {
+    private List<ColumnConfigModel> columnConfig;
+
+    public TransformAbstract(TaskConfigApplication taskConfigApplication, SinkConfigApplication sinkConfigApplication, ConnectConfigApplication connectConfigApplication, FilterConfigApplication filterConfigApplication, ConvertConfigApplication convertConfigApplication, ColumnConfigApplication columnConfigApplication, PipeStrategy pipeStrategy, RedisTemplate<String, String> redisTemplate) {
         this.taskConfigApplication = taskConfigApplication;
         this.sinkConfigApplication = sinkConfigApplication;
         this.connectConfigApplication = connectConfigApplication;
         this.filterConfigApplication = filterConfigApplication;
         this.convertConfigApplication = convertConfigApplication;
+        this.columnConfigApplication = columnConfigApplication;
         this.pipeStrategy = pipeStrategy;
         this.redisTemplate = redisTemplate;
     }
@@ -59,13 +66,17 @@ public class TransformAbstract {
         String cacheKey = RedisKeyEnum.SINK_TIME_CACHE + ":" + taskConfig.getId() + ":" + body.getVersion();
         filterConfig = filterConfigApplication.getFilterByTaskId(taskConfig.getId());
         convertConfig = convertConfigApplication.getConvertByTaskId(taskConfig.getId());
+        columnConfig = columnConfigApplication.getColumnByTaskId(taskConfig.getId());
         List<Map<String, Object>> bodyData = body.getData();
 
         //1.过滤
         bodyData = this.filter(bodyData);
 
-        //2.转换
+        //2.替换
         bodyData = this.convert(bodyData);
+
+        //3.映射
+        bodyData = this.mapper(bodyData);
 
         SinkConfigModel sinkConfig = sinkConfigApplication.getById(taskConfig.getSink_id());
         ConnectConfigModel connectConfig = connectConfigApplication.getById(sinkConfig.getConnect_id());
@@ -109,8 +120,22 @@ public class TransformAbstract {
     public List<Map<String, Object>> convert(List<Map<String, Object>> data) {
         List<Map<String, Object>> result = new ArrayList<>();
         for (Map<String, Object> map : data) {
-            result.add(TransformUtils.updateData(map, convertConfig));
+            result.add(TransformUtils.convertData(map, convertConfig));
         }
         return result;
     }
+
+    /**
+     * 映射
+     *
+     * @param data 数据集
+     */
+    public List<Map<String, Object>> mapper(List<Map<String, Object>> data) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (Map<String, Object> map : data) {
+            result.add(TransformUtils.mapperData(map, columnConfig));
+        }
+        return result;
+    }
+
 }

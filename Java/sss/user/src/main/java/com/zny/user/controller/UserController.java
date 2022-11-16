@@ -4,8 +4,8 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
 import com.zny.common.model.PageResult;
 import com.zny.user.application.UserApplication;
-import com.zny.user.model.user.UserTreeModel;
 import com.zny.user.model.user.UserModel;
+import com.zny.user.model.user.UserTreeModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 

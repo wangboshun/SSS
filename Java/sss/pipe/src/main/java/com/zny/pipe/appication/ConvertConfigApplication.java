@@ -26,6 +26,7 @@ public class ConvertConfigApplication extends ServiceImpl<ConvertConfigMapper, C
     public List<ConvertConfigModel> getConvertByTaskId(String taskId) {
         QueryWrapper<ConvertConfigModel> wrapper = new QueryWrapper<>();
         wrapper.eq("task_id", taskId);
+        wrapper.orderByAsc("convert_index");
         List<ConvertConfigModel> list = this.list(wrapper);
         if (list.isEmpty()) {
             return null;
@@ -49,7 +50,7 @@ public class ConvertConfigApplication extends ServiceImpl<ConvertConfigMapper, C
     /**
      * 添加转换条件
      */
-    public SaResult addConvert(String taskId, String convertField, String convertValue, String convertSymbol, String convertNumber) {
+    public SaResult addConvert(String taskId, String convertField, String convertValue, String convertSymbol, String convertNumber, Integer convertIndex) {
         QueryWrapper<ConvertConfigModel> wrapper = new QueryWrapper<>();
         wrapper.eq("task_id", taskId);
         wrapper.eq("convert_field", convertField);
@@ -66,6 +67,7 @@ public class ConvertConfigApplication extends ServiceImpl<ConvertConfigMapper, C
         model.setConvert_value(convertValue);
         model.setConvert_symbol(convertSymbol);
         model.setConvert_number(convertNumber);
+        model.setConvert_index(convertIndex);
         model.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
         if (save(model)) {
             return SaResult.ok("添加转换条件成功！");
@@ -97,7 +99,7 @@ public class ConvertConfigApplication extends ServiceImpl<ConvertConfigMapper, C
     /**
      * 更新转换条件信息
      */
-    public SaResult updateConvert(String id, String convertField, String convertValue, String convertSymbol, String convertNumber) {
+    public SaResult updateConvert(String id, String convertField, String convertValue, String convertSymbol, String convertNumber, Integer convertIndex) {
         QueryWrapper<ConvertConfigModel> wrapper = new QueryWrapper<>();
         wrapper.eq("id", id);
         ConvertConfigModel model = this.getOne(wrapper);
@@ -116,6 +118,9 @@ public class ConvertConfigApplication extends ServiceImpl<ConvertConfigMapper, C
         }
         if (StringUtils.isNotBlank(convertNumber)) {
             model.setConvert_number(convertNumber);
+        }
+        if (convertIndex != null) {
+            model.setConvert_index(convertIndex);
         }
         if (updateById(model)) {
             return SaResult.ok("更新转换条件信息成功！");
