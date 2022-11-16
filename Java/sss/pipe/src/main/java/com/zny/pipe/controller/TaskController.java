@@ -37,6 +37,16 @@ public class TaskController {
     }
 
     /**
+     * 任务记录
+     *
+     * @param taskId 任务id
+     */
+    @GetMapping(value = "/log")
+    public SaResult log(String taskId) {
+        return this.taskConfigApplication.getTaskLog(taskId);
+    }
+
+    /**
      * 任务状态
      *
      * @param taskId 任务id

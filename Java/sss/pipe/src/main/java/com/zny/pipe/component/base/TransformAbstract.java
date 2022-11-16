@@ -28,25 +28,19 @@ import java.util.Map;
 @Component
 public class TransformAbstract {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     public final TaskConfigApplication taskConfigApplication;
-
     public final SinkConfigApplication sinkConfigApplication;
-
     public final ConnectConfigApplication connectConfigApplication;
-
     public final FilterConfigApplication filterConfigApplication;
-
     public final ConvertConfigApplication convertConfigApplication;
     public final ColumnConfigApplication columnConfigApplication;
     public final PipeStrategy pipeStrategy;
     public final RedisTemplate<String, String> redisTemplate;
-
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
     private List<ConvertConfigModel> convertConfig;
     private List<FilterConfigModel> filterConfig;
-
     private List<ColumnConfigModel> columnConfig;
+    private String CACHE_KEY;
 
     public TransformAbstract(TaskConfigApplication taskConfigApplication, SinkConfigApplication sinkConfigApplication, ConnectConfigApplication connectConfigApplication, FilterConfigApplication filterConfigApplication, ConvertConfigApplication convertConfigApplication, ColumnConfigApplication columnConfigApplication, PipeStrategy pipeStrategy, RedisTemplate<String, String> redisTemplate) {
         this.taskConfigApplication = taskConfigApplication;
@@ -63,7 +57,7 @@ public class TransformAbstract {
         TaskStatusEnum status = TaskStatusEnum.values()[body.getStatus()];
         String taskId = body.getTaskId();
         TaskConfigModel taskConfig = taskConfigApplication.getById(taskId);
-        String cacheKey = RedisKeyEnum.SINK_TIME_CACHE + ":" + taskConfig.getId() + ":" + body.getVersion();
+        CACHE_KEY = RedisKeyEnum.SINK_TIME_CACHE + ":" + taskConfig.getId() + ":" + body.getVersion();
         filterConfig = filterConfigApplication.getFilterByTaskId(taskConfig.getId());
         convertConfig = convertConfigApplication.getConvertByTaskId(taskConfig.getId());
         columnConfig = columnConfigApplication.getColumnByTaskId(taskConfig.getId());
@@ -83,7 +77,7 @@ public class TransformAbstract {
         DbTypeEnum dbTypeEnum = DbTypeEnum.values()[connectConfig.getDb_type()];
         SinkBase sink = pipeStrategy.getSink(dbTypeEnum);
         sink.config(sinkConfig, connectConfig, taskConfig, body.getVersion());
-        Boolean hasKey = redisTemplate.hasKey(cacheKey);
+        Boolean hasKey = redisTemplate.hasKey(CACHE_KEY);
         //如果缓存没有这个key，说明任务刚开始
         if (Boolean.FALSE.equals(hasKey)) {
             sink.setStatus(TaskStatusEnum.CREATE);
@@ -103,12 +97,17 @@ public class TransformAbstract {
      * @param data 数据集
      */
     public List<Map<String, Object>> filter(List<Map<String, Object>> data) {
+        int count = 0;
         List<Map<String, Object>> result = new ArrayList<>();
         for (Map<String, Object> map : data) {
             if (TransformUtils.haveData(map, filterConfig)) {
                 result.add(map);
+            } else {
+                count++;
             }
         }
+
+        redisTemplate.opsForHash().put(CACHE_KEY.replace("SINK", "SOURCE"), "FILTER_COUNT", count + "");
         return result;
     }
 

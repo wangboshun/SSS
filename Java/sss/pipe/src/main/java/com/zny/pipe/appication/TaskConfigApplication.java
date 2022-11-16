@@ -25,10 +25,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskConfigModel> {
@@ -76,12 +73,57 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
     }
 
     /**
+     * 获取任务历史记录
+     *
+     * @param taskId 任务id
+     */
+    public SaResult getTaskLog(String taskId) {
+        Object score = redisTemplate.opsForZSet().score(RedisKeyEnum.TASK_COUNT_CACHE.toString(), taskId);
+        int version = (int) Double.parseDouble(score.toString());
+        List<LinkedHashMap<String, String>> result = new ArrayList<>();
+        TaskConfigModel model = this.getById(taskId);
+        while (version > 0) {
+            result.add(getTaskRecord(taskId, model.getTask_name(), version));
+            version--;
+        }
+        return SaResult.data(result);
+    }
+
+    /**
+     * 获取任务指定版本的详情
+     *
+     * @param taskId   任务id
+     * @param taskName 任务名称
+     * @param version  版本号
+     */
+    private LinkedHashMap<String, String> getTaskRecord(String taskId, String taskName, int version) {
+        LinkedHashMap<String, String> data = new LinkedHashMap<>();
+        data.put("TASK", taskId);
+        data.put("TASK_NAME", taskName);
+        data.put("VERSION", version + "");
+        Map<Object, Object> sourceHash = redisTemplate.opsForHash().entries(RedisKeyEnum.SOURCE_TIME_CACHE + ":" + taskId + ":" + version);
+        sourceHash.forEach((key, value) -> {
+            data.put("SOURCE_" + key.toString(), value.toString());
+        });
+
+        Map<Object, Object> sinkHash = redisTemplate.opsForHash().entries(RedisKeyEnum.SINK_TIME_CACHE + ":" + taskId + ":" + version);
+        sinkHash.forEach((key, value) -> {
+            data.put("SINK_" + key.toString(), value.toString());
+        });
+        return data;
+    }
+
+    /**
      * 获取任务状态
      *
      * @param taskId 任务id
      */
     public SaResult getTaskStatus(String taskId) {
-        return SaResult.ok("");
+        Object score = redisTemplate.opsForZSet().score(RedisKeyEnum.TASK_COUNT_CACHE.toString(), taskId);
+        int version = (int) Double.parseDouble(score.toString());
+        TaskConfigModel model = this.getById(taskId);
+        LinkedHashMap<String, String> result = getTaskRecord(taskId, model.getTask_name(), version);
+        return SaResult.data(result);
     }
 
     /**
