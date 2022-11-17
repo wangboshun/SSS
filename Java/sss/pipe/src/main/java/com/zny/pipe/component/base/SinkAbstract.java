@@ -6,7 +6,8 @@ import com.zny.common.enums.RedisKeyEnum;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.DbEx;
 import com.zny.pipe.component.ConnectionFactory;
-import com.zny.pipe.component.enums.TaskStatusEnum;
+import com.zny.pipe.component.base.enums.TaskStatusEnum;
+import com.zny.pipe.component.base.interfaces.SinkBase;
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SinkConfigModel;
 import com.zny.pipe.model.TaskConfigModel;
@@ -175,7 +176,7 @@ public class SinkAbstract implements SinkBase {
     /**
      * 更新数据
      *
-     * @param list         数据集
+     * @param list          数据集
      * @param primaryColumn 主键字段
      */
     private Boolean updateData(List<Map<String, Object>> list, List<String> primaryColumn) {

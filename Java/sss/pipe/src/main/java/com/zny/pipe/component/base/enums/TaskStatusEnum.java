@@ -1,9 +1,9 @@
-package com.zny.pipe.component.enums;
+package com.zny.pipe.component.base.enums;
 
 /**
  * @author WBS
  * Date 2022-10-31 11:27
- * TaskStatus
+ * 任务状态枚举
  */
 
 public enum TaskStatusEnum {

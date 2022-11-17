@@ -3,7 +3,7 @@ package com.zny.pipe.model.dto;
 /**
  * @author WBS
  * Date 2022-11-15 16:51
- * ColumnConfigDto
+ * 字段DTO
  */
 
 public class ColumnConfigDto {

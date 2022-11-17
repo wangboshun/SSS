@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
  * @author WBS
  * 表信息配置
  */
+
 @Service
 public class TableConfigApplication extends ServiceImpl<TableConfigMapper, TableConfigModel> {
 

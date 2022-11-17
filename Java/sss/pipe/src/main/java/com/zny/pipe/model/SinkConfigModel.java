@@ -5,6 +5,12 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 
+/**
+ * @author WBS
+ * Date 2022-11-15 15:37
+ * 目的配置类
+ */
+
 @TableName("pipe_sink_config")
 public class SinkConfigModel implements Serializable {
 

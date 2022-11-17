@@ -7,6 +7,12 @@ import com.zny.pipe.model.ConnectConfigModel;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * @author WBS
+ * Date:2022/11/17
+ * 数据库连接工厂
+ */
+
 public class ConnectionFactory {
     public static Connection getConnection(ConnectConfigModel connectConfig) {
         try {

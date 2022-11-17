@@ -5,6 +5,12 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 
+/**
+ * @author WBS
+ * Date 2022-11-15 15:37
+ * 源配置类
+ */
+
 @TableName("pipe_source_config")
 public class SourceConfigModel implements Serializable {
 

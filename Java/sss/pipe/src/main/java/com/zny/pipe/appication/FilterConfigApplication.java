@@ -15,6 +15,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * @author WBS
+ * Date:2022/11/17
+ * 数据过滤服务类
+ */
+
 @Service
 public class FilterConfigApplication extends ServiceImpl<FilterConfigMapper, FilterConfigModel> {
 

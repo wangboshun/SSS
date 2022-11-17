@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * @author WBS
  * Date 2022-11-15 15:37
- * ColumnConfigModel
+ * 字段配置类
  */
 
 @TableName("pipe_column_config")

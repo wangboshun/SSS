@@ -15,6 +15,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * @author WBS
+ * Date:2022/11/17
+ * 数据转换服务类
+ */
+
 @Service
 public class ConvertConfigApplication extends ServiceImpl<ConvertConfigMapper, ConvertConfigModel> {
 

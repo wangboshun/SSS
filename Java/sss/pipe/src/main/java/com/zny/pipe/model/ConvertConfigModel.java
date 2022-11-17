@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 /**
  * @author WBS
  * Date 2022-11-12 13:53
- * FilterConfigModel
+ * 转换配置类
  */
 
 @TableName("pipe_convert_config")

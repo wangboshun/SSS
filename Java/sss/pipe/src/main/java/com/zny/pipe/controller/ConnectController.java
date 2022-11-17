@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @author WBS
  * Date:2022/10/12
- * connect目的控制器
+ * 链接控制器
  */
 
 @RestController

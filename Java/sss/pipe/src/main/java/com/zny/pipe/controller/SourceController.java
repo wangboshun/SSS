@@ -58,7 +58,7 @@ public class SourceController {
      * @param primaryColumn 主键字段
      * @param timeColumn    数据时间字段
      * @param wrtmColumn    写入时间字段
-     * @param orderColumn    排序字段
+     * @param orderColumn   排序字段
      * @param orderType     排序类型
      * @param getType       获取数据的方式
      */

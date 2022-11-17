@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author WBS
  * Date 2022-11-14 16:43
- * TableController
+ * 表信息控制器
  */
 
 @RestController

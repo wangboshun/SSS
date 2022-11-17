@@ -1,10 +1,10 @@
 package com.zny.pipe.component;
 
 import com.zny.common.enums.DbTypeEnum;
-import com.zny.pipe.component.base.SinkBase;
-import com.zny.pipe.component.base.SourceBase;
-import com.zny.pipe.component.enums.SinkTypeEnum;
-import com.zny.pipe.component.enums.SourceTypeEnum;
+import com.zny.pipe.component.base.annotations.SinkTypeAnnotation;
+import com.zny.pipe.component.base.annotations.SourceTypeAnnotation;
+import com.zny.pipe.component.base.interfaces.SinkBase;
+import com.zny.pipe.component.base.interfaces.SourceBase;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author WBS
  * Date 2022-10-29 16:36
- * PipeStrategy
+ * 管道策略
  */
 
 @Component
@@ -31,17 +31,17 @@ public class PipeStrategy implements ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        Map<String, Object> sourceBeans = applicationContext.getBeansWithAnnotation(SourceTypeEnum.class);
+        Map<String, Object> sourceBeans = applicationContext.getBeansWithAnnotation(SourceTypeAnnotation.class);
         for (Object bean : sourceBeans.values()) {
             Class<SourceBase> entity = (Class<SourceBase>) bean.getClass();
-            DbTypeEnum e = entity.getAnnotation(SourceTypeEnum.class).value();
+            DbTypeEnum e = entity.getAnnotation(SourceTypeAnnotation.class).value();
             sourceMap.put(e.toString(), applicationContext.getBean(entity));
         }
 
-        Map<String, Object> sinkBeans = applicationContext.getBeansWithAnnotation(SinkTypeEnum.class);
+        Map<String, Object> sinkBeans = applicationContext.getBeansWithAnnotation(SinkTypeAnnotation.class);
         for (Object bean : sinkBeans.values()) {
             Class<SinkBase> entity = (Class<SinkBase>) bean.getClass();
-            DbTypeEnum e = entity.getAnnotation(SinkTypeEnum.class).value();
+            DbTypeEnum e = entity.getAnnotation(SinkTypeAnnotation.class).value();
             sinkMap.put(e.toString(), applicationContext.getBean(entity));
         }
     }

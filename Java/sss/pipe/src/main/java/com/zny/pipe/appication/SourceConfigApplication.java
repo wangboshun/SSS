@@ -22,6 +22,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * @author WBS
+ * Date:2022/11/17
+ * 源配置服务类
+ */
+
 @Service
 public class SourceConfigApplication extends ServiceImpl<SourceConfigMapper, SourceConfigModel> {
     private final ResourceApplication resourceApplication;
@@ -50,15 +56,15 @@ public class SourceConfigApplication extends ServiceImpl<SourceConfigMapper, Sou
     /**
      * 添加源节点
      *
-     * @param sourceName   源节点名
-     * @param connectId    连接id
-     * @param tableName    表名
+     * @param sourceName    源节点名
+     * @param connectId     连接id
+     * @param tableName     表名
      * @param primaryColumn 主键字段
      * @param timeColumn    数据时间字段
      * @param wrtmColumn    写入时间字段
      * @param orderColumn   排序字段
-     * @param orderType    排序类型
-     * @param getType      获取数据的方式
+     * @param orderType     排序类型
+     * @param getType       获取数据的方式
      */
     public SaResult addSource(String sourceName, String connectId, String tableName, String primaryColumn, String timeColumn, String wrtmColumn, String orderColumn, Integer orderType, Integer getType) {
         QueryWrapper<SourceConfigModel> wrapper = new QueryWrapper<SourceConfigModel>();
@@ -135,16 +141,16 @@ public class SourceConfigApplication extends ServiceImpl<SourceConfigMapper, Sou
     /**
      * 更新源节点信息
      *
-     * @param id           源节点id
-     * @param sourceName   源节点名
-     * @param connectId    连接id
-     * @param tableName    表名
+     * @param id            源节点id
+     * @param sourceName    源节点名
+     * @param connectId     连接id
+     * @param tableName     表名
      * @param primaryColumn 主键字段
      * @param timeColumn    数据时间字段
      * @param wrtmColumn    写入时间字段
      * @param orderColumn   排序字段
-     * @param orderType    排序类型
-     * @param getType      获取数据的方式
+     * @param orderType     排序类型
+     * @param getType       获取数据的方式
      */
     public SaResult updateSource(String id, String sourceName, String connectId, String tableName, String primaryColumn, String timeColumn, String wrtmColumn, String orderColumn, Integer orderType, Integer getType) {
         QueryWrapper<SourceConfigModel> wrapper = new QueryWrapper<SourceConfigModel>();

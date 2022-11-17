@@ -8,7 +8,8 @@ import com.zny.common.json.GsonEx;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.DbEx;
 import com.zny.pipe.component.ConnectionFactory;
-import com.zny.pipe.component.enums.TaskStatusEnum;
+import com.zny.pipe.component.base.enums.TaskStatusEnum;
+import com.zny.pipe.component.base.interfaces.SourceBase;
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.MessageBodyModel;
 import com.zny.pipe.model.SourceConfigModel;
@@ -35,6 +36,7 @@ import java.util.Map;
  * Date:2022/10/19
  * Source抽象基类
  */
+
 @Component
 public class SourceAbstract implements SourceBase {
 

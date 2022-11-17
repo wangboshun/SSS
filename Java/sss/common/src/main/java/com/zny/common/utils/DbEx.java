@@ -35,11 +35,11 @@ public class DbEx {
     /**
      * 查询数据是否存在
      *
-     * @param connection   链接
-     * @param tableName    表名
-     * @param data         数据
+     * @param connection    链接
+     * @param tableName     表名
+     * @param data          数据
      * @param primaryColumn 主键
-     * @param dbType       数据类型
+     * @param dbType        数据类型
      */
     public static boolean hasData(Connection connection, String tableName, Map<String, Object> data, String[] primaryColumn, DbTypeEnum dbType) {
         int number = 0;

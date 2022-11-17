@@ -19,6 +19,12 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * @author WBS
+ * Date:2022/11/17
+ * 字段映射配置服务类
+ */
+
 @Service
 public class ColumnConfigApplication extends ServiceImpl<ColumnConfigMapper, ColumnConfigModel> {
 

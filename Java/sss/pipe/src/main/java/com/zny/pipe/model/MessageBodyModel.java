@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * @author WBS
  * Date 2022-11-05 12:01
- * MessageBodyModel
+ * mq消息体类
  */
 
 public class MessageBodyModel implements Serializable {

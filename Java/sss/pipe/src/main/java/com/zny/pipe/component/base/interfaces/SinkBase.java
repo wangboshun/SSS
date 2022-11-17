@@ -1,6 +1,6 @@
-package com.zny.pipe.component.base;
+package com.zny.pipe.component.base.interfaces;
 
-import com.zny.pipe.component.enums.TaskStatusEnum;
+import com.zny.pipe.component.base.enums.TaskStatusEnum;
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SinkConfigModel;
 import com.zny.pipe.model.TaskConfigModel;

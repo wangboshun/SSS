@@ -1,4 +1,4 @@
-package com.zny.pipe.component.base;
+package com.zny.pipe.component.base.interfaces;
 
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SourceConfigModel;

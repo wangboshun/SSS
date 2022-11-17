@@ -2,7 +2,7 @@ package com.zny.pipe.component.sink;
 
 import com.zny.common.enums.DbTypeEnum;
 import com.zny.pipe.component.base.SinkAbstract;
-import com.zny.pipe.component.enums.SinkTypeEnum;
+import com.zny.pipe.component.base.annotations.SinkTypeAnnotation;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-@SinkTypeEnum(DbTypeEnum.MySQL)
+@SinkTypeAnnotation(DbTypeEnum.MySQL)
 public class MySqlSink extends SinkAbstract {
 
 }

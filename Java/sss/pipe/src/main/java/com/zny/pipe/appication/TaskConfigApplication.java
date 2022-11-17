@@ -15,7 +15,7 @@ import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.PageUtils;
 import com.zny.pipe.component.PipeStrategy;
-import com.zny.pipe.component.base.SourceBase;
+import com.zny.pipe.component.base.interfaces.SourceBase;
 import com.zny.pipe.mapper.TaskConfigMapper;
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SourceConfigModel;
@@ -26,6 +26,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+
+/**
+ * @author WBS
+ * Date:2022/11/17
+ * 任务配置服务类
+ */
 
 @Service
 public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskConfigModel> {

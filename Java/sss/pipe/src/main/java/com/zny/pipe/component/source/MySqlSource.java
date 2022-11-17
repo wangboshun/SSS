@@ -2,7 +2,7 @@ package com.zny.pipe.component.source;
 
 import com.zny.common.enums.DbTypeEnum;
 import com.zny.pipe.component.base.SourceAbstract;
-import com.zny.pipe.component.enums.SourceTypeEnum;
+import com.zny.pipe.component.base.annotations.SourceTypeAnnotation;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-@SourceTypeEnum(DbTypeEnum.MySQL)
+@SourceTypeAnnotation(DbTypeEnum.MySQL)
 public class MySqlSource extends SourceAbstract {
 
 }

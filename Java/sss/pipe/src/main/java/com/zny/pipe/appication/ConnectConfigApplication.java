@@ -22,6 +22,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * @author WBS
+ * Date:2022/11/17
+ * 数据库连接服务类
+ */
+
 @Service
 public class ConnectConfigApplication extends ServiceImpl<ConnectConfigMapper, ConnectConfigModel> {
     private final ResourceApplication resourceApplication;
