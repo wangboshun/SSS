@@ -97,6 +97,9 @@ public class TransformAbstract {
      * @param data 数据集
      */
     public List<Map<String, Object>> filter(List<Map<String, Object>> data) {
+        if (filterConfig == null || filterConfig.isEmpty()) {
+            return data;
+        }
         int count = 0;
         List<Map<String, Object>> result = new ArrayList<>();
         for (Map<String, Object> map : data) {
@@ -117,6 +120,9 @@ public class TransformAbstract {
      * @param data 数据集
      */
     public List<Map<String, Object>> convert(List<Map<String, Object>> data) {
+        if (convertConfig == null || convertConfig.isEmpty()) {
+            return data;
+        }
         List<Map<String, Object>> result = new ArrayList<>();
         for (Map<String, Object> map : data) {
             result.add(TransformUtils.convertData(map, convertConfig));
@@ -130,6 +136,9 @@ public class TransformAbstract {
      * @param data 数据集
      */
     public List<Map<String, Object>> mapper(List<Map<String, Object>> data) {
+        if (columnConfig == null || columnConfig.isEmpty()) {
+            return data;
+        }
         List<Map<String, Object>> result = new ArrayList<>();
         for (Map<String, Object> map : data) {
             result.add(TransformUtils.mapperData(map, columnConfig));

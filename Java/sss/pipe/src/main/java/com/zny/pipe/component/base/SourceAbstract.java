@@ -44,8 +44,9 @@ public class SourceAbstract implements SourceBase {
     public Connection connection;
     public TaskStatusEnum sourceStatus;
     public int rowCount;
+    private String cacheKey;
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private static final int BATCH_SIZE = 100;
+    private static final int BATCH_SIZE = 1000;
     public Map<String, String> sourceTime = new HashMap<>();
 
     public int version;
@@ -68,9 +69,9 @@ public class SourceAbstract implements SourceBase {
         this.taskConfig = taskConfig;
         this.version = version;
         connection = ConnectionFactory.getConnection(connectConfig);
+        this.cacheKey = RedisKeyEnum.SOURCE_TIME_CACHE + ":" + taskConfig.getId() + ":" + version;
         if (connection != null) {
-            this.sourceStatus = TaskStatusEnum.CREATE;
-            setStatus();
+            setStatus(TaskStatusEnum.CREATE);
         }
     }
 
@@ -79,8 +80,7 @@ public class SourceAbstract implements SourceBase {
      */
     @Override
     public void start() {
-        this.sourceStatus = TaskStatusEnum.RUNNING;
-        setStatus();
+        setStatus(TaskStatusEnum.RUNNING);
         System.out.println("SourceAbstract start");
         getData();
     }
@@ -94,6 +94,7 @@ public class SourceAbstract implements SourceBase {
         try {
             String sql = getNextSql();
             rowCount = DbEx.getCount(connection, sql);
+            redisTemplate.opsForHash().put(this.cacheKey, "ROW_COUNT", rowCount + "");
             pstm = connection.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             pstm.setFetchSize(Integer.MIN_VALUE);
             result = pstm.executeQuery();
@@ -255,18 +256,13 @@ public class SourceAbstract implements SourceBase {
     @Override
     public void stop() {
         setNextTime();
-        this.sourceStatus = TaskStatusEnum.COMPLETE;
-        setStatus();
+        setStatus(TaskStatusEnum.COMPLETE);
     }
 
     /**
      * 设置状态
      */
-    private void setStatus() {
-        sourceTime.put(this.sourceStatus.toString(), DateUtils.dateToStr(LocalDateTime.now()));
-        if (this.sourceStatus == TaskStatusEnum.COMPLETE) {
-            sourceTime.put("ROW_COUNT", rowCount + "");
-            sourceTime.forEach((key, value) -> redisTemplate.opsForHash().put(RedisKeyEnum.SOURCE_TIME_CACHE + ":" + taskConfig.getId() + ":" + version, key, value));
-        }
+    public void setStatus(TaskStatusEnum e) {
+        redisTemplate.opsForHash().put(this.cacheKey, e.toString(), DateUtils.dateToStr(LocalDateTime.now()));
     }
 }
