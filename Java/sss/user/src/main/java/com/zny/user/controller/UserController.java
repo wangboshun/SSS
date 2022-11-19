@@ -35,7 +35,7 @@ public class UserController {
      * @param username 用户名
      * @param password 密码
      */
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @GetMapping(value = "/login")
     public SaResult login(String username, String password) {
         Map<String, String> tokenInfo = userApplication.login(username, password);
         if (tokenInfo != null) {
@@ -47,7 +47,7 @@ public class UserController {
     /**
      * 注销
      */
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    @PostMapping(value = "/logout")
     public SaResult logout() {
         StpUtil.logout();
         return SaResult.ok("注销成功");
@@ -61,7 +61,7 @@ public class UserController {
      * @param pageIndex 页码
      * @param pageSize  分页大小
      */
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping(value = "/list")
     public SaResult list(
             @RequestParam(required = false) String userId, @RequestParam(required = false) String userName,
             @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
@@ -74,7 +74,7 @@ public class UserController {
      *
      * @param userId 用户id
      */
-    @RequestMapping(value = "/tree", method = RequestMethod.GET)
+    @GetMapping(value = "/tree")
     public SaResult tree(@RequestParam(required = false) String userId) {
         List<UserTreeModel> result = userApplication.getUserTree(userId);
         return SaResult.data(result);
@@ -85,7 +85,7 @@ public class UserController {
      *
      * @param id 用户id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
     public SaResult get(@PathVariable("id") String id) {
         return SaResult.data(userApplication.getUserById(id));
     }
@@ -98,7 +98,7 @@ public class UserController {
      * @param userType 用户类型
      * @param parentId 父级id
      */
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @PostMapping(value = "/add")
     public SaResult add(
             String username, String password, @RequestParam(required = false) Integer userType,
             @RequestParam(required = false) String parentId) {
@@ -110,7 +110,7 @@ public class UserController {
      *
      * @param id 用户id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{id}")
     public SaResult delete(@PathVariable String id) {
         return userApplication.deleteUser(id);
     }
@@ -124,7 +124,7 @@ public class UserController {
      * @param userType 用户类型
      * @param parentId 父级id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
+    @PatchMapping(value = "/{id}")
     public SaResult update(
             @PathVariable String id, String username, String password, @RequestParam(required = false) Integer userType,
             @RequestParam(required = false) String parentId) {
@@ -136,7 +136,7 @@ public class UserController {
      *
      * @param roleId 角色id
      */
-    @RequestMapping(value = "/by_role", method = RequestMethod.GET)
+    @GetMapping(value = "/by_role")
     public SaResult getUserByRole(String roleId) {
         List<UserModel> list = userApplication.getUserByRole(roleId);
         return SaResult.data(list);
@@ -148,7 +148,7 @@ public class UserController {
      * @param roleIds 角色id
      * @param userIds 用户id
      */
-    @RequestMapping(value = "/bind_by_role", method = RequestMethod.POST)
+    @PatchMapping(value = "/bind_by_role")
     public SaResult bindUserByRole(String[] roleIds, String[] userIds) {
         return userApplication.bindUserByRole(roleIds, userIds);
     }
@@ -159,7 +159,7 @@ public class UserController {
      * @param roleIds 角色id
      * @param userIds id
      */
-    @RequestMapping(value = "/unbind_by_role", method = RequestMethod.POST)
+    @PatchMapping(value = "/unbind_by_role")
     public SaResult unBindUserByRole(String[] roleIds, String[] userIds) {
         return userApplication.unBindUserByRole(roleIds, userIds);
     }

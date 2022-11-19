@@ -33,7 +33,7 @@ public class SinkController {
      * @param sinkName 目的节点名
      * @param pageSize 分页大小
      */
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping(value = "/list")
     public SaResult list(@RequestParam(required = false) String sinkId, @RequestParam(required = false) String sinkName, @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
         PageResult result = sinkConfigApplication.getSinkPage(sinkId, sinkName, pageIndex, pageSize);
         return SaResult.data(result);
@@ -44,7 +44,7 @@ public class SinkController {
      *
      * @param id 目的节点id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
     public SaResult get(@PathVariable String id) {
         return SaResult.data(sinkConfigApplication.getSinkById(id));
     }
@@ -56,7 +56,7 @@ public class SinkController {
      * @param connectId 连接id
      * @param tableName 表名
      */
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @PostMapping(value = "/add")
     public SaResult add(String sinkName, String connectId, String tableName) {
         return sinkConfigApplication.addSink(sinkName, connectId, tableName);
     }
@@ -67,7 +67,7 @@ public class SinkController {
      *
      * @param id 目的节点id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{id}")
     public SaResult delete(@PathVariable String id) {
         return sinkConfigApplication.deleteSink(id);
     }
@@ -80,7 +80,7 @@ public class SinkController {
      * @param connectId 连接id
      * @param tableName 表名
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
+    @PatchMapping(value = "/{id}")
     public SaResult update(@PathVariable String id, @RequestParam(required = false) String sinkName, @RequestParam(required = false) String connectId, @RequestParam(required = false) String tableName) {
         return sinkConfigApplication.updateSink(id, sinkName, connectId, tableName);
     }
@@ -90,7 +90,7 @@ public class SinkController {
      *
      * @param userId 用户id
      */
-    @RequestMapping(value = "/by_user", method = RequestMethod.GET)
+    @GetMapping(value = "/by_user")
     public SaResult getSinkByUser(String userId) {
         List<SinkConfigModel> list = sinkConfigApplication.getSinkByUser(userId);
         return SaResult.data(list);
@@ -101,7 +101,7 @@ public class SinkController {
      *
      * @param roleId 角色id
      */
-    @RequestMapping(value = "/by_role", method = RequestMethod.GET)
+    @GetMapping(value = "/by_role")
     public SaResult getSinkByRole(String roleId) {
         List<SinkConfigModel> list = sinkConfigApplication.getSinkByRole(roleId);
         return SaResult.data(list);
@@ -114,7 +114,7 @@ public class SinkController {
      * @param userIds 用户id
      * @param sinkIds 目的节点id
      */
-    @RequestMapping(value = "/bind_by_user", method = RequestMethod.POST)
+    @PatchMapping(value = "/bind_by_user")
     public SaResult bindSinkByUser(String[] userIds, String[] sinkIds) {
         return sinkConfigApplication.bindSinkByUser(userIds, sinkIds);
     }
@@ -125,7 +125,7 @@ public class SinkController {
      * @param roleIds 角色id
      * @param sinkIds 目的节点id
      */
-    @RequestMapping(value = "/bind_by_role", method = RequestMethod.POST)
+    @PatchMapping(value = "/bind_by_role")
     public SaResult bindSinkByRole(String[] roleIds, String[] sinkIds) {
         return sinkConfigApplication.bindSinkByRole(roleIds, sinkIds);
     }
@@ -136,7 +136,7 @@ public class SinkController {
      * @param userIds 用户id
      * @param sinkIds id
      */
-    @RequestMapping(value = "/unbind_by_user", method = RequestMethod.POST)
+    @PatchMapping(value = "/unbind_by_user")
     public SaResult unBindSinkByUser(String[] userIds, String[] sinkIds) {
         return sinkConfigApplication.unBindSinkByUser(userIds, sinkIds);
     }
@@ -147,7 +147,7 @@ public class SinkController {
      * @param roleIds 角色id
      * @param sinkIds id
      */
-    @RequestMapping(value = "/unbind_by_role", method = RequestMethod.POST)
+    @PatchMapping(value = "/unbind_by_role")
     public SaResult unBindSinkByRole(String[] roleIds, String[] sinkIds) {
         return sinkConfigApplication.unBindSinkByRole(roleIds, sinkIds);
     }

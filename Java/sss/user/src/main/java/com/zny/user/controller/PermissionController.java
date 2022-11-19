@@ -35,7 +35,7 @@ public class PermissionController {
      * @param permissionCode 权限代码
      * @param pageSize       分页大小
      */
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping(value = "/list")
     public SaResult list(
             @RequestParam(required = false) String permissionId, @RequestParam(required = false) String permissionName,
             @RequestParam(required = false) String permissionCode, @RequestParam(required = false) Integer pageIndex,
@@ -49,7 +49,7 @@ public class PermissionController {
      *
      * @param permissionId 权限id
      */
-    @RequestMapping(value = "/tree", method = RequestMethod.GET)
+    @GetMapping(value = "/tree")
     public SaResult tree(@RequestParam(required = false) String permissionId) {
         List<PermissionTreeModel> result = permissionApplication.getPermissionTree(permissionId);
         return SaResult.data(result);
@@ -60,7 +60,7 @@ public class PermissionController {
      *
      * @param id 权限id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
     public SaResult get(@PathVariable String id) {
         return SaResult.data(permissionApplication.getPermissionById(id));
     }
@@ -72,7 +72,7 @@ public class PermissionController {
      * @param permissionCode 权限代码
      * @param parentId       父级id
      */
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @PostMapping(value = "/add")
     public SaResult add(String permissionName, String permissionCode, @RequestParam(required = false) String parentId) {
         return permissionApplication.addPermission(permissionName, permissionCode, parentId);
     }
@@ -83,7 +83,7 @@ public class PermissionController {
      *
      * @param id 权限id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{id}")
     public SaResult delete(@PathVariable String id) {
         return permissionApplication.deletePermission(id);
     }
@@ -96,7 +96,7 @@ public class PermissionController {
      * @param permissionCode 权限代码
      * @param parentId       父级id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
+    @PatchMapping(value = "/{id}")
     public SaResult update(
             @PathVariable String id, String permissionName, String permissionCode,
             @RequestParam(required = false) String parentId) {
@@ -108,7 +108,7 @@ public class PermissionController {
      *
      * @param userId 用户id
      */
-    @RequestMapping(value = "/by_user", method = RequestMethod.GET)
+    @GetMapping(value = "/by_user")
     public SaResult getPermissionByUser(String userId) {
         List<PermissionModel> list = permissionApplication.getPermissionByUser(userId);
         return SaResult.data(list);
@@ -119,7 +119,7 @@ public class PermissionController {
      *
      * @param roleId 角色id
      */
-    @RequestMapping(value = "/by_role", method = RequestMethod.GET)
+    @GetMapping(value = "/by_role")
     public SaResult getPermissionByRole(String roleId) {
         List<PermissionModel> list = permissionApplication.getPermissionByRole(roleId);
         return SaResult.data(list);
@@ -131,7 +131,7 @@ public class PermissionController {
      * @param userIds 用户id
      * @param menuIds 权限id
      */
-    @RequestMapping(value = "/bind_by_user", method = RequestMethod.POST)
+    @PatchMapping(value = "/bind_by_user")
     public SaResult bindPermissionByUser(String[] userIds, String[] menuIds) {
         return permissionApplication.bindPermissionByUser(userIds, menuIds);
     }
@@ -142,7 +142,7 @@ public class PermissionController {
      * @param roleIds 角色id
      * @param menuIds 权限id
      */
-    @RequestMapping(value = "/bind_by_role", method = RequestMethod.POST)
+    @PatchMapping(value = "/bind_by_role")
     public SaResult bindPermissionByRole(String[] roleIds, String[] menuIds) {
         return permissionApplication.bindPermissionByRole(roleIds, menuIds);
     }
@@ -153,7 +153,7 @@ public class PermissionController {
      * @param userIds       用户id
      * @param permissionIds id
      */
-    @RequestMapping(value = "/unbind_by_user", method = RequestMethod.POST)
+    @PatchMapping(value = "/unbind_by_user")
     public SaResult unBindPermissionByUser(String[] userIds, String[] permissionIds) {
         return permissionApplication.unBindPermissionByUser(userIds, permissionIds);
     }
@@ -164,7 +164,7 @@ public class PermissionController {
      * @param roleIds       角色id
      * @param permissionIds id
      */
-    @RequestMapping(value = "/unbind_by_role", method = RequestMethod.POST)
+    @PatchMapping(value = "/unbind_by_role")
     public SaResult unBindPermissionByRole(String[] roleIds, String[] permissionIds) {
         return permissionApplication.unBindPermissionByRole(roleIds, permissionIds);
     }

@@ -33,7 +33,7 @@ public class SourceController {
      * @param sourceName 源节点名
      * @param pageSize   分页大小
      */
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping(value = "/list")
     public SaResult list(@RequestParam(required = false) String sourceId, @RequestParam(required = false) String sourceName, @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
         PageResult result = sourceConfigApplication.getSourcePage(sourceId, sourceName, pageIndex, pageSize);
         return SaResult.data(result);
@@ -44,7 +44,7 @@ public class SourceController {
      *
      * @param id 源节点id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
     public SaResult get(@PathVariable String id) {
         return SaResult.data(sourceConfigApplication.getSourceById(id));
     }
@@ -62,7 +62,7 @@ public class SourceController {
      * @param orderType     排序类型
      * @param getType       获取数据的方式
      */
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @PostMapping(value = "/add")
     public SaResult add(String sourceName, String connectId, String tableName, String primaryColumn, String timeColumn, String wrtmColumn, String orderColumn, Integer orderType, Integer getType) {
         return sourceConfigApplication.addSource(sourceName, connectId, tableName, primaryColumn, timeColumn, wrtmColumn, orderColumn, orderType, getType);
     }
@@ -73,7 +73,7 @@ public class SourceController {
      *
      * @param id 源节点id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{id}")
     public SaResult delete(@PathVariable String id) {
         return sourceConfigApplication.deleteSource(id);
     }
@@ -92,6 +92,7 @@ public class SourceController {
      * @param orderType     排序类型
      * @param getType       获取数据的方式
      */
+    @PatchMapping(value = "/update")
     public SaResult update(@PathVariable String id, @RequestParam(required = false) String sourceName, @RequestParam(required = false) String connectId, @RequestParam(required = false) String tableName, @RequestParam(required = false) String primaryColumn, @RequestParam(required = false) String timeColumn, @RequestParam(required = false) String wrtmColumn, @RequestParam(required = false) String orderColumn, @RequestParam(required = false) Integer orderType, @RequestParam(required = false) Integer getType) {
         return sourceConfigApplication.updateSource(id, sourceName, connectId, tableName, primaryColumn, timeColumn, wrtmColumn, orderColumn, orderType, getType);
     }
@@ -101,7 +102,7 @@ public class SourceController {
      *
      * @param userId 用户id
      */
-    @RequestMapping(value = "/by_user", method = RequestMethod.GET)
+    @GetMapping(value = "/by_user")
     public SaResult getSourceByUser(String userId) {
         List<SourceConfigModel> list = sourceConfigApplication.getSourceByUser(userId);
         return SaResult.data(list);
@@ -112,7 +113,7 @@ public class SourceController {
      *
      * @param roleId 角色id
      */
-    @RequestMapping(value = "/by_role", method = RequestMethod.GET)
+    @GetMapping(value = "/by_role")
     public SaResult getSourceByRole(String roleId) {
         List<SourceConfigModel> list = sourceConfigApplication.getSourceByRole(roleId);
         return SaResult.data(list);
@@ -125,7 +126,7 @@ public class SourceController {
      * @param userIds   用户id
      * @param sourceIds 源节点id
      */
-    @RequestMapping(value = "/bind_by_user", method = RequestMethod.POST)
+    @PatchMapping(value = "/bind_by_user")
     public SaResult bindSourceByUser(String[] userIds, String[] sourceIds) {
         return sourceConfigApplication.bindSourceByUser(userIds, sourceIds);
     }
@@ -136,7 +137,7 @@ public class SourceController {
      * @param roleIds   角色id
      * @param sourceIds 源节点id
      */
-    @RequestMapping(value = "/bind_by_role", method = RequestMethod.POST)
+    @PatchMapping(value = "/bind_by_role")
     public SaResult bindSourceByRole(String[] roleIds, String[] sourceIds) {
         return sourceConfigApplication.bindSourceByRole(roleIds, sourceIds);
     }
@@ -147,7 +148,7 @@ public class SourceController {
      * @param userIds   用户id
      * @param sourceIds id
      */
-    @RequestMapping(value = "/unbind_by_user", method = RequestMethod.POST)
+    @PatchMapping(value = "/unbind_by_user")
     public SaResult unBindSourceByUser(String[] userIds, String[] sourceIds) {
         return sourceConfigApplication.unBindSourceByUser(userIds, sourceIds);
     }
@@ -158,7 +159,7 @@ public class SourceController {
      * @param roleIds   角色id
      * @param sourceIds id
      */
-    @RequestMapping(value = "/unbind_by_role", method = RequestMethod.POST)
+    @PatchMapping(value = "/unbind_by_role")
     public SaResult unBindSourceByRole(String[] roleIds, String[] sourceIds) {
         return sourceConfigApplication.unBindSourceByRole(roleIds, sourceIds);
     }

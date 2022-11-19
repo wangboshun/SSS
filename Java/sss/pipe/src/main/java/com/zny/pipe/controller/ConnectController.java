@@ -33,7 +33,7 @@ public class ConnectController {
      * @param connectName 链接名
      * @param pageSize    分页大小
      */
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping(value = "/list")
     public SaResult list(@RequestParam(required = false) String connectId, @RequestParam(required = false) String connectName, @RequestParam(required = false) Integer pageIndex, @RequestParam(required = false) Integer pageSize) {
         PageResult result = connectConfigApplication.getConnectPage(connectId, connectName, pageIndex, pageSize);
         return SaResult.data(result);
@@ -44,7 +44,7 @@ public class ConnectController {
      *
      * @param id 链接id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
     public SaResult get(@PathVariable String id) {
         return SaResult.data(connectConfigApplication.getConnectById(id));
     }
@@ -60,7 +60,7 @@ public class ConnectController {
      * @param dbName      数据库名
      * @param dbType      数据库类型
      */
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @PostMapping(value = "/add")
     public SaResult add(String connectName, String host, Integer port, String userName, String passWord, String dbName, Integer dbType) {
         return connectConfigApplication.addConnect(connectName, host, port, userName, passWord, dbName, dbType);
     }
@@ -70,7 +70,7 @@ public class ConnectController {
      *
      * @param id 链接id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{id}")
     public SaResult delete(@PathVariable String id) {
         return connectConfigApplication.deleteConnect(id);
     }
@@ -87,7 +87,7 @@ public class ConnectController {
      * @param dbName      数据库名
      * @param dbType      数据库类型
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
+    @PatchMapping(value = "/{id}")
     public SaResult update(@PathVariable String id, String connectName, String host, Integer port, String userName, String passWord, String dbName, Integer dbType) {
         return connectConfigApplication.updateConnect(id, connectName, host, port, userName, passWord, dbName, dbType);
     }
@@ -97,7 +97,7 @@ public class ConnectController {
      *
      * @param userId 用户id
      */
-    @RequestMapping(value = "/by_user", method = RequestMethod.GET)
+    @GetMapping(value = "/by_user")
     public SaResult getConnectByUser(String userId) {
         List<ConnectConfigModel> list = connectConfigApplication.getConnectByUser(userId);
         return SaResult.data(list);
@@ -108,7 +108,7 @@ public class ConnectController {
      *
      * @param roleId 角色id
      */
-    @RequestMapping(value = "/by_role", method = RequestMethod.GET)
+    @GetMapping(value = "/by_role")
     public SaResult getConnectByRole(String roleId) {
         List<ConnectConfigModel> list = connectConfigApplication.getConnectByRole(roleId);
         return SaResult.data(list);
@@ -121,7 +121,7 @@ public class ConnectController {
      * @param userIds    用户id
      * @param connectIds 链接id
      */
-    @RequestMapping(value = "/bind_by_user", method = RequestMethod.POST)
+    @PatchMapping(value = "/bind_by_user")
     public SaResult bindConnectByUser(String[] userIds, String[] connectIds) {
         return connectConfigApplication.bindConnectByUser(userIds, connectIds);
     }
@@ -132,7 +132,7 @@ public class ConnectController {
      * @param roleIds    角色id
      * @param connectIds 链接id
      */
-    @RequestMapping(value = "/bind_by_role", method = RequestMethod.POST)
+    @PatchMapping(value = "/bind_by_role")
     public SaResult bindConnectByRole(String[] roleIds, String[] connectIds) {
         return connectConfigApplication.bindConnectByRole(roleIds, connectIds);
     }
@@ -143,7 +143,7 @@ public class ConnectController {
      * @param userIds    用户id
      * @param connectIds id
      */
-    @RequestMapping(value = "/unbind_by_user", method = RequestMethod.POST)
+    @PatchMapping(value = "/unbind_by_user")
     public SaResult unBindConnectByUser(String[] userIds, String[] connectIds) {
         return connectConfigApplication.unBindConnectByUser(userIds, connectIds);
     }
@@ -154,7 +154,7 @@ public class ConnectController {
      * @param roleIds    角色id
      * @param connectIds id
      */
-    @RequestMapping(value = "/unbind_by_role", method = RequestMethod.POST)
+    @PatchMapping(value = "/unbind_by_role")
     public SaResult unBindConnectByRole(String[] roleIds, String[] connectIds) {
         return connectConfigApplication.unBindConnectByRole(roleIds, connectIds);
     }

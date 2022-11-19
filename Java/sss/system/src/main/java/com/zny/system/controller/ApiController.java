@@ -33,7 +33,7 @@ public class ApiController {
      * @param apiName  接口名
      * @param pageSize 分页大小
      */
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping(value = "/list")
     public SaResult list(
             @RequestParam(required = false) String apiId, @RequestParam(required = false) String apiName,
             @RequestParam(required = false) String apiCode, @RequestParam(required = false) Integer pageIndex,
@@ -47,7 +47,7 @@ public class ApiController {
      *
      * @param id 接口id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
     public SaResult get(@PathVariable String id) {
         return SaResult.data(apiApplication.getApiById(id));
     }
@@ -57,7 +57,7 @@ public class ApiController {
      *
      * @param id 接口id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{id}")
     public SaResult off(@PathVariable String id) {
         return apiApplication.offApi(id);
     }
@@ -67,7 +67,7 @@ public class ApiController {
      *
      * @param id 接口id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
+    @PatchMapping(value = "/{id}")
     public SaResult on(@PathVariable String id) {
         return apiApplication.onApi(id);
     }
@@ -77,7 +77,7 @@ public class ApiController {
      *
      * @param userId 用户id
      */
-    @RequestMapping(value = "/get_by_user", method = RequestMethod.GET)
+    @GetMapping(value = "/get_by_user")
     public SaResult getApiByUser(String userId) {
         List<ApiModel> list = apiApplication.getApiByUser(userId);
         return SaResult.data(list);
@@ -88,7 +88,7 @@ public class ApiController {
      *
      * @param roleId 角色id
      */
-    @RequestMapping(value = "/get_by_role", method = RequestMethod.GET)
+    @GetMapping(value = "/get_by_role")
     public SaResult getApiByRole(String roleId) {
         List<ApiModel> list = apiApplication.getApiByRole(roleId);
         return SaResult.data(list);
@@ -100,7 +100,7 @@ public class ApiController {
      * @param userIds 用户id
      * @param apiIds  id
      */
-    @RequestMapping(value = "/bind_by_user", method = RequestMethod.POST)
+    @PatchMapping(value = "/bind_by_user")
     public SaResult bindApiByUser(String[] userIds, String[] apiIds) {
         return apiApplication.bindApiByUser(userIds, apiIds);
     }
@@ -111,7 +111,7 @@ public class ApiController {
      * @param roleIds 角色id
      * @param apiIds  id
      */
-    @RequestMapping(value = "/bind_by_role", method = RequestMethod.POST)
+    @PatchMapping(value = "/bind_by_role")
     public SaResult bindApiByRole(String[] roleIds, String[] apiIds) {
         return apiApplication.bindApiByRole(roleIds, apiIds);
     }
@@ -122,7 +122,7 @@ public class ApiController {
      * @param userIds 用户id
      * @param apiIds  id
      */
-    @RequestMapping(value = "/unbind_by_user", method = RequestMethod.POST)
+    @PatchMapping(value = "/unbind_by_user")
     public SaResult unBindApiByUser(String[] userIds, String[] apiIds) {
         return apiApplication.unBindApiByUser(userIds, apiIds);
     }
@@ -133,7 +133,7 @@ public class ApiController {
      * @param roleIds 角色id
      * @param apiIds  id
      */
-    @RequestMapping(value = "/unbind_by_role", method = RequestMethod.POST)
+    @PatchMapping(value = "/unbind_by_role")
     public SaResult unBindApiByRole(String[] roleIds, String[] apiIds) {
         return apiApplication.unBindApiByRole(roleIds, apiIds);
     }

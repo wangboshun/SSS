@@ -35,7 +35,7 @@ public class RoleController {
      * @param roleCode 角色代码
      * @param pageSize 分页大小
      */
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping(value = "/list")
     public SaResult list(
             @RequestParam(required = false) String roleId, @RequestParam(required = false) String roleName,
             @RequestParam(required = false) String roleCode, @RequestParam(required = false) Integer pageIndex,
@@ -49,7 +49,7 @@ public class RoleController {
      *
      * @param roleId 角色id
      */
-    @RequestMapping(value = "/tree", method = RequestMethod.GET)
+    @GetMapping(value = "/tree")
     public SaResult tree(@RequestParam(required = false) String roleId) {
         List<RoleTreeModel> result = roleApplication.getRoleTree(roleId);
         return SaResult.data(result);
@@ -60,7 +60,7 @@ public class RoleController {
      *
      * @param id 角色id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
     public SaResult get(@PathVariable String id) {
         RoleModel model = roleApplication.getById(id);
         return SaResult.data(model);
@@ -73,7 +73,7 @@ public class RoleController {
      * @param roleCode 角色代码
      * @param parentId 父级id
      */
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @PostMapping(value = "/add")
     public SaResult add(String roleName, String roleCode, @RequestParam(required = false) String parentId) {
         return roleApplication.addRole(roleName, roleCode, parentId);
     }
@@ -83,7 +83,7 @@ public class RoleController {
      *
      * @param id 角色id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{id}")
     public SaResult delete(@PathVariable String id) {
         return roleApplication.deleteRole(id);
     }
@@ -96,7 +96,7 @@ public class RoleController {
      * @param roleCode 角色代码
      * @param parentId 父级id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
+    @PatchMapping(value = "/{id}")
     public SaResult update(
             @PathVariable String id, String roleName, String roleCode,
             @RequestParam(required = false) String parentId) {

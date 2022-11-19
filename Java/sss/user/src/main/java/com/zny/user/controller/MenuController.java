@@ -34,7 +34,7 @@ public class MenuController {
      * @param menuName 菜单名
      * @param pageSize 分页大小
      */
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping(value = "/list")
     public SaResult list(
 
             @RequestParam(required = false) String menuId, @RequestParam(required = false) String menuName,
@@ -49,7 +49,7 @@ public class MenuController {
      *
      * @param menuId 菜单id
      */
-    @RequestMapping(value = "/tree", method = RequestMethod.GET)
+    @GetMapping(value = "/tree")
     public SaResult tree(@RequestParam(required = false) String menuId) {
         List<MenuTreeModel> result = menuApplication.getMenuTree(menuId);
         return SaResult.data(result);
@@ -60,7 +60,7 @@ public class MenuController {
      *
      * @param id 菜单id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
     public SaResult get(@PathVariable String id) {
         return SaResult.data(menuApplication.getMenuById(id));
     }
@@ -76,7 +76,7 @@ public class MenuController {
      * @param menuIcon  菜单图标
      * @param menuType  菜单类型：链接、按钮
      */
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @PostMapping(value = "/add")
     public SaResult add(
             String menuName, String menuCode, @RequestParam(required = false) String parentId,
             @RequestParam(required = false) Integer menuIndex, @RequestParam(required = false) String menuUrl,
@@ -90,7 +90,7 @@ public class MenuController {
      *
      * @param id 菜单id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{id}")
     public SaResult delete(@PathVariable String id) {
         return menuApplication.deleteMenu(id);
     }
@@ -107,7 +107,7 @@ public class MenuController {
      * @param menuIcon  菜单图标
      * @param menuType  菜单类型：链接、按钮
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
+    @PatchMapping(value = "/{id}")
     public SaResult update(
             @PathVariable String id, @RequestParam(required = false) String menuName, @RequestParam(required = false) String menuCode, @RequestParam(required = false) String parentId,
             @RequestParam(required = false) Integer menuIndex, @RequestParam(required = false) String menuUrl,
@@ -120,7 +120,7 @@ public class MenuController {
      *
      * @param userId 用户id
      */
-    @RequestMapping(value = "/by_user", method = RequestMethod.GET)
+    @GetMapping(value = "/by_user")
     public SaResult getMenuByUser(String userId) {
         List<MenuModel> list = menuApplication.getMenuByUser(userId);
         return SaResult.data(list);
@@ -131,7 +131,7 @@ public class MenuController {
      *
      * @param roleId 角色id
      */
-    @RequestMapping(value = "/by_role", method = RequestMethod.GET)
+    @GetMapping(value = "/by_role")
     public SaResult getMenuByRole(String roleId) {
         List<MenuModel> list = menuApplication.getMenuByRole(roleId);
         return SaResult.data(list);
@@ -144,7 +144,7 @@ public class MenuController {
      * @param userIds 用户id
      * @param menuIds 菜单id
      */
-    @RequestMapping(value = "/bind_by_user", method = RequestMethod.POST)
+    @PatchMapping(value = "/bind_by_user")
     public SaResult bindMenuByUser(String[] userIds, String[] menuIds) {
         return menuApplication.bindMenuByUser(userIds, menuIds);
     }
@@ -155,7 +155,7 @@ public class MenuController {
      * @param roleIds 角色id
      * @param menuIds 菜单id
      */
-    @RequestMapping(value = "/bind_by_role", method = RequestMethod.POST)
+    @PatchMapping(value = "/bind_by_role")
     public SaResult bindMenuByRole(String[] roleIds, String[] menuIds) {
         return menuApplication.bindMenuByRole(roleIds, menuIds);
     }
@@ -166,7 +166,7 @@ public class MenuController {
      * @param userIds 用户id
      * @param menuIds id
      */
-    @RequestMapping(value = "/unbind_by_user", method = RequestMethod.POST)
+    @PatchMapping(value = "/unbind_by_user")
     public SaResult unBindMenuByUser(String[] userIds, String[] menuIds) {
         return menuApplication.unBindMenuByUser(userIds, menuIds);
     }
@@ -177,7 +177,7 @@ public class MenuController {
      * @param roleIds 角色id
      * @param menuIds id
      */
-    @RequestMapping(value = "/unbind_by_role", method = RequestMethod.POST)
+    @PatchMapping(value = "/unbind_by_role")
     public SaResult unBindMenuByRole(String[] roleIds, String[] menuIds) {
         return menuApplication.unBindMenuByRole(roleIds, menuIds);
     }

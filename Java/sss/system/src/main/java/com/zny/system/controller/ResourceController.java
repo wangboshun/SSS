@@ -35,7 +35,7 @@ public class ResourceController {
      * @param pageIndex 页码
      * @param pageSize  分页大小
      */
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping(value = "/list")
     public SaResult list(
             @RequestParam(required = false) String id, @RequestParam(required = false) String mainId,
             @RequestParam(required = false) Integer mainType, @RequestParam(required = false) String slaveId,
@@ -50,7 +50,7 @@ public class ResourceController {
      *
      * @param id 资源id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
     public SaResult get(@PathVariable String id) {
         ResourceModel model = resourceApplication.getById(id);
         return SaResult.data(model);
@@ -64,7 +64,7 @@ public class ResourceController {
      * @param slaveIds  副id
      * @param slaveType 副类型
      */
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @PostMapping(value = "/add")
     public SaResult add(
             String[] mainIds, int mainType, @RequestParam(required = false) String[] slaveIds, int slaveType) {
         return resourceApplication.addResource(mainIds, mainType, slaveIds, slaveType);
@@ -75,7 +75,7 @@ public class ResourceController {
      *
      * @param ids id或id组
      */
-    @RequestMapping(value = "/{ids}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{ids}")
     public SaResult delete(@PathVariable String[] ids) {
         boolean b = resourceApplication.removeBatchByIds(Arrays.asList(ids));
         if (b) {
@@ -94,7 +94,7 @@ public class ResourceController {
      * @param slaveId   副id
      * @param slaveType 副类型
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
+    @PatchMapping(value = "/{id}")
     public SaResult update(
             @PathVariable String id, String mainId, Integer mainType, String slaveId, Integer slaveType) {
         return resourceApplication.updateResource(id, mainId, mainType, slaveId, slaveType);

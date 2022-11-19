@@ -30,7 +30,7 @@ public class IoTController {
      *
      * @param id 测站id
      */
-    @RequestMapping(value = "/station/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/station/{id}")
     public SaResult getStation(@PathVariable String id) {
         return stationApplication.getStationById(id);
     }
@@ -40,7 +40,7 @@ public class IoTController {
      *
      * @param id 传感器id
      */
-    @RequestMapping(value = "/sensor/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/sensor/{id}")
     public SaResult getSensor(@PathVariable String id) {
         return stationApplication.getSensorById(id);
     }
@@ -52,7 +52,7 @@ public class IoTController {
      * @param pageSize  分页大小
      * @param pageIndex 页码
      */
-    @RequestMapping(value = "/station_list", method = RequestMethod.GET)
+    @GetMapping(value = "/station_list")
     public SaResult stationList(
             @RequestParam(required = false) String stationId, @RequestParam(required = false) Integer pageIndex,
             @RequestParam(required = false) Integer pageSize) {
@@ -66,7 +66,7 @@ public class IoTController {
      * @param pageSize  分页大小
      * @param pageIndex 页码
      */
-    @RequestMapping(value = "/sensor_list", method = RequestMethod.GET)
+    @GetMapping(value = "/sensor_list")
     public SaResult sensorList(
             @RequestParam(required = false) String sensorId, @RequestParam(required = false) Integer pageIndex,
             @RequestParam(required = false) Integer pageSize) {
@@ -83,7 +83,7 @@ public class IoTController {
      * @param pageIndex 页码
      * @param pageSize  分页大小
      */
-    @RequestMapping(value = "/real_data", method = RequestMethod.GET)
+    @GetMapping(value = "/real_data")
     public SaResult realData(
             @RequestParam(required = false) Integer stationId, @RequestParam(required = false) Integer pointId,
             @RequestParam(required = false) String start, @RequestParam(required = false) String end,
@@ -101,7 +101,7 @@ public class IoTController {
      * @param pageIndex 页码
      * @param pageSize  分页大小
      */
-    @RequestMapping(value = "/period_data", method = RequestMethod.GET)
+    @GetMapping(value = "/period_data")
     public SaResult periodData(
             @RequestParam(required = false) Integer stationId, @RequestParam(required = false) Integer pointId,
             @RequestParam(required = false) String start, @RequestParam(required = false) String end,
@@ -114,7 +114,7 @@ public class IoTController {
      *
      * @param userId 用户id
      */
-    @RequestMapping(value = "/station/by_user", method = RequestMethod.GET)
+    @GetMapping(value = "/station/by_user")
     public SaResult getStationBaseSetByUser(String userId) {
         List<StationBaseSetModel> list = stationApplication.getStationBaseSetByUser(userId);
         return SaResult.data(list);
@@ -125,7 +125,7 @@ public class IoTController {
      *
      * @param roleId 角色id
      */
-    @RequestMapping(value = "/station/by_role", method = RequestMethod.GET)
+    @GetMapping(value = "/station/by_role")
     public SaResult getStationBaseSetByRole(String roleId) {
         List<StationBaseSetModel> list = stationApplication.getStationBaseSetByRole(roleId);
         return SaResult.data(list);
@@ -137,7 +137,7 @@ public class IoTController {
      * @param userIds           用户id
      * @param stationBaseSetIds 测站id
      */
-    @RequestMapping(value = "/station/bind_by_user", method = RequestMethod.POST)
+    @PatchMapping(value = "/station/bind_by_user")
     public SaResult bindStationBaseSetByUser(String[] userIds, String[] stationBaseSetIds) {
         return stationApplication.bindStationBaseSetByUser(userIds, stationBaseSetIds);
     }
@@ -148,7 +148,7 @@ public class IoTController {
      * @param roleIds           角色id
      * @param stationBaseSetIds 测站id
      */
-    @RequestMapping(value = "/station/bind_by_role", method = RequestMethod.POST)
+    @PatchMapping(value = "/station/bind_by_role")
     public SaResult bindStationBaseSetByRole(String[] roleIds, String[] stationBaseSetIds) {
         return stationApplication.bindStationBaseSetByRole(roleIds, stationBaseSetIds);
     }
@@ -159,7 +159,7 @@ public class IoTController {
      * @param userIds           用户id
      * @param stationBaseSetIds id
      */
-    @RequestMapping(value = "/station/unbind_by_user", method = RequestMethod.POST)
+    @PatchMapping(value = "/station/unbind_by_user")
     public SaResult unBindStationBaseSetByUser(String[] userIds, String[] stationBaseSetIds) {
         return stationApplication.unBindStationBaseSetByUser(userIds, stationBaseSetIds);
     }
@@ -170,7 +170,7 @@ public class IoTController {
      * @param roleIds           角色id
      * @param stationBaseSetIds id
      */
-    @RequestMapping(value = "/station/unbind_by_role", method = RequestMethod.POST)
+    @PatchMapping(value = "/station/unbind_by_role")
     public SaResult unBindStationBaseSetByRole(String[] roleIds, String[] stationBaseSetIds) {
         return stationApplication.unBindStationBaseSetByRole(roleIds, stationBaseSetIds);
     }
