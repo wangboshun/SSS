@@ -25,10 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PipeStrategy implements ApplicationContextAware {
     private final Map<String, SourceBase> sourceMap = new ConcurrentHashMap<>();
     private final Map<String, SinkBase> sinkMap = new ConcurrentHashMap<>();
-
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
-
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         Map<String, Object> sourceBeans = applicationContext.getBeansWithAnnotation(SourceTypeAnnotation.class);

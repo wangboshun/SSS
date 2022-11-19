@@ -38,15 +38,15 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
     private final ResourceApplication resourceApplication;
     private final SourceConfigApplication sourceConfigApplication;
     private final ConnectConfigApplication connectConfigApplication;
-    private final ThreadPoolTaskExecutor defaultExecutor;
+    private final ThreadPoolTaskExecutor customExecutor;
     private final PipeStrategy pipeStrategy;
     private RedisTemplate<String, String> redisTemplate;
 
-    public TaskConfigApplication(ResourceApplication resourceApplication, SourceConfigApplication sourceConfigApplication, ConnectConfigApplication connectConfigApplication, ThreadPoolTaskExecutor defaultExecutor, PipeStrategy pipeStrategy, RedisTemplate<String, String> redisTemplate) {
+    public TaskConfigApplication(ResourceApplication resourceApplication, SourceConfigApplication sourceConfigApplication, ConnectConfigApplication connectConfigApplication, ThreadPoolTaskExecutor customExecutor, PipeStrategy pipeStrategy, RedisTemplate<String, String> redisTemplate) {
         this.resourceApplication = resourceApplication;
         this.sourceConfigApplication = sourceConfigApplication;
         this.connectConfigApplication = connectConfigApplication;
-        this.defaultExecutor = defaultExecutor;
+        this.customExecutor = customExecutor;
         this.pipeStrategy = pipeStrategy;
         this.redisTemplate = redisTemplate;
     }
@@ -64,7 +64,7 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
             return SaResultEx.error(MessageCodeEnum.AUTH_INVALID);
         }
         TaskConfigModel taskConfig = this.getById(taskId);
-        defaultExecutor.execute(() -> {
+        customExecutor.execute(() -> {
             SourceConfigModel sourceConfig = sourceConfigApplication.getById(taskConfig.getSource_id());
             ConnectConfigModel connectConfig = connectConfigApplication.getById(sourceConfig.getConnect_id());
             DbTypeEnum e = DbTypeEnum.values()[connectConfig.getDb_type()];

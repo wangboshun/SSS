@@ -17,11 +17,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TopicAsyncEventBus implements IEventBus {
     private final Map<String, AsyncEventBus> eventBusMap;
 
-    private final ThreadPoolTaskExecutor defaultExecutor;
+    private final ThreadPoolTaskExecutor customExecutor;
 
-    public TopicAsyncEventBus(ThreadPoolTaskExecutor defaultExecutor) {
+    public TopicAsyncEventBus(ThreadPoolTaskExecutor customExecutor) {
         eventBusMap = new ConcurrentHashMap<>();
-        this.defaultExecutor = defaultExecutor;
+        this.customExecutor = customExecutor;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class TopicAsyncEventBus implements IEventBus {
         synchronized (eventBusMap) {
             AsyncEventBus eventBus = eventBusMap.get(topic);
             if (eventBus == null) {
-                eventBus = new AsyncEventBus(defaultExecutor);
+                eventBus = new AsyncEventBus(customExecutor);
                 eventBusMap.put(topic, eventBus);
             }
             return eventBus;

@@ -36,7 +36,8 @@ public class ConnectionFactory {
                     return null;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println("getConnection exception:" + e.getMessage());
+            return null;
         }
     }
 }
