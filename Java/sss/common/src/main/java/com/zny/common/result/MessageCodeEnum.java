@@ -88,8 +88,7 @@ public enum MessageCodeEnum {
     /**
      * 抛出异常
      */
-    EXCEPTION("E00O01", 500, "抛出异常"),
-    ;
+    EXCEPTION("E00O01", 500, "抛出异常");
 
     public String code;
     public Integer responseCode;
