@@ -17,7 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -51,21 +54,6 @@ public class TableConfigApplication extends ServiceImpl<TableConfigMapper, Table
     }
 
     /**
-     * 获取表字段和类型
-     *
-     * @param connectId 连接id
-     * @param tableName 表名
-     */
-    public Map<String, String> getTableColumnType(String connectId, String tableName) {
-        List<TableConfigModel> list = getByConnectId(connectId, tableName);
-        Map<String, String> map = new HashMap<>();
-        for (TableConfigModel item : list) {
-            map.put(item.getColumn_name(), item.getData_type());
-        }
-        return map;
-    }
-
-    /**
      * 根据id获取表信息
      *
      * @param id id
@@ -76,31 +64,6 @@ public class TableConfigApplication extends ServiceImpl<TableConfigMapper, Table
             return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "表信息不存在！");
         }
         return SaResult.data(model);
-    }
-
-    /**
-     * 获取主键
-     *
-     * @param connection 连接
-     * @param tableName  表名
-     */
-    private List<String> getTablePrimaryKey(Connection connection, String tableName) {
-        List<String> primaryKey = new ArrayList<>();
-        ResultSet rs = null;
-        try {
-            DatabaseMetaData dbMeta = connection.getMetaData();
-            rs = dbMeta.getPrimaryKeys(null, null, tableName);
-            while (rs.next()) {
-                primaryKey.add(rs.getString("COLUMN_NAME"));
-            }
-
-        } catch (SQLException e) {
-            logger.error("getPrimaryKey ", e);
-            System.out.println("getPrimaryKey : " + e.getMessage());
-        } finally {
-            DbEx.release(rs);
-        }
-        return primaryKey;
     }
 
     /**
@@ -117,7 +80,7 @@ public class TableConfigApplication extends ServiceImpl<TableConfigMapper, Table
         try {
             stmt = connection.createStatement();
             result = stmt.executeQuery(String.format("SELECT * FROM %s WHERE 1=1 ", tableName));
-            List<String> primaryKeys = getTablePrimaryKey(connection, tableName);
+            List<String> primaryKeys = DbEx.getPrimaryKey(connection, tableName);
             ResultSetMetaData meta = result.getMetaData();
             int columnCount = meta.getColumnCount();
             for (int i = 1; i <= columnCount; i++) {

@@ -16,6 +16,56 @@ import java.util.Map;
 public class DbEx {
 
     /**
+     * 或者当前连接库下的所有表
+     *
+     * @param connection 连接
+     */
+    public static List<String> getTables(Connection connection) {
+        List<String> tables = new ArrayList<>();
+        ResultSet rs = null;
+        try {
+            DatabaseMetaData dbMeta = connection.getMetaData();
+            String driverName = connection.getMetaData().getDriverName().toUpperCase();
+            //如果是mysql或者sqlserver
+            if (driverName.contains("MYSQL") || driverName.contains("SQL SERVER")) {
+                rs = dbMeta.getTables(connection.getCatalog(), null, null, new String[]{"TABLE"});
+            }
+            while (rs.next()) {
+                tables.add(rs.getString("TABLE_NAME"));
+            }
+        } catch (SQLException e) {
+            System.out.println("getTables : " + e.getMessage());
+        } finally {
+            DbEx.release(rs);
+        }
+        return tables;
+    }
+
+    /**
+     * 获取表的主键
+     *
+     * @param connection 连接
+     * @param tableName  表名
+     */
+    public static List<String> getPrimaryKey(Connection connection, String tableName) {
+        List<String> primaryKey = new ArrayList<>();
+        ResultSet rs = null;
+        try {
+            DatabaseMetaData dbMeta = connection.getMetaData();
+            rs = dbMeta.getPrimaryKeys(null, null, tableName);
+            while (rs.next()) {
+                primaryKey.add(rs.getString("COLUMN_NAME"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("getPrimaryKey : " + e.getMessage());
+        } finally {
+            DbEx.release(rs);
+        }
+        return primaryKey;
+    }
+
+    /**
      * 获取表的所有列名
      */
     public static List<String> getColumnName(ResultSet result) {
@@ -31,6 +81,7 @@ public class DbEx {
         }
         return columnList;
     }
+
 
     /**
      * 查询数据是否存在
