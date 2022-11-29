@@ -22,7 +22,6 @@
     <modules>
         <module>host</module>
         <module>user</module>
-        <module>iot</module>
         <module>common</module>
         <module>system</module>
         <module>pipe</module>
