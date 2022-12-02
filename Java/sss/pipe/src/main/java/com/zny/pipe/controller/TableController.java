@@ -67,6 +67,36 @@ public class TableController {
     }
 
     /**
+     * 根据连接获取下面所有的数据库
+     *
+     * @param connectId 连接id
+     */
+    @GetMapping(value = "/get_dbs")
+    public SaResult getDataBases(String connectId) {
+        List<String> list = tableConfigApplication.getDataBases(connectId);
+        if (list.isEmpty()) {
+            return SaResult.error("表信息不存在！");
+        } else {
+            return SaResult.data(list);
+        }
+    }
+
+    /**
+     * 根据连接获取下面所有的模式
+     *
+     * @param connectId 连接id
+     */
+    @GetMapping(value = "/get_schemas")
+    public SaResult getSchemas(String connectId) {
+        List<String> list = tableConfigApplication.getSchemas(connectId);
+        if (list.isEmpty()) {
+            return SaResult.error("表信息不存在！");
+        } else {
+            return SaResult.data(list);
+        }
+    }
+
+    /**
      * 添加表配置
      *
      * @param connectId 连接id

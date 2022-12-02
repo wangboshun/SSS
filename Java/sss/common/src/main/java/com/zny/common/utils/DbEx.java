@@ -17,7 +17,7 @@ import java.util.Map;
 public class DbEx {
 
     /**
-     * 或者当前连接库下的所有表
+     * 获取当前连接库下的所有表
      *
      * @param connection 连接
      */
@@ -40,6 +40,50 @@ public class DbEx {
                 map.put("name", rs.getString("TABLE_NAME"));
                 map.put("remark", rs.getString("REMARKS"));
                 list.add(map);
+            }
+        } catch (SQLException e) {
+            System.out.println("getTables : " + e.getMessage());
+        } finally {
+            DbEx.release(rs);
+        }
+        return list;
+    }
+
+    /**
+     * 获取当前连接库下的所有库
+     *
+     * @param connection 连接
+     */
+    public static List<String> getDataBases(Connection connection) {
+        List<String> list = new ArrayList<>();
+        ResultSet rs = null;
+        try {
+            DatabaseMetaData dbMeta = connection.getMetaData();
+            rs = dbMeta.getCatalogs();
+            while (rs.next()) {
+                list.add(rs.getString("TABLE_CAT"));
+            }
+        } catch (SQLException e) {
+            System.out.println("getTables : " + e.getMessage());
+        } finally {
+            DbEx.release(rs);
+        }
+        return list;
+    }
+
+    /**
+     * 获取当前连接库下的所有模式
+     *
+     * @param connection 连接
+     */
+    public static List<String> getSchemas(Connection connection) {
+        List<String> list = new ArrayList<>();
+        ResultSet rs = null;
+        try {
+            DatabaseMetaData dbMeta = connection.getMetaData();
+            rs = dbMeta.getSchemas();
+            while (rs.next()) {
+                list.add(rs.getString("table_schem"));
             }
         } catch (SQLException e) {
             System.out.println("getTables : " + e.getMessage());

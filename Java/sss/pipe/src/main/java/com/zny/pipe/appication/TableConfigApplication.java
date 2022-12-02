@@ -68,6 +68,28 @@ public class TableConfigApplication extends ServiceImpl<TableConfigMapper, Table
     }
 
     /**
+     * 获取连接下所有库
+     *
+     * @param connectId 连接id
+     */
+    public List<String> getDataBases(String connectId) {
+        ConnectConfigModel connectConfig = connectConfigApplication.getById(connectId);
+        Connection connection = ConnectionFactory.getConnection(connectConfig);
+        return DbEx.getDataBases(connection);
+    }
+
+    /**
+     * 获取连接下所有模式
+     *
+     * @param connectId 连接id
+     */
+    public List<String> getSchemas(String connectId) {
+        ConnectConfigModel connectConfig = connectConfigApplication.getById(connectId);
+        Connection connection = ConnectionFactory.getConnection(connectConfig);
+        return DbEx.getSchemas(connection);
+    }
+
+    /**
      * 根据id获取表信息
      *
      * @param id id
