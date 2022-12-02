@@ -22,7 +22,10 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -51,6 +54,17 @@ public class TableConfigApplication extends ServiceImpl<TableConfigMapper, Table
         wrapper.eq("connect_id", connectId);
         wrapper.eq("table_name", tableName);
         return this.list(wrapper);
+    }
+
+    /**
+     * 获取数据库下面所有表
+     *
+     * @param connectId 连接id
+     */
+    public List<Map<String, String>> getByDb(String connectId) {
+        ConnectConfigModel connectConfig = connectConfigApplication.getById(connectId);
+        Connection connection = ConnectionFactory.getConnection(connectConfig);
+        return DbEx.getTables(connection);
     }
 
     /**
@@ -184,4 +198,6 @@ public class TableConfigApplication extends ServiceImpl<TableConfigMapper, Table
             }
         }
     }
+
+
 }

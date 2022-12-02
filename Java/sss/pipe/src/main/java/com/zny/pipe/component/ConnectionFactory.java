@@ -3,6 +3,7 @@ package com.zny.pipe.component;
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import com.zny.pipe.model.ConnectConfigModel;
+import org.postgresql.ds.PGSimpleDataSource;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -32,6 +33,14 @@ public class ConnectionFactory {
                     sqlServerDataSource.setUser(connectConfig.getUsername());
                     sqlServerDataSource.setPassword(connectConfig.getPassword());
                     return sqlServerDataSource.getConnection();
+                case 2:
+                    connectStr = "jdbc:postgresql://" + connectConfig.getHost() + ":" + connectConfig.getPort() + "/" + connectConfig.getDb_name();
+                    PGSimpleDataSource source = new PGSimpleDataSource();
+                    source.setURL(connectStr);
+                    source.setCurrentSchema(connectConfig.getDb_schema());
+                    source.setUser(connectConfig.getUsername());
+                    source.setPassword(connectConfig.getPassword());
+                    return source.getConnection();
                 default:
                     return null;
             }

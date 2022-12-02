@@ -4,6 +4,7 @@ import com.zny.common.enums.DbTypeEnum;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,25 +21,32 @@ public class DbEx {
      *
      * @param connection 连接
      */
-    public static List<String> getTables(Connection connection) {
-        List<String> tables = new ArrayList<>();
+    public static List<Map<String, String>> getTables(Connection connection) {
+        List<Map<String, String>> list = new ArrayList<>();
         ResultSet rs = null;
         try {
             DatabaseMetaData dbMeta = connection.getMetaData();
             String driverName = connection.getMetaData().getDriverName().toUpperCase();
-            //如果是mysql或者sqlserver
+            //如果是mysql或者sqlserver，不需要schema
             if (driverName.contains("MYSQL") || driverName.contains("SQL SERVER")) {
                 rs = dbMeta.getTables(connection.getCatalog(), null, null, new String[]{"TABLE"});
             }
+            //如果是pgsql，需要指定schema，默认为public
+            else if (driverName.contains("POSTGRESQL")) {
+                rs = dbMeta.getTables(connection.getCatalog(), connection.getSchema(), null, new String[]{"TABLE"});
+            }
             while (rs.next()) {
-                tables.add(rs.getString("TABLE_NAME"));
+                Map<String, String> map = new HashMap<>();
+                map.put("name", rs.getString("TABLE_NAME"));
+                map.put("remark", rs.getString("REMARKS"));
+                list.add(map);
             }
         } catch (SQLException e) {
             System.out.println("getTables : " + e.getMessage());
         } finally {
             DbEx.release(rs);
         }
-        return tables;
+        return list;
     }
 
     /**

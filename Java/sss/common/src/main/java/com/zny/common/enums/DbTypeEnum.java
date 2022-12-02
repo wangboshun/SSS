@@ -16,7 +16,12 @@ public enum DbTypeEnum {
     /**
      * MsSQL
      */
-    MsSQL(1);
+    MsSQL(1),
+
+    /**
+     * POSTGRESQL
+     */
+    PostGres(2);
 
     public Integer index;
 

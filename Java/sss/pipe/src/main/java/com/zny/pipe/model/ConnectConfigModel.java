@@ -43,6 +43,20 @@ public class ConnectConfigModel implements Serializable {
      */
     private String db_name;
 
+
+    /**
+     * 数据库模式，pgsql会用到
+     */
+    private String db_schema;
+
+    public String getDb_schema() {
+        return db_schema;
+    }
+
+    public void setDb_schema(String db_schema) {
+        this.db_schema = db_schema;
+    }
+
     /**
      * 数据库类型
      * 0为mysql、1为mssql

@@ -12,8 +12,7 @@ import org.springframework.context.annotation.ComponentScan;
 public class HostApplication {
 
     public static void main(String[] args) {
-
-        ConfigurableApplicationContext run = SpringApplication.run(HostApplication.class, args);
+        SpringApplication.run(HostApplication.class, args);
     }
 
 }

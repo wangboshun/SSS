@@ -66,10 +66,10 @@ spring:
           driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
           url: jdbc:sqlserver://127.0.0.1:1433;database=pbgSQTX_3;integratedSecurity=false;encrypt=true;trustServerCertificate=true
   rabbitmq:
-    host: 127.0.0.1
+    host: 123.60.141.63
     port: 5672
     username: admin
-    password: 123456
+    password: mima123456
   redis:
     host: 127.0.0.1
     port: 6379

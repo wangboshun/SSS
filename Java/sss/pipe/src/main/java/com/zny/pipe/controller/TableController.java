@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author WBS
@@ -41,8 +42,23 @@ public class TableController {
      * @param tableName 表名
      */
     @GetMapping(value = "/get_by_connect")
-    public SaResult get(String connectId, String tableName) {
+    public SaResult getByConnect(String connectId, String tableName) {
         List<TableConfigModel> list = tableConfigApplication.getByConnectId(connectId, tableName);
+        if (list.isEmpty()) {
+            return SaResult.error("表信息不存在！");
+        } else {
+            return SaResult.data(list);
+        }
+    }
+
+    /**
+     * 根据连接获取下面所有的表名
+     *
+     * @param connectId 连接id
+     */
+    @GetMapping(value = "/get_by_db")
+    public SaResult getByDb(String connectId) {
+        List<Map<String, String>> list = tableConfigApplication.getByDb(connectId);
         if (list.isEmpty()) {
             return SaResult.error("表信息不存在！");
         } else {

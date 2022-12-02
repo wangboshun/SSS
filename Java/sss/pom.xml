@@ -92,6 +92,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.5.1</version>
+        </dependency>
+
+        <dependency>
             <scope>compile</scope>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
