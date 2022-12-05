@@ -64,7 +64,7 @@ public class DbEx {
                 list.add(rs.getString("TABLE_CAT"));
             }
         } catch (SQLException e) {
-            System.out.println("getTables : " + e.getMessage());
+            System.out.println("getDataBases : " + e.getMessage());
         } finally {
             DbEx.release(rs);
         }
@@ -86,7 +86,7 @@ public class DbEx {
                 list.add(rs.getString("table_schem"));
             }
         } catch (SQLException e) {
-            System.out.println("getTables : " + e.getMessage());
+            System.out.println("getSchemas : " + e.getMessage());
         } finally {
             DbEx.release(rs);
         }

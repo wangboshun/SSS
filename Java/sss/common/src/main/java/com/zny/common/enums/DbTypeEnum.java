@@ -21,7 +21,12 @@ public enum DbTypeEnum {
     /**
      * POSTGRESQL
      */
-    PostGres(2);
+    PostGres(2),
+
+    /**
+     * CLICKHOUSE
+     */
+    CLICKHOUSE(3);
 
     public Integer index;
 

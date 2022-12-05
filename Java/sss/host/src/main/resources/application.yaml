@@ -57,9 +57,9 @@ spring:
       datasource:
         main:
           username: root
-          password: 123456
+          password: mima123456
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://127.0.0.1:3306/wbs?rewriteBatchedStatements=true&useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+          url: jdbc:mysql://123.60.141.63:3306/wbs?rewriteBatchedStatements=true&useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
         iot:
           username: sa
           password: 123456
@@ -71,9 +71,9 @@ spring:
     username: admin
     password: mima123456
   redis:
-    host: 127.0.0.1
+    host: 123.60.141.63
     port: 6379
-    password: 123456
+    password: mima123456
 
 sa-token:
   # token 名称 (同时也是cookie名称)
