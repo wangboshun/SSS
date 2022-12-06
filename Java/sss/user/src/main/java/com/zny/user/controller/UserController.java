@@ -136,8 +136,8 @@ public class UserController {
      *
      * @param roleId 角色id
      */
-    @GetMapping(value = "/by_role")
-    public SaResult getUserByRole(String roleId) {
+    @GetMapping(value = "/{roleId}/role")
+    public SaResult getUserByRole(@PathVariable String roleId) {
         List<UserModel> list = userApplication.getUserByRole(roleId);
         return SaResult.data(list);
     }

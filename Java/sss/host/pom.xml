@@ -23,12 +23,6 @@
 
         <dependency>
             <groupId>com.zny</groupId>
-            <artifactId>iot</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.zny</groupId>
             <artifactId>user</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>

@@ -90,8 +90,8 @@ public class SinkController {
      *
      * @param userId 用户id
      */
-    @GetMapping(value = "/by_user")
-    public SaResult getSinkByUser(String userId) {
+    @GetMapping(value = "/{userId}/user")
+    public SaResult getSinkByUser(@PathVariable String userId) {
         List<SinkConfigModel> list = sinkConfigApplication.getSinkByUser(userId);
         return SaResult.data(list);
     }
@@ -101,8 +101,8 @@ public class SinkController {
      *
      * @param roleId 角色id
      */
-    @GetMapping(value = "/by_role")
-    public SaResult getSinkByRole(String roleId) {
+    @GetMapping(value = "/{roleId}/role")
+    public SaResult getSinkByRole(@PathVariable String roleId) {
         List<SinkConfigModel> list = sinkConfigApplication.getSinkByRole(roleId);
         return SaResult.data(list);
     }

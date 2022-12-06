@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -61,7 +62,7 @@ public class TableConfigApplication extends ServiceImpl<TableConfigMapper, Table
      *
      * @param connectId 连接id
      */
-    public List<Map<String, String>> getByDb(String connectId) {
+    public List<Map<String, String>> getTables(String connectId) {
         ConnectConfigModel connectConfig = connectConfigApplication.getById(connectId);
         Connection connection = ConnectionFactory.getConnection(connectConfig);
         return DbEx.getTables(connection);

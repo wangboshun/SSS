@@ -30,8 +30,8 @@ public class ColumnController {
      *
      * @param taskId 任务id
      */
-    @GetMapping(value = "/get_by_task")
-    public SaResult list(String taskId) {
+    @GetMapping(value = "/{taskId}/task")
+    public SaResult list(@PathVariable String taskId) {
         List<ColumnConfigModel> result = columnConfigApplication.getColumnByTaskId(taskId);
         return SaResult.data(result);
     }
@@ -71,8 +71,8 @@ public class ColumnController {
      *
      * @param taskId 字段配置id
      */
-    @DeleteMapping(value = "/delete_by_task")
-    public SaResult deleteByTask(String taskId) {
+    @DeleteMapping(value = "/{taskId}/task")
+    public SaResult deleteByTask(@PathVariable String taskId) {
         return columnConfigApplication.deleteColumnByTask(taskId);
     }
 

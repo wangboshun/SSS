@@ -77,8 +77,8 @@ public class ApiController {
      *
      * @param userId 用户id
      */
-    @GetMapping(value = "/get_by_user")
-    public SaResult getApiByUser(String userId) {
+    @GetMapping(value = "/{userId}/user")
+    public SaResult getApiByUser(@PathVariable String userId) {
         List<ApiModel> list = apiApplication.getApiByUser(userId);
         return SaResult.data(list);
     }
@@ -88,8 +88,8 @@ public class ApiController {
      *
      * @param roleId 角色id
      */
-    @GetMapping(value = "/get_by_role")
-    public SaResult getApiByRole(String roleId) {
+    @GetMapping(value = "/{roleId}/role")
+    public SaResult getApiByRole(@PathVariable String roleId) {
         List<ApiModel> list = apiApplication.getApiByRole(roleId);
         return SaResult.data(list);
     }

@@ -135,8 +135,8 @@ public class TaskController {
      *
      * @param userId 用户id
      */
-    @GetMapping(value = "/by_user")
-    public SaResult getTaskByUser(String userId) {
+    @GetMapping(value = "/{userId}/user")
+    public SaResult getTaskByUser(@PathVariable String userId) {
         List<TaskConfigModel> list = taskConfigApplication.getTaskByUser(userId);
         return SaResult.data(list);
     }
@@ -146,8 +146,8 @@ public class TaskController {
      *
      * @param roleId 角色id
      */
-    @GetMapping(value = "/by_role")
-    public SaResult getTaskByRole(String roleId) {
+    @GetMapping(value = "/{roleId}/role")
+    public SaResult getTaskByRole(@PathVariable String roleId) {
         List<TaskConfigModel> list = taskConfigApplication.getTaskByRole(roleId);
         return SaResult.data(list);
     }

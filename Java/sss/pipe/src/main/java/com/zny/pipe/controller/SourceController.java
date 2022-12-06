@@ -102,8 +102,8 @@ public class SourceController {
      *
      * @param userId 用户id
      */
-    @GetMapping(value = "/by_user")
-    public SaResult getSourceByUser(String userId) {
+    @GetMapping(value = "/{userId}/user")
+    public SaResult getSourceByUser(@PathVariable String userId) {
         List<SourceConfigModel> list = sourceConfigApplication.getSourceByUser(userId);
         return SaResult.data(list);
     }
@@ -113,8 +113,8 @@ public class SourceController {
      *
      * @param roleId 角色id
      */
-    @GetMapping(value = "/by_role")
-    public SaResult getSourceByRole(String roleId) {
+    @GetMapping(value = "/{roleId}/role")
+    public SaResult getSourceByRole(@PathVariable String roleId) {
         List<SourceConfigModel> list = sourceConfigApplication.getSourceByRole(roleId);
         return SaResult.data(list);
     }

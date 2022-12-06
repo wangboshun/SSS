@@ -97,8 +97,8 @@ public class ConnectController {
      *
      * @param userId 用户id
      */
-    @GetMapping(value = "/by_user")
-    public SaResult getConnectByUser(String userId) {
+    @GetMapping(value = "/{userId}/user")
+    public SaResult getConnectByUser(@PathVariable String userId) {
         List<ConnectConfigModel> list = connectConfigApplication.getConnectByUser(userId);
         return SaResult.data(list);
     }
@@ -108,8 +108,8 @@ public class ConnectController {
      *
      * @param roleId 角色id
      */
-    @GetMapping(value = "/by_role")
-    public SaResult getConnectByRole(String roleId) {
+    @GetMapping(value = "/{roleId}/role")
+    public SaResult getConnectByRole(@PathVariable String roleId) {
         List<ConnectConfigModel> list = connectConfigApplication.getConnectByRole(roleId);
         return SaResult.data(list);
     }

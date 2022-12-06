@@ -120,8 +120,8 @@ public class MenuController {
      *
      * @param userId 用户id
      */
-    @GetMapping(value = "/by_user")
-    public SaResult getMenuByUser(String userId) {
+    @GetMapping(value = "/{userId}/user")
+    public SaResult getMenuByUser(@PathVariable String userId) {
         List<MenuModel> list = menuApplication.getMenuByUser(userId);
         return SaResult.data(list);
     }
@@ -131,8 +131,8 @@ public class MenuController {
      *
      * @param roleId 角色id
      */
-    @GetMapping(value = "/by_role")
-    public SaResult getMenuByRole(String roleId) {
+    @GetMapping(value = "/{roleId}/role")
+    public SaResult getMenuByRole(@PathVariable String roleId) {
         List<MenuModel> list = menuApplication.getMenuByRole(roleId);
         return SaResult.data(list);
     }

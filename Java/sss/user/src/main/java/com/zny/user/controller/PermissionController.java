@@ -108,8 +108,8 @@ public class PermissionController {
      *
      * @param userId 用户id
      */
-    @GetMapping(value = "/by_user")
-    public SaResult getPermissionByUser(String userId) {
+    @GetMapping(value = "/{userId}/user")
+    public SaResult getPermissionByUser(@PathVariable String userId) {
         List<PermissionModel> list = permissionApplication.getPermissionByUser(userId);
         return SaResult.data(list);
     }
@@ -119,8 +119,8 @@ public class PermissionController {
      *
      * @param roleId 角色id
      */
-    @GetMapping(value = "/by_role")
-    public SaResult getPermissionByRole(String roleId) {
+    @GetMapping(value = "/{roleId}/role")
+    public SaResult getPermissionByRole(@PathVariable String roleId) {
         List<PermissionModel> list = permissionApplication.getPermissionByRole(roleId);
         return SaResult.data(list);
     }
