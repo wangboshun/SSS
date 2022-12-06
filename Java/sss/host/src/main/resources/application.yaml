@@ -6,7 +6,7 @@ spring:
       # 配置策略
       matching-strategy: ant-path-matcher
   profiles:
-    include: iot,user,common,system
+    include: user,common,system
     autoconfigure:
       exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
   datasource:
