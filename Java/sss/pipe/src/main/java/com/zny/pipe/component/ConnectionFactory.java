@@ -1,5 +1,6 @@
 package com.zny.pipe.component;
 
+import com.clickhouse.jdbc.ClickHouseDataSource;
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import com.zny.pipe.model.ConnectConfigModel;
@@ -7,6 +8,7 @@ import org.postgresql.ds.PGSimpleDataSource;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * @author WBS
@@ -35,12 +37,19 @@ public class ConnectionFactory {
                     return sqlServerDataSource.getConnection();
                 case 2:
                     connectStr = "jdbc:postgresql://" + connectConfig.getHost() + ":" + connectConfig.getPort() + "/" + connectConfig.getDb_name();
-                    PGSimpleDataSource source = new PGSimpleDataSource();
-                    source.setURL(connectStr);
-                    source.setCurrentSchema(connectConfig.getDb_schema());
-                    source.setUser(connectConfig.getUsername());
-                    source.setPassword(connectConfig.getPassword());
-                    return source.getConnection();
+                    PGSimpleDataSource pgSimpleDataSource = new PGSimpleDataSource();
+                    pgSimpleDataSource.setURL(connectStr);
+                    pgSimpleDataSource.setCurrentSchema(connectConfig.getDb_schema());
+                    pgSimpleDataSource.setUser(connectConfig.getUsername());
+                    pgSimpleDataSource.setPassword(connectConfig.getPassword());
+                    return pgSimpleDataSource.getConnection();
+                case 3:
+                    connectStr = "jdbc:clickhouse://" + connectConfig.getHost() + ":" + connectConfig.getPort() + "/" + connectConfig.getDb_name();
+                    Properties properties = new Properties();
+                    properties.setProperty("user", connectConfig.getUsername());
+                    properties.setProperty("password", connectConfig.getPassword());
+                    ClickHouseDataSource clickHouseDataSource = new ClickHouseDataSource(connectStr,properties);
+                    return clickHouseDataSource.getConnection();
                 default:
                     return null;
             }

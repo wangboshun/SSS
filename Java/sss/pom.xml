@@ -98,6 +98,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.clickhouse</groupId>
+            <artifactId>clickhouse-jdbc</artifactId>
+            <version>0.3.2-patch11</version>
+        </dependency>
+
+        <dependency>
             <scope>compile</scope>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>

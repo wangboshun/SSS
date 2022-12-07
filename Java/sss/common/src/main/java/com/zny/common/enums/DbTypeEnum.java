@@ -19,14 +19,14 @@ public enum DbTypeEnum {
     MsSQL(1),
 
     /**
-     * POSTGRESQL
+     * PostGres
      */
     PostGres(2),
 
     /**
-     * CLICKHOUSE
+     * ClickHouse
      */
-    CLICKHOUSE(3);
+    ClickHouse(3);
 
     public Integer index;
 

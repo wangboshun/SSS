@@ -25,15 +25,19 @@ public class DbEx {
         List<Map<String, String>> list = new ArrayList<>();
         ResultSet rs = null;
         try {
+            final String[] types = new String[]{"TABLE"};
             DatabaseMetaData dbMeta = connection.getMetaData();
             String driverName = connection.getMetaData().getDriverName().toUpperCase();
             //如果是mysql或者sqlserver，不需要schema
             if (driverName.contains("MYSQL") || driverName.contains("SQL SERVER")) {
-                rs = dbMeta.getTables(connection.getCatalog(), null, null, new String[]{"TABLE"});
+                rs = dbMeta.getTables(connection.getCatalog(), null, null, types);
             }
             //如果是pgsql，需要指定schema，默认为public
             else if (driverName.contains("POSTGRESQL")) {
-                rs = dbMeta.getTables(connection.getCatalog(), connection.getSchema(), null, new String[]{"TABLE"});
+                rs = dbMeta.getTables(connection.getCatalog(), connection.getSchema(), null, types);
+            } else if (driverName.contains("CLICKHOUSE")) {
+                //根据clickhouse源码研究，由于clickhouse有多种表类型，所以这里传空
+                rs = dbMeta.getTables(connection.getCatalog(), connection.getSchema(), null, null);
             }
             while (rs.next()) {
                 Map<String, String> map = new HashMap<>();
@@ -161,6 +165,7 @@ public class DbEx {
                         whereSql.append(" [").append(column).append("]=? ");
                         break;
                     default:
+                        whereSql.append(column).append("=? ");
                         break;
                 }
                 whereSql.append(" AND ");
@@ -171,9 +176,10 @@ public class DbEx {
                     sql = String.format("select 1 as number from %s%s  limit  1 ", tableName, whereSql);
                     break;
                 case MsSQL:
-                    sql = String.format("SELECT TOP 1 1 as number FROM %s%s", whereSql, tableName);
+                    sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableName, whereSql);
                     break;
                 default:
+                    sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableName, whereSql);
                     break;
             }
             pstm = connection.prepareStatement(sql);

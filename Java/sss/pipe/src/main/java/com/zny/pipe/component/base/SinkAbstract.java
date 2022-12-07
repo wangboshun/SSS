@@ -142,6 +142,7 @@ public class SinkAbstract implements SinkBase {
                         columnSql.append("[").append(column).append("],");
                         break;
                     default:
+                        columnSql.append(column).append(",");
                         break;
                 }
                 valueSql.append("?,");
@@ -198,6 +199,7 @@ public class SinkAbstract implements SinkBase {
                             whereSql.append("[").append(column).append("]=? AND ");
                             break;
                         default:
+                            whereSql.append(column).append("=? AND ");
                             break;
                     }
 
@@ -212,6 +214,7 @@ public class SinkAbstract implements SinkBase {
                             columnSql.append("[").append(column).append("]=?,");
                             break;
                         default:
+                            columnSql.append(column).append("=?,");
                             break;
                     }
                 }
