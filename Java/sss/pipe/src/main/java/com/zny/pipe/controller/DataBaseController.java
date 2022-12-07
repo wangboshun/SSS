@@ -43,11 +43,11 @@ public class DataBaseController {
      * @param connectId 连接id
      * @param tableName 表名
      */
-    @GetMapping(value = "/table/{connectId}/connect")
-    public SaResult getByConnect(@PathVariable String connectId, String tableName) {
+    @GetMapping(value = "/table/get_by_connect")
+    public SaResult getByConnect(String connectId, String tableName) {
         List<TableConfigModel> list = tableConfigApplication.getByConnectId(connectId, tableName);
         if (list.isEmpty()) {
-            return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "数据不存在！");
+            return SaResultEx.error(MessageCodeEnum.NOT_FOUND);
         } else {
             return SaResult.data(list);
         }
@@ -84,22 +84,7 @@ public class DataBaseController {
     @DeleteMapping(value = "/table/delete")
     public SaResult delete(String connectId, String tableName) {
         return tableConfigApplication.deleteTableConfig(connectId, tableName);
-    }
-
-    /**
-     * 根据连接获取下面所有的表名
-     *
-     * @param connectId 连接id
-     */
-    @GetMapping(value = "/db/get_tables")
-    public SaResult getTables(String connectId) {
-        List<Map<String, String>> list = tableConfigApplication.getTables(connectId);
-        if (list.isEmpty()) {
-            return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "数据不存在！");
-        } else {
-            return SaResult.data(list);
-        }
-    }
+    } 
 
     /**
      * 根据连接获取下面所有的数据库
@@ -110,7 +95,7 @@ public class DataBaseController {
     public SaResult getDataBases(String connectId) {
         List<String> list = tableConfigApplication.getDataBases(connectId);
         if (list.isEmpty()) {
-            return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "数据不存在！");
+            return SaResultEx.error(MessageCodeEnum.NOT_FOUND);
         } else {
             return SaResult.data(list);
         }
@@ -125,7 +110,22 @@ public class DataBaseController {
     public SaResult getSchemas(String connectId) {
         List<String> list = tableConfigApplication.getSchemas(connectId);
         if (list.isEmpty()) {
-            return SaResultEx.error(MessageCodeEnum.NOT_FOUND, "数据不存在！");
+            return SaResultEx.error(MessageCodeEnum.NOT_FOUND);
+        } else {
+            return SaResult.data(list);
+        }
+    }
+
+    /**
+     * 根据连接获取下面所有的表名
+     *
+     * @param connectId 连接id
+     */
+    @GetMapping(value = "/db/get_tables")
+    public SaResult getTables(String connectId) {
+        List<Map<String, String>> list = tableConfigApplication.getTables(connectId);
+        if (list.isEmpty()) {
+            return SaResultEx.error(MessageCodeEnum.NOT_FOUND);
         } else {
             return SaResult.data(list);
         }
