@@ -96,7 +96,11 @@ public class SourceAbstract implements SourceBase {
             rowCount = DbEx.getCount(connection, sql);
             redisTemplate.opsForHash().put(this.cacheKey, "ROW_COUNT", rowCount + "");
             pstm = connection.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-            pstm.setFetchSize(Integer.MIN_VALUE);
+            if(dbType==DbTypeEnum.PostgreSQL){
+                pstm.setFetchSize(10000);
+            }else{
+                pstm.setFetchSize(Integer.MIN_VALUE);
+            }
             result = pstm.executeQuery();
             List<Map<String, Object>> list = new ArrayList<>();
             Set<String> columnNameSet = DbEx.getColumnName(result).keySet();
@@ -162,21 +166,21 @@ public class SourceAbstract implements SourceBase {
             if (taskConfig.getAdd_type() == 0) {
                 String startTime = getStartTime();
                 String endTime = getEndTime(startTime);
-                String pg_time;
+                String tm = "";
+                String pg_time = "";
                 if (dbType == DbTypeEnum.PostgreSQL) {
                     pg_time = "::TIMESTAMP";
                 }
-
-                //TODO 未完成pgsql的时间处理
-
-                //按wrtm获取
-                if (sourceConfig.getGet_type() == 0) {
-                    sql += " AND " + DbEx.convertName(sourceConfig.getWrtm_column(), dbType) + ">='" + startTime + "' AND " + DbEx.convertName(sourceConfig.getWrtm_column(), dbType) + "<='" + endTime + "' ";
+                //按写入获取
+                if (sourceConfig.getGet_type() == 0 && StringUtils.isNotBlank(sourceConfig.getWrtm_column())) {
+                    tm = DbEx.convertName(sourceConfig.getWrtm_column(), dbType);
                 }
                 //按数据时间获取
                 else if (sourceConfig.getGet_type() == 1) {
-                    sql += " AND " + DbEx.convertName(sourceConfig.getTime_column(), dbType) + ">='" + startTime + "' AND " + DbEx.convertName(sourceConfig.getTime_column(), dbType) + "<='" + endTime + "' ";
+                    tm = DbEx.convertName(sourceConfig.getTime_column(), dbType);
                 }
+                sql += " AND " + tm + ">='" + startTime + "'" + pg_time;
+                sql += " AND " + tm + "<='" + endTime + "'" + pg_time;
             }
 
             //where条件
