@@ -26,19 +26,6 @@ public class SinkConfigModel implements Serializable {
      */
     private String table_name;
 
-    /**
-     * 主键，以逗号分割
-     */
-    private String primary_column;
-
-    public String getPrimary_column() {
-        return primary_column;
-    }
-
-    public void setPrimary_column(String primary_column) {
-        this.primary_column = primary_column;
-    }
-
     public String getTable_name() {
         return table_name;
     }

@@ -9,10 +9,11 @@ import org.springframework.stereotype.Component;
  * @author WBS
  * Date:2022/10/12
  * PostgreSql目的服务类
+ * PostgreSQL在查询时，需要给表名和字段加双引号，从而解决大小写问题
  */
 
 @Component
-@SinkTypeAnnotation(DbTypeEnum.PostGres)
+@SinkTypeAnnotation(DbTypeEnum.PostgreSQL)
 public class PostgreSqlSink extends SinkAbstract {
 
 }

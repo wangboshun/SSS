@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zny.common.result.MessageCodeEnum;
 import com.zny.common.result.SaResultEx;
 import com.zny.common.utils.DateUtils;
-import com.zny.common.utils.DbEx;
+import com.zny.common.utils.database.DbEx;
 import com.zny.pipe.component.ConnectionFactory;
 import com.zny.pipe.mapper.TableConfigMapper;
 import com.zny.pipe.model.ConnectConfigModel;
@@ -16,17 +16,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -116,8 +112,8 @@ public class TableConfigApplication extends ServiceImpl<TableConfigMapper, Table
         List<TableConfigModel> list = new ArrayList<>();
         try {
             stmt = connection.createStatement();
-            result = stmt.executeQuery(String.format("SELECT * FROM %s WHERE 1=1 ", tableName));
-            List<String> primaryKeys = DbEx.getPrimaryKey(connection, tableName);
+            result = stmt.executeQuery(String.format("SELECT * FROM %s WHERE 1=1 ", DbEx.convertName(tableName, connection)));
+            Set<String> primaryKeySet = DbEx.getPrimaryKey(connection, tableName).keySet();
             ResultSetMetaData meta = result.getMetaData();
             int columnCount = meta.getColumnCount();
             for (int i = 1; i <= columnCount; i++) {
@@ -126,13 +122,12 @@ public class TableConfigApplication extends ServiceImpl<TableConfigMapper, Table
                 TableConfigModel model = new TableConfigModel();
                 model.setId(UUID.randomUUID().toString());
                 model.setConnect_id(connectId);
-                model.setTable_name(tableName);
                 model.setColumn_name(columnName);
-                model.setData_type(className[className.length - 1]);
-                model.setJdbc_type(meta.getColumnTypeName(i));
+                model.setJava_type(className[className.length - 1]);
+                model.setDb_type(meta.getColumnTypeName(i));
                 model.setIs_null(meta.isNullable(i));
                 model.setCreate_time(DateUtils.dateToStr(LocalDateTime.now()));
-                if (primaryKeys.contains(columnName)) {
+                if (primaryKeySet.contains(columnName)) {
                     model.setIs_primary(1);
                 } else {
                     model.setIs_primary(0);

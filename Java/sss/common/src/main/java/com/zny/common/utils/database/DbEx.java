@@ -1,12 +1,9 @@
-package com.zny.common.utils;
+package com.zny.common.utils.database;
 
 import com.zny.common.enums.DbTypeEnum;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author WBS
@@ -98,19 +95,59 @@ public class DbEx {
     }
 
     /**
+     * 获取表字段信息
+     *
+     * @param connection 连接
+     * @param tableName  表名
+     */
+    public static List<TableInfo> getTableInfo(Connection connection, String tableName) {
+        Statement stmt = null;
+        ResultSet result = null;
+        List<TableInfo> list = new ArrayList<>();
+        try {
+            stmt = connection.createStatement();
+            result = stmt.executeQuery(String.format("SELECT * FROM %s WHERE 1=1 ", convertName(tableName, connection)));
+            Set<String> primaryKeySet = DbEx.getPrimaryKey(connection, tableName).keySet();
+            ResultSetMetaData meta = result.getMetaData();
+            int columnCount = meta.getColumnCount();
+            for (int i = 1; i <= columnCount; i++) {
+                String columnName = meta.getColumnName(i);
+                String[] className = meta.getColumnClassName(i).split("\\.");
+                TableInfo model = new TableInfo();
+                model.setColumn_name(columnName);
+                model.setJava_type(className[className.length - 1]);
+                model.setDb_type(meta.getColumnTypeName(i));
+                model.setIs_null(meta.isNullable(i));
+                if (primaryKeySet.contains(columnName)) {
+                    model.setIs_primary(1);
+                } else {
+                    model.setIs_primary(0);
+                }
+                list.add(model);
+            }
+
+        } catch (Exception e) {
+            System.out.println("getTableInfo : " + e.getMessage());
+        } finally {
+            DbEx.release(stmt, result);
+        }
+        return list;
+    }
+
+    /**
      * 获取表的主键
      *
      * @param connection 连接
      * @param tableName  表名
      */
-    public static List<String> getPrimaryKey(Connection connection, String tableName) {
-        List<String> primaryKey = new ArrayList<>();
+    public static Map<String, String> getPrimaryKey(Connection connection, String tableName) {
+        Map<String, String> map = new HashMap<>();
         ResultSet rs = null;
         try {
             DatabaseMetaData dbMeta = connection.getMetaData();
             rs = dbMeta.getPrimaryKeys(null, null, tableName);
             while (rs.next()) {
-                primaryKey.add(rs.getString("COLUMN_NAME"));
+                map.put(rs.getString("COLUMN_NAME"), "");
             }
 
         } catch (SQLException e) {
@@ -118,26 +155,41 @@ public class DbEx {
         } finally {
             DbEx.release(rs);
         }
-        return primaryKey;
+        return map;
+    }
+
+    /**
+     * 获取表的主键
+     *
+     * @param tableInfo 表信息
+     */
+    public static Map<String, String> getPrimaryKey(List<TableInfo> tableInfo) {
+        Map<String, String> map = new HashMap<>();
+        for (TableInfo item : tableInfo) {
+            if (item.getIs_primary() > 0) {
+                map.put(item.getColumn_name(), item.getJava_type());
+            }
+        }
+        return map;
     }
 
     /**
      * 获取表的所有列名
      */
-    public static List<String> getColumnName(ResultSet result) {
-        List<String> columnList = new ArrayList<>();
+    public static Map<String, String> getColumnName(ResultSet result) {
+        Map<String, String> map = new HashMap<>();
         try {
             ResultSetMetaData meta = result.getMetaData();
             int columnCount = meta.getColumnCount();
             for (int i = 1; i <= columnCount; i++) {
-                columnList.add(meta.getColumnName(i));
+                String[] className = meta.getColumnClassName(i).split("\\.");
+                map.put(meta.getColumnName(i), className[className.length - 1]);
             }
         } catch (SQLException e) {
-            System.out.println("getField error:" + e.getMessage());
+            System.out.println("getColumnName error:" + e.getMessage());
         }
-        return columnList;
+        return map;
     }
-
 
     /**
      * 查询数据是否存在
@@ -148,7 +200,8 @@ public class DbEx {
      * @param primaryColumn 主键
      * @param dbType        数据类型
      */
-    public static boolean hasData(Connection connection, String tableName, Map<String, Object> data, String[] primaryColumn, DbTypeEnum dbType) {
+    public static boolean hasData(Connection connection, String tableName, Map<String, Object> data, Map<String, String> primaryColumn, DbTypeEnum dbType) {
+        tableName = convertName(tableName, dbType);
         int number = 0;
         ResultSet result = null;
         PreparedStatement pstm = null;
@@ -156,13 +209,22 @@ public class DbEx {
             String sql = "";
             StringBuilder whereSql = new StringBuilder(" WHERE ");
 
-            for (String column : primaryColumn) {
+            for (Map.Entry<String, String> entry : primaryColumn.entrySet()) {
+                String column = entry.getKey();
                 switch (dbType) {
                     case MySQL:
                         whereSql.append(" `").append(column).append("`=? ");
                         break;
                     case MsSQL:
                         whereSql.append(" [").append(column).append("]=? ");
+                        break;
+                    case PostgreSQL:
+                        //如果是PostgreSQL数据库，需要对日期格式特殊处理，在后面加【::TIMESTAMP】
+                        if(entry.getValue().equals("Timestamp")){
+                            whereSql.append(" \"").append(column).append("\"=?::TIMESTAMP ");
+                        }else{
+                            whereSql.append(" \"").append(column).append("\"=? ");
+                        }
                         break;
                     default:
                         whereSql.append(column).append("=? ");
@@ -178,13 +240,20 @@ public class DbEx {
                 case MsSQL:
                     sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableName, whereSql);
                     break;
+                case PostgreSQL:
+                    sql = String.format("select 1 as number from %s%s  limit  1 ", tableName, whereSql);
+                    break;
+                case ClickHouse:
+                    sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableName, whereSql);
+                    break;
                 default:
                     sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableName, whereSql);
                     break;
             }
             pstm = connection.prepareStatement(sql);
             int index = 1;
-            for (String column : primaryColumn) {
+            for (Map.Entry<String, String> entry : primaryColumn.entrySet()) {
+                String column = entry.getKey();
                 pstm.setObject(index, data.get(column));
                 index++;
             }
@@ -243,6 +312,50 @@ public class DbEx {
             release(stmt, result);
         }
         return count;
+    }
+
+    /**
+     * 转换表名
+     *
+     * @param tableName 表名
+     * @param dbType    数据库类型
+     */
+    public static String convertName(String tableName, DbTypeEnum dbType) {
+        switch (dbType) {
+            case MySQL:
+                return "`" + tableName + "`";
+            case MsSQL:
+                return "[" + tableName + "]";
+            case PostgreSQL:
+                return "\"" + tableName + "\"";
+            default:
+                return tableName;
+        }
+    }
+
+    /**
+     * 转换表名
+     *
+     * @param tableName  表名
+     * @param connection 数据库连接
+     */
+    public static String convertName(String tableName, Connection connection) {
+        try {
+            String driverName = connection.getMetaData().getDriverName().toUpperCase();
+            if (driverName.contains("MYSQL")) {
+                return convertName(tableName, DbTypeEnum.MySQL);
+            }
+            if (driverName.contains("SQL SERVER")) {
+                return convertName(tableName, DbTypeEnum.MsSQL);
+            } else if (driverName.contains("POSTGRESQL")) {
+                return convertName(tableName, DbTypeEnum.PostgreSQL);
+            } else if (driverName.contains("CLICKHOUSE")) {
+                return convertName(tableName, DbTypeEnum.ClickHouse);
+            }
+        } catch (SQLException e) {
+            System.out.println("convertTabName : " + e.getMessage());
+        }
+        return tableName;
     }
 
     /**

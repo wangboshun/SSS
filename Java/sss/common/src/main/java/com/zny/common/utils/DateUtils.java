@@ -2,6 +2,7 @@ package com.zny.common.utils;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -13,6 +14,31 @@ import java.time.format.DateTimeFormatter;
 
 public class DateUtils {
 
+    /**
+     * 判断是否是日期
+     *
+     * @param str 变量
+     */
+    public static boolean isDate(String str) {
+        boolean convertSuccess = true;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            format.setLenient(false);
+            format.parse(str);
+        } catch (Exception e) {
+            convertSuccess = false;
+        }
+        return convertSuccess;
+    }
+
+    /**
+     * 判断是否是日期
+     *
+     * @param o 变量
+     */
+    public static boolean isDate(Object o) {
+        return isDate(o.toString());
+    }
 
     public static @NotNull String dateToStr(LocalDateTime date, String format) {
         DateTimeFormatter df = DateTimeFormatter.ofPattern(format);

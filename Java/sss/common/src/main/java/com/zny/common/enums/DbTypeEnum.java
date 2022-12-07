@@ -19,9 +19,9 @@ public enum DbTypeEnum {
     MsSQL(1),
 
     /**
-     * PostGres
+     * PostgreSQL
      */
-    PostGres(2),
+    PostgreSQL(2),
 
     /**
      * ClickHouse

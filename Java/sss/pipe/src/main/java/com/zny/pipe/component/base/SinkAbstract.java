@@ -4,7 +4,8 @@ import com.zny.common.enums.DbTypeEnum;
 import com.zny.common.enums.InsertTypeEnum;
 import com.zny.common.enums.RedisKeyEnum;
 import com.zny.common.utils.DateUtils;
-import com.zny.common.utils.DbEx;
+import com.zny.common.utils.database.DbEx;
+import com.zny.common.utils.database.TableInfo;
 import com.zny.pipe.component.ConnectionFactory;
 import com.zny.pipe.component.base.enums.TaskStatusEnum;
 import com.zny.pipe.component.base.interfaces.SinkBase;
@@ -79,7 +80,8 @@ public class SinkAbstract implements SinkBase {
         List<Map<String, Object>> addList = new ArrayList<>();
         List<Map<String, Object>> updateList = new ArrayList<>();
         try {
-            String[] primaryColumn = this.sinkConfig.getPrimary_column().split(",");
+            List<TableInfo> tableInfo = DbEx.getTableInfo(connection, tableName);
+            Map<String, String> primaryColumn = DbEx.getPrimaryKey(tableInfo);
             InsertTypeEnum insertType = InsertTypeEnum.values()[this.taskConfig.getInsert_type()];
             for (Map<String, Object> item : list) {
                 //数据是否已存在
@@ -108,7 +110,7 @@ public class SinkAbstract implements SinkBase {
                 addData(addList);
             }
             if (!updateList.isEmpty()) {
-                updateData(updateList, Arrays.asList(primaryColumn));
+                updateData(updateList, primaryColumn);
             }
         } catch (Exception e) {
             logger.error("SinkAbstract setData", e);
@@ -150,7 +152,7 @@ public class SinkAbstract implements SinkBase {
 
             columnSql.deleteCharAt(columnSql.length() - 1);
             valueSql.deleteCharAt(valueSql.length() - 1);
-            String sql = String.format("INSERT INTO %s (%s) VALUES (%s)", tableName, columnSql, valueSql);
+            String sql = String.format("INSERT INTO %s (%s) VALUES (%s)", DbEx.convertName(tableName, dbType), columnSql, valueSql);
             this.connection.setAutoCommit(false);
             pstm = connection.prepareStatement(sql);
             for (Map<String, Object> item : list) {
@@ -180,7 +182,7 @@ public class SinkAbstract implements SinkBase {
      * @param list          数据集
      * @param primaryColumn 主键字段
      */
-    private Boolean updateData(List<Map<String, Object>> list, List<String> primaryColumn) {
+    private Boolean updateData(List<Map<String, Object>> list, Map<String, String> primaryColumn) {
         PreparedStatement pstm = null;
         try {
             Set<String> columnSet = list.get(0).keySet();
@@ -190,12 +192,15 @@ public class SinkAbstract implements SinkBase {
             for (String column : columnSet) {
 
                 //主键
-                if (primaryColumn.contains(column)) {
+                if (primaryColumn.containsKey(column)) {
                     switch (dbType) {
                         case MySQL:
                             whereSql.append("`").append(column).append("`=? AND ");
                             break;
                         case MsSQL:
+                            whereSql.append("[").append(column).append("]=? AND ");
+                            break;
+                        case PostgreSQL:
                             whereSql.append("[").append(column).append("]=? AND ");
                             break;
                         default:
@@ -213,6 +218,9 @@ public class SinkAbstract implements SinkBase {
                         case MsSQL:
                             columnSql.append("[").append(column).append("]=?,");
                             break;
+                        case PostgreSQL:
+                            columnSql.append("[").append(column).append("]=?,");
+                            break;
                         default:
                             columnSql.append(column).append("=?,");
                             break;
@@ -222,7 +230,7 @@ public class SinkAbstract implements SinkBase {
 
             columnSql.deleteCharAt(columnSql.length() - 1);
             whereSql.delete(whereSql.length() - 4, whereSql.length());
-            String sql = String.format("UPDATE %s SET %s WHERE %s", tableName, columnSql, whereSql);
+            String sql = String.format("UPDATE %s SET %s WHERE %s", DbEx.convertName(tableName, dbType), columnSql, whereSql);
             this.connection.setAutoCommit(false);
             pstm = connection.prepareStatement(sql);
             for (Map<String, Object> item : list) {
@@ -231,14 +239,14 @@ public class SinkAbstract implements SinkBase {
                 //这里设置数据下标有讲究，因为拼sql的时候非主键set数据在前，所以需要先设置非主键的数据，然后设置主键的数据
                 for (String column : columnSet) {
                     //非主键
-                    if (!primaryColumn.contains(column)) {
+                    if (!primaryColumn.containsKey(column)) {
                         pstm.setObject(index, item.get(column));
                         index++;
                     }
                 }
                 for (String column : columnSet) {
                     //主键
-                    if (primaryColumn.contains(column)) {
+                    if (primaryColumn.containsKey(column)) {
                         pstm.setObject(index, item.get(column));
                         index++;
                     }

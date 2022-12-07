@@ -6,7 +6,7 @@ import com.zny.common.enums.DbTypeEnum;
 import com.zny.common.enums.RedisKeyEnum;
 import com.zny.common.json.GsonEx;
 import com.zny.common.utils.DateUtils;
-import com.zny.common.utils.DbEx;
+import com.zny.common.utils.database.DbEx;
 import com.zny.pipe.component.ConnectionFactory;
 import com.zny.pipe.component.base.enums.TaskStatusEnum;
 import com.zny.pipe.component.base.interfaces.SourceBase;
@@ -26,10 +26,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author WBS
@@ -50,7 +47,7 @@ public class SourceAbstract implements SourceBase {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private static final int BATCH_SIZE = 1000;
     public Map<String, String> sourceTime = new HashMap<>();
-
+    private DbTypeEnum dbType;
     public int version;
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
@@ -72,6 +69,7 @@ public class SourceAbstract implements SourceBase {
         this.version = version;
         connection = ConnectionFactory.getConnection(connectConfig);
         this.cacheKey = RedisKeyEnum.SOURCE_TIME_CACHE + ":" + taskConfig.getId() + ":" + version;
+        dbType = DbTypeEnum.values()[this.connectConfig.getDb_type()];
         if (connection != null) {
             setStatus(TaskStatusEnum.CREATE);
         }
@@ -101,11 +99,11 @@ public class SourceAbstract implements SourceBase {
             pstm.setFetchSize(Integer.MIN_VALUE);
             result = pstm.executeQuery();
             List<Map<String, Object>> list = new ArrayList<>();
-            List<String> columnNameList = DbEx.getColumnName(result);
+            Set<String> columnNameSet = DbEx.getColumnName(result).keySet();
             int currentIndex = 0;  //数据记录号
             while (result.next()) {
-                Map<String, Object> rowData = new HashMap<>(columnNameList.size());
-                for (String x : columnNameList) {
+                Map<String, Object> rowData = new HashMap<>(columnNameSet.size());
+                for (String x : columnNameSet) {
                     rowData.put(x, result.getObject(x));
                 }
                 list.add(rowData);
@@ -159,20 +157,25 @@ public class SourceAbstract implements SourceBase {
     private String getNextSql() {
         String sql = "";
         try {
-            sql = "SELECT * FROM " + sourceConfig.getTable_name() + " WHERE 1=1 ";
-
+            sql = "SELECT * FROM " + DbEx.convertName(sourceConfig.getTable_name(), dbType) + " WHERE 1=1 ";
             //如果是增量
             if (taskConfig.getAdd_type() == 0) {
                 String startTime = getStartTime();
                 String endTime = getEndTime(startTime);
+                String pg_time;
+                if (dbType == DbTypeEnum.PostgreSQL) {
+                    pg_time = "::TIMESTAMP";
+                }
+
+                //TODO 未完成pgsql的时间处理
 
                 //按wrtm获取
                 if (sourceConfig.getGet_type() == 0) {
-                    sql += " AND " + sourceConfig.getWrtm_column() + ">='" + startTime + "' AND " + sourceConfig.getWrtm_column() + "<='" + endTime + "' ";
+                    sql += " AND " + DbEx.convertName(sourceConfig.getWrtm_column(), dbType) + ">='" + startTime + "' AND " + DbEx.convertName(sourceConfig.getWrtm_column(), dbType) + "<='" + endTime + "' ";
                 }
                 //按数据时间获取
                 else if (sourceConfig.getGet_type() == 1) {
-                    sql += " AND " + sourceConfig.getTime_column() + ">='" + startTime + "' AND " + sourceConfig.getTime_column() + "<='" + endTime + "' ";
+                    sql += " AND " + DbEx.convertName(sourceConfig.getTime_column(), dbType) + ">='" + startTime + "' AND " + DbEx.convertName(sourceConfig.getTime_column(), dbType) + "<='" + endTime + "' ";
                 }
             }
 
@@ -183,17 +186,17 @@ public class SourceAbstract implements SourceBase {
 
             //如果排序字段不为空
             if (StringUtils.isNotBlank(sourceConfig.getOrder_column())) {
-                sql += " ORDER BY " + sourceConfig.getOrder_column();
+                sql += " ORDER BY " + DbEx.convertName(sourceConfig.getOrder_column(), dbType);
             }
             //如果排序字段为空
             else {
                 //如果wrtm字段不为空，设置wrtm为排序字段
                 if (StringUtils.isNotBlank(sourceConfig.getWrtm_column())) {
-                    sql += " ORDER BY " + sourceConfig.getWrtm_column();
+                    sql += " ORDER BY " + DbEx.convertName(sourceConfig.getWrtm_column(), dbType);
                 }
                 //否则设置数据时间字段为排序字段
                 else {
-                    sql += " ORDER BY " + sourceConfig.getTime_column();
+                    sql += " ORDER BY " + DbEx.convertName(sourceConfig.getTime_column(), dbType);
                 }
             }
 
