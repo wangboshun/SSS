@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-@SinkTypeAnnotation(DbTypeEnum.MySQL)
+@SinkTypeAnnotation(DbTypeEnum.MySql)
 public class MySqlSink extends SinkAbstract {
 
 }

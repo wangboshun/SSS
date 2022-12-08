@@ -9,19 +9,19 @@ package com.zny.common.enums;
 
 public enum DbTypeEnum {
     /**
-     * MySQL
+     * MySql
      */
-    MySQL(0),
+    MySql(0),
 
     /**
-     * MsSQL
+     * MsSql
      */
-    MsSQL(1),
+    MsSql(1),
 
     /**
-     * PostgreSQL
+     * PostgreSql
      */
-    PostgreSQL(2),
+    PostgreSql(2),
 
     /**
      * ClickHouse

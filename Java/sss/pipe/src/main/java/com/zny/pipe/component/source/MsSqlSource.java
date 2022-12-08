@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-@SourceTypeAnnotation(DbTypeEnum.MsSQL)
+@SourceTypeAnnotation(DbTypeEnum.MsSql)
 public class MsSqlSource extends SourceAbstract {
 
 }

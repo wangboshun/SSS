@@ -21,7 +21,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author WBS
@@ -107,10 +110,10 @@ public class SinkAbstract implements SinkBase {
             }
 
             if (!addList.isEmpty()) {
-                addData(addList);
+                addData(addList, tableInfo);
             }
             if (!updateList.isEmpty()) {
-                updateData(updateList, primaryColumn);
+                updateData(updateList, tableInfo);
             }
         } catch (Exception e) {
             logger.error("SinkAbstract setData", e);
@@ -126,39 +129,31 @@ public class SinkAbstract implements SinkBase {
     /**
      * 添加数据
      *
-     * @param list 数据集
+     * @param list      数据集
+     * @param tableInfo 表信息
      */
-    private Boolean addData(List<Map<String, Object>> list) {
+    private Boolean addData(List<Map<String, Object>> list, List<TableInfo> tableInfo) {
         PreparedStatement pstm = null;
         try {
-            Set<String> columnSet = list.get(0).keySet();
             StringBuilder columnSql = new StringBuilder();
             StringBuilder valueSql = new StringBuilder();
-
-            for (String column : columnSet) {
-                switch (dbType) {
-                    case MySQL:
-                        columnSql.append("`").append(column).append("`,");
-                        break;
-                    case MsSQL:
-                        columnSql.append("[").append(column).append("],");
-                        break;
-                    default:
-                        columnSql.append(column).append(",");
-                        break;
+            for (TableInfo item : tableInfo) {
+                columnSql.append(DbEx.convertName(item.getColumn_name(), dbType)).append(",");
+                if (dbType == DbTypeEnum.PostgreSql && item.getJava_type().equals("Timestamp")) {
+                    valueSql.append("?::TIMESTAMP,");
+                } else {
+                    valueSql.append("?,");
                 }
-                valueSql.append("?,");
             }
-
             columnSql.deleteCharAt(columnSql.length() - 1);
             valueSql.deleteCharAt(valueSql.length() - 1);
             String sql = String.format("INSERT INTO %s (%s) VALUES (%s)", DbEx.convertName(tableName, dbType), columnSql, valueSql);
             this.connection.setAutoCommit(false);
             pstm = connection.prepareStatement(sql);
-            for (Map<String, Object> item : list) {
+            for (Map<String, Object> dataItem : list) {
                 int index = 1;
-                for (String column : columnSet) {
-                    pstm.setObject(index, item.get(column));
+                for (TableInfo item : tableInfo) {
+                    pstm.setObject(index, dataItem.get(item.getColumn_name()));
                     index++;
                 }
                 pstm.addBatch();
@@ -179,52 +174,31 @@ public class SinkAbstract implements SinkBase {
     /**
      * 更新数据
      *
-     * @param list          数据集
-     * @param primaryColumn 主键字段
+     * @param list      数据集
+     * @param tableInfo 表信息
      */
-    private Boolean updateData(List<Map<String, Object>> list, Map<String, String> primaryColumn) {
+    private Boolean updateData(List<Map<String, Object>> list, List<TableInfo> tableInfo) {
         PreparedStatement pstm = null;
         try {
-            Set<String> columnSet = list.get(0).keySet();
             StringBuilder columnSql = new StringBuilder();
             StringBuilder whereSql = new StringBuilder();
 
-            for (String column : columnSet) {
-
+            for (TableInfo item : tableInfo) {
                 //主键
-                if (primaryColumn.containsKey(column)) {
-                    switch (dbType) {
-                        case MySQL:
-                            whereSql.append("`").append(column).append("`=? AND ");
-                            break;
-                        case MsSQL:
-                            whereSql.append("[").append(column).append("]=? AND ");
-                            break;
-                        case PostgreSQL:
-                            whereSql.append("[").append(column).append("]=? AND ");
-                            break;
-                        default:
-                            whereSql.append(column).append("=? AND ");
-                            break;
+                if (item.getIs_primary() > 0) {
+                    whereSql.append(DbEx.convertName(item.getColumn_name(), dbType)).append("=?");
+                    if (dbType == DbTypeEnum.PostgreSql && item.getJava_type().equals("Timestamp")) {
+                        whereSql.append("::TIMESTAMP ");
                     }
-
+                    whereSql.append(" AND ");
                 }
                 //非主键
                 else {
-                    switch (dbType) {
-                        case MySQL:
-                            columnSql.append("`").append(column).append("`=?,");
-                            break;
-                        case MsSQL:
-                            columnSql.append("[").append(column).append("]=?,");
-                            break;
-                        case PostgreSQL:
-                            columnSql.append("[").append(column).append("]=?,");
-                            break;
-                        default:
-                            columnSql.append(column).append("=?,");
-                            break;
+                    columnSql.append(DbEx.convertName(item.getColumn_name(), dbType)).append("=?");
+                    if (dbType == DbTypeEnum.PostgreSql && item.getJava_type().equals("Timestamp")) {
+                        columnSql.append("::TIMESTAMP ");
                     }
+                    columnSql.append(",");
                 }
             }
 
@@ -233,24 +207,21 @@ public class SinkAbstract implements SinkBase {
             String sql = String.format("UPDATE %s SET %s WHERE %s", DbEx.convertName(tableName, dbType), columnSql, whereSql);
             this.connection.setAutoCommit(false);
             pstm = connection.prepareStatement(sql);
-            for (Map<String, Object> item : list) {
+            for (Map<String, Object> dataItem : list) {
                 int index = 1;
-
                 //这里设置数据下标有讲究，因为拼sql的时候非主键set数据在前，所以需要先设置非主键的数据，然后设置主键的数据
-                for (String column : columnSet) {
-                    //非主键
-                    if (!primaryColumn.containsKey(column)) {
-                        pstm.setObject(index, item.get(column));
-                        index++;
-                    }
+                //非主键
+                for (TableInfo item : tableInfo.stream().filter(x -> x.getIs_primary() < 1).collect(Collectors.toList())) {
+                    pstm.setObject(index, dataItem.get(item.getColumn_name()));
+                    index++;
                 }
-                for (String column : columnSet) {
-                    //主键
-                    if (primaryColumn.containsKey(column)) {
-                        pstm.setObject(index, item.get(column));
-                        index++;
-                    }
+
+                //主键
+                for (TableInfo item : tableInfo.stream().filter(x -> x.getIs_primary() > 0).collect(Collectors.toList())) {
+                    pstm.setObject(index, dataItem.get(item.getColumn_name()));
+                    index++;
                 }
+
                 pstm.addBatch();
             }
             pstm.executeBatch();

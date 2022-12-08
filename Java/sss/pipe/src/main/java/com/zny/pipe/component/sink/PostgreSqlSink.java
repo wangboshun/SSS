@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-@SinkTypeAnnotation(DbTypeEnum.PostgreSQL)
+@SinkTypeAnnotation(DbTypeEnum.PostgreSql)
 public class PostgreSqlSink extends SinkAbstract {
 
 }

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-@SourceTypeAnnotation(DbTypeEnum.PostgreSQL)
+@SourceTypeAnnotation(DbTypeEnum.PostgreSql)
 public class PostgreSQLSource extends SourceAbstract {
 
 }

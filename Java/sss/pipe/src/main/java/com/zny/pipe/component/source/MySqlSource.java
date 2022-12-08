@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-@SourceTypeAnnotation(DbTypeEnum.MySQL)
+@SourceTypeAnnotation(DbTypeEnum.MySql)
 public class MySqlSource extends SourceAbstract {
 
 }

@@ -41,12 +41,10 @@ public class SourceAbstract implements SourceBase {
     public ConnectConfigModel connectConfig;
     public TaskConfigModel taskConfig;
     public Connection connection;
-    public TaskStatusEnum sourceStatus;
     public int rowCount;
     private String cacheKey;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private static final int BATCH_SIZE = 1000;
-    public Map<String, String> sourceTime = new HashMap<>();
     private DbTypeEnum dbType;
     public int version;
     @Autowired
@@ -96,7 +94,7 @@ public class SourceAbstract implements SourceBase {
             rowCount = DbEx.getCount(connection, sql);
             redisTemplate.opsForHash().put(this.cacheKey, "ROW_COUNT", rowCount + "");
             pstm = connection.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-            if(dbType==DbTypeEnum.PostgreSQL){
+            if(dbType==DbTypeEnum.PostgreSql){
                 pstm.setFetchSize(10000);
             }else{
                 pstm.setFetchSize(Integer.MIN_VALUE);
@@ -168,7 +166,7 @@ public class SourceAbstract implements SourceBase {
                 String endTime = getEndTime(startTime);
                 String tm = "";
                 String pg_time = "";
-                if (dbType == DbTypeEnum.PostgreSQL) {
+                if (dbType == DbTypeEnum.PostgreSql) {
                     pg_time = "::TIMESTAMP";
                 }
                 //按写入获取

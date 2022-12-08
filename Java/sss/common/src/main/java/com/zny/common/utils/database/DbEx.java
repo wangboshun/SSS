@@ -210,37 +210,22 @@ public class DbEx {
             StringBuilder whereSql = new StringBuilder(" WHERE ");
 
             for (Map.Entry<String, String> entry : primaryColumn.entrySet()) {
-                String column = entry.getKey();
-                switch (dbType) {
-                    case MySQL:
-                        whereSql.append(" `").append(column).append("`=? ");
-                        break;
-                    case MsSQL:
-                        whereSql.append(" [").append(column).append("]=? ");
-                        break;
-                    case PostgreSQL:
-                        //如果是PostgreSQL数据库，需要对日期格式特殊处理，在后面加【::TIMESTAMP】
-                        if(entry.getValue().equals("Timestamp")){
-                            whereSql.append(" \"").append(column).append("\"=?::TIMESTAMP ");
-                        }else{
-                            whereSql.append(" \"").append(column).append("\"=? ");
-                        }
-                        break;
-                    default:
-                        whereSql.append(column).append("=? ");
-                        break;
+                whereSql.append(DbEx.convertName(entry.getKey(), dbType)).append("=?");
+                //如果是PostgreSQL数据库，需要对日期格式特殊处理，在后面加【::TIMESTAMP】
+                if (dbType == DbTypeEnum.PostgreSql && entry.getValue().equals("Timestamp")) {
+                    whereSql.append("::TIMESTAMP ");
                 }
                 whereSql.append(" AND ");
             }
             whereSql.delete(whereSql.length() - 5, whereSql.length());
             switch (dbType) {
-                case MySQL:
+                case MySql:
                     sql = String.format("select 1 as number from %s%s  limit  1 ", tableName, whereSql);
                     break;
-                case MsSQL:
+                case MsSql:
                     sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableName, whereSql);
                     break;
-                case PostgreSQL:
+                case PostgreSql:
                     sql = String.format("select 1 as number from %s%s  limit  1 ", tableName, whereSql);
                     break;
                 case ClickHouse:
@@ -322,11 +307,11 @@ public class DbEx {
      */
     public static String convertName(String tableName, DbTypeEnum dbType) {
         switch (dbType) {
-            case MySQL:
+            case MySql:
                 return "`" + tableName + "`";
-            case MsSQL:
+            case MsSql:
                 return "[" + tableName + "]";
-            case PostgreSQL:
+            case PostgreSql:
                 return "\"" + tableName + "\"";
             default:
                 return tableName;
@@ -343,12 +328,12 @@ public class DbEx {
         try {
             String driverName = connection.getMetaData().getDriverName().toUpperCase();
             if (driverName.contains("MYSQL")) {
-                return convertName(tableName, DbTypeEnum.MySQL);
+                return convertName(tableName, DbTypeEnum.MySql);
             }
             if (driverName.contains("SQL SERVER")) {
-                return convertName(tableName, DbTypeEnum.MsSQL);
+                return convertName(tableName, DbTypeEnum.MsSql);
             } else if (driverName.contains("POSTGRESQL")) {
-                return convertName(tableName, DbTypeEnum.PostgreSQL);
+                return convertName(tableName, DbTypeEnum.PostgreSql);
             } else if (driverName.contains("CLICKHOUSE")) {
                 return convertName(tableName, DbTypeEnum.ClickHouse);
             }
