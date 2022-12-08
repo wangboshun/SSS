@@ -7,6 +7,7 @@ import com.zny.common.enums.RedisKeyEnum;
 import com.zny.common.json.GsonEx;
 import com.zny.common.utils.DateUtils;
 import com.zny.common.utils.database.DbEx;
+import com.zny.common.utils.database.TableInfo;
 import com.zny.pipe.component.ConnectionFactory;
 import com.zny.pipe.component.base.enums.TaskStatusEnum;
 import com.zny.pipe.component.base.interfaces.SourceBase;
@@ -47,6 +48,7 @@ public class SourceAbstract implements SourceBase {
     private static final int BATCH_SIZE = 1000;
     private DbTypeEnum dbType;
     public int version;
+    public List<TableInfo> tableInfo;
 
     public List<ColumnConfigModel> columnList;
 
@@ -75,6 +77,7 @@ public class SourceAbstract implements SourceBase {
         if (connection != null) {
             setStatus(TaskStatusEnum.CREATE);
         }
+        tableInfo = DbEx.getTableInfo(connection, sourceConfig.getTable_name());
     }
 
     /**
@@ -94,10 +97,18 @@ public class SourceAbstract implements SourceBase {
         PreparedStatement pstm = null;
         ResultSet result = null;
         try {
-            String sql = getNextSql();
+            String tm = getTM();
+            String sql = getNextSql(tm);
             rowCount = DbEx.getCount(connection, sql);
             redisTemplate.opsForHash().put(this.cacheKey, "ROW_COUNT", rowCount + "");
             pstm = connection.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+
+            String startTime = getStartTime();
+            String endTime = getEndTime(startTime);
+            TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(tm)).findFirst().get();
+            DbEx.setParam(pstm, 1, startTime, info.getJava_type());
+            DbEx.setParam(pstm, 2, endTime, info.getJava_type());
+
             if (dbType == DbTypeEnum.PostgreSql) {
                 pstm.setFetchSize(10000);
             } else {
@@ -157,9 +168,26 @@ public class SourceAbstract implements SourceBase {
     }
 
     /**
+     * 获取时间范围查询字段
+     */
+    private String getTM() {
+        String tm = "WRTM";
+        //按写入获取
+        if (sourceConfig.getGet_type() == 0 && StringUtils.isNotBlank(sourceConfig.getWrtm_column())) {
+            return sourceConfig.getWrtm_column();
+        }
+        //按数据时间获取
+        else if (sourceConfig.getGet_type() == 1) {
+           return sourceConfig.getTime_column();
+        }
+        return tm;
+    }
+
+    /**
      * 获取需要查询的SQL
      */
-    private String getNextSql() {
+    private String getNextSql(String tm) {
+        tm = DbEx.convertName(tm, dbType);
         StringBuilder sql = new StringBuilder("SELECT ");
         try {
             for (ColumnConfigModel item : columnList) {
@@ -172,23 +200,8 @@ public class SourceAbstract implements SourceBase {
             sql.append(" WHERE 1=1 ");
             //如果是增量
             if (taskConfig.getAdd_type() == 0) {
-                String startTime = getStartTime();
-                String endTime = getEndTime(startTime);
-                String tm = "";
-                String pg_time = "";
-                if (dbType == DbTypeEnum.PostgreSql) {
-                    pg_time = "::TIMESTAMP";
-                }
-                //按写入获取
-                if (sourceConfig.getGet_type() == 0 && StringUtils.isNotBlank(sourceConfig.getWrtm_column())) {
-                    tm = DbEx.convertName(sourceConfig.getWrtm_column(), dbType);
-                }
-                //按数据时间获取
-                else if (sourceConfig.getGet_type() == 1) {
-                    tm = DbEx.convertName(sourceConfig.getTime_column(), dbType);
-                }
-                sql.append(" AND " + tm + ">='" + startTime + "'" + pg_time);
-                sql.append(" AND " + tm + "<='" + endTime + "'" + pg_time);
+                sql.append(" AND " + tm + ">=?");
+                sql.append(" AND " + tm + "<=?");
             }
 
             //where条件

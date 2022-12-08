@@ -1,7 +1,9 @@
 package com.zny.common.utils.database;
 
 import com.zny.common.enums.DbTypeEnum;
+import com.zny.common.utils.DateUtils;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.*;
 
@@ -174,74 +176,6 @@ public class DbEx {
     }
 
     /**
-     * 查询数据是否存在
-     *
-     * @param connection    链接
-     * @param tableName     表名
-     * @param data          数据
-     * @param primaryColumn 主键
-     * @param dbType        数据类型
-     */
-    public static boolean hasData(Connection connection, String tableName, Map<String, Object> data, Map<String, String> primaryColumn, DbTypeEnum dbType) {
-        tableName = convertName(tableName, dbType);
-        int number = 0;
-        ResultSet result = null;
-        PreparedStatement pstm = null;
-        try {
-            String sql = "";
-            StringBuilder whereSql = new StringBuilder(" WHERE ");
-
-            for (Map.Entry<String, String> entry : primaryColumn.entrySet()) {
-                whereSql.append(DbEx.convertName(entry.getKey(), dbType)).append("=?");
-                //如果是PostgreSQL数据库，需要对日期格式特殊处理，在后面加【::TIMESTAMP】
-                if (dbType == DbTypeEnum.PostgreSql && entry.getValue().toUpperCase().equals("TIMESTAMP")) {
-                    whereSql.append("::TIMESTAMP ");
-                }
-                whereSql.append(" AND ");
-            }
-            whereSql.delete(whereSql.length() - 5, whereSql.length());
-            switch (dbType) {
-                case MySql:
-                    sql = String.format("select 1 as number from %s%s  limit  1 ", tableName, whereSql);
-                    break;
-                case MsSql:
-                    sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableName, whereSql);
-                    break;
-                case PostgreSql:
-                    sql = String.format("select 1 as number from %s%s  limit  1 ", tableName, whereSql);
-                    break;
-                case ClickHouse:
-                    sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableName, whereSql);
-                    break;
-                default:
-                    sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableName, whereSql);
-                    break;
-            }
-            pstm = connection.prepareStatement(sql);
-            int index = 1;
-            for (Map.Entry<String, String> entry : primaryColumn.entrySet()) {
-                String column = entry.getKey();
-                pstm.setObject(index, data.get(column));
-                index++;
-            }
-
-            result = pstm.executeQuery();
-            while (result.next()) {
-                number = result.getInt("number");
-            }
-
-            if (number > 0) {
-                return true;
-            }
-        } catch (SQLException e) {
-            System.out.println("hasData: " + e.getMessage());
-        } finally {
-            release(pstm, result);
-        }
-        return false;
-    }
-
-    /**
      * 根据sql查询记录条数
      *
      * @param connection 连接
@@ -393,5 +327,81 @@ public class DbEx {
      */
     public static void release(ResultSet rs) {
         release(null, null, rs);
+    }
+
+    /**
+     * 设置参数
+     *
+     * @param pstm  参数
+     * @param index 序号
+     * @param val   值
+     * @param type  java类型
+     */
+    public static void setParam(PreparedStatement pstm, int index, Object val, String type) {
+        try {
+            type = type.toUpperCase();
+            switch (type) {
+                case "INT":
+                    pstm.setInt(index, Integer.parseInt(val.toString()));
+                    break;
+                case "DOUBLE":
+                    pstm.setDouble(index, Double.parseDouble(val.toString()));
+                    break;
+                case "FLOAT":
+                    pstm.setFloat(index, Float.parseFloat(val.toString()));
+                    break;
+                case "TIMESTAMP":
+                    pstm.setTimestamp(index, Timestamp.valueOf(val.toString()));
+                    break;
+                case "BIGDECIMAL":
+                    pstm.setBigDecimal(index, new BigDecimal(val.toString()));
+                    break;
+                case "LOCALDATETIME":
+                    pstm.setObject(index, DateUtils.strToDate(val.toString()));
+                    break;
+                default:
+                    pstm.setObject(index, val);
+                    break;
+            }
+        } catch (SQLException e) {
+        }
+    }
+
+    /**
+     * 设置参数
+     *
+     * @param pstm  参数
+     * @param index 序号
+     * @param val   值
+     * @param type  java类型
+     */
+    public static void setParam(PreparedStatement pstm, int index, String val, String type) {
+        try {
+            type = type.toUpperCase();
+            switch (type) {
+                case "INT":
+                    pstm.setInt(index, Integer.parseInt(val));
+                    break;
+                case "DOUBLE":
+                    pstm.setDouble(index, Double.parseDouble(val));
+                    break;
+                case "FLOAT":
+                    pstm.setFloat(index, Float.parseFloat(val));
+                    break;
+                case "TIMESTAMP":
+                    pstm.setTimestamp(index, Timestamp.valueOf(val));
+                    break;
+                case "BIGDECIMAL":
+                    pstm.setBigDecimal(index, new BigDecimal(val));
+                    break;
+                case "LOCALDATETIME":
+                    pstm.setObject(index, DateUtils.strToDate(val));
+                    break;
+                default:
+                    pstm.setObject(index, val);
+                    break;
+            }
+        } catch (SQLException e) {
+        }
     }
 }

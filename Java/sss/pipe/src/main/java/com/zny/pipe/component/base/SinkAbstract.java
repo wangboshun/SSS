@@ -20,6 +20,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -64,7 +65,6 @@ public class SinkAbstract implements SinkBase {
         dbType = DbTypeEnum.values()[this.connectConfig.getDb_type()];
         tableName = this.sinkConfig.getTable_name();
         this.columnList = columnList;
-        this.tableInfo = new ArrayList<>();
         tableInfo = DbEx.getTableInfo(connection, tableName);
     }
 
@@ -95,6 +95,71 @@ public class SinkAbstract implements SinkBase {
     }
 
     /**
+     * 查询数据是否存在
+     *
+     * @param connection    链接
+     * @param tableName     表名
+     * @param data          数据
+     * @param primaryColumn 主键
+     * @param dbType        数据类型
+     */
+    public boolean hasData(Connection connection, String tableName, Map<String, Object> data, Map<String, String> primaryColumn, DbTypeEnum dbType) {
+        tableName = DbEx.convertName(tableName, dbType);
+        int number = 0;
+        ResultSet result = null;
+        PreparedStatement pstm = null;
+        try {
+            String sql = "";
+            StringBuilder whereSql = new StringBuilder(" WHERE ");
+
+            for (Map.Entry<String, String> entry : primaryColumn.entrySet()) {
+                whereSql.append(DbEx.convertName(entry.getKey(), dbType)).append("=?");
+                whereSql.append(" AND ");
+            }
+            whereSql.delete(whereSql.length() - 5, whereSql.length());
+            switch (dbType) {
+                case MySql:
+                    sql = String.format("select 1 as number from %s%s  limit  1 ", tableName, whereSql);
+                    break;
+                case MsSql:
+                    sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableName, whereSql);
+                    break;
+                case PostgreSql:
+                    sql = String.format("select 1 as number from %s%s  limit  1 ", tableName, whereSql);
+                    break;
+                case ClickHouse:
+                    sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableName, whereSql);
+                    break;
+                default:
+                    sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableName, whereSql);
+                    break;
+            }
+            pstm = connection.prepareStatement(sql);
+            int index = 1;
+            for (Map.Entry<String, String> entry : primaryColumn.entrySet()) {
+                String column = entry.getKey();
+                TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(column)).findFirst().get();
+                DbEx.setParam(pstm, index, data.get(column), info.getJava_type());
+                index++;
+            }
+
+            result = pstm.executeQuery();
+            while (result.next()) {
+                number = result.getInt("number");
+            }
+
+            if (number > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println("hasData: " + e.getMessage());
+        } finally {
+            DbEx.release(pstm, result);
+        }
+        return false;
+    }
+
+    /**
      * 拆分数据
      *
      * @param list 数据消息
@@ -108,7 +173,7 @@ public class SinkAbstract implements SinkBase {
             InsertTypeEnum insertType = InsertTypeEnum.values()[this.taskConfig.getInsert_type()];
             for (Map<String, Object> item : list) {
                 //数据是否已存在
-                boolean hasData = DbEx.hasData(connection, tableName, item, primaryColumn, dbType);
+                boolean hasData = hasData(connection, tableName, item, primaryColumn, dbType);
                 switch (insertType) {
                     case IGNORE:
                         if (hasData) {
@@ -160,11 +225,7 @@ public class SinkAbstract implements SinkBase {
                 //找到对应的列信息
                 TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(item.getSink_column())).findFirst().get();
                 columnSql.append(DbEx.convertName(item.getSink_column(), dbType)).append(",");
-                if (dbType == DbTypeEnum.PostgreSql && info.getJava_type().toUpperCase().equals("TIMESTAMP")) {
-                    valueSql.append("?::TIMESTAMP,");
-                } else {
-                    valueSql.append("?,");
-                }
+                valueSql.append("?,");
             }
             columnSql.deleteCharAt(columnSql.length() - 1);
             valueSql.deleteCharAt(valueSql.length() - 1);
@@ -174,7 +235,8 @@ public class SinkAbstract implements SinkBase {
             for (Map<String, Object> dataItem : list) {
                 int index = 1;
                 for (ColumnConfigModel item : columnList) {
-                    pstm.setObject(index, dataItem.get(item.getSink_column()));
+                    TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(item.getSink_column())).findFirst().get();
+                    DbEx.setParam(pstm, index, dataItem.get(item.getSink_column()), info.getJava_type());
                     index++;
                 }
                 pstm.addBatch();
@@ -195,7 +257,7 @@ public class SinkAbstract implements SinkBase {
     /**
      * 更新数据
      *
-     * @param list      数据集
+     * @param list 数据集
      */
     private Boolean updateData(List<Map<String, Object>> list) {
         PreparedStatement pstm = null;
@@ -208,17 +270,11 @@ public class SinkAbstract implements SinkBase {
                 //主键
                 if (info.getIs_primary() > 0) {
                     whereSql.append(DbEx.convertName(item.getSink_column(), dbType)).append("=?");
-                    if (dbType == DbTypeEnum.PostgreSql && info.getJava_type().toUpperCase().equals("TIMESTAMP")) {
-                        whereSql.append("::TIMESTAMP ");
-                    }
                     whereSql.append(" AND ");
                 }
                 //非主键
                 else {
                     columnSql.append(DbEx.convertName(item.getSink_column(), dbType)).append("=?");
-                    if (dbType == DbTypeEnum.PostgreSql && info.getJava_type().toUpperCase().equals("TIMESTAMP")) {
-                        columnSql.append("::TIMESTAMP ");
-                    }
                     columnSql.append(",");
                 }
             }
@@ -235,8 +291,8 @@ public class SinkAbstract implements SinkBase {
                 for (ColumnConfigModel item : columnList) {
                     //找到对应的列信息
                     TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(item.getSink_column())).findFirst().get();
-                    if (info.getIs_primary() <1) {
-                        pstm.setObject(index, dataItem.get(item.getSink_column()));
+                    if (info.getIs_primary() < 1) {
+                        DbEx.setParam(pstm, index, dataItem.get(item.getSink_column()), info.getJava_type());
                         index++;
                     }
                 }
@@ -247,7 +303,7 @@ public class SinkAbstract implements SinkBase {
                     TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(item.getSink_column())).findFirst().get();
                     //主键
                     if (info.getIs_primary() > 0) {
-                        pstm.setObject(index, dataItem.get(item.getSink_column()));
+                        DbEx.setParam(pstm, index, dataItem.get(item.getSink_column()), info.getJava_type());
                         index++;
                     }
                 }
