@@ -174,24 +174,6 @@ public class DbEx {
     }
 
     /**
-     * 获取表的所有列名
-     */
-    public static Map<String, String> getColumnName(ResultSet result) {
-        Map<String, String> map = new HashMap<>();
-        try {
-            ResultSetMetaData meta = result.getMetaData();
-            int columnCount = meta.getColumnCount();
-            for (int i = 1; i <= columnCount; i++) {
-                String[] className = meta.getColumnClassName(i).split("\\.");
-                map.put(meta.getColumnName(i), className[className.length - 1]);
-            }
-        } catch (SQLException e) {
-            System.out.println("getColumnName error:" + e.getMessage());
-        }
-        return map;
-    }
-
-    /**
      * 查询数据是否存在
      *
      * @param connection    链接
@@ -212,7 +194,7 @@ public class DbEx {
             for (Map.Entry<String, String> entry : primaryColumn.entrySet()) {
                 whereSql.append(DbEx.convertName(entry.getKey(), dbType)).append("=?");
                 //如果是PostgreSQL数据库，需要对日期格式特殊处理，在后面加【::TIMESTAMP】
-                if (dbType == DbTypeEnum.PostgreSql && entry.getValue().equals("Timestamp")) {
+                if (dbType == DbTypeEnum.PostgreSql && entry.getValue().toUpperCase().equals("TIMESTAMP")) {
                     whereSql.append("::TIMESTAMP ");
                 }
                 whereSql.append(" AND ");

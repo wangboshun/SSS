@@ -17,16 +17,34 @@ public class ColumnConfigModel implements Serializable {
     @TableId
     private String id;
 
+    /**
+     * 任务id
+     */
     private String task_id;
 
+    /**
+     * 目的字段
+     */
     private String sink_column;
 
+    /**
+     * 源字段
+     */
     private String source_column;
 
+    /**
+     * 默认值
+     */
     private String default_value;
 
+    /**
+     * 状态
+     */
     private Integer column_status;
 
+    /**
+     * 创建时间
+     */
     private String create_time;
 
     public String getId() {

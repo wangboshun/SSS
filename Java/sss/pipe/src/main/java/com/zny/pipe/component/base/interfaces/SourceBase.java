@@ -1,8 +1,11 @@
 package com.zny.pipe.component.base.interfaces;
 
+import com.zny.pipe.model.ColumnConfigModel;
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SourceConfigModel;
 import com.zny.pipe.model.TaskConfigModel;
+
+import java.util.List;
 
 /**
  * @author WBS
@@ -12,7 +15,7 @@ import com.zny.pipe.model.TaskConfigModel;
 
 public interface SourceBase {
 
-    void config(SourceConfigModel sourceConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, int version);
+    void config(SourceConfigModel sourceConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, List<ColumnConfigModel> columnList, int version);
 
     void start();
 

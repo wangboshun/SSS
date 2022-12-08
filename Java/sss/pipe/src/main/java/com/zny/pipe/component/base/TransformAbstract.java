@@ -40,7 +40,7 @@ public class TransformAbstract {
     public final RedisTemplate<String, String> redisTemplate;
     private List<ConvertConfigModel> convertConfig;
     private List<FilterConfigModel> filterConfig;
-    private List<ColumnConfigModel> columnConfig;
+    private List<ColumnConfigModel> columnList;
     private String CACHE_KEY;
 
     public TransformAbstract(TaskConfigApplication taskConfigApplication, SinkConfigApplication sinkConfigApplication, ConnectConfigApplication connectConfigApplication, FilterConfigApplication filterConfigApplication, ConvertConfigApplication convertConfigApplication, ColumnConfigApplication columnConfigApplication, PipeStrategy pipeStrategy, RedisTemplate<String, String> redisTemplate) {
@@ -61,7 +61,7 @@ public class TransformAbstract {
         CACHE_KEY = RedisKeyEnum.SINK_TIME_CACHE + ":" + taskConfig.getId() + ":" + body.getVersion();
         filterConfig = filterConfigApplication.getFilterByTaskId(taskConfig.getId());
         convertConfig = convertConfigApplication.getConvertByTaskId(taskConfig.getId());
-        columnConfig = columnConfigApplication.getColumnByTaskId(taskConfig.getId());
+        columnList = columnConfigApplication.getColumnByTaskId(taskConfig.getId());
         List<Map<String, Object>> bodyData = body.getData();
 
         //1.过滤
@@ -77,7 +77,7 @@ public class TransformAbstract {
         ConnectConfigModel connectConfig = connectConfigApplication.getById(sinkConfig.getConnect_id());
         DbTypeEnum dbTypeEnum = DbTypeEnum.values()[connectConfig.getDb_type()];
         SinkBase sink = pipeStrategy.getSink(dbTypeEnum);
-        sink.config(sinkConfig, connectConfig, taskConfig, body.getVersion());
+        sink.config(sinkConfig, connectConfig, taskConfig,columnList, body.getVersion());
         Boolean hasKey = redisTemplate.hasKey(CACHE_KEY);
         //如果缓存没有这个key，说明任务刚开始
         if (Boolean.FALSE.equals(hasKey)) {
@@ -137,12 +137,12 @@ public class TransformAbstract {
      * @param data 数据集
      */
     public List<Map<String, Object>> mapper(List<Map<String, Object>> data) {
-        if (columnConfig == null || columnConfig.isEmpty()) {
+        if (columnList == null || columnList.isEmpty()) {
             return data;
         }
         List<Map<String, Object>> result = new ArrayList<>();
         for (Map<String, Object> map : data) {
-            result.add(TransformUtils.mapperData(map, columnConfig));
+            result.add(TransformUtils.mapperData(map, columnList));
         }
         return result;
     }

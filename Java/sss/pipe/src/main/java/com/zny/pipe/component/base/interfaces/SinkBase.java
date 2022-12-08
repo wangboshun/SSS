@@ -1,6 +1,7 @@
 package com.zny.pipe.component.base.interfaces;
 
 import com.zny.pipe.component.base.enums.TaskStatusEnum;
+import com.zny.pipe.model.ColumnConfigModel;
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SinkConfigModel;
 import com.zny.pipe.model.TaskConfigModel;
@@ -16,7 +17,7 @@ import java.util.Map;
 
 public interface SinkBase {
 
-    void config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, Integer version);
+    void config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, List<ColumnConfigModel> columnList, Integer version);
 
     void start(List<Map<String, Object>> list);
 

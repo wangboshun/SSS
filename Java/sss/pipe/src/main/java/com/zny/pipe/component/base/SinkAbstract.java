@@ -9,6 +9,7 @@ import com.zny.common.utils.database.TableInfo;
 import com.zny.pipe.component.ConnectionFactory;
 import com.zny.pipe.component.base.enums.TaskStatusEnum;
 import com.zny.pipe.component.base.interfaces.SinkBase;
+import com.zny.pipe.model.ColumnConfigModel;
 import com.zny.pipe.model.ConnectConfigModel;
 import com.zny.pipe.model.SinkConfigModel;
 import com.zny.pipe.model.TaskConfigModel;
@@ -22,9 +23,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author WBS
@@ -38,6 +39,8 @@ public class SinkAbstract implements SinkBase {
     public ConnectConfigModel connectConfig;
     public TaskConfigModel taskConfig;
     public Connection connection;
+    public List<ColumnConfigModel> columnList;
+    public List<TableInfo> tableInfo;
     private String cacheKey;
     private DbTypeEnum dbType;
     private String tableName;
@@ -52,7 +55,7 @@ public class SinkAbstract implements SinkBase {
      * @param taskConfig    任务信息
      */
     @Override
-    public void config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, Integer version) {
+    public void config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, List<ColumnConfigModel> columnList, Integer version) {
         this.sinkConfig = sinkConfig;
         this.connectConfig = connectConfig;
         this.taskConfig = taskConfig;
@@ -60,6 +63,9 @@ public class SinkAbstract implements SinkBase {
         connection = ConnectionFactory.getConnection(connectConfig);
         dbType = DbTypeEnum.values()[this.connectConfig.getDb_type()];
         tableName = this.sinkConfig.getTable_name();
+        this.columnList = columnList;
+        this.tableInfo = new ArrayList<>();
+        tableInfo = DbEx.getTableInfo(connection, tableName);
     }
 
     /**
@@ -74,6 +80,21 @@ public class SinkAbstract implements SinkBase {
     }
 
     /**
+     * 获取主键
+     */
+    private Map<String, String> getPrimaryKey() {
+        Map<String, String> map = new HashMap<>();
+        for (ColumnConfigModel item : columnList) {
+            //获取表信息
+            TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(item.getSink_column())).findFirst().get();
+            if (info.getIs_primary() > 0) {
+                map.put(item.getSink_column(), info.getJava_type());
+            }
+        }
+        return map;
+    }
+
+    /**
      * 拆分数据
      *
      * @param list 数据消息
@@ -83,8 +104,7 @@ public class SinkAbstract implements SinkBase {
         List<Map<String, Object>> addList = new ArrayList<>();
         List<Map<String, Object>> updateList = new ArrayList<>();
         try {
-            List<TableInfo> tableInfo = DbEx.getTableInfo(connection, tableName);
-            Map<String, String> primaryColumn = DbEx.getPrimaryKey(tableInfo);
+            Map<String, String> primaryColumn = getPrimaryKey();
             InsertTypeEnum insertType = InsertTypeEnum.values()[this.taskConfig.getInsert_type()];
             for (Map<String, Object> item : list) {
                 //数据是否已存在
@@ -110,10 +130,10 @@ public class SinkAbstract implements SinkBase {
             }
 
             if (!addList.isEmpty()) {
-                addData(addList, tableInfo);
+                addData(addList);
             }
             if (!updateList.isEmpty()) {
-                updateData(updateList, tableInfo);
+                updateData(updateList);
             }
         } catch (Exception e) {
             logger.error("SinkAbstract setData", e);
@@ -129,17 +149,18 @@ public class SinkAbstract implements SinkBase {
     /**
      * 添加数据
      *
-     * @param list      数据集
-     * @param tableInfo 表信息
+     * @param list 数据集
      */
-    private Boolean addData(List<Map<String, Object>> list, List<TableInfo> tableInfo) {
+    private Boolean addData(List<Map<String, Object>> list) {
         PreparedStatement pstm = null;
         try {
             StringBuilder columnSql = new StringBuilder();
             StringBuilder valueSql = new StringBuilder();
-            for (TableInfo item : tableInfo) {
-                columnSql.append(DbEx.convertName(item.getColumn_name(), dbType)).append(",");
-                if (dbType == DbTypeEnum.PostgreSql && item.getJava_type().equals("Timestamp")) {
+            for (ColumnConfigModel item : columnList) {
+                //找到对应的列信息
+                TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(item.getSink_column())).findFirst().get();
+                columnSql.append(DbEx.convertName(item.getSink_column(), dbType)).append(",");
+                if (dbType == DbTypeEnum.PostgreSql && info.getJava_type().toUpperCase().equals("TIMESTAMP")) {
                     valueSql.append("?::TIMESTAMP,");
                 } else {
                     valueSql.append("?,");
@@ -152,8 +173,8 @@ public class SinkAbstract implements SinkBase {
             pstm = connection.prepareStatement(sql);
             for (Map<String, Object> dataItem : list) {
                 int index = 1;
-                for (TableInfo item : tableInfo) {
-                    pstm.setObject(index, dataItem.get(item.getColumn_name()));
+                for (ColumnConfigModel item : columnList) {
+                    pstm.setObject(index, dataItem.get(item.getSink_column()));
                     index++;
                 }
                 pstm.addBatch();
@@ -175,27 +196,27 @@ public class SinkAbstract implements SinkBase {
      * 更新数据
      *
      * @param list      数据集
-     * @param tableInfo 表信息
      */
-    private Boolean updateData(List<Map<String, Object>> list, List<TableInfo> tableInfo) {
+    private Boolean updateData(List<Map<String, Object>> list) {
         PreparedStatement pstm = null;
         try {
             StringBuilder columnSql = new StringBuilder();
             StringBuilder whereSql = new StringBuilder();
-
-            for (TableInfo item : tableInfo) {
+            for (ColumnConfigModel item : columnList) {
+                //找到对应的列信息
+                TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(item.getSink_column())).findFirst().get();
                 //主键
-                if (item.getIs_primary() > 0) {
-                    whereSql.append(DbEx.convertName(item.getColumn_name(), dbType)).append("=?");
-                    if (dbType == DbTypeEnum.PostgreSql && item.getJava_type().equals("Timestamp")) {
+                if (info.getIs_primary() > 0) {
+                    whereSql.append(DbEx.convertName(item.getSink_column(), dbType)).append("=?");
+                    if (dbType == DbTypeEnum.PostgreSql && info.getJava_type().toUpperCase().equals("TIMESTAMP")) {
                         whereSql.append("::TIMESTAMP ");
                     }
                     whereSql.append(" AND ");
                 }
                 //非主键
                 else {
-                    columnSql.append(DbEx.convertName(item.getColumn_name(), dbType)).append("=?");
-                    if (dbType == DbTypeEnum.PostgreSql && item.getJava_type().equals("Timestamp")) {
+                    columnSql.append(DbEx.convertName(item.getSink_column(), dbType)).append("=?");
+                    if (dbType == DbTypeEnum.PostgreSql && info.getJava_type().toUpperCase().equals("TIMESTAMP")) {
                         columnSql.append("::TIMESTAMP ");
                     }
                     columnSql.append(",");
@@ -211,15 +232,24 @@ public class SinkAbstract implements SinkBase {
                 int index = 1;
                 //这里设置数据下标有讲究，因为拼sql的时候非主键set数据在前，所以需要先设置非主键的数据，然后设置主键的数据
                 //非主键
-                for (TableInfo item : tableInfo.stream().filter(x -> x.getIs_primary() < 1).collect(Collectors.toList())) {
-                    pstm.setObject(index, dataItem.get(item.getColumn_name()));
-                    index++;
+                for (ColumnConfigModel item : columnList) {
+                    //找到对应的列信息
+                    TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(item.getSink_column())).findFirst().get();
+                    if (info.getIs_primary() <1) {
+                        pstm.setObject(index, dataItem.get(item.getSink_column()));
+                        index++;
+                    }
                 }
 
                 //主键
-                for (TableInfo item : tableInfo.stream().filter(x -> x.getIs_primary() > 0).collect(Collectors.toList())) {
-                    pstm.setObject(index, dataItem.get(item.getColumn_name()));
-                    index++;
+                for (ColumnConfigModel item : columnList) {
+                    //找到对应的列信息
+                    TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(item.getSink_column())).findFirst().get();
+                    //主键
+                    if (info.getIs_primary() > 0) {
+                        pstm.setObject(index, dataItem.get(item.getSink_column()));
+                        index++;
+                    }
                 }
 
                 pstm.addBatch();

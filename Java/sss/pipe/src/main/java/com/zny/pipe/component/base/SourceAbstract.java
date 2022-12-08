@@ -10,10 +10,7 @@ import com.zny.common.utils.database.DbEx;
 import com.zny.pipe.component.ConnectionFactory;
 import com.zny.pipe.component.base.enums.TaskStatusEnum;
 import com.zny.pipe.component.base.interfaces.SourceBase;
-import com.zny.pipe.model.ConnectConfigModel;
-import com.zny.pipe.model.MessageBodyModel;
-import com.zny.pipe.model.SourceConfigModel;
-import com.zny.pipe.model.TaskConfigModel;
+import com.zny.pipe.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -26,7 +23,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author WBS
@@ -47,6 +47,9 @@ public class SourceAbstract implements SourceBase {
     private static final int BATCH_SIZE = 1000;
     private DbTypeEnum dbType;
     public int version;
+
+    public List<ColumnConfigModel> columnList;
+
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
     @Autowired
@@ -60,11 +63,12 @@ public class SourceAbstract implements SourceBase {
      * @param taskConfig    任务信息
      */
     @Override
-    public void config(SourceConfigModel sourceConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, int version) {
+    public void config(SourceConfigModel sourceConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, List<ColumnConfigModel> columnList, int version) {
         this.sourceConfig = sourceConfig;
         this.connectConfig = connectConfig;
         this.taskConfig = taskConfig;
         this.version = version;
+        this.columnList = columnList;
         connection = ConnectionFactory.getConnection(connectConfig);
         this.cacheKey = RedisKeyEnum.SOURCE_TIME_CACHE + ":" + taskConfig.getId() + ":" + version;
         dbType = DbTypeEnum.values()[this.connectConfig.getDb_type()];
@@ -94,19 +98,18 @@ public class SourceAbstract implements SourceBase {
             rowCount = DbEx.getCount(connection, sql);
             redisTemplate.opsForHash().put(this.cacheKey, "ROW_COUNT", rowCount + "");
             pstm = connection.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-            if(dbType==DbTypeEnum.PostgreSql){
+            if (dbType == DbTypeEnum.PostgreSql) {
                 pstm.setFetchSize(10000);
-            }else{
+            } else {
                 pstm.setFetchSize(Integer.MIN_VALUE);
             }
             result = pstm.executeQuery();
             List<Map<String, Object>> list = new ArrayList<>();
-            Set<String> columnNameSet = DbEx.getColumnName(result).keySet();
             int currentIndex = 0;  //数据记录号
             while (result.next()) {
-                Map<String, Object> rowData = new HashMap<>(columnNameSet.size());
-                for (String x : columnNameSet) {
-                    rowData.put(x, result.getObject(x));
+                Map<String, Object> rowData = new HashMap<>(columnList.size());
+                for (ColumnConfigModel item : columnList) {
+                    rowData.put(item.getSource_column(), result.getObject(item.getSource_column()));
                 }
                 list.add(rowData);
                 currentIndex++;
@@ -157,9 +160,16 @@ public class SourceAbstract implements SourceBase {
      * 获取需要查询的SQL
      */
     private String getNextSql() {
-        String sql = "";
+        StringBuilder sql = new StringBuilder("SELECT ");
         try {
-            sql = "SELECT * FROM " + DbEx.convertName(sourceConfig.getTable_name(), dbType) + " WHERE 1=1 ";
+            for (ColumnConfigModel item : columnList) {
+                sql.append(DbEx.convertName(item.getSource_column(), dbType));
+                sql.append(",");
+            }
+            sql.deleteCharAt(sql.length() - 1);
+            sql.append(" FROM ");
+            sql.append(DbEx.convertName(sourceConfig.getTable_name(), dbType));
+            sql.append(" WHERE 1=1 ");
             //如果是增量
             if (taskConfig.getAdd_type() == 0) {
                 String startTime = getStartTime();
@@ -177,28 +187,28 @@ public class SourceAbstract implements SourceBase {
                 else if (sourceConfig.getGet_type() == 1) {
                     tm = DbEx.convertName(sourceConfig.getTime_column(), dbType);
                 }
-                sql += " AND " + tm + ">='" + startTime + "'" + pg_time;
-                sql += " AND " + tm + "<='" + endTime + "'" + pg_time;
+                sql.append(" AND " + tm + ">='" + startTime + "'" + pg_time);
+                sql.append(" AND " + tm + "<='" + endTime + "'" + pg_time);
             }
 
             //where条件
             if (StringUtils.isNotBlank(taskConfig.getWhere_param())) {
-                sql += taskConfig.getWhere_param();
+                sql.append(taskConfig.getWhere_param());
             }
 
             //如果排序字段不为空
             if (StringUtils.isNotBlank(sourceConfig.getOrder_column())) {
-                sql += " ORDER BY " + DbEx.convertName(sourceConfig.getOrder_column(), dbType);
+                sql.append(" ORDER BY " + DbEx.convertName(sourceConfig.getOrder_column(), dbType));
             }
             //如果排序字段为空
             else {
                 //如果wrtm字段不为空，设置wrtm为排序字段
                 if (StringUtils.isNotBlank(sourceConfig.getWrtm_column())) {
-                    sql += " ORDER BY " + DbEx.convertName(sourceConfig.getWrtm_column(), dbType);
+                    sql.append(" ORDER BY " + DbEx.convertName(sourceConfig.getWrtm_column(), dbType));
                 }
                 //否则设置数据时间字段为排序字段
                 else {
-                    sql += " ORDER BY " + DbEx.convertName(sourceConfig.getTime_column(), dbType);
+                    sql.append(" ORDER BY " + DbEx.convertName(sourceConfig.getTime_column(), dbType));
                 }
             }
 
@@ -206,22 +216,22 @@ public class SourceAbstract implements SourceBase {
             if (sourceConfig.getOrder_type() != null) {
                 //如果是顺序
                 if (sourceConfig.getOrder_type() == 0) {
-                    sql += " ASC ";
+                    sql.append(" ASC ");
                 }
                 //如果是倒序
                 else if (sourceConfig.getOrder_type() == 1) {
-                    sql += " DESC ";
+                    sql.append(" DESC ");
                 }
             }
             //后置设置为倒序
             else {
-                sql += " DESC ";
+                sql.append(" DESC ");
             }
         } catch (Exception e) {
             logger.error("SourceAbstract getNextSql", e);
             System.out.println("SourceAbstract getNextSql: " + e.getMessage());
         }
-        return sql;
+        return sql.toString();
     }
 
     /**
