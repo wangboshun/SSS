@@ -1,5 +1,7 @@
 package com.zny.pipe.component.base;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import com.zny.common.enums.DbTypeEnum;
 import com.zny.common.enums.InsertTypeEnum;
 import com.zny.common.enums.RedisKeyEnum;
@@ -23,10 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author WBS
@@ -95,71 +94,6 @@ public class SinkAbstract implements SinkBase {
     }
 
     /**
-     * 查询数据是否存在
-     *
-     * @param connection    链接
-     * @param tableName     表名
-     * @param data          数据
-     * @param primaryColumn 主键
-     * @param dbType        数据类型
-     */
-    public boolean hasData(Connection connection, String tableName, Map<String, Object> data, Map<String, String> primaryColumn, DbTypeEnum dbType) {
-        tableName = DbEx.convertName(tableName, dbType);
-        int number = 0;
-        ResultSet result = null;
-        PreparedStatement pstm = null;
-        try {
-            String sql = "";
-            StringBuilder whereSql = new StringBuilder(" WHERE ");
-
-            for (Map.Entry<String, String> entry : primaryColumn.entrySet()) {
-                whereSql.append(DbEx.convertName(entry.getKey(), dbType)).append("=?");
-                whereSql.append(" AND ");
-            }
-            whereSql.delete(whereSql.length() - 5, whereSql.length());
-            switch (dbType) {
-                case MySql:
-                    sql = String.format("select 1 as number from %s%s  limit  1 ", tableName, whereSql);
-                    break;
-                case MsSql:
-                    sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableName, whereSql);
-                    break;
-                case PostgreSql:
-                    sql = String.format("select 1 as number from %s%s  limit  1 ", tableName, whereSql);
-                    break;
-                case ClickHouse:
-                    sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableName, whereSql);
-                    break;
-                default:
-                    sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableName, whereSql);
-                    break;
-            }
-            pstm = connection.prepareStatement(sql);
-            int index = 1;
-            for (Map.Entry<String, String> entry : primaryColumn.entrySet()) {
-                String column = entry.getKey();
-                TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(column)).findFirst().get();
-                DbEx.setParam(pstm, index, data.get(column), info.getJava_type());
-                index++;
-            }
-
-            result = pstm.executeQuery();
-            while (result.next()) {
-                number = result.getInt("number");
-            }
-
-            if (number > 0) {
-                return true;
-            }
-        } catch (SQLException e) {
-            System.out.println("hasData: " + e.getMessage());
-        } finally {
-            DbEx.release(pstm, result);
-        }
-        return false;
-    }
-
-    /**
      * 拆分数据
      *
      * @param list 数据消息
@@ -173,7 +107,7 @@ public class SinkAbstract implements SinkBase {
             InsertTypeEnum insertType = InsertTypeEnum.values()[this.taskConfig.getInsert_type()];
             for (Map<String, Object> item : list) {
                 //数据是否已存在
-                boolean hasData = hasData(connection, tableName, item, primaryColumn, dbType);
+                boolean hasData = exists(connection, tableName, item, primaryColumn, dbType);
                 switch (insertType) {
                     case IGNORE:
                         if (hasData) {
@@ -264,6 +198,9 @@ public class SinkAbstract implements SinkBase {
         try {
             StringBuilder columnSql = new StringBuilder();
             StringBuilder whereSql = new StringBuilder();
+            Table<String, Integer, String> columnTable = HashBasedTable.create();
+
+            int index = 0;
             for (ColumnConfigModel item : columnList) {
                 //找到对应的列信息
                 TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(item.getSink_column())).findFirst().get();
@@ -277,6 +214,7 @@ public class SinkAbstract implements SinkBase {
                     columnSql.append(DbEx.convertName(item.getSink_column(), dbType)).append("=?");
                     columnSql.append(",");
                 }
+                columnTable.put(item.getSink_column(), index++, info.getJava_type());
             }
 
             columnSql.deleteCharAt(columnSql.length() - 1);
@@ -285,29 +223,10 @@ public class SinkAbstract implements SinkBase {
             this.connection.setAutoCommit(false);
             pstm = connection.prepareStatement(sql);
             for (Map<String, Object> dataItem : list) {
-                int index = 1;
-                //这里设置数据下标有讲究，因为拼sql的时候非主键set数据在前，所以需要先设置非主键的数据，然后设置主键的数据
-                //非主键
-                for (ColumnConfigModel item : columnList) {
-                    //找到对应的列信息
-                    TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(item.getSink_column())).findFirst().get();
-                    if (info.getIs_primary() < 1) {
-                        DbEx.setParam(pstm, index, dataItem.get(item.getSink_column()), info.getJava_type());
-                        index++;
-                    }
+                Set<Table.Cell<String, Integer, String>> cells = columnTable.cellSet();
+                for (Table.Cell<String, Integer, String> item : cells) {
+                    DbEx.setParam(pstm, item.getColumnKey(), dataItem.get(item.getRowKey()), item.getValue());
                 }
-
-                //主键
-                for (ColumnConfigModel item : columnList) {
-                    //找到对应的列信息
-                    TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(item.getSink_column())).findFirst().get();
-                    //主键
-                    if (info.getIs_primary() > 0) {
-                        DbEx.setParam(pstm, index, dataItem.get(item.getSink_column()), info.getJava_type());
-                        index++;
-                    }
-                }
-
                 pstm.addBatch();
             }
             pstm.executeBatch();
@@ -321,6 +240,71 @@ public class SinkAbstract implements SinkBase {
             DbEx.release(pstm);
         }
         return true;
+    }
+
+    /**
+     * 查询数据是否存在
+     *
+     * @param connection    链接
+     * @param tableName     表名
+     * @param data          数据
+     * @param primaryColumn 主键
+     * @param dbType        数据类型
+     */
+    public boolean exists(Connection connection, String tableName, Map<String, Object> data, Map<String, String> primaryColumn, DbTypeEnum dbType) {
+        tableName = DbEx.convertName(tableName, dbType);
+        int number = 0;
+        ResultSet result = null;
+        PreparedStatement pstm = null;
+        try {
+            String sql = "";
+            StringBuilder whereSql = new StringBuilder(" WHERE ");
+
+            for (Map.Entry<String, String> entry : primaryColumn.entrySet()) {
+                whereSql.append(DbEx.convertName(entry.getKey(), dbType)).append("=?");
+                whereSql.append(" AND ");
+            }
+            whereSql.delete(whereSql.length() - 5, whereSql.length());
+            switch (dbType) {
+                case MySql:
+                    sql = String.format("select 1 as number from %s%s  limit  1 ", tableName, whereSql);
+                    break;
+                case MsSql:
+                    sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableName, whereSql);
+                    break;
+                case PostgreSql:
+                    sql = String.format("select 1 as number from %s%s  limit  1 ", tableName, whereSql);
+                    break;
+                case ClickHouse:
+                    sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableName, whereSql);
+                    break;
+                default:
+                    sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableName, whereSql);
+                    break;
+            }
+            pstm = connection.prepareStatement(sql);
+            int index = 1;
+            for (Map.Entry<String, String> entry : primaryColumn.entrySet()) {
+                String column = entry.getKey();
+                TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(column)).findFirst().get();
+                DbEx.setParam(pstm, index, data.get(column), info.getJava_type());
+                index++;
+            }
+
+            result = pstm.executeQuery();
+            while (result.next()) {
+                number = result.getInt("number");
+            }
+
+            if (number > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println("hasData: " + e.getMessage());
+        } finally {
+            DbEx.release(pstm, result);
+        }
+        return false;
     }
 
     /**
