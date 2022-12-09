@@ -5,6 +5,7 @@ import com.zny.common.utils.DateUtils;
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.sql.Date;
 import java.util.*;
 
 /**
@@ -223,6 +224,7 @@ public class DbEx {
      */
     public static String convertName(String tableName, DbTypeEnum dbType) {
         switch (dbType) {
+            case ClickHouse:
             case MySql:
                 return "`" + tableName + "`";
             case MsSql:
@@ -343,8 +345,13 @@ public class DbEx {
             switch (type) {
                 case "STRING":
                 case "INT":
+                case "LONG":
+                case "INTEGER":
                 case "DOUBLE":
                 case "FLOAT":
+                case "DATE":
+                case "TIME":
+                case "DATETIME":
                 case "TIMESTAMP":
                 case "BIGDECIMAL":
                 case "LOCALDATETIME":
@@ -371,7 +378,11 @@ public class DbEx {
             type = type.toUpperCase();
             switch (type) {
                 case "INT":
+                case "INTEGER":
                     pstm.setInt(index, Integer.parseInt(val));
+                    break;
+                case "LONG":
+                    pstm.setLong(index, Long.parseLong(val));
                     break;
                 case "STRING":
                     pstm.setString(index, val);
@@ -382,8 +393,15 @@ public class DbEx {
                 case "FLOAT":
                     pstm.setFloat(index, Float.parseFloat(val));
                     break;
+                case "DATETIME":
                 case "TIMESTAMP":
                     pstm.setTimestamp(index, Timestamp.valueOf(val));
+                    break;
+                case "DATE":
+                    pstm.setDate(index, Date.valueOf(val));
+                    break;
+                case "TIME":
+                    pstm.setTime(index, Time.valueOf(val));
                     break;
                 case "BIGDECIMAL":
                     pstm.setBigDecimal(index, new BigDecimal(val));
