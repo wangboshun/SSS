@@ -341,23 +341,14 @@ public class DbEx {
         try {
             type = type.toUpperCase();
             switch (type) {
+                case "STRING":
                 case "INT":
-                    pstm.setInt(index, Integer.parseInt(val.toString()));
-                    break;
                 case "DOUBLE":
-                    pstm.setDouble(index, Double.parseDouble(val.toString()));
-                    break;
                 case "FLOAT":
-                    pstm.setFloat(index, Float.parseFloat(val.toString()));
-                    break;
                 case "TIMESTAMP":
-                    pstm.setTimestamp(index, Timestamp.valueOf(val.toString()));
-                    break;
                 case "BIGDECIMAL":
-                    pstm.setBigDecimal(index, new BigDecimal(val.toString()));
-                    break;
                 case "LOCALDATETIME":
-                    pstm.setObject(index, DateUtils.strToDate(val.toString()));
+                    setParam(pstm, index, val.toString(), type);
                     break;
                 default:
                     pstm.setObject(index, val);
@@ -381,6 +372,9 @@ public class DbEx {
             switch (type) {
                 case "INT":
                     pstm.setInt(index, Integer.parseInt(val));
+                    break;
+                case "STRING":
+                    pstm.setString(index, val);
                     break;
                 case "DOUBLE":
                     pstm.setDouble(index, Double.parseDouble(val));

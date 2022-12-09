@@ -1,7 +1,9 @@
 package com.zny.pipe.component.base;
 
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.RowSortedTable;
 import com.google.common.collect.Table;
+import com.google.common.collect.TreeBasedTable;
 import com.zny.common.enums.DbTypeEnum;
 import com.zny.common.enums.InsertTypeEnum;
 import com.zny.common.enums.RedisKeyEnum;
@@ -135,8 +137,8 @@ public class SinkAbstract implements SinkBase {
                 updateData(updateList);
             }
         } catch (Exception e) {
-            logger.error("SinkAbstract setData", e);
-            System.out.println("SinkAbstract setData: " + e.getMessage());
+            logger.error("SinkAbstract splitData", e);
+            System.out.println("SinkAbstract splitData: " + e.getMessage());
         } finally {
             DbEx.release(connection);
         }
@@ -155,23 +157,25 @@ public class SinkAbstract implements SinkBase {
         try {
             StringBuilder columnSql = new StringBuilder();
             StringBuilder valueSql = new StringBuilder();
+            Table<String, Integer, String> columnTable = HashBasedTable.create();
+            int index = 1;
             for (ColumnConfigModel item : columnList) {
                 //找到对应的列信息
                 TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(item.getSink_column())).findFirst().get();
                 columnSql.append(DbEx.convertName(item.getSink_column(), dbType)).append(",");
                 valueSql.append("?,");
+                columnTable.put(item.getSink_column(), index++, info.getJava_type());
             }
             columnSql.deleteCharAt(columnSql.length() - 1);
             valueSql.deleteCharAt(valueSql.length() - 1);
             String sql = String.format("INSERT INTO %s (%s) VALUES (%s)", DbEx.convertName(tableName, dbType), columnSql, valueSql);
             this.connection.setAutoCommit(false);
             pstm = connection.prepareStatement(sql);
+
             for (Map<String, Object> dataItem : list) {
-                int index = 1;
-                for (ColumnConfigModel item : columnList) {
-                    TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(item.getSink_column())).findFirst().get();
-                    DbEx.setParam(pstm, index, dataItem.get(item.getSink_column()), info.getJava_type());
-                    index++;
+                Set<Table.Cell<String, Integer, String>> cells = columnTable.cellSet();
+                for (Table.Cell<String, Integer, String> item : cells) {
+                    DbEx.setParam(pstm, item.getColumnKey(), dataItem.get(item.getRowKey()), item.getValue());
                 }
                 pstm.addBatch();
             }
@@ -180,8 +184,8 @@ public class SinkAbstract implements SinkBase {
             connection.commit();
         } catch (SQLException e) {
             DbEx.release(pstm);
-            logger.error("SinkAbstract setData", e);
-            System.out.println("SinkAbstract setData: " + e.getMessage());
+            logger.error("SinkAbstract addData", e);
+            System.out.println("SinkAbstract addData: " + e.getMessage());
         } finally {
             DbEx.release(pstm);
         }
@@ -198,9 +202,10 @@ public class SinkAbstract implements SinkBase {
         try {
             StringBuilder columnSql = new StringBuilder();
             StringBuilder whereSql = new StringBuilder();
-            Table<String, Integer, String> columnTable = HashBasedTable.create();
-
-            int index = 0;
+            RowSortedTable<Integer, String, String> columnTable = TreeBasedTable.create();
+            //定义两个有序map，为后面的参数赋值做依据
+            LinkedHashMap<String, String> primaryColumn = new LinkedHashMap<>();
+            LinkedHashMap<String, String> noPrimaryColumn = new LinkedHashMap<>();
             for (ColumnConfigModel item : columnList) {
                 //找到对应的列信息
                 TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(item.getSink_column())).findFirst().get();
@@ -208,24 +213,30 @@ public class SinkAbstract implements SinkBase {
                 if (info.getIs_primary() > 0) {
                     whereSql.append(DbEx.convertName(item.getSink_column(), dbType)).append("=?");
                     whereSql.append(" AND ");
+                    primaryColumn.put(item.getSink_column(), info.getJava_type());
                 }
                 //非主键
                 else {
                     columnSql.append(DbEx.convertName(item.getSink_column(), dbType)).append("=?");
                     columnSql.append(",");
+                    noPrimaryColumn.put(item.getSink_column(), info.getJava_type());
                 }
-                columnTable.put(item.getSink_column(), index++, info.getJava_type());
             }
-
             columnSql.deleteCharAt(columnSql.length() - 1);
             whereSql.delete(whereSql.length() - 4, whereSql.length());
             String sql = String.format("UPDATE %s SET %s WHERE %s", DbEx.convertName(tableName, dbType), columnSql, whereSql);
             this.connection.setAutoCommit(false);
             pstm = connection.prepareStatement(sql);
             for (Map<String, Object> dataItem : list) {
-                Set<Table.Cell<String, Integer, String>> cells = columnTable.cellSet();
-                for (Table.Cell<String, Integer, String> item : cells) {
-                    DbEx.setParam(pstm, item.getColumnKey(), dataItem.get(item.getRowKey()), item.getValue());
+                int index = 1;
+                //这里做了特殊处理，因为sql语句中非主键的参数在前面，所以先把非主键和参数先封装进去
+                for (Map.Entry<String, String> entry : noPrimaryColumn.entrySet()) {
+                    DbEx.setParam(pstm, index, dataItem.get(entry.getKey()), entry.getValue());
+                    index++;
+                }
+                for (Map.Entry<String, String> entry : primaryColumn.entrySet()) {
+                    DbEx.setParam(pstm, index, dataItem.get(entry.getKey()), entry.getValue());
+                    index++;
                 }
                 pstm.addBatch();
             }
@@ -234,8 +245,8 @@ public class SinkAbstract implements SinkBase {
             connection.commit();
         } catch (SQLException e) {
             DbEx.release(pstm);
-            logger.error("SinkAbstract setData", e);
-            System.out.println("SinkAbstract setData: " + e.getMessage());
+            logger.error("SinkAbstract updateData", e);
+            System.out.println("SinkAbstract updateData: " + e.getMessage());
         } finally {
             DbEx.release(pstm);
         }
@@ -300,7 +311,7 @@ public class SinkAbstract implements SinkBase {
                 return true;
             }
         } catch (SQLException e) {
-            System.out.println("hasData: " + e.getMessage());
+            System.out.println("exits: " + e.getMessage());
         } finally {
             DbEx.release(pstm, result);
         }
