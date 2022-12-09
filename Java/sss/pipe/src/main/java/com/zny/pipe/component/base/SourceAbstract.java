@@ -103,9 +103,9 @@ public class SourceAbstract implements SourceBase {
             redisTemplate.opsForHash().put(this.cacheKey, "ROW_COUNT", rowCount + "");
             pstm = connection.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 
+            TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(tm)).findFirst().get();
             String startTime = getStartTime();
             String endTime = getEndTime(startTime);
-            TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(tm)).findFirst().get();
             DbEx.setParam(pstm, 1, startTime, info.getJava_type());
             DbEx.setParam(pstm, 2, endTime, info.getJava_type());
 

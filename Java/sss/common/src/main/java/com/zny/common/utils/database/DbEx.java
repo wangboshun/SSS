@@ -187,20 +187,20 @@ public class DbEx {
         int count = 0;
         try {
             int index = sql.indexOf("ORDER BY");
-            sql = sql.substring(0, index);
+            //如果有排序字段，去掉排序之后的语句
+            if (index > 0) {
+                sql = sql.substring(0, index);
+            }
+            //如果是select * from table,直接替换
             if (sql.contains("*")) {
-                sql = sql.replace("*", " count(0) ");
-            } else {
-                int selectIndex = sql.indexOf("select");
-                if (selectIndex < 0) {
-                    selectIndex = sql.indexOf("SELECT");
-                }
-                int fromIndex = sql.indexOf("from");
-                if (fromIndex < 0) {
-                    fromIndex = sql.indexOf("FROM");
-                }
+                sql = sql.replace("*", " COUNT(0) ");
+            }
+            //如果是select a,b,c from table，需要找到中间的字段语句然后替换
+            else {
+                int selectIndex = sql.indexOf("SELECT");
+                int fromIndex = sql.indexOf("FROM");
                 String str = sql.substring(selectIndex + 6, fromIndex);
-                sql = sql.replace(str, " count(0) ");
+                sql = sql.replace(str, " COUNT(0) ");
             }
             stmt = connection.createStatement();
             result = stmt.executeQuery(sql);
@@ -216,7 +216,7 @@ public class DbEx {
     }
 
     /**
-     * 转换表名
+     * 根据数据库类型转换表名或字段名
      *
      * @param tableName 表名
      * @param dbType    数据库类型
@@ -235,7 +235,7 @@ public class DbEx {
     }
 
     /**
-     * 转换表名
+     * 根据数据连接类型转换表名或字段名
      *
      * @param tableName  表名
      * @param connection 数据库连接

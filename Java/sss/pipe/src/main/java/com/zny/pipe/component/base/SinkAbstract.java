@@ -1,9 +1,5 @@
 package com.zny.pipe.component.base;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.RowSortedTable;
-import com.google.common.collect.Table;
-import com.google.common.collect.TreeBasedTable;
 import com.zny.common.enums.DbTypeEnum;
 import com.zny.common.enums.InsertTypeEnum;
 import com.zny.common.enums.RedisKeyEnum;
@@ -96,7 +92,7 @@ public class SinkAbstract implements SinkBase {
     }
 
     /**
-     * 拆分数据
+     * 拆分数据，分为添加数据、忽略数据、更新数据，并按照相应的方式进行处理
      *
      * @param list 数据消息
      */
@@ -104,12 +100,12 @@ public class SinkAbstract implements SinkBase {
         List<Map<String, Object>> ignoreList = new ArrayList<>();
         List<Map<String, Object>> addList = new ArrayList<>();
         List<Map<String, Object>> updateList = new ArrayList<>();
+        Map<String, String> primaryColumnMap = getPrimaryKey();
         try {
-            Map<String, String> primaryColumn = getPrimaryKey();
             InsertTypeEnum insertType = InsertTypeEnum.values()[this.taskConfig.getInsert_type()];
             for (Map<String, Object> item : list) {
                 //数据是否已存在
-                boolean hasData = exists(connection, tableName, item, primaryColumn, dbType);
+                boolean hasData = exists(item, connection, tableName, primaryColumnMap, dbType);
                 switch (insertType) {
                     case IGNORE:
                         if (hasData) {
@@ -157,25 +153,24 @@ public class SinkAbstract implements SinkBase {
         try {
             StringBuilder columnSql = new StringBuilder();
             StringBuilder valueSql = new StringBuilder();
-            Table<String, Integer, String> columnTable = HashBasedTable.create();
-            int index = 1;
+            LinkedHashMap<String, String> columnMap = new LinkedHashMap<>();
             for (ColumnConfigModel item : columnList) {
                 //找到对应的列信息
                 TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(item.getSink_column())).findFirst().get();
                 columnSql.append(DbEx.convertName(item.getSink_column(), dbType)).append(",");
                 valueSql.append("?,");
-                columnTable.put(item.getSink_column(), index++, info.getJava_type());
+                columnMap.put(item.getSink_column(), info.getJava_type());
             }
             columnSql.deleteCharAt(columnSql.length() - 1);
             valueSql.deleteCharAt(valueSql.length() - 1);
             String sql = String.format("INSERT INTO %s (%s) VALUES (%s)", DbEx.convertName(tableName, dbType), columnSql, valueSql);
             this.connection.setAutoCommit(false);
             pstm = connection.prepareStatement(sql);
-
             for (Map<String, Object> dataItem : list) {
-                Set<Table.Cell<String, Integer, String>> cells = columnTable.cellSet();
-                for (Table.Cell<String, Integer, String> item : cells) {
-                    DbEx.setParam(pstm, item.getColumnKey(), dataItem.get(item.getRowKey()), item.getValue());
+                int index = 1;
+                for (Map.Entry<String, String> entry : columnMap.entrySet()) {
+                    DbEx.setParam(pstm, index, dataItem.get(entry.getKey()), entry.getValue());
+                    index++;
                 }
                 pstm.addBatch();
             }
@@ -202,10 +197,9 @@ public class SinkAbstract implements SinkBase {
         try {
             StringBuilder columnSql = new StringBuilder();
             StringBuilder whereSql = new StringBuilder();
-            RowSortedTable<Integer, String, String> columnTable = TreeBasedTable.create();
             //定义两个有序map，为后面的参数赋值做依据
-            LinkedHashMap<String, String> primaryColumn = new LinkedHashMap<>();
-            LinkedHashMap<String, String> noPrimaryColumn = new LinkedHashMap<>();
+            LinkedHashMap<String, String> primaryColumnMap = new LinkedHashMap<>();
+            LinkedHashMap<String, String> notPrimaryColumnMap = new LinkedHashMap<>();
             for (ColumnConfigModel item : columnList) {
                 //找到对应的列信息
                 TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(item.getSink_column())).findFirst().get();
@@ -213,13 +207,13 @@ public class SinkAbstract implements SinkBase {
                 if (info.getIs_primary() > 0) {
                     whereSql.append(DbEx.convertName(item.getSink_column(), dbType)).append("=?");
                     whereSql.append(" AND ");
-                    primaryColumn.put(item.getSink_column(), info.getJava_type());
+                    primaryColumnMap.put(item.getSink_column(), info.getJava_type());
                 }
                 //非主键
                 else {
                     columnSql.append(DbEx.convertName(item.getSink_column(), dbType)).append("=?");
                     columnSql.append(",");
-                    noPrimaryColumn.put(item.getSink_column(), info.getJava_type());
+                    notPrimaryColumnMap.put(item.getSink_column(), info.getJava_type());
                 }
             }
             columnSql.deleteCharAt(columnSql.length() - 1);
@@ -230,11 +224,11 @@ public class SinkAbstract implements SinkBase {
             for (Map<String, Object> dataItem : list) {
                 int index = 1;
                 //这里做了特殊处理，因为sql语句中非主键的参数在前面，所以先把非主键和参数先封装进去
-                for (Map.Entry<String, String> entry : noPrimaryColumn.entrySet()) {
+                for (Map.Entry<String, String> entry : notPrimaryColumnMap.entrySet()) {
                     DbEx.setParam(pstm, index, dataItem.get(entry.getKey()), entry.getValue());
                     index++;
                 }
-                for (Map.Entry<String, String> entry : primaryColumn.entrySet()) {
+                for (Map.Entry<String, String> entry : primaryColumnMap.entrySet()) {
                     DbEx.setParam(pstm, index, dataItem.get(entry.getKey()), entry.getValue());
                     index++;
                 }
@@ -256,13 +250,13 @@ public class SinkAbstract implements SinkBase {
     /**
      * 查询数据是否存在
      *
-     * @param connection    链接
-     * @param tableName     表名
-     * @param data          数据
-     * @param primaryColumn 主键
-     * @param dbType        数据类型
+     * @param data             数据
+     * @param connection       链接
+     * @param tableName        表名
+     * @param primaryColumnMap 主键
+     * @param dbType           数据库类型
      */
-    public boolean exists(Connection connection, String tableName, Map<String, Object> data, Map<String, String> primaryColumn, DbTypeEnum dbType) {
+    public boolean exists(Map<String, Object> data, Connection connection, String tableName, Map<String, String> primaryColumnMap, DbTypeEnum dbType) {
         tableName = DbEx.convertName(tableName, dbType);
         int number = 0;
         ResultSet result = null;
@@ -271,7 +265,7 @@ public class SinkAbstract implements SinkBase {
             String sql = "";
             StringBuilder whereSql = new StringBuilder(" WHERE ");
 
-            for (Map.Entry<String, String> entry : primaryColumn.entrySet()) {
+            for (Map.Entry<String, String> entry : primaryColumnMap.entrySet()) {
                 whereSql.append(DbEx.convertName(entry.getKey(), dbType)).append("=?");
                 whereSql.append(" AND ");
             }
@@ -295,10 +289,8 @@ public class SinkAbstract implements SinkBase {
             }
             pstm = connection.prepareStatement(sql);
             int index = 1;
-            for (Map.Entry<String, String> entry : primaryColumn.entrySet()) {
-                String column = entry.getKey();
-                TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(column)).findFirst().get();
-                DbEx.setParam(pstm, index, data.get(column), info.getJava_type());
+            for (Map.Entry<String, String> entry : primaryColumnMap.entrySet()) {
+                DbEx.setParam(pstm, index, data.get(entry.getKey()), entry.getValue());
                 index++;
             }
 
