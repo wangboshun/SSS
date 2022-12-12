@@ -151,6 +151,7 @@ public class SourceAbstract implements SourceBase {
         String routingKey = (DbTypeEnum.values()[taskConfig.getSink_type()]).toString() + "_RoutKey";
         Gson gson = GsonEx.getInstance();
         MessageBodyModel model = new MessageBodyModel();
+        model.setTableName(sourceConfig.getTable_name());
         model.setTaskId(this.taskConfig.getId());
         model.setData(list);
         model.setBatch_size(BATCH_SIZE);

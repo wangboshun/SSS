@@ -13,6 +13,7 @@ import java.util.Map;
 public class MessageBodyModel implements Serializable {
 
     List<Map<String, Object>> data;
+
     String taskId;
 
     Integer total;
@@ -24,6 +25,16 @@ public class MessageBodyModel implements Serializable {
     Integer batch_size;
 
     Integer version;
+
+    String tableName;
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
 
     public Integer getVersion() {
         return version;

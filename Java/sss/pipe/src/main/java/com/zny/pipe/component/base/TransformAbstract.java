@@ -1,19 +1,24 @@
 package com.zny.pipe.component.base;
 
+import com.google.gson.Gson;
 import com.zny.common.enums.DbTypeEnum;
 import com.zny.common.enums.RedisKeyEnum;
+import com.zny.common.json.GsonEx;
 import com.zny.pipe.appication.*;
 import com.zny.pipe.component.PipeStrategy;
 import com.zny.pipe.component.base.enums.TaskStatusEnum;
 import com.zny.pipe.component.base.interfaces.SinkBase;
 import com.zny.pipe.component.transform.TransformUtils;
 import com.zny.pipe.model.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.json.JsonReadOptions;
+import tech.tablesaw.io.json.JsonReader;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +34,6 @@ import java.util.Map;
 @Component
 public class TransformAbstract {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
     public final TaskConfigApplication taskConfigApplication;
     public final SinkConfigApplication sinkConfigApplication;
     public final ConnectConfigApplication connectConfigApplication;
@@ -63,6 +67,17 @@ public class TransformAbstract {
         convertConfig = convertConfigApplication.getConvertByTaskId(taskConfig.getId());
         columnList = columnConfigApplication.getColumnByTaskId(taskConfig.getId());
         List<Map<String, Object>> bodyData = body.getData();
+        Gson gson = GsonEx.getInstance();
+        String json = gson.toJson(body.getData());
+
+        Map<String, ColumnType> map = new HashMap<>();
+        map.put("STCD", ColumnType.STRING);
+        map.put("TM", ColumnType.STRING);
+        map.put("DRP", ColumnType.STRING);
+        ColumnType[] columnTypes = new JsonReader().read(JsonReadOptions.builderFromString(json).
+                columnTypesPartial(map).build()).typeArray();
+        JsonReadOptions.Builder builder = JsonReadOptions.builderFromString(json).columnTypes(columnTypes);
+        Table table = Table.read().usingOptions(builder);
 
         //1.过滤
         bodyData = this.filter(bodyData);
@@ -77,7 +92,7 @@ public class TransformAbstract {
         ConnectConfigModel connectConfig = connectConfigApplication.getById(sinkConfig.getConnect_id());
         DbTypeEnum dbTypeEnum = DbTypeEnum.values()[connectConfig.getDb_type()];
         SinkBase sink = pipeStrategy.getSink(dbTypeEnum);
-        sink.config(sinkConfig, connectConfig, taskConfig,columnList, body.getVersion());
+        sink.config(sinkConfig, connectConfig, taskConfig, columnList, body.getVersion());
         Boolean hasKey = redisTemplate.hasKey(CACHE_KEY);
         //如果缓存没有这个key，说明任务刚开始
         if (Boolean.FALSE.equals(hasKey)) {

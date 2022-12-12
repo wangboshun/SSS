@@ -101,6 +101,8 @@ public class SinkAbstract implements SinkBase {
         List<Map<String, Object>> addList = new ArrayList<>();
         List<Map<String, Object>> updateList = new ArrayList<>();
         Map<String, String> primaryColumnMap = getPrimaryKey();
+
+
         try {
             InsertTypeEnum insertType = InsertTypeEnum.values()[this.taskConfig.getInsert_type()];
             for (Map<String, Object> item : list) {
