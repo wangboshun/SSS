@@ -57,23 +57,23 @@ spring:
       datasource:
         main:
           username: root
-          password: mima123456
+          password: mima123456mima
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://123.60.141.63:3306/wbs?rewriteBatchedStatements=true&useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+          url: jdbc:mysql://123.60.141.63:10001/wbs?rewriteBatchedStatements=true&useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
         iot:
           username: sa
           password: 123456
           driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-          url: jdbc:sqlserver://127.0.0.1:1433;database=pbgSQTX_3;integratedSecurity=false;encrypt=true;trustServerCertificate=true
+          url: jdbc:sqlserver://127.0.0.1:1433;database=wbs;integratedSecurity=false;encrypt=true;trustServerCertificate=true
   rabbitmq:
     host: 123.60.141.63
-    port: 5672
+    port: 10003
     username: admin
-    password: mima123456
+    password: mima123456mima
   redis:
     host: 123.60.141.63
-    port: 6379
-    password: mima123456
+    port: 10002
+    password: mima123456mima
 
 sa-token:
   # token 名称 (同时也是cookie名称)
