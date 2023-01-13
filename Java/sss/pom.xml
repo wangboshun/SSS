@@ -28,13 +28,6 @@
     </modules>
 
     <dependencies>
-
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <version>1.33</version>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -48,13 +41,13 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.6.13</version>
+            <version>1.6.14</version>
         </dependency>
 
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-javadoc</artifactId>
-            <version>1.6.13</version>
+            <version>1.6.14</version>
         </dependency>
 
         <dependency>
@@ -65,13 +58,13 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.8.10</version>
+            <version>5.8.11</version>
         </dependency>
 
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.10</version>
+            <version>2.10.1</version>
         </dependency>
 
         <dependency>
@@ -100,14 +93,14 @@
         <dependency>
             <groupId>com.clickhouse</groupId>
             <artifactId>clickhouse-jdbc</artifactId>
-            <version>0.3.2-patch11</version>
+            <version>0.3.2-test3</version>
         </dependency>
 
         <dependency>
             <scope>compile</scope>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>23.1.0</version>
+            <version>24.0.0</version>
         </dependency>
 
         <dependency>
@@ -123,7 +116,7 @@
         <dependency>
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-spring-boot-starter</artifactId>
-            <version>1.33.0</version>
+          <version>1.33.0</version>
         </dependency>
 
         <dependency>
@@ -140,25 +133,13 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.5.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.nhl.dflib</groupId>
-            <artifactId>dflib</artifactId>
-            <version>0.15</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.nhl.dflib</groupId>
-            <artifactId>dflib-json</artifactId>
-            <version>0.15</version>
+            <version>3.5.3.1</version>
         </dependency>
 
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-            <version>3.6.0</version>
+            <version>3.6.1</version>
         </dependency>
 
         <dependency>
@@ -167,23 +148,15 @@
             <version>3.0.3</version>
         </dependency>
 
-        <dependency>
-            <groupId>tech.tablesaw</groupId>
-            <artifactId>tablesaw-core</artifactId>
-            <version>0.43.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>tech.tablesaw</groupId>
-            <artifactId>tablesaw-json</artifactId>
-            <version>0.43.1</version>
-        </dependency>
-
-
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.14.2</version>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

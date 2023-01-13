@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 127.0.0.1
+ Source Server         : mysql-123.60.141.63
  Source Server Type    : MySQL
- Source Server Version : 80029 (8.0.29)
- Source Host           : 127.0.0.1:3306
+ Source Server Version : 80031 (8.0.31)
+ Source Host           : 123.60.141.63:3306
  Source Schema         : wbs
 
  Target Server Type    : MySQL
- Target Server Version : 80029 (8.0.29)
+ Target Server Version : 80031 (8.0.31)
  File Encoding         : 65001
 
- Date: 16/11/2022 15:31:47
+ Date: 12/01/2023 17:06:58
 */
 
 SET NAMES utf8mb4;
@@ -25,12 +25,24 @@ CREATE TABLE `pipe_column_config`  (
   `id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `task_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '任务id',
   `sink_column` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '目标字段',
+  `sink_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `source_column` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '源字段',
+  `source_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `default_value` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '默认值',
   `column_status` int NULL DEFAULT NULL,
   `create_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of pipe_column_config
+-- ----------------------------
+INSERT INTO `pipe_column_config` VALUES ('1', '3', 'STCD', NULL, 'STCD', NULL, NULL, NULL, '2022-11-15 17:26:29');
+INSERT INTO `pipe_column_config` VALUES ('2', '3', 'DRP', NULL, 'DRP', NULL, NULL, NULL, '2022-11-15 17:27:30');
+INSERT INTO `pipe_column_config` VALUES ('3', '3', 'TM', NULL, 'TM', NULL, NULL, NULL, '2022-11-15 17:27:30');
+INSERT INTO `pipe_column_config` VALUES ('4', '4', 'STCD', NULL, 'STCD', NULL, NULL, NULL, '2022-11-15 17:26:29');
+INSERT INTO `pipe_column_config` VALUES ('5', '4', 'DRP', NULL, 'DRP', NULL, NULL, NULL, '2022-11-15 17:27:30');
+INSERT INTO `pipe_column_config` VALUES ('6', '4', 'TM', NULL, 'TM', NULL, NULL, NULL, '2022-11-15 17:27:30');
 
 -- ----------------------------
 -- Table structure for pipe_connect_config
@@ -44,11 +56,21 @@ CREATE TABLE `pipe_connect_config`  (
   `username` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '用户',
   `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '密码',
   `db_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '数据库名',
+  `db_schema` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '数据库模式，pgsql会用到',
   `db_type` int NULL DEFAULT NULL COMMENT '数据类型：MySQL(0)、MsSQL(1)',
   `create_time` datetime NULL DEFAULT NULL,
   `connect_status` int NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of pipe_connect_config
+-- ----------------------------
+INSERT INTO `pipe_connect_config` VALUES ('1', 'test1', '123.60.141.63', 3306, 'root', 'mima123456', 'test1', NULL, 0, '2022-10-19 14:34:50', NULL);
+INSERT INTO `pipe_connect_config` VALUES ('2', 'wbs', '127.0.0.1', 1433, 'sa', 'mima123456', 'wbs', NULL, 1, '2022-10-19 14:35:12', NULL);
+INSERT INTO `pipe_connect_config` VALUES ('3', 'test2', '123.60.141.63', 3306, 'root', 'mima123456', 'test2', NULL, 0, '2022-10-19 14:35:12', NULL);
+INSERT INTO `pipe_connect_config` VALUES ('4', 'postgres1', '123.60.141.63', 5432, 'postgres', 'mima123456', 'test1', 'public', 2, '2022-10-19 14:35:12', NULL);
+INSERT INTO `pipe_connect_config` VALUES ('5', 'clickhouse1', '123.60.141.63', 8123, 'default', 'mima123456', 'test1', NULL, 3, '2022-10-19 14:35:12', NULL);
 
 -- ----------------------------
 -- Table structure for pipe_convert_config
@@ -68,6 +90,10 @@ CREATE TABLE `pipe_convert_config`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of pipe_convert_config
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for pipe_filter_config
 -- ----------------------------
 DROP TABLE IF EXISTS `pipe_filter_config`;
@@ -85,6 +111,10 @@ CREATE TABLE `pipe_filter_config`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of pipe_filter_config
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for pipe_sink_config
 -- ----------------------------
 DROP TABLE IF EXISTS `pipe_sink_config`;
@@ -98,6 +128,13 @@ CREATE TABLE `pipe_sink_config`  (
   `primary_column` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '主键字段',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of pipe_sink_config
+-- ----------------------------
+INSERT INTO `pipe_sink_config` VALUES ('1', 'test2', '3', '2022-10-19 14:37:08', NULL, 'ST_PPTN_R', 'STCD,TM');
+INSERT INTO `pipe_sink_config` VALUES ('2', 'clickhouse1', '5', '2022-10-19 14:37:08', NULL, 'ST_PPTN_R', 'STCD,TM');
+INSERT INTO `pipe_sink_config` VALUES ('3', 'postgresql', '4', '2022-10-19 14:37:08', NULL, 'ST_PPTN_R', 'STCD,TM');
 
 -- ----------------------------
 -- Table structure for pipe_source_config
@@ -120,6 +157,14 @@ CREATE TABLE `pipe_source_config`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of pipe_source_config
+-- ----------------------------
+INSERT INTO `pipe_source_config` VALUES ('1', 'test1', '1', '2022-10-19 14:38:52', NULL, 'ST_PPTN_R', 'STCD,TM', 'TM', '', 1, 'TM', 1);
+INSERT INTO `pipe_source_config` VALUES ('2', 'clickhouse1', '5', '2022-10-19 14:38:52', NULL, 'ST_PPTN_R', 'STCD,TM', 'TM', '', 1, 'TM', 1);
+INSERT INTO `pipe_source_config` VALUES ('3', 'postgresql', '4', '2022-10-19 14:37:08', NULL, 'ST_PPTN_R', 'STCD,TM', 'TM', NULL, 1, 'TM', 1);
+INSERT INTO `pipe_source_config` VALUES ('4', 'test2', '3', '2022-10-19 14:38:52', NULL, 'ST_PPTN_R', 'STCD,TM', 'TM', '', 1, 'TM', 1);
+
+-- ----------------------------
 -- Table structure for pipe_table_config
 -- ----------------------------
 DROP TABLE IF EXISTS `pipe_table_config`;
@@ -128,14 +173,18 @@ CREATE TABLE `pipe_table_config`  (
   `connect_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '连接id',
   `table_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '表名',
   `column_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '字段名',
-  `data_type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'java数据类型',
-  `jdbc_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '数据库类型',
+  `java_type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'java数据类型',
+  `db_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '数据库类型',
   `is_primary` int NULL DEFAULT NULL COMMENT '是否主键',
   `is_null` int NULL DEFAULT NULL COMMENT '是否为空',
   `create_time` datetime NULL DEFAULT NULL,
   `table_status` int NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of pipe_table_config
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for pipe_task_config
@@ -160,5 +209,13 @@ CREATE TABLE `pipe_task_config`  (
   `add_type` int NULL DEFAULT NULL COMMENT '新增方式：0为增量、1为全量',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of pipe_task_config
+-- ----------------------------
+INSERT INTO `pipe_task_config` VALUES ('1', 'ceshi', '1', 0, '1', 0, '2022-01-01 00:00:00', '2023-01-01 00:00:00', 5, 1, '2022-10-19 14:40:31', NULL, '', 0, '1', 1);
+INSERT INTO `pipe_task_config` VALUES ('2', 'clickhouse', '2', 0, '1', 0, '2022-01-01 00:00:00', '2023-01-01 00:00:00', 5, 1, '2022-10-19 14:40:31', NULL, '', 0, '1', 1);
+INSERT INTO `pipe_task_config` VALUES ('3', 'postgresql', '1', 0, '3', 2, '2000-01-01 00:00:00', '2023-01-01 00:00:00', 5, 1, '2022-10-19 14:40:31', NULL, '', 0, '1', 0);
+INSERT INTO `pipe_task_config` VALUES ('4', 'mysql2', '3', 2, '4', 0, '2000-01-01 00:00:00', '2023-01-01 00:00:00', 5, 1, '2022-10-19 14:40:31', NULL, '', 0, '1', 0);
 
 SET FOREIGN_KEY_CHECKS = 1;

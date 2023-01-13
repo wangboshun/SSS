@@ -12,13 +12,8 @@ import com.zny.pipe.component.transform.TransformUtils;
 import com.zny.pipe.model.*;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.io.json.JsonReadOptions;
-import tech.tablesaw.io.json.JsonReader;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -68,16 +63,6 @@ public class TransformAbstract {
         columnList = columnConfigApplication.getColumnByTaskId(taskConfig.getId());
         List<Map<String, Object>> bodyData = body.getData();
         Gson gson = GsonEx.getInstance();
-        String json = gson.toJson(body.getData());
-
-        Map<String, ColumnType> map = new HashMap<>();
-        map.put("STCD", ColumnType.STRING);
-        map.put("TM", ColumnType.STRING);
-        map.put("DRP", ColumnType.STRING);
-        ColumnType[] columnTypes = new JsonReader().read(JsonReadOptions.builderFromString(json).
-                columnTypesPartial(map).build()).typeArray();
-        JsonReadOptions.Builder builder = JsonReadOptions.builderFromString(json).columnTypes(columnTypes);
-        Table table = Table.read().usingOptions(builder);
 
         //1.过滤
         bodyData = this.filter(bodyData);
