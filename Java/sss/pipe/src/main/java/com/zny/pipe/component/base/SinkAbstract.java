@@ -101,13 +101,16 @@ public class SinkAbstract implements SinkBase {
         List<Map<String, Object>> addList = new ArrayList<>();
         List<Map<String, Object>> updateList = new ArrayList<>();
         Map<String, String> primaryColumnMap = getPrimaryKey();
-
-
         try {
             InsertTypeEnum insertType = InsertTypeEnum.values()[this.taskConfig.getInsert_type()];
+            String countSql = "SELECT COUNT(0) FROM " + DbEx.convertName(tableName, dbType);
+            int rowCount = DbEx.getCount(connection, countSql);
+            boolean hasData = false;
             for (Map<String, Object> item : list) {
-                //数据是否已存在
-                boolean hasData = exists(item, connection, tableName, primaryColumnMap, dbType);
+                //如果sink表里面的数据大于0，才进行是否存在判断
+                if (rowCount > 0) {
+                    hasData = exists(item, connection, tableName, primaryColumnMap, dbType);
+                }
                 switch (insertType) {
                     case IGNORE:
                         if (hasData) {
@@ -200,22 +203,24 @@ public class SinkAbstract implements SinkBase {
             StringBuilder columnSql = new StringBuilder();
             StringBuilder whereSql = new StringBuilder();
             //定义两个有序map，为后面的参数赋值做依据
-            LinkedHashMap<String, String> primaryColumnMap = new LinkedHashMap<>();
-            LinkedHashMap<String, String> notPrimaryColumnMap = new LinkedHashMap<>();
+            LinkedHashMap<String, String> primaryColumnMap = new LinkedHashMap<>(); //主键列
+            LinkedHashMap<String, String> notPrimaryColumnMap = new LinkedHashMap<>();  //非主键列
             for (ColumnConfigModel item : columnList) {
                 //找到对应的列信息
-                TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(item.getSink_column())).findFirst().get();
+                String columnName = item.getSink_column();
+                TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(columnName)).findFirst().get();
+                String javaType = info.getJava_type();
                 //主键
                 if (info.getIs_primary() > 0) {
-                    whereSql.append(DbEx.convertName(item.getSink_column(), dbType)).append("=?");
+                    whereSql.append(DbEx.convertName(columnName, dbType)).append("=?");
                     whereSql.append(" AND ");
-                    primaryColumnMap.put(item.getSink_column(), info.getJava_type());
+                    primaryColumnMap.put(columnName, javaType);
                 }
                 //非主键
                 else {
-                    columnSql.append(DbEx.convertName(item.getSink_column(), dbType)).append("=?");
+                    columnSql.append(DbEx.convertName(columnName, dbType)).append("=?");
                     columnSql.append(",");
-                    notPrimaryColumnMap.put(item.getSink_column(), info.getJava_type());
+                    notPrimaryColumnMap.put(columnName, javaType);
                 }
             }
             columnSql.deleteCharAt(columnSql.length() - 1);

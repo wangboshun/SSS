@@ -49,7 +49,7 @@ public class SourceAbstract implements SourceBase {
     private DbTypeEnum dbType;
     public int version;
     public List<TableInfo> tableInfo;
-
+    private String tableName;
     public List<ColumnConfigModel> columnList;
 
     @Autowired
@@ -77,7 +77,8 @@ public class SourceAbstract implements SourceBase {
         if (connection != null) {
             setStatus(TaskStatusEnum.CREATE);
         }
-        tableInfo = DbEx.getTableInfo(connection, sourceConfig.getTable_name());
+        tableName = this.sourceConfig.getTable_name();
+        tableInfo = DbEx.getTableInfo(connection, tableName);
     }
 
     /**
@@ -151,7 +152,7 @@ public class SourceAbstract implements SourceBase {
         String routingKey = (DbTypeEnum.values()[taskConfig.getSink_type()]).toString() + "_RoutKey";
         Gson gson = GsonEx.getInstance();
         MessageBodyModel model = new MessageBodyModel();
-        model.setTableName(sourceConfig.getTable_name());
+        model.setTableName(tableName);
         model.setTaskId(this.taskConfig.getId());
         model.setData(list);
         model.setBatch_size(BATCH_SIZE);
@@ -197,7 +198,7 @@ public class SourceAbstract implements SourceBase {
             }
             sql.deleteCharAt(sql.length() - 1);
             sql.append(" FROM ");
-            sql.append(DbEx.convertName(sourceConfig.getTable_name(), dbType));
+            sql.append(DbEx.convertName(tableName, dbType));
             sql.append(" WHERE 1=1 ");
             //如果是增量
             if (taskConfig.getAdd_type() == 0) {

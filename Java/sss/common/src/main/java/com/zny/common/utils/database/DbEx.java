@@ -162,21 +162,6 @@ public class DbEx {
     }
 
     /**
-     * 获取表的主键
-     *
-     * @param tableInfo 表信息
-     */
-    public static Map<String, String> getPrimaryKey(List<TableInfo> tableInfo) {
-        Map<String, String> map = new HashMap<>();
-        for (TableInfo item : tableInfo) {
-            if (item.getIs_primary() > 0) {
-                map.put(item.getColumn_name(), item.getJava_type());
-            }
-        }
-        return map;
-    }
-
-    /**
      * 根据sql查询记录条数
      *
      * @param connection 连接

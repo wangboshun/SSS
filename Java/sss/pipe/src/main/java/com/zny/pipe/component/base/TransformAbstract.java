@@ -1,9 +1,7 @@
 package com.zny.pipe.component.base;
 
-import com.google.gson.Gson;
 import com.zny.common.enums.DbTypeEnum;
 import com.zny.common.enums.RedisKeyEnum;
-import com.zny.common.json.GsonEx;
 import com.zny.pipe.appication.*;
 import com.zny.pipe.component.PipeStrategy;
 import com.zny.pipe.component.base.enums.TaskStatusEnum;
@@ -62,7 +60,6 @@ public class TransformAbstract {
         convertConfig = convertConfigApplication.getConvertByTaskId(taskConfig.getId());
         columnList = columnConfigApplication.getColumnByTaskId(taskConfig.getId());
         List<Map<String, Object>> bodyData = body.getData();
-        Gson gson = GsonEx.getInstance();
 
         //1.过滤
         bodyData = this.filter(bodyData);
