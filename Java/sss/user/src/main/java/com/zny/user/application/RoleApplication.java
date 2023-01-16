@@ -123,7 +123,6 @@ public class RoleApplication extends ServiceImpl<RoleMapper, RoleModel> {
         wrapper.orderByDesc("create_time");
         Page<RoleModel> page = new Page<>(pageIndex, pageSize);
         Page<RoleModel> result = this.page(page, wrapper);
-        Map<String, Object> map = new HashMap<>(4);
         PageResult pageResult = new PageResult();
         pageResult.setPages(result.getPages());
         pageResult.setRows(result.getRecords());

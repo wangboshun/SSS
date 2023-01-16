@@ -80,7 +80,7 @@ public class SinkAbstract implements SinkBase {
      * 获取主键
      */
     private Map<String, String> getPrimaryKey() {
-        Map<String, String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>(columnList.size());
         for (ColumnConfigModel item : columnList) {
             //获取表信息
             TableInfo info = tableInfo.stream().filter(x -> x.getColumn_name().equals(item.getSink_column())).findFirst().get();
