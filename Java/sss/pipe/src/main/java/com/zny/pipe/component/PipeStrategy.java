@@ -6,10 +6,8 @@ import com.zny.pipe.component.base.annotations.SourceTypeAnnotation;
 import com.zny.pipe.component.base.interfaces.SinkBase;
 import com.zny.pipe.component.base.interfaces.SourceBase;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
