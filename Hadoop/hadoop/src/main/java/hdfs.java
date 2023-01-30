@@ -12,7 +12,7 @@ import java.util.Arrays;
  * Main
  */
 
-public class hadoop_1 {
+public class hdfs {
     public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
         URL.setURLStreamHandlerFactory(new FsUrlStreamHandlerFactory());
         try {

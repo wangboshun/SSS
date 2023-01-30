@@ -1,6 +1,6 @@
-package flow;
+package sort;
 
-import org.apache.hadoop.io.Writable;
+import org.apache.hadoop.io.WritableComparable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -8,12 +8,13 @@ import java.io.IOException;
 
 /**
  * 序列化
- * 1、实现writable
+ * 1、实现WritableComparable
  * 2、重写write、readFields接口
  * 3、重写空参构造函数
  * 4、重写toString方法
+ * 5、重写compareTo方法
  */
-public class FlowBean implements Writable {
+public class FlowBean implements WritableComparable<FlowBean> {
 
     private long upFlow;
     private long downFlow;
@@ -69,5 +70,18 @@ public class FlowBean implements Writable {
     @Override
     public String toString() {
         return "FLowBean{" + "upFlow=" + upFlow + ", downFlow=" + downFlow + ", sumFlow=" + sumFlow + '}';
+    }
+
+    @Override
+    public int compareTo(FlowBean o) {
+        if (this.sumFlow > o.sumFlow) {
+            //倒序
+            return -1;
+        } else if (this.sumFlow < o.sumFlow) {
+            //顺序
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }

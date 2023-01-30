@@ -1,4 +1,4 @@
-package flow;
+package partition;
 
 import org.apache.hadoop.io.Writable;
 
@@ -7,7 +7,6 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 /**
- * 序列化
  * 1、实现writable
  * 2、重写write、readFields接口
  * 3、重写空参构造函数

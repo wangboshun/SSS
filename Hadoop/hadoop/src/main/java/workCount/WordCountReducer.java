@@ -1,3 +1,5 @@
+package workCount;
+
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.w3c.dom.Text;
@@ -7,7 +9,7 @@ import java.io.IOException;
 /**
  * @author WBS
  * Date 2022-12-03 16:18
- * WordCountReducer
+ * workCount.WordCountReducer
  */
 
 public class WordCountReducer extends Reducer<Text, LongWritable, Text, LongWritable> {

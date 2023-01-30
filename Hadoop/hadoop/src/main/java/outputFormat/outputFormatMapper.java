@@ -1,3 +1,5 @@
+package outputFormat;
+
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -7,10 +9,10 @@ import java.io.IOException;
 /**
  * @author WBS
  * Date 2022-12-03 16:04
- * WordCountMapper
+ * workCount.WordCountMapper
  */
 
-public class WordCountMapper extends Mapper<LongWritable, Text, Text, LongWritable> {
+public class outputFormatMapper extends Mapper<LongWritable, Text, Text, LongWritable> {
 
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
