@@ -1,4 +1,4 @@
-package com.example.hadoop_3.wordCount;
+package workCount;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;

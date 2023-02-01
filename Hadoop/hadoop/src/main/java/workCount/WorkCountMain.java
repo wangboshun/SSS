@@ -26,7 +26,7 @@ public class WorkCountMain {
           Job job = Job.getInstance(cnf);
 
           //设置jar包
-          job.setJarByClass(Hadoop3Application.class);
+          job.setJarByClass(WorkCountMain.class);
 
           //关联map、reduce
           job.setMapperClass(WordCountMapper.class);

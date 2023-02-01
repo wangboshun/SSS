@@ -1,4 +1,4 @@
-package com.example.hadoop_3.partion;
+package partition;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Partitioner;

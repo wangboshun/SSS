@@ -1,4 +1,5 @@
-package com.example.hadoop_3.outformat;
+package outputFormat;
+
 
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;

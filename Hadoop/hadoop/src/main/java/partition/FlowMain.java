@@ -22,7 +22,7 @@ public class FlowMain {
         cnf.set("fs.defaultFS", "hdfs://localhost:9000");
         Job job = Job.getInstance(cnf);
 
-        job.setJarByClass(Hadoop3Application.class);
+        job.setJarByClass(FlowMain.class);
 
         job.setMapperClass(flowMapper.class);
         job.setReducerClass(flowReduce.class);

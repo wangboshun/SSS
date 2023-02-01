@@ -2,7 +2,7 @@ package outputFormat;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -24,7 +24,7 @@ public class outputFormatMain {
            Job job = Job.getInstance(cnf);
    
            //设置jar包
-           job.setJarByClass(Hadoop3Application.class);
+           job.setJarByClass(outputFormatMain.class);
    
            //关联map、reduce
            job.setMapperClass(outputFormatMapper.class);
