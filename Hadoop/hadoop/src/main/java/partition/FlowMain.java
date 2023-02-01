@@ -18,11 +18,11 @@ import java.io.IOException;
  */
 public class FlowMain {
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
-        Configuration configuration = new Configuration();
+        Configuration cnf = new Configuration();
+        cnf.set("fs.defaultFS", "hdfs://localhost:9000");
+        Job job = Job.getInstance(cnf);
 
-        Job job = Job.getInstance(configuration);
-
-        job.setJarByClass(FlowMain.class);
+        job.setJarByClass(Hadoop3Application.class);
 
         job.setMapperClass(flowMapper.class);
         job.setReducerClass(flowReduce.class);
@@ -38,8 +38,8 @@ public class FlowMain {
         job.setNumReduceTasks(5);
         //自定义分区结束
 
-        FileInputFormat.setInputPaths(job, new Path("/input"));
-        FileOutputFormat.setOutputPath(job, new Path("/output"));
+        FileInputFormat.setInputPaths(job, new Path("/input3"));
+        FileOutputFormat.setOutputPath(job, new Path("/output3"));
 
         boolean b = job.waitForCompletion(true);
 

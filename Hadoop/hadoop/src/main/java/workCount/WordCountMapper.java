@@ -1,16 +1,10 @@
-package workCount;
+package com.example.hadoop_3.wordCount;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
-
-/**
- * @author WBS
- * Date 2022-12-03 16:04
- * workCount.WordCountMapper
- */
 
 public class WordCountMapper extends Mapper<LongWritable, Text, Text, LongWritable> {
 

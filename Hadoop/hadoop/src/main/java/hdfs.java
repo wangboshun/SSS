@@ -28,7 +28,7 @@ public class hdfs {
 
     private static void put() {
         try {
-            URL url = new URL("hdfs://192.168.245.101:9000");
+            URL url = new URL("hdfs://172.18.0.3:9000");
             Configuration configuration = new Configuration();
             FileSystem fs = FileSystem.get(url.toURI(), configuration, "wbs");
             fs.copyFromLocalFile(true, true, new Path("C:\\Users\\WBS\\Desktop\\chabushuj.csv"), new Path("/test1"));
@@ -40,7 +40,7 @@ public class hdfs {
 
     private static void get() throws URISyntaxException, IOException, InterruptedException {
         try {
-            URL url = new URL("hdfs://192.168.245.101:9000");
+            URL url = new URL("hdfs://172.18.0.3:9000");
             Configuration configuration = new Configuration();
             FileSystem fs = FileSystem.get(url.toURI(), configuration, "wbs");
             fs.copyToLocalFile(false, new Path("/test1/chabushuj.csv"), new Path("C:\\Users\\WBS\\Desktop\\test\\aaa.csv"));
@@ -51,7 +51,7 @@ public class hdfs {
     }
 
     private static void mkdir() throws IOException, URISyntaxException, InterruptedException {
-        URL url = new URL("hdfs://192.168.245.101:9000");
+        URL url = new URL("hdfs://172.18.0.3:9000");
         Configuration configuration = new Configuration();
         FileSystem fs = FileSystem.get(url.toURI(), configuration, "wbs");
         fs.mkdirs(new Path("/test2"));
@@ -60,7 +60,7 @@ public class hdfs {
     }
 
     private static void delete() throws IOException, URISyntaxException, InterruptedException {
-        URL url = new URL("hdfs://192.168.245.101:9000");
+        URL url = new URL("hdfs://172.18.0.3:9000");
         Configuration configuration = new Configuration();
         FileSystem fs = FileSystem.get(url.toURI(), configuration, "wbs");
         fs.delete(new Path("/test1"), true);
@@ -69,7 +69,7 @@ public class hdfs {
     }
 
     private static void move() throws IOException, URISyntaxException, InterruptedException {
-        URL url = new URL("hdfs://192.168.245.101:9000");
+        URL url = new URL("hdfs://172.18.0.3:9000");
         Configuration configuration = new Configuration();
         FileSystem fs = FileSystem.get(url.toURI(), configuration, "wbs");
         fs.rename(new Path("/test2"), new Path("/test1"));
@@ -78,23 +78,29 @@ public class hdfs {
     }
 
     private static void info() throws IOException, URISyntaxException, InterruptedException {
-        URL url = new URL("hdfs://192.168.245.101:9000");
-        Configuration configuration = new Configuration();
-        FileSystem fs = FileSystem.get(url.toURI(), configuration, "wbs");
-        RemoteIterator<LocatedFileStatus> files = fs.listFiles(new Path("/"), true);
-        while (files.hasNext()) {
-            LocatedFileStatus status = files.next();
-            System.out.println("文件名：" + status.getPath().getName());
-            System.out.println("地址：" + status.getPath());
-            System.out.println("长度：" + status.getLen());
-            System.out.println("权限：" + status.getPermission());
-            System.out.println("类型：" + (status.isFile() ? "文件" : "文件夹"));
+        try {
+            System.out.println("---info---");
+            URL url = new URL("hdfs://172.18.0.3:9000");
+            Configuration configuration = new Configuration();
+            FileSystem fs = FileSystem.get(url.toURI(), configuration, "root");
+            RemoteIterator<LocatedFileStatus> files = fs.listFiles(new Path("/"), true);
+            while (files.hasNext()) {
+                LocatedFileStatus status = files.next();
+                System.out.println("文件名：" + status.getPath().getName());
+                System.out.println("地址：" + status.getPath());
+                System.out.println("长度：" + status.getLen());
+                System.out.println("权限：" + status.getPermission());
+                System.out.println("类型：" + (status.isFile() ? "文件" : "文件夹"));
 
-            //查看块信息
-            BlockLocation[] blockLocations = status.getBlockLocations();
-            System.out.println(Arrays.toString(blockLocations));
+                //查看块信息
+                BlockLocation[] blockLocations = status.getBlockLocations();
+                System.out.println(Arrays.toString(blockLocations));
+            }
+            fs.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
-        fs.close();
+
     }
 
 

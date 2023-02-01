@@ -1,4 +1,4 @@
-package partition;
+package com.example.hadoop_3.partion;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -11,19 +11,15 @@ public class flowReduce extends Reducer<Text, FlowBean, Text, FlowBean> {
 
     @Override
     protected void reduce(Text key, Iterable<FlowBean> values, Context context) throws IOException, InterruptedException {
-        long upFlow = 0;
-        long downFlow = 0;
+        String str = "";
 
         //遍历集合累加值
         for (FlowBean flowBean : values) {
-            upFlow += flowBean.getUpFlow();
-            downFlow += flowBean.getDownFlow();
+            str += flowBean.getStr();
         }
 
         //封装值
-        outV.setUpFlow(upFlow);
-        outV.setDownFlow(downFlow);
-        outV.setSumFlow();
+        outV.setStr(str);
 
         //写出
         context.write(key, outV);

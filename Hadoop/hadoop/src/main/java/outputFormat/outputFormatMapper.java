@@ -1,6 +1,7 @@
-package outputFormat;
+package com.example.hadoop_3.outformat;
 
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
@@ -12,26 +13,10 @@ import java.io.IOException;
  * workCount.WordCountMapper
  */
 
-public class outputFormatMapper extends Mapper<LongWritable, Text, Text, LongWritable> {
+public class outputFormatMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
 
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-
-        //读取一行  aa bb
-        String line = value.toString();
-
-        //根据符合分割
-        //aa
-        //bb
-        String[] words = line.split(" ");
-
-        Text outK = new Text();
-        LongWritable outV = new LongWritable(1);
-
-        //循环输出
-        for (String word : words) {
-            outK.set(word);
-            context.write(outK, outV);
-        }
+        context.write(value, NullWritable.get());
     }
 }

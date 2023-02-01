@@ -1,4 +1,4 @@
-package outputFormat;
+package com.example.hadoop_3.outformat;
 
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
@@ -18,8 +18,8 @@ public class defaultRecordWrite extends RecordWriter<Text, NullWritable> {
     public defaultRecordWrite(TaskAttemptContext job) {
         try {
             FileSystem fileSystem = FileSystem.get(job.getConfiguration());
-            baiduFs = fileSystem.create(new Path("/baidu_input"));
-            outherFs = fileSystem.create(new Path("/other_input"));
+            baiduFs = fileSystem.create(new Path("/output2/baidu_url"));
+            outherFs = fileSystem.create(new Path("/output2/other_url"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

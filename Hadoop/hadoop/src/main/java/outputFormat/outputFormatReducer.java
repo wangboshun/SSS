@@ -1,8 +1,8 @@
-package outputFormat;
+package com.example.hadoop_3.outformat;
 
-import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 
@@ -12,15 +12,12 @@ import java.io.IOException;
  * workCount.WordCountReducer
  */
 
-public class outputFormatReducer extends Reducer<Text, LongWritable, Text, LongWritable> {
+public class outputFormatReducer extends Reducer<Text, NullWritable, Text, NullWritable> {
     @Override
-    protected void reduce(Text key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException {
-
-        int sum = 0;
-        for (LongWritable value : values) {
-            sum += value.get();
+    protected void reduce(Text key, Iterable<NullWritable> values, Context context) throws IOException, InterruptedException {
+        for (NullWritable v : values) {
+            context.write(key, NullWritable.get());
         }
-        context.write(key, new LongWritable(sum));
     }
 
 }

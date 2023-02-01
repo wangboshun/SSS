@@ -8,8 +8,10 @@ import com.zny.pipe.component.base.enums.TaskStatusEnum;
 import com.zny.pipe.component.base.interfaces.SinkBase;
 import com.zny.pipe.component.transform.TransformUtils;
 import com.zny.pipe.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,8 @@ public class TransformAbstract {
     private List<FilterConfigModel> filterConfig;
     private List<ColumnConfigModel> columnList;
     private String CACHE_KEY;
+    @Autowired
+    private RestTemplate restTemplate;
 
     public TransformAbstract(TaskConfigApplication taskConfigApplication, SinkConfigApplication sinkConfigApplication, ConnectConfigApplication connectConfigApplication, FilterConfigApplication filterConfigApplication, ConvertConfigApplication convertConfigApplication, ColumnConfigApplication columnConfigApplication, PipeStrategy pipeStrategy, RedisTemplate<String, String> redisTemplate) {
         this.taskConfigApplication = taskConfigApplication;

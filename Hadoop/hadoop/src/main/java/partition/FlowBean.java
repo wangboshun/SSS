@@ -1,4 +1,4 @@
-package partition;
+package com.example.hadoop_3.partion;
 
 import org.apache.hadoop.io.Writable;
 
@@ -14,38 +14,15 @@ import java.io.IOException;
  */
 public class FlowBean implements Writable {
 
-    private long upFlow;
-    private long downFlow;
-    private long sumFlow;
-
-    public long getUpFlow() {
-        return upFlow;
+    public String getStr() {
+        return str;
     }
 
-    public void setUpFlow(long upFlow) {
-        this.upFlow = upFlow;
+    public void setStr(String str) {
+        this.str = str;
     }
 
-    public long getDownFlow() {
-        return downFlow;
-    }
-
-    public void setDownFlow(long downFlow) {
-        this.downFlow = downFlow;
-    }
-
-    public long getSumFlow() {
-        return sumFlow;
-    }
-
-    public void setSumFlow(long sumFlow) {
-        this.sumFlow = sumFlow;
-    }
-
-    //重写方法
-    public void setSumFlow() {
-        this.sumFlow = this.upFlow + this.downFlow;
-    }
+    private String str;
 
     public FlowBean() {
         super();
@@ -53,20 +30,16 @@ public class FlowBean implements Writable {
 
     @Override
     public void write(DataOutput dataOutput) throws IOException {
-        dataOutput.writeLong(upFlow);
-        dataOutput.writeLong(downFlow);
-        dataOutput.writeLong(sumFlow);
+        dataOutput.writeBytes(str);
     }
 
     @Override
     public void readFields(DataInput dataInput) throws IOException {
-        this.upFlow = dataInput.readLong();
-        this.downFlow = dataInput.readLong();
-        this.sumFlow = dataInput.readLong();
+        this.str = dataInput.readLine();
     }
 
     @Override
     public String toString() {
-        return "FLowBean{" + "upFlow=" + upFlow + ", downFlow=" + downFlow + ", sumFlow=" + sumFlow + '}';
+        return str;
     }
 }

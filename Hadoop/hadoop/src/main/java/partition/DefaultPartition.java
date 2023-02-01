@@ -1,4 +1,4 @@
-package partition;
+package com.example.hadoop_3.partion;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Partitioner;
@@ -18,16 +18,13 @@ public class DefaultPartition extends Partitioner<Text, FlowBean> {
 
         int partition;
 
-        if ("135".equals(phone)) {
-            partition = 0;
-        }
         if ("136".equals(phone)) {
+            partition = 0;
+        } else if ("135".equals(phone)) {
             partition = 1;
-        }
-        if ("137".equals(phone)) {
+        } else if ("137".equals(phone)) {
             partition = 2;
-        }
-        if ("138".equals(phone)) {
+        } else if ("138".equals(phone)) {
             partition = 3;
         } else {
             partition = 4;

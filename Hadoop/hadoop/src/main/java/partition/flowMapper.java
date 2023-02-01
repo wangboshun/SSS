@@ -1,4 +1,4 @@
-package partition;
+package com.example.hadoop_3.partion;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -17,18 +17,15 @@ public class flowMapper extends Mapper<LongWritable, Text, Text, FlowBean> {
         String line = value.toString();
 
         //拆分
-        String[] split = line.split("\t");
+        String[] split = line.split(",");
 
         //抽取数据
-        String phone = split[0].trim();
-        String upFlow = split[split.length - 3].trim();
-        String downFlow = split[split.length - 2].trim();
+        String phone = split[1].trim();
+        String str = split[2].trim();
 
         //封装数据
         outK.set(phone);
-        outV.setUpFlow(Long.parseLong(upFlow));
-        outV.setDownFlow(Long.parseLong(downFlow));
-        outV.setSumFlow();
+        outV.setStr(str);
 
         //写出数据
         context.write(outK, outV);
