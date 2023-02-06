@@ -22,7 +22,7 @@ public class WorkCountMain {
 
           //1、获取job
           Configuration cnf = new Configuration();
-          cnf.set("fs.defaultFS", "hdfs://localhost:9000");
+//          cnf.set("fs.defaultFS", "hdfs://localhost:9000");
           Job job = Job.getInstance(cnf);
 
           //设置jar包
@@ -41,8 +41,8 @@ public class WorkCountMain {
           job.setOutputValueClass(LongWritable.class);
 
           //设置数据的输入和输出路径
-          FileInputFormat.setInputPaths(job, new Path("/input1"));
-          FileOutputFormat.setOutputPath(job, new Path("/output1"));
+          FileInputFormat.setInputPaths(job, new Path("D:\\SSS\\Hadoop\\hadoop\\src\\main\\java\\workCount\\input"));
+          FileOutputFormat.setOutputPath(job, new Path("D:\\SSS\\Hadoop\\hadoop\\src\\main\\java\\workCount\\output"));
 
           //提交job
           boolean b = job.waitForCompletion(true);

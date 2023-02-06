@@ -19,8 +19,8 @@ public class defaultRecordWrite extends RecordWriter<Text, NullWritable> {
     public defaultRecordWrite(TaskAttemptContext job) {
         try {
             FileSystem fileSystem = FileSystem.get(job.getConfiguration());
-            baiduFs = fileSystem.create(new Path("/output2/baidu_url"));
-            outherFs = fileSystem.create(new Path("/output2/other_url"));
+            baiduFs = fileSystem.create(new Path("D:\\SSS\\Hadoop\\hadoop\\src\\main\\java\\outputFormat\\output2\\baidu_url"));
+            outherFs = fileSystem.create(new Path("D:\\SSS\\Hadoop\\hadoop\\src\\main\\java\\outputFormat\\output2\\other_url"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
