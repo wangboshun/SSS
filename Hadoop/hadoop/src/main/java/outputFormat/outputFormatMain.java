@@ -20,7 +20,7 @@ public class outputFormatMain {
 
            //1、获取job
            Configuration cnf = new Configuration();
-           cnf.set("fs.defaultFS", "hdfs://localhost:9000");
+//           cnf.set("fs.defaultFS", "hdfs://localhost:9000");
            Job job = Job.getInstance(cnf);
    
            //设置jar包
@@ -42,8 +42,11 @@ public class outputFormatMain {
            job.setOutputFormatClass(defaultOutputFormat.class);
    
            //设置输入、输出源
-           FileInputFormat.setInputPaths(job, new Path("/input2"));
-           FileOutputFormat.setOutputPath(job, new Path("/output2"));
+//           FileInputFormat.setInputPaths(job, new Path("/input2"));
+//           FileOutputFormat.setOutputPath(job, new Path("/output2"));
+
+           FileInputFormat.setInputPaths(job, new Path("D:\\SSS\\Hadoop\\hadoop\\src\\main\\java\\outputFormat\\input"));
+           FileOutputFormat.setOutputPath(job, new Path("D:\\SSS\\Hadoop\\hadoop\\src\\main\\java\\outputFormat\\output"));
    
            //提交job
            boolean b = job.waitForCompletion(true);
