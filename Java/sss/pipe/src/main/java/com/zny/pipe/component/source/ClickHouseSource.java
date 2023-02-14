@@ -14,5 +14,9 @@ import org.springframework.stereotype.Component;
 @Component
 @SourceTypeAnnotation(DbTypeEnum.ClickHouse)
 public class ClickHouseSource extends SourceAbstract {
-
+    @Override
+    public void start() {
+        super.start();
+        System.out.println("ClickHouseSource start");
+    }
 }

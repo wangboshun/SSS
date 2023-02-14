@@ -75,8 +75,10 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
             SourceBase source = pipeStrategy.getSource(e);
             Double score = redisTemplate.opsForZSet().incrementScore(RedisKeyEnum.TASK_COUNT_CACHE.toString(), taskConfig.getId(), 1);
             int version = score.intValue();
-            source.config(sourceConfig, connectConfig, taskConfig, columnList, version);
-            source.start();
+            boolean configSuccess = source.config(sourceConfig, connectConfig, taskConfig, columnList, version);
+            if(configSuccess){
+                source.start();
+            }
         });
 
         return SaResult.ok("ok");

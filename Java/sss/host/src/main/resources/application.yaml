@@ -91,7 +91,7 @@ sa-token:
 
 mybatis-plus:
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #输出SQL到控制台
     mapUnderscoreToCamelCase: false #关闭下划线转驼峰
 
 springdoc:
@@ -99,6 +99,7 @@ springdoc:
     path: /docs
     enabled: true #是否开启UI
   api-docs:
+    path: /swagger.json
     enabled: true
     groups:
       enabled: true

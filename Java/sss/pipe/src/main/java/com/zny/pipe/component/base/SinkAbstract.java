@@ -53,16 +53,31 @@ public class SinkAbstract implements SinkBase {
      * @param taskConfig    任务信息
      */
     @Override
-    public void config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, List<ColumnConfigModel> columnList, Integer version) {
+    public boolean config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, List<ColumnConfigModel> columnList, Integer version) {
         this.sinkConfig = sinkConfig;
         this.connectConfig = connectConfig;
         this.taskConfig = taskConfig;
         this.cacheKey = RedisKeyEnum.SINK_TIME_CACHE + ":" + taskConfig.getId() + ":" + version;
         connection = ConnectionFactory.getConnection(connectConfig);
-        dbType = DbTypeEnum.values()[this.connectConfig.getDb_type()];
-        tableName = this.sinkConfig.getTable_name();
-        this.columnList = columnList;
-        tableInfo = DbEx.getTableInfo(connection, tableName);
+
+        if (connection != null) {
+            dbType = DbTypeEnum.values()[this.connectConfig.getDb_type()];
+            tableName = this.sinkConfig.getTable_name();
+            this.columnList = columnList;
+            try {
+                //如果获取表结构抛出异常，例如表不存在
+                tableInfo = DbEx.getTableInfo(connection, tableName);
+                return true;
+            } catch (SQLException e) {
+                setStatus(TaskStatusEnum.CONNECT_FAIL);
+                logger.error("SinkAbstract config", e);
+                System.out.println("SinkAbstract config: " + e.getMessage());
+                return false;
+            }
+        } else {
+            setStatus(TaskStatusEnum.CONNECT_FAIL);
+            return false;
+        }
     }
 
     /**

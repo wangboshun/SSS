@@ -14,5 +14,9 @@ import org.springframework.stereotype.Component;
 @Component
 @SourceTypeAnnotation(DbTypeEnum.MySql)
 public class MySqlSource extends SourceAbstract {
-
+    @Override
+    public void start() {
+        super.start();
+        System.out.println("MySqlSource start");
+    }
 }

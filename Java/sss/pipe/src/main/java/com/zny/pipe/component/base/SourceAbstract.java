@@ -65,7 +65,7 @@ public class SourceAbstract implements SourceBase {
      * @param taskConfig    任务信息
      */
     @Override
-    public void config(SourceConfigModel sourceConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, List<ColumnConfigModel> columnList, int version) {
+    public boolean config(SourceConfigModel sourceConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, List<ColumnConfigModel> columnList, int version) {
         this.sourceConfig = sourceConfig;
         this.connectConfig = connectConfig;
         this.taskConfig = taskConfig;
@@ -74,11 +74,24 @@ public class SourceAbstract implements SourceBase {
         connection = ConnectionFactory.getConnection(connectConfig);
         this.cacheKey = RedisKeyEnum.SOURCE_TIME_CACHE + ":" + taskConfig.getId() + ":" + version;
         dbType = DbTypeEnum.values()[this.connectConfig.getDb_type()];
+
         if (connection != null) {
             setStatus(TaskStatusEnum.CREATE);
+            tableName = this.sourceConfig.getTable_name();
+            try {
+                //如果获取表结构抛出异常，例如表不存在
+                tableInfo = DbEx.getTableInfo(connection, tableName);
+                return true;
+            } catch (SQLException e) {
+                setStatus(TaskStatusEnum.CONNECT_FAIL);
+                logger.error("SourceAbstract config", e);
+                System.out.println("SourceAbstract config: " + e.getMessage());
+                return false;
+            }
+        } else {
+            setStatus(TaskStatusEnum.CONNECT_FAIL);
+            return false;
         }
-        tableName = this.sourceConfig.getTable_name();
-        tableInfo = DbEx.getTableInfo(connection, tableName);
     }
 
     /**
@@ -87,7 +100,6 @@ public class SourceAbstract implements SourceBase {
     @Override
     public void start() {
         setStatus(TaskStatusEnum.RUNNING);
-        System.out.println("SourceAbstract start");
         getData();
     }
 
@@ -180,7 +192,7 @@ public class SourceAbstract implements SourceBase {
         }
         //按数据时间获取
         else if (sourceConfig.getGet_type() == 1) {
-           return sourceConfig.getTime_column();
+            return sourceConfig.getTime_column();
         }
         return tm;
     }

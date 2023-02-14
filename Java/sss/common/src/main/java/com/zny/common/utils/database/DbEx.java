@@ -103,7 +103,7 @@ public class DbEx {
      * @param connection 连接
      * @param tableName  表名
      */
-    public static List<TableInfo> getTableInfo(Connection connection, String tableName) {
+    public static List<TableInfo> getTableInfo(Connection connection, String tableName) throws SQLException {
         Statement stmt = null;
         ResultSet result = null;
         List<TableInfo> list = new ArrayList<>();
@@ -128,13 +128,13 @@ public class DbEx {
                 }
                 list.add(model);
             }
-
+            return list;
         } catch (Exception e) {
-            System.out.println("getTableInfo : " + e.getMessage());
+            DbEx.release(stmt, result);
+            throw new SQLException(e.getMessage());
         } finally {
             DbEx.release(stmt, result);
         }
-        return list;
     }
 
     /**
