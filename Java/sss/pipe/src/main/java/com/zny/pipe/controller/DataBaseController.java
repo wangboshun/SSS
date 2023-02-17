@@ -84,7 +84,7 @@ public class DataBaseController {
     @DeleteMapping(value = "/table/delete")
     public SaResult delete(String connectId, String tableName) {
         return tableConfigApplication.deleteTableConfig(connectId, tableName);
-    } 
+    }
 
     /**
      * 根据连接获取下面所有的数据库
@@ -94,7 +94,7 @@ public class DataBaseController {
     @GetMapping(value = "/db/get_dbs")
     public SaResult getDataBases(String connectId) {
         List<String> list = tableConfigApplication.getDataBases(connectId);
-        if (list.isEmpty()) {
+        if (list == null || list.isEmpty()) {
             return SaResultEx.error(MessageCodeEnum.NOT_FOUND);
         } else {
             return SaResult.data(list);
@@ -109,7 +109,7 @@ public class DataBaseController {
     @GetMapping(value = "/db/get_schemas")
     public SaResult getSchemas(String connectId) {
         List<String> list = tableConfigApplication.getSchemas(connectId);
-        if (list.isEmpty()) {
+        if (list == null ||list.isEmpty()) {
             return SaResultEx.error(MessageCodeEnum.NOT_FOUND);
         } else {
             return SaResult.data(list);
@@ -124,7 +124,7 @@ public class DataBaseController {
     @GetMapping(value = "/db/get_tables")
     public SaResult getTables(String connectId) {
         List<Map<String, String>> list = tableConfigApplication.getTables(connectId);
-        if (list.isEmpty()) {
+        if (list == null || list.isEmpty()) {
             return SaResultEx.error(MessageCodeEnum.NOT_FOUND);
         } else {
             return SaResult.data(list);

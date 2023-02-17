@@ -58,24 +58,27 @@ public class SinkAbstract implements SinkBase {
         this.connectConfig = connectConfig;
         this.taskConfig = taskConfig;
         this.cacheKey = RedisKeyEnum.SINK_TIME_CACHE + ":" + taskConfig.getId() + ":" + version;
-        connection = ConnectionFactory.getConnection(connectConfig);
-
-        if (connection != null) {
-            dbType = DbTypeEnum.values()[this.connectConfig.getDb_type()];
-            tableName = this.sinkConfig.getTable_name();
-            this.columnList = columnList;
-            try {
-                //如果获取表结构抛出异常，例如表不存在
-                tableInfo = DbEx.getTableInfo(connection, tableName);
-                return true;
-            } catch (SQLException e) {
+        try {
+            connection = ConnectionFactory.getConnection(connectConfig);
+            if (connection != null) {
+                dbType = DbTypeEnum.values()[this.connectConfig.getDb_type()];
+                tableName = this.sinkConfig.getTable_name();
+                this.columnList = columnList;
+                try {
+                    //如果获取表结构抛出异常，例如表不存在
+                    tableInfo = DbEx.getTableInfo(connection, tableName);
+                    return true;
+                } catch (SQLException e) {
+                    setStatus(TaskStatusEnum.CONNECT_FAIL);
+                    logger.error("getTableInfo exception", e);
+                    return false;
+                }
+            } else {
                 setStatus(TaskStatusEnum.CONNECT_FAIL);
-                logger.error("SinkAbstract config", e);
-                System.out.println("SinkAbstract config: " + e.getMessage());
                 return false;
             }
-        } else {
-            setStatus(TaskStatusEnum.CONNECT_FAIL);
+        } catch (SQLException e) {
+            logger.error("SinkAbstract config", e);
             return false;
         }
     }
@@ -156,7 +159,11 @@ public class SinkAbstract implements SinkBase {
             logger.error("SinkAbstract splitData", e);
             System.out.println("SinkAbstract splitData: " + e.getMessage());
         } finally {
-            DbEx.release(connection);
+            try {
+                DbEx.release(connection);
+            } catch (SQLException e) {
+                logger.error("release ", e);
+            }
         }
 
         //更新数量缓存
@@ -198,11 +205,18 @@ public class SinkAbstract implements SinkBase {
             pstm.clearBatch();
             connection.commit();
         } catch (SQLException e) {
-            DbEx.release(pstm);
+            try {
+                DbEx.release(pstm);
+            } catch (SQLException ex) {
+                logger.error("release ", e);
+            }
             logger.error("SinkAbstract addData", e);
-            System.out.println("SinkAbstract addData: " + e.getMessage());
         } finally {
-            DbEx.release(pstm);
+            try {
+                DbEx.release(pstm);
+            } catch (SQLException e) {
+                logger.error("release ", e);
+            }
         }
         return true;
     }
@@ -260,11 +274,18 @@ public class SinkAbstract implements SinkBase {
             pstm.clearBatch();
             connection.commit();
         } catch (SQLException e) {
-            DbEx.release(pstm);
+            try {
+                DbEx.release(pstm);
+            } catch (SQLException ex) {
+                logger.error("release ", e);
+            }
             logger.error("SinkAbstract updateData", e);
-            System.out.println("SinkAbstract updateData: " + e.getMessage());
         } finally {
-            DbEx.release(pstm);
+            try {
+                DbEx.release(pstm);
+            } catch (SQLException e) {
+                logger.error("release ", e);
+            }
         }
         return true;
     }
@@ -325,9 +346,13 @@ public class SinkAbstract implements SinkBase {
                 return true;
             }
         } catch (SQLException e) {
-            System.out.println("exits: " + e.getMessage());
+            logger.error("exist ", e);
         } finally {
-            DbEx.release(pstm, result);
+            try {
+                DbEx.release(pstm, result);
+            } catch (SQLException e) {
+                logger.error("release ", e);
+            }
         }
         return false;
     }

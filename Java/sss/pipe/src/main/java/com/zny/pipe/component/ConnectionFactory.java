@@ -16,7 +16,7 @@ import java.sql.SQLException;
  */
 
 public class ConnectionFactory {
-    public static Connection getConnection(ConnectConfigModel connectConfig) {
+    public static Connection getConnection(ConnectConfigModel connectConfig) throws SQLException {
         try {
             String connectStr = "";
             switch (connectConfig.getDb_type()) {
@@ -43,8 +43,7 @@ public class ConnectionFactory {
                     return null;
             }
         } catch (SQLException e) {
-            System.out.println("getConnection exception:" + e.getMessage());
-            return null;
+            throw new SQLException("Connection exception：" + e.getMessage());
         }
     }
 }
