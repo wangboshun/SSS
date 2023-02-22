@@ -18,6 +18,6 @@ public class TransformController {
     @ApiOperation("transform测试")
     @GetMapping(value = "/test")
     public String test() {
-        return "source Test";
+        return "transform Test";
     }
 }

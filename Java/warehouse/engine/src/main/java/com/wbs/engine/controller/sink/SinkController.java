@@ -18,6 +18,6 @@ public class SinkController {
     @ApiOperation("sink测试")
     @GetMapping(value = "/test")
     public String test() {
-        return "Sink Test";
+        return "sink Test";
     }
 }
