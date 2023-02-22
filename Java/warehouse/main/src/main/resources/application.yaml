@@ -1,0 +1,54 @@
+server:
+  port: 1234
+spring:
+  mvc:
+    pathmatch:
+      # ????
+      matching-strategy: ant-path-matcher
+  profiles:
+    include: engine,common
+  data:
+    mongodb:
+      host: 123.60.141.63
+      port: 10010
+      database: admin
+      username: admin
+      password: mima123456mima
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #??SQL????
+    mapUnderscoreToCamelCase: false #????????
+
+springdoc:
+  swagger-ui:
+    path: /docs
+    enabled: true #????UI
+  api-docs:
+    path: /swagger.json
+    enabled: true
+
+knife4j:
+  enable: true
+  openapi:
+    title: "Api Documentation"
+    description: "Api Documentation"
+    email: 512742341@qq.com
+    concat: "wbs"
+    version: v1.0
+    group:
+      engine:
+        group-name: "engine"
+        api-rule: package
+        api-rule-resources:
+          - com.wbs.engine
+      common:
+        group-name: "common"
+        api-rule: package
+        api-rule-resources:
+          - com.wbs.common
+
+logging:
+  config: classpath:logback-spring.xml
+  file:
+    path: logs
