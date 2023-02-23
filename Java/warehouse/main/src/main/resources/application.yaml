@@ -3,29 +3,23 @@ server:
 spring:
   mvc:
     pathmatch:
-      # ????
       matching-strategy: ant-path-matcher
   profiles:
     include: engine,common
   data:
     mongodb:
-      host: 123.60.141.63
+      host: "123.60.141.63"
       port: 10010
-      database: admin
-      username: admin
-      password: mima123456mima
-
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #??SQL????
-    mapUnderscoreToCamelCase: false #????????
+      database: "admin"
+      username: "admin"
+      password: "mima123456mima"
 
 springdoc:
   swagger-ui:
-    path: /docs
-    enabled: true #????UI
+    path: "/docs"
+    enabled: true
   api-docs:
-    path: /swagger.json
+    path: "/swagger.json"
     enabled: true
 
 knife4j:
@@ -33,22 +27,22 @@ knife4j:
   openapi:
     title: "Api Documentation"
     description: "Api Documentation"
-    email: 512742341@qq.com
+    email: "512742341@qq.com"
     concat: "wbs"
-    version: v1.0
+    version: "v1.0"
     group:
       engine:
         group-name: "engine"
         api-rule: package
         api-rule-resources:
-          - com.wbs.engine
+          - "com.wbs.engine"
       common:
         group-name: "common"
         api-rule: package
         api-rule-resources:
-          - com.wbs.common
+          - "com.wbs.common"
 
 logging:
-  config: classpath:logback-spring.xml
+  config: "classpath:logback-spring.xml"
   file:
     path: logs
