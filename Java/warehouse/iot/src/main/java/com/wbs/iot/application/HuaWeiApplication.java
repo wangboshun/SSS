@@ -6,39 +6,68 @@ import com.huaweicloud.sdk.core.auth.ICredential;
 import com.huaweicloud.sdk.iotda.v5.IoTDAClient;
 import com.huaweicloud.sdk.iotda.v5.model.*;
 import com.huaweicloud.sdk.iotda.v5.region.IoTDARegion;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author WBS
  * @date 2023/2/23 14:38
  * @desciption HuaWeiApplication
  */
-public class HuaWeiApplication {
-    public static IoTDAClient client;
+@Component
+public class HuaWeiApplication implements IotInterface {
+    public IoTDAClient client;
 
-    public static void main(String[] args) {
-        createClient();
-        queryProductList();
+    public HuaWeiApplication(@Value("${huawei.ak}") String ak, @Value("${huawei.sk}") String sk, @Value("${huawei.region}") String region) {
+        try {
+            ICredential auth = new BasicCredentials().withDerivedPredicate(AbstractCredentials.DEFAULT_DERIVED_PREDICATE).withAk(ak).withSk(sk);
+            client = IoTDAClient.newBuilder().withCredential(auth).withRegion(IoTDARegion.valueOf(region)).build();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
-    /**
-     * 创建认证客户端
-     */
-    public static void createClient() {
-        String ak = "WPC9R5I3AQAYINPQRAEG";
-        String sk = "yyayWWTluTbsF45Q0xWhDPAUZZng8pyxPa1114NW";
-        ICredential auth = new BasicCredentials().withDerivedPredicate(AbstractCredentials.DEFAULT_DERIVED_PREDICATE).withAk(ak).withSk(sk);
-        client = IoTDAClient.newBuilder().withCredential(auth).withRegion(IoTDARegion.valueOf("cn-north-4")).build();
+    @Override
+    public void getProductList() {
+        ListProductsRequest request = new ListProductsRequest();
+        try {
+            ListProductsResponse response = client.listProducts(request);
+            List<ProductSummary> productList = response.getProducts();
+            for (ProductSummary item : productList) {
+                System.out.print("productName:" + item.getName() + " , ");
+                System.out.print("productId:" + item.getProductId() + "  ");
+                getDeviceList(item.getProductId());
+                System.out.println();
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
-    /**
-     * 查询设备属性值
-     *
-     * @param deviceId
-     */
-    public static void queryDevicePropertyStatus(String deviceId) {
+    @Override
+    public void getDeviceList(String productId) {
+        ListDevicesRequest request = new ListDevicesRequest();
+        request.withProductId(productId);
+        try {
+            ListDevicesResponse response = client.listDevices(request);
+            List<QueryDeviceSimplify> deviceList = response.getDevices();
+            for (QueryDeviceSimplify item : deviceList) {
+                System.out.print("deviceName:" + item.getDeviceName() + " , ");
+                System.out.print("deviceId:" + item.getDeviceId() + "  ");
+                getDeviceData(item.getDeviceId());
+                System.out.println();
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    @Override
+    public void getDeviceData(String deviceId) {
         try {
             ShowDeviceShadowRequest request = new ShowDeviceShadowRequest();
             request.setDeviceId(deviceId);
@@ -56,44 +85,8 @@ public class HuaWeiApplication {
         }
     }
 
-    /**
-     * 查询产品下所有设备
-     *
-     * @param productId
-     */
-    public static void queryDeviceByProduct(String productId) {
-        ListDevicesRequest request = new ListDevicesRequest();
-        request.withProductId(productId);
-        try {
-            ListDevicesResponse response = client.listDevices(request);
-            List<QueryDeviceSimplify> deviceList = response.getDevices();
-            for (QueryDeviceSimplify item : deviceList) {
-                System.out.print("deviceName:" + item.getDeviceName() + " , ");
-                System.out.print("deviceId:" + item.getDeviceId() + "  ");
-                queryDevicePropertyStatus(item.getDeviceId());
-                System.out.println();
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
+    @Override
+    public void getDeviceData(Map<String, String> param) {
 
-    /**
-     * 查询所有产品
-     */
-    public static void queryProductList() {
-        ListProductsRequest request = new ListProductsRequest();
-        try {
-            ListProductsResponse response = client.listProducts(request);
-            List<ProductSummary> productList = response.getProducts();
-            for (ProductSummary item : productList) {
-                System.out.print("productName:" + item.getName() + " , ");
-                System.out.print("productId:" + item.getProductId() + "  ");
-                queryDeviceByProduct(item.getProductId());
-                System.out.println();
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-        }
     }
 }

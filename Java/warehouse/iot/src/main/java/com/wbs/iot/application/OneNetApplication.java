@@ -4,26 +4,33 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
 import com.wbs.iot.model.onenet.DeviceDataResult;
 import com.wbs.iot.model.onenet.DeviceListResult;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * @author WBS
  * @date 2023/2/23 15:34
  * @desciption OneNetApplication
  */
-public class OneNetApplication {
+@Component
+public class OneNetApplication implements IotInterface {
 
-    public static String master_key = "HxC7tM2w7WuJv0pVJ6Y3LYAKsmY=";
+    public String master_key;
 
-    public static void main(String[] args) {
-        queryDeviceList();
+    public OneNetApplication( @Value("${onenet.masterKey}") String masterKey) {
+        master_key = masterKey;
     }
 
-    /**
-     * 查询设备列表
-     */
-    public static void queryDeviceList() {
+    @Override
+    public void getProductList() {
+
+    }
+
+    @Override
+    public void getDeviceList(String productId) {
         String url = "http://api.heclouds.com/devices";
         String result = HttpRequest.get(url).header("api-key", master_key).execute().body();
         DeviceListResult data = JSONUtil.toBean(result, DeviceListResult.class);
@@ -35,16 +42,12 @@ public class OneNetApplication {
             System.out.print("deviceId:" + deviceId + " , ");
             System.out.println("online:" + online + " , ");
 
-            queryDeviceData(deviceId);
+            getDeviceData(deviceId);
         }
     }
 
-    /**
-     * 查询指定设备数据流
-     *
-     * @param deviceId
-     */
-    public static void queryDeviceData(String deviceId) {
+    @Override
+    public void getDeviceData(String deviceId) {
         String url = "http://api.heclouds.com/devices/datapoints?devIds=" + deviceId;
         String result = HttpRequest.get(url).header("api-key", master_key).execute().body();
         DeviceDataResult data = JSONUtil.toBean(result, DeviceDataResult.class);
@@ -58,5 +61,10 @@ public class OneNetApplication {
                 System.out.println("time:" + time);
             }
         }
+    }
+
+    @Override
+    public void getDeviceData(Map<String, String> param) {
+
     }
 }

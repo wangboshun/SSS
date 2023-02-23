@@ -1,6 +1,5 @@
 package com.wbs.common.controller;
 
-import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,9 +12,9 @@ public class TestController {
 
     /**
      * test测试
+     *
      * @return
      */
-    @ApiOperation("test测试")
     @GetMapping(value = "/test")
     public String test() {
         return "test Test";
