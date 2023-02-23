@@ -10,11 +10,11 @@ import java.sql.SQLException;
 
 /**
  * @author WBS
- * Date:2023/02/22
- * 数据库链接工厂
+ * @date 2023/2/23 9:42
+ * @desciption 数据库链接工厂
  */
 public class ConnectionFactory {
-    public static Connection getConnection(String host, int port, String username, String password, String database, String schema, DbTypeEnum type) throws SQLException {
+    public Connection getConnection(String host, int port, String username, String password, String database, String schema, DbTypeEnum type) throws SQLException {
         try {
             String connectStr = "";
             switch (type.ordinal()) {

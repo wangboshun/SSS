@@ -4,10 +4,9 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author WBS
- * Date:2023/02/22
- * swagger配置类
+ * @date 2023/2/23 9:42
+ * @desciption swagger配置类
  */
-
 @Configuration
 public class SwaggerConfig {
 
