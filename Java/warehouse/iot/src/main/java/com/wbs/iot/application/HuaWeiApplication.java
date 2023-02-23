@@ -6,9 +6,13 @@ import com.huaweicloud.sdk.core.auth.ICredential;
 import com.huaweicloud.sdk.iotda.v5.IoTDAClient;
 import com.huaweicloud.sdk.iotda.v5.model.*;
 import com.huaweicloud.sdk.iotda.v5.region.IoTDARegion;
+import com.wbs.iot.model.base.DeviceDataModel;
+import com.wbs.iot.model.base.DeviceInfoModel;
+import com.wbs.iot.model.base.ProductInfoModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,42 +36,46 @@ public class HuaWeiApplication implements IotInterface {
     }
 
     @Override
-    public void getProductList() {
+    public List<ProductInfoModel> getProductList() {
         ListProductsRequest request = new ListProductsRequest();
+        List<ProductInfoModel> list = new ArrayList<ProductInfoModel>();
         try {
             ListProductsResponse response = client.listProducts(request);
             List<ProductSummary> productList = response.getProducts();
             for (ProductSummary item : productList) {
-                System.out.print("productName:" + item.getName() + " , ");
-                System.out.print("productId:" + item.getProductId() + "  ");
-                getDeviceList(item.getProductId());
-                System.out.println();
+                ProductInfoModel model = new ProductInfoModel();
+                model.setId(item.getProductId());
+                model.setName(item.getName());
+                list.add(model);
             }
         } catch (Exception e) {
             System.out.println(e);
         }
+        return list;
     }
 
     @Override
-    public void getDeviceList(String productId) {
+    public List<DeviceInfoModel> getDeviceList(String productId) {
         ListDevicesRequest request = new ListDevicesRequest();
+        List<DeviceInfoModel> list = new ArrayList<>();
         request.withProductId(productId);
         try {
             ListDevicesResponse response = client.listDevices(request);
             List<QueryDeviceSimplify> deviceList = response.getDevices();
             for (QueryDeviceSimplify item : deviceList) {
-                System.out.print("deviceName:" + item.getDeviceName() + " , ");
-                System.out.print("deviceId:" + item.getDeviceId() + "  ");
-                getDeviceData(item.getDeviceId());
-                System.out.println();
+                DeviceInfoModel model = new DeviceInfoModel();
+                model.setId(item.getDeviceId());
+                model.setName(item.getDeviceName());
+                list.add(model);
             }
         } catch (Exception e) {
             System.out.println(e);
         }
+        return list;
     }
 
     @Override
-    public void getDeviceData(String deviceId) {
+    public List<DeviceDataModel> getDeviceData(String deviceId) {
         try {
             ShowDeviceShadowRequest request = new ShowDeviceShadowRequest();
             request.setDeviceId(deviceId);
@@ -83,10 +91,11 @@ public class HuaWeiApplication implements IotInterface {
         } catch (Exception e) {
             System.out.println(e);
         }
+        return null;
     }
 
     @Override
-    public void getDeviceData(Map<String, String> param) {
-
+    public List<DeviceDataModel> getDeviceData(Map<String, String> param) {
+        return null;
     }
 }

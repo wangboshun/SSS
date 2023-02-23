@@ -1,7 +1,11 @@
 package com.wbs.iot.application;
 
+import com.wbs.iot.model.base.DeviceDataModel;
+import com.wbs.iot.model.base.DeviceInfoModel;
+import com.wbs.iot.model.base.ProductInfoModel;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,23 +15,24 @@ import java.util.Map;
  */
 @Component
 public class CtWingApplication implements IotInterface {
-    @Override
-    public void getProductList() {
 
+    @Override
+    public List<ProductInfoModel> getProductList() {
+        return null;
     }
 
     @Override
-    public void getDeviceList(String productId) {
-
+    public List<DeviceInfoModel> getDeviceList(String productId) {
+        return null;
     }
 
     @Override
-    public void getDeviceData(String deviceId) {
-
+    public List<DeviceDataModel> getDeviceData(String deviceId) {
+        return null;
     }
 
     @Override
-    public void getDeviceData(Map<String, String> param) {
-
+    public List<DeviceDataModel> getDeviceData(Map<String, String> param) {
+        return null;
     }
 }
