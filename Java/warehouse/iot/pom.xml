@@ -17,7 +17,25 @@
         <java.version>1.8</java.version>
     </properties>
     <dependencies>
-       
+
+        <dependency>
+            <groupId>com.wbs</groupId>
+            <artifactId>common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ctg-ag-sdk-core</groupId>
+            <artifactId>ctg-ag-sdk-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ag-sdk-biz</groupId>
+            <artifactId>ag-sdk-biz</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>

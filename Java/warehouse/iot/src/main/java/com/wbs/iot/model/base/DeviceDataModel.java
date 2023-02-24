@@ -6,6 +6,7 @@ public class DeviceDataModel {
     public String name;
     public String value;
     public LocalDateTime time;
+    private String deviceId;
 
     public String getName() {
         return name;
@@ -29,5 +30,13 @@ public class DeviceDataModel {
 
     public void setTime(LocalDateTime time) {
         this.time = time;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 }

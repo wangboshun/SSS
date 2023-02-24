@@ -6,16 +6,17 @@ import com.huaweicloud.sdk.core.auth.ICredential;
 import com.huaweicloud.sdk.iotda.v5.IoTDAClient;
 import com.huaweicloud.sdk.iotda.v5.model.*;
 import com.huaweicloud.sdk.iotda.v5.region.IoTDARegion;
+import com.wbs.common.utils.DateUtils;
 import com.wbs.iot.model.base.DeviceDataModel;
 import com.wbs.iot.model.base.DeviceInfoModel;
 import com.wbs.iot.model.base.ProductInfoModel;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author WBS
@@ -24,17 +25,30 @@ import java.util.Map;
  */
 @Component
 public class HuaWeiApplication implements IotInterface {
-    public IoTDAClient client;
+    private IoTDAClient client;
 
-    public HuaWeiApplication(@Value("${huawei.ak}") String ak, @Value("${huawei.sk}") String sk, @Value("${huawei.region}") String region) {
-        try {
+    /**
+     * 配置参数，accessKeyId、secretAccessKey、region
+     * @param properties
+     */
+    @Override
+    public void config(Properties properties) {
+        try{
+            String ak = properties.getProperty("accessKeyId");
+            String sk = properties.getProperty("secretAccessKey");
+            String region = properties.getProperty("region");
             ICredential auth = new BasicCredentials().withDerivedPredicate(AbstractCredentials.DEFAULT_DERIVED_PREDICATE).withAk(ak).withSk(sk);
             client = IoTDAClient.newBuilder().withCredential(auth).withRegion(IoTDARegion.valueOf(region)).build();
-        } catch (Exception e) {
+        }catch (Exception e) {
             System.out.println(e);
         }
     }
 
+    /**
+     * 获取产品列表
+     *
+     * @return
+     */
     @Override
     public List<ProductInfoModel> getProductList() {
         ListProductsRequest request = new ListProductsRequest();
@@ -54,18 +68,24 @@ public class HuaWeiApplication implements IotInterface {
         return list;
     }
 
+    /**
+     * 获取设备列表
+     *
+     * @param product
+     * @return
+     */
     @Override
-    public List<DeviceInfoModel> getDeviceList(String productId) {
+    public List<DeviceInfoModel> getDeviceList(ProductInfoModel product) {
         ListDevicesRequest request = new ListDevicesRequest();
         List<DeviceInfoModel> list = new ArrayList<>();
-        request.withProductId(productId);
+        request.withProductId(product.getId());
         try {
             ListDevicesResponse response = client.listDevices(request);
             List<QueryDeviceSimplify> deviceList = response.getDevices();
             for (QueryDeviceSimplify item : deviceList) {
                 DeviceInfoModel model = new DeviceInfoModel();
                 model.setId(item.getDeviceId());
-                model.setProductId(productId);
+                model.setProductId(product.getId());
                 model.setName(item.getDeviceName());
                 list.add(model);
             }
@@ -75,28 +95,55 @@ public class HuaWeiApplication implements IotInterface {
         return list;
     }
 
+    /**
+     * 获取设备数据
+     *
+     * @param device
+     * @return
+     */
     @Override
-    public List<DeviceDataModel> getDeviceData(String deviceId) {
+    public List<DeviceDataModel> getDeviceData(DeviceInfoModel device) {
+        List<DeviceDataModel> list = new ArrayList<>();
         try {
             ShowDeviceShadowRequest request = new ShowDeviceShadowRequest();
-            request.setDeviceId(deviceId);
+            request.setDeviceId(device.getId());
             ShowDeviceShadowResponse response = client.showDeviceShadow(request);
             List<DeviceShadowData> shadowList = response.getShadow();
             for (DeviceShadowData item : shadowList) {
                 Object properties = item.getReported().getProperties();
+                LocalDateTime time = getTime(item.getReported().getEventTime());
                 LinkedHashMap<String, Object> map = (LinkedHashMap) properties;
                 for (String key : map.keySet()) {
-                    System.out.println(key + ":" + map.get(key));
+                    DeviceDataModel model = new DeviceDataModel();
+                    model.setTime(time);
+                    model.setName(key);
+                    model.setDeviceId(device.getId());
+                    model.setValue(map.get(key) + "");
+                    list.add(model);
                 }
             }
         } catch (Exception e) {
             System.out.println(e);
         }
-        return null;
+        return list;
     }
 
-    @Override
-    public List<DeviceDataModel> getDeviceData(Map<String, String> param) {
-        return null;
+    /**
+     * 解析日期时间
+     *
+     * @param eventTime
+     * @return
+     */
+    private LocalDateTime getTime(String eventTime) {
+        eventTime = eventTime.replace("T", "").replace("Z", "");
+        StringBuilder sb = new StringBuilder(eventTime);
+        sb.insert(4, "-");
+        sb.insert(7, "-");
+        sb.insert(10, " ");
+        sb.insert(13, ":");
+        sb.insert(16, ":");
+        LocalDateTime time = DateUtils.strToDate(sb.toString());
+        time = time.plusHours(8);//加八小时
+        return time;
     }
 }

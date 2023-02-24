@@ -4,15 +4,15 @@ import com.aliyun.iot20180120.Client;
 import com.aliyun.iot20180120.models.*;
 import com.aliyun.teaopenapi.models.Config;
 import com.aliyun.teautil.models.RuntimeOptions;
+import com.wbs.common.utils.DateUtils;
 import com.wbs.iot.model.base.DeviceDataModel;
 import com.wbs.iot.model.base.DeviceInfoModel;
 import com.wbs.iot.model.base.ProductInfoModel;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author WBS
@@ -21,10 +21,18 @@ import java.util.Map;
  */
 @Component
 public class AliApplication implements IotInterface {
-    public Client client;
+    private Client client;
 
-    public AliApplication(@Value("${ali.accessKeyId}") String accessKeyId, @Value("${ali.accessKeySecret}") String accessKeySecret, @Value("${ali.endpoint}") String endpoint) {
+    /**
+     * 配置参数，必须要accessKeyId、accessKeySecret、endpoint
+     *
+     * @param properties
+     */
+    public void config(Properties properties) {
         try {
+            String accessKeyId = properties.getProperty("accessKeyId");
+            String accessKeySecret = properties.getProperty("accessKeySecret");
+            String endpoint = properties.getProperty("endpoint");
             Config config = new Config().setAccessKeyId(accessKeyId).setAccessKeySecret(accessKeySecret);
             config.endpoint = endpoint;
             client = new Client(config);
@@ -33,6 +41,11 @@ public class AliApplication implements IotInterface {
         }
     }
 
+    /**
+     * 获取产品列表
+     *
+     * @return
+     */
     @Override
     public List<ProductInfoModel> getProductList() {
         List<ProductInfoModel> list = new ArrayList<ProductInfoModel>();
@@ -55,11 +68,17 @@ public class AliApplication implements IotInterface {
         return list;
     }
 
+    /**
+     * 获取设备列表
+     *
+     * @param product
+     * @return
+     */
     @Override
-    public List<DeviceInfoModel> getDeviceList(String productId) {
+    public List<DeviceInfoModel> getDeviceList(ProductInfoModel product) {
         List<DeviceInfoModel> list = new ArrayList<>();
         try {
-            QueryDeviceRequest request = new QueryDeviceRequest().setProductKey(productId);
+            QueryDeviceRequest request = new QueryDeviceRequest().setProductKey(product.getId());
             com.aliyun.teautil.models.RuntimeOptions runtime = new RuntimeOptions();
             QueryDeviceResponse response = client.queryDeviceWithOptions(request, runtime);
             if (response != null && response.getStatusCode() == 200) {
@@ -67,7 +86,7 @@ public class AliApplication implements IotInterface {
                 for (QueryDeviceResponseBody.QueryDeviceResponseBodyDataDeviceInfo item : deviceList) {
                     DeviceInfoModel model = new DeviceInfoModel();
                     model.setId(item.getDeviceId());
-                    model.setProductId(productId);
+                    model.setProductId(product.getId());
                     model.setName(item.getDeviceName());
                     model.setStatus(item.getDeviceStatus());
                     list.add(model);
@@ -79,32 +98,36 @@ public class AliApplication implements IotInterface {
         return list;
     }
 
+    /**
+     * 获取设备数据
+     *
+     * @param device
+     * @return
+     */
     @Override
-    public List<DeviceDataModel> getDeviceData(String deviceId) {
-
-        return null;
-    }
-
-    @Override
-    public List<DeviceDataModel> getDeviceData(Map<String, String> param) {
+    public List<DeviceDataModel> getDeviceData(DeviceInfoModel device) {
         List<DeviceDataModel> list = new ArrayList<>();
         try {
-            QueryDevicePropertyStatusRequest request = new QueryDevicePropertyStatusRequest().setProductKey(param.get("productId")).setDeviceName(param.get("deviceName"));
+            QueryDevicePropertyStatusRequest request = new QueryDevicePropertyStatusRequest().setProductKey(device.getProductId()).setDeviceName(device.getName());
             RuntimeOptions runtime = new RuntimeOptions();
             QueryDevicePropertyStatusResponse response = client.queryDevicePropertyStatusWithOptions(request, runtime);
             if (response != null && response.getStatusCode() == 200) {
                 List<QueryDevicePropertyStatusResponseBody.QueryDevicePropertyStatusResponseBodyDataListPropertyStatusInfo> propertyList = response.getBody().getData().getList().getPropertyStatusInfo();
                 for (QueryDevicePropertyStatusResponseBody.QueryDevicePropertyStatusResponseBodyDataListPropertyStatusInfo item : propertyList) {
+                    if (item.getTime() == null) {
+                        continue;
+                    }
                     DeviceDataModel model = new DeviceDataModel();
                     model.setName(item.getName());
                     model.setValue(item.getValue());
-                    model.setTime(DateUtils.strToDate(item.getTime()));
+                    model.setTime(DateUtils.unixToDate(item.getTime()));
+                    model.setDeviceId(device.getId());
                     list.add(model);
                 }
             }
 
         } catch (Exception e) {
-
+            System.out.println(e);
         }
         return list;
     }

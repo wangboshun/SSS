@@ -1,6 +1,8 @@
 package com.wbs.common.utils;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 public class DateUtils {
@@ -21,5 +23,16 @@ public class DateUtils {
     public static LocalDateTime strToDate(String str, String format) {
         DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
         return LocalDateTime.parse(str, df);
+    }
+
+    public static LocalDateTime unixToDate(long timestamp) {
+        Instant instant = Instant.ofEpochMilli(timestamp);
+        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+    }
+
+    public static LocalDateTime unixToDate(String str) {
+        long timestamp = Long.parseLong(str);
+        Instant instant = Instant.ofEpochMilli(timestamp);
+        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
     }
 }
