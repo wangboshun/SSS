@@ -98,7 +98,7 @@ public class AliApplication implements IotInterface {
                     DeviceDataModel model = new DeviceDataModel();
                     model.setName(item.getName());
                     model.setValue(item.getValue());
-//                    model.setTime(item.getTime());
+                    model.setTime(DateUtils.strToDate(item.getTime()));
                     list.add(model);
                 }
             }

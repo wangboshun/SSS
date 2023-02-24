@@ -10,7 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 class MainApplicationTests {
@@ -30,7 +32,10 @@ class MainApplicationTests {
         for (ProductInfoModel productInfoModel : productList) {
             List<DeviceInfoModel> deviceList = aliApplication.getDeviceList(productInfoModel.getId());
             for (DeviceInfoModel deviceInfoModel : deviceList) {
-                List<DeviceDataModel> dataModelList = aliApplication.getDeviceData(deviceInfoModel.getId());
+                Map<String,String> param=new HashMap<>(2);
+                param.put("productId", productInfoModel.getId());
+                param.put("deviceName", deviceInfoModel.getName());
+                List<DeviceDataModel> dataModelList = aliApplication.getDeviceData(param);
                 for (DeviceDataModel deviceDataModel : dataModelList) {
 
                 }
