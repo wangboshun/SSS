@@ -48,7 +48,7 @@ public class AliApplication implements IotInterface {
      */
     @Override
     public List<ProductInfoModel> getProductList() {
-        List<ProductInfoModel> list = new ArrayList<ProductInfoModel>();
+        List<ProductInfoModel> list = new ArrayList<>();
         try {
             QueryProductListRequest request = new QueryProductListRequest().setPageSize(200).setCurrentPage(1);
             RuntimeOptions runtime = new RuntimeOptions();

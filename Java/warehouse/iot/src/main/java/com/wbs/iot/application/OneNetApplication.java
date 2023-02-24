@@ -25,6 +25,7 @@ public class OneNetApplication implements IotInterface {
 
     /**
      * 配置参数，必须要masterKey
+     *
      * @param properties
      */
     public void config(Properties properties) {
@@ -50,16 +51,20 @@ public class OneNetApplication implements IotInterface {
     @Override
     public List<DeviceInfoModel> getDeviceList(ProductInfoModel product) {
         List<DeviceInfoModel> list = new ArrayList<>();
-        String url = "http://api.heclouds.com/devices";
-        String result = HttpRequest.get(url).header("api-key", masterKey).execute().body();
-        DeviceListResult data = JSONUtil.toBean(result, DeviceListResult.class);
-        for (DeviceListResult.Devices item : data.getData().getDevices()) {
-            DeviceInfoModel model = new DeviceInfoModel();
-            model.setId(item.getId());
-            model.setName(item.getTitle());
-            model.setProductId(product.getId());
-            model.setStatus(item.getOnline() + "");
-            list.add(model);
+        try {
+            String url = "http://api.heclouds.com/devices";
+            String result = HttpRequest.get(url).header("api-key", masterKey).execute().body();
+            DeviceListResult data = JSONUtil.toBean(result, DeviceListResult.class);
+            for (DeviceListResult.Devices item : data.getData().getDevices()) {
+                DeviceInfoModel model = new DeviceInfoModel();
+                model.setId(item.getId());
+                model.setName(item.getTitle());
+                model.setProductId(product.getId());
+                model.setStatus(item.getOnline() + "");
+                list.add(model);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
         }
         return list;
     }
@@ -73,18 +78,22 @@ public class OneNetApplication implements IotInterface {
     @Override
     public List<DeviceDataModel> getDeviceData(DeviceInfoModel device) {
         List<DeviceDataModel> list = new ArrayList<>();
-        String url = "http://api.heclouds.com/devices/datapoints?devIds=" + device.getId();
-        String result = HttpRequest.get(url).header("api-key", masterKey).execute().body();
-        DeviceDataResult data = JSONUtil.toBean(result, DeviceDataResult.class);
-        for (DeviceDataResult.Devices deviceItem : data.getData().getDevices()) {
-            for (DeviceDataResult.Datastreams item : deviceItem.getDatastreams()) {
-                DeviceDataModel model = new DeviceDataModel();
-                model.setName(item.getId());
-                model.setValue(item.getValue());
-                model.setDeviceId(device.getId());
-                model.setTime(item.getAt());
-                list.add(model);
+        try {
+            String url = "http://api.heclouds.com/devices/datapoints?devIds=" + device.getId();
+            String result = HttpRequest.get(url).header("api-key", masterKey).execute().body();
+            DeviceDataResult data = JSONUtil.toBean(result, DeviceDataResult.class);
+            for (DeviceDataResult.Devices deviceItem : data.getData().getDevices()) {
+                for (DeviceDataResult.Datastreams item : deviceItem.getDatastreams()) {
+                    DeviceDataModel model = new DeviceDataModel();
+                    model.setName(item.getId());
+                    model.setValue(item.getValue());
+                    model.setDeviceId(device.getId());
+                    model.setTime(item.getAt());
+                    list.add(model);
+                }
             }
+        } catch (Exception e) {
+            System.out.println(e);
         }
         return list;
     }
