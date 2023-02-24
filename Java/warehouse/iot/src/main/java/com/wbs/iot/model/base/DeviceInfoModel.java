@@ -4,6 +4,15 @@ public class DeviceInfoModel {
     public String name;
     public String id;
     public String status;
+    public String productId;
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
 
     public String getName() {
         return name;

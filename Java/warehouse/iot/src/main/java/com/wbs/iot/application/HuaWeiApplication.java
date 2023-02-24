@@ -65,6 +65,7 @@ public class HuaWeiApplication implements IotInterface {
             for (QueryDeviceSimplify item : deviceList) {
                 DeviceInfoModel model = new DeviceInfoModel();
                 model.setId(item.getDeviceId());
+                model.setProductId(productId);
                 model.setName(item.getDeviceName());
                 list.add(model);
             }

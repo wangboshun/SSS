@@ -67,6 +67,7 @@ public class AliApplication implements IotInterface {
                 for (QueryDeviceResponseBody.QueryDeviceResponseBodyDataDeviceInfo item : deviceList) {
                     DeviceInfoModel model = new DeviceInfoModel();
                     model.setId(item.getDeviceId());
+                    model.setProductId(productId);
                     model.setName(item.getDeviceName());
                     model.setStatus(item.getDeviceStatus());
                     list.add(model);
@@ -80,6 +81,7 @@ public class AliApplication implements IotInterface {
 
     @Override
     public List<DeviceDataModel> getDeviceData(String deviceId) {
+
         return null;
     }
 
@@ -96,7 +98,7 @@ public class AliApplication implements IotInterface {
                     DeviceDataModel model = new DeviceDataModel();
                     model.setName(item.getName());
                     model.setValue(item.getValue());
-                    model.setTime(item.getTime());
+//                    model.setTime(item.getTime());
                     list.add(model);
                 }
             }

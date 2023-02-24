@@ -43,6 +43,7 @@ public class OneNetApplication implements IotInterface {
             DeviceInfoModel model = new DeviceInfoModel();
             model.setId(item.getId());
             model.setName(item.getTitle());
+            model.setProductId(productId);
             model.setStatus(item.getOnline() + "");
             list.add(model);
         }
@@ -60,7 +61,7 @@ public class OneNetApplication implements IotInterface {
                 DeviceDataModel model = new DeviceDataModel();
                 model.setName(item.getId());
                 model.setValue(item.getValue());
-                model.setTime(item.getAt() + "");
+//                model.setTime(item.getAt() + "");
                 list.add(model);
             }
         }

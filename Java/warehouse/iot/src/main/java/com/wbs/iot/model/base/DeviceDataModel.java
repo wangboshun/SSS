@@ -1,9 +1,11 @@
 package com.wbs.iot.model.base;
 
+import java.time.LocalDateTime;
+
 public class DeviceDataModel {
     public String name;
     public String value;
-    public String time;
+    public LocalDateTime time;
 
     public String getName() {
         return name;
@@ -21,11 +23,11 @@ public class DeviceDataModel {
         this.value = value;
     }
 
-    public String getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(LocalDateTime time) {
         this.time = time;
     }
 }
