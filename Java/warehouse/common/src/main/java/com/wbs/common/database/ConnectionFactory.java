@@ -1,47 +1,58 @@
 package com.wbs.common.database;
 
-import com.clickhouse.jdbc.ClickHouseDataSource;
-import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
-import com.mysql.cj.jdbc.MysqlDataSource;
-import org.postgresql.ds.PGSimpleDataSource;
+import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author WBS
  * @date 2023/2/23 9:42
- * @desciption 数据库链接工厂
+ * @desciption 连接工厂
  */
+@Component
 public class ConnectionFactory {
-    public Connection getConnection(String host, int port, String username, String password, String database, String schema, DbTypeEnum type) throws SQLException {
+
+    private volatile Map<String, Connection> connectionMap = new HashMap<>();
+
+    /**
+     * 获取所有连接
+     *
+     * @return
+     */
+    public Map<String, Connection> getAllConnection() {
+        return connectionMap;
+    }
+
+    /**
+     * 移除连接
+     */
+    public void removeConnect(String connectionName) {
+        connectionMap.remove(connectionName);
+    }
+
+    /**
+     * 创建连接
+     *
+     * @param connectionName
+     * @param dataSource
+     * @return
+     */
+    public Connection createConnection(String connectionName, DataSource dataSource) {
+        Connection connection = connectionMap.get(connectionName);
         try {
-            String connectStr = "";
-            switch (type.ordinal()) {
-                case 0:
-                    connectStr = "jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&rewriteBatchedStatements=true";
-                    MysqlDataSource mysqlDataSource = new MysqlDataSource();
-                    mysqlDataSource.setURL(connectStr);
-                    return mysqlDataSource.getConnection(username, password);
-                case 1:
-                    connectStr = "jdbc:sqlserver://" + host + ":" + port + ";database=" + database + ";integratedSecurity=false;encrypt=true;trustServerCertificate=true";
-                    SQLServerDataSource sqlServerDataSource = new SQLServerDataSource();
-                    sqlServerDataSource.setURL(connectStr);
-                    return sqlServerDataSource.getConnection(username, password);
-                case 2:
-                    connectStr = "jdbc:postgresql://" + host + ":" + port + "/" + database + "?currentSchema=" + schema;
-                    PGSimpleDataSource pgSimpleDataSource = new PGSimpleDataSource();
-                    pgSimpleDataSource.setURL(connectStr);
-                    return pgSimpleDataSource.getConnection(username, password);
-                case 3:
-                    connectStr = "jdbc:clickhouse://" + host + ":" + port + "/" + database;
-                    ClickHouseDataSource clickHouseDataSource = new ClickHouseDataSource(connectStr);
-                    return clickHouseDataSource.getConnection(username, password);
-                default:
-                    return null;
+            if (connection != null && !connection.isClosed()) {
+                return connection;
             }
+            connection = dataSource.getConnection();
+            connectionMap.put(connectionName, connection);
+            return connection;
         } catch (SQLException e) {
-            throw new SQLException("getConnection exception：" + e.getMessage());
+            System.out.println(e);
         }
+        return connection;
     }
 }

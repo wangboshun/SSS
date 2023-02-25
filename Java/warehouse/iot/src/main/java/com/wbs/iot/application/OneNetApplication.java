@@ -7,7 +7,7 @@ import com.wbs.iot.model.base.DeviceInfoModel;
 import com.wbs.iot.model.base.ProductInfoModel;
 import com.wbs.iot.model.onenet.DeviceDataResult;
 import com.wbs.iot.model.onenet.DeviceListResult;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.Properties;
  * @date 2023/2/23 15:34
  * @desciption OneNetApplication
  */
-@Component
+@Service
 public class OneNetApplication implements IotInterface {
 
     private String masterKey;

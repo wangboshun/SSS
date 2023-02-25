@@ -10,7 +10,7 @@ import com.wbs.common.utils.DateUtils;
 import com.wbs.iot.model.base.DeviceDataModel;
 import com.wbs.iot.model.base.DeviceInfoModel;
 import com.wbs.iot.model.base.ProductInfoModel;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import java.util.Properties;
  * @date 2023/2/23 14:38
  * @desciption HuaWeiApplication
  */
-@Component
+@Service
 public class HuaWeiApplication implements IotInterface {
     private IoTDAClient client;
 

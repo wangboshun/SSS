@@ -8,7 +8,7 @@ import com.wbs.common.utils.DateUtils;
 import com.wbs.iot.model.base.DeviceDataModel;
 import com.wbs.iot.model.base.DeviceInfoModel;
 import com.wbs.iot.model.base.ProductInfoModel;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.Properties;
  * @date 2023/2/23 10:35
  * @desciption AliApplication
  */
-@Component
+@Service
 public class AliApplication implements IotInterface {
     private Client client;
 

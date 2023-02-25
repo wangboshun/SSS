@@ -95,7 +95,7 @@
         <dependency>
             <groupId>com.clickhouse</groupId>
             <artifactId>clickhouse-jdbc</artifactId>
-            <version>0.4.1</version>
+            <version>0.4.0</version>
         </dependency>
 
         <dependency>
@@ -148,6 +148,11 @@
             <version>4.5.14</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.2.16</version>
+        </dependency>
     </dependencies>
 
     <build>
