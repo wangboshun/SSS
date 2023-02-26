@@ -7,6 +7,7 @@ import org.postgresql.ds.PGSimpleDataSource;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,13 +48,14 @@ public class DataSourceFactory {
      */
     public DataSource createDataSource(String dataSourceName, String host, int port, String username, String password, String database, String schema, DbTypeEnum type) throws SQLException {
         DataSource dataSource = dataSourceMap.get(dataSourceName);
+        Connection connection = null;
         if (dataSource != null) {
             return dataSource;
         }
         try {
             String connectStr = "";
-            switch (type.ordinal()) {
-                case 0:
+            switch (type) {
+                case MySql:
                     connectStr = "jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&rewriteBatchedStatements=true";
                     MysqlDataSource mysqlDataSource = new MysqlDataSource();
                     mysqlDataSource.setURL(connectStr);
@@ -61,7 +63,7 @@ public class DataSourceFactory {
                     mysqlDataSource.setPassword(password);
                     dataSource = mysqlDataSource;
                     break;
-                case 1:
+                case MsSql:
                     connectStr = "jdbc:sqlserver://" + host + ":" + port + ";database=" + database + ";integratedSecurity=false;encrypt=true;trustServerCertificate=true";
                     SQLServerDataSource sqlServerDataSource = new SQLServerDataSource();
                     sqlServerDataSource.setURL(connectStr);
@@ -69,7 +71,7 @@ public class DataSourceFactory {
                     sqlServerDataSource.setPassword(password);
                     dataSource = sqlServerDataSource;
                     break;
-                case 2:
+                case PostgreSql:
                     connectStr = "jdbc:postgresql://" + host + ":" + port + "/" + database + "?currentSchema=" + schema;
                     PGSimpleDataSource pgSimpleDataSource = new PGSimpleDataSource();
                     pgSimpleDataSource.setURL(connectStr);
@@ -77,7 +79,7 @@ public class DataSourceFactory {
                     pgSimpleDataSource.setPassword(password);
                     dataSource = pgSimpleDataSource;
                     break;
-                case 3:
+                case ClickHouse:
                     connectStr = "jdbc:clickhouse://" + host + ":" + port + "/" + database;
                     Properties properties = new Properties();
                     properties.setProperty("user", username);
@@ -88,8 +90,15 @@ public class DataSourceFactory {
                 default:
                     break;
             }
-        } catch (SQLException e) {
+            //测试数据源是否能打开
+            connection = dataSource.getConnection();
+        } catch (Exception e) {
             System.out.println(e);
+            throw new SQLException("数据源错误");
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
         }
         return dataSource;
     }

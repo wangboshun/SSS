@@ -1,9 +1,12 @@
 package com.wbs.iot.model.base;
 
+import java.time.LocalDateTime;
+
 public class ProductInfoModel {
-    public String name;
-    public String id;
+    private String name;
+    private String id;
     private String apiKey;
+    private LocalDateTime createTime;
 
     public String getName() {
         return name;
@@ -27,5 +30,13 @@ public class ProductInfoModel {
 
     public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
+    }
+
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
     }
 }

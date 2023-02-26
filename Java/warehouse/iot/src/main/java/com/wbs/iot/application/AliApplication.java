@@ -10,6 +10,7 @@ import com.wbs.iot.model.base.DeviceInfoModel;
 import com.wbs.iot.model.base.ProductInfoModel;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -58,6 +59,8 @@ public class AliApplication implements IotInterface {
                 for (QueryProductListResponseBody.QueryProductListResponseBodyDataListProductInfo item : productList) {
                     ProductInfoModel model = new ProductInfoModel();
                     model.setId(item.getProductKey());
+                    model.setApiKey(item.getProductKey());
+                    model.setCreateTime(DateUtils.unixToDate(item.getGmtCreate()));
                     model.setName(item.getProductName());
                     list.add(model);
                 }
@@ -89,6 +92,8 @@ public class AliApplication implements IotInterface {
                     model.setProductId(product.getId());
                     model.setName(item.getDeviceName());
                     model.setStatus(item.getDeviceStatus());
+                    LocalDateTime time = DateUtils.strToDate(item.getUtcCreate(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", true);
+                    model.setCreateTime(time);
                     list.add(model);
                 }
             }

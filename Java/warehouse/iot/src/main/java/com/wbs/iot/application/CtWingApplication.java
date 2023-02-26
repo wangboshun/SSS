@@ -63,6 +63,7 @@ public class CtWingApplication implements IotInterface {
                 model.setId(item.getStr("productId"));
                 model.setName(item.getStr("productName"));
                 model.setApiKey(item.getStr("apiKey"));
+                model.setCreateTime(DateUtils.unixToDate(item.getStr("createTime")));
                 list.add(model);
             }
             System.out.println();

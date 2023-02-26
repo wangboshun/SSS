@@ -16,14 +16,28 @@ public class DateUtils {
         return dateToStr(date, "yyyy-MM-dd HH:mm:ss");
     }
 
+
     public static LocalDateTime strToDate(String str) {
-        return strToDate(str, "yyyy-MM-dd HH:mm:ss");
+        return strToDate(str, "yyyy-MM-dd HH:mm:ss", false);
+    }
+
+    public static LocalDateTime strToDate(String str, boolean isUtc) {
+        return strToDate(str, "yyyy-MM-dd HH:mm:ss", isUtc);
     }
 
     public static LocalDateTime strToDate(String str, String format) {
-        DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
-        return LocalDateTime.parse(str, df);
+        return strToDate(str, format, false);
     }
+
+    public static LocalDateTime strToDate(String str, String format, boolean isUtc) {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
+        LocalDateTime time = LocalDateTime.parse(str, df);
+        if (isUtc) {
+            time = time.plusHours(8);
+        }
+        return time;
+    }
+
 
     public static LocalDateTime unixToDate(long timestamp) {
         Instant instant = Instant.ofEpochMilli(timestamp);

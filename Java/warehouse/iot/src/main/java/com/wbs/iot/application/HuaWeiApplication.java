@@ -60,6 +60,7 @@ public class HuaWeiApplication implements IotInterface {
                 ProductInfoModel model = new ProductInfoModel();
                 model.setId(item.getProductId());
                 model.setName(item.getName());
+                model.setCreateTime(DateUtils.strToDate(item.getCreateTime(),"yyyyMMdd'T'HHmmss'Z'",true));
                 list.add(model);
             }
         } catch (Exception e) {
@@ -78,15 +79,19 @@ public class HuaWeiApplication implements IotInterface {
     public List<DeviceInfoModel> getDeviceList(ProductInfoModel product) {
         ListDevicesRequest request = new ListDevicesRequest();
         List<DeviceInfoModel> list = new ArrayList<>();
-        request.withProductId(product.getId());
+        request.setProductId(product.getId());
         try {
             ListDevicesResponse response = client.listDevices(request);
             List<QueryDeviceSimplify> deviceList = response.getDevices();
             for (QueryDeviceSimplify item : deviceList) {
+                ShowDeviceRequest deviceRequest = new ShowDeviceRequest();
+                deviceRequest.setDeviceId(item.getDeviceId());
+                ShowDeviceResponse deviceResponse = client.showDevice(deviceRequest);
                 DeviceInfoModel model = new DeviceInfoModel();
-                model.setId(item.getDeviceId());
+                model.setId(deviceResponse.getDeviceId());
                 model.setProductId(product.getId());
-                model.setName(item.getDeviceName());
+                model.setName(deviceResponse.getDeviceName());
+                model.setCreateTime(DateUtils.strToDate(deviceResponse.getCreateTime(),"yyyyMMdd'T'HHmmss'Z'",true));
                 list.add(model);
             }
         } catch (Exception e) {
@@ -111,7 +116,7 @@ public class HuaWeiApplication implements IotInterface {
             List<DeviceShadowData> shadowList = response.getShadow();
             for (DeviceShadowData item : shadowList) {
                 Object properties = item.getReported().getProperties();
-                LocalDateTime time = getTime(item.getReported().getEventTime());
+                LocalDateTime time =DateUtils.strToDate(item.getReported().getEventTime(),"yyyyMMdd'T'HHmmss'Z'",true);
                 LinkedHashMap<String, Object> map = (LinkedHashMap) properties;
                 for (String key : map.keySet()) {
                     DeviceDataModel model = new DeviceDataModel();
@@ -126,24 +131,5 @@ public class HuaWeiApplication implements IotInterface {
             System.out.println(e);
         }
         return list;
-    }
-
-    /**
-     * 解析日期时间
-     *
-     * @param eventTime
-     * @return
-     */
-    private LocalDateTime getTime(String eventTime) {
-        eventTime = eventTime.replace("T", "").replace("Z", "");
-        StringBuilder sb = new StringBuilder(eventTime);
-        sb.insert(4, "-");
-        sb.insert(7, "-");
-        sb.insert(10, " ");
-        sb.insert(13, ":");
-        sb.insert(16, ":");
-        LocalDateTime time = DateUtils.strToDate(sb.toString());
-        time = time.plusHours(8);//加八小时
-        return time;
     }
 }
