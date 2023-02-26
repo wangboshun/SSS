@@ -91,7 +91,11 @@ public class AliApplication implements IotInterface {
                     model.setId(item.getDeviceId());
                     model.setProductId(product.getId());
                     model.setName(item.getDeviceName());
-                    model.setStatus(item.getDeviceStatus());
+                    if ("ONLINE".equals(item.getDeviceStatus())) {
+                        model.setStatus(1);
+                    } else {
+                        model.setStatus(0);
+                    }
                     LocalDateTime time = DateUtils.strToDate(item.getUtcCreate(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", true);
                     model.setCreateTime(time);
                     list.add(model);

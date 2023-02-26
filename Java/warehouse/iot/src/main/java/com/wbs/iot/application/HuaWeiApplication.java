@@ -92,6 +92,11 @@ public class HuaWeiApplication implements IotInterface {
                 model.setId(deviceResponse.getDeviceId());
                 model.setProductId(product.getId());
                 model.setName(deviceResponse.getDeviceName());
+                if ("ONLINE".equals(deviceResponse.getStatus())) {
+                    model.setStatus(1);
+                } else {
+                    model.setStatus(0);
+                }
                 model.setCreateTime(DateUtils.strToDate(deviceResponse.getCreateTime(), "yyyyMMdd'T'HHmmss'Z'", true));
                 list.add(model);
             }

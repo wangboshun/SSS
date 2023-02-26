@@ -36,6 +36,7 @@ public class CtWingApplication implements IotInterface {
 
     /**
      * 配置参数，必须要appKey、appSecret
+     *
      * @param properties
      */
     public void config(Properties properties) {
@@ -95,7 +96,11 @@ public class CtWingApplication implements IotInterface {
                 model.setId(item.getStr("deviceId"));
                 model.setName(item.getStr("deviceName"));
                 model.setProductId(item.getStr("productId"));
-                model.setStatus(item.getStr("deviceStatus"));
+                if ("1".equals(item.getStr("netStatus"))) {
+                    model.setStatus(1);
+                } else {
+                    model.setStatus(0);
+                }
                 model.setCreateTime(DateUtils.unixToDate(item.getStr("createTime")));
                 list.add(model);
             }

@@ -54,12 +54,8 @@ public class OneNetController {
         Properties properties = new Properties();
         properties.setProperty("masterKey", input.getMasterKey());
         oneNetApplication.config(properties);
-
         DeviceInfoModel device = new DeviceInfoModel();
         device.setId(input.getDeviceId());
-        device.setName(input.getDeviceName());
-        device.setProductId(input.getProductId());
-
         List<DeviceDataModel> list = oneNetApplication.getDeviceData(device);
         return list;
     }
