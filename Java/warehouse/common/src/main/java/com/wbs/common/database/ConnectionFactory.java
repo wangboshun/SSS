@@ -15,7 +15,6 @@ import java.util.Map;
  */
 @Component
 public class ConnectionFactory {
-
     private volatile Map<String, Connection> connectionMap = new HashMap<>();
 
     /**

@@ -20,7 +20,6 @@ import java.util.Properties;
  */
 @Component
 public class DataSourceFactory {
-
     private volatile Map<String, DataSource> dataSourceMap = new HashMap<>();
 
     /**
