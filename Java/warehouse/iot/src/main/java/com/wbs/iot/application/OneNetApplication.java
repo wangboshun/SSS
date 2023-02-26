@@ -39,7 +39,7 @@ public class OneNetApplication implements IotInterface {
      */
     @Override
     public List<ProductInfoModel> getProductList() {
-        return null;
+        throw new UnsupportedOperationException("OneNet不支持获取产品列表");
     }
 
     /**

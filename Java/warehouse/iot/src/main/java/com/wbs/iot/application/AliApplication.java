@@ -130,7 +130,6 @@ public class AliApplication implements IotInterface {
                     list.add(model);
                 }
             }
-
         } catch (Exception e) {
             System.out.println(e);
         }

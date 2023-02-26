@@ -132,7 +132,7 @@ public class CtWingApplication implements IotInterface {
                 list.add(model);
             }
         } catch (Exception e) {
-
+            System.out.println(e);
         }
         return list;
     }

@@ -86,12 +86,8 @@ public class AliController {
         properties.setProperty("accessKeySecret", input.getAccessKeySecret());
         properties.setProperty("endpoint", input.getEndpoint());
         aliApplication.config(properties);
-
         ProductInfoModel product = new ProductInfoModel();
         product.setId(input.getProductId());
-        product.setName(input.getProductName());
-        product.setApiKey(input.getProductApiKey());
-
         List<DeviceInfoModel> list = aliApplication.getDeviceList(product);
         return list;
     }
