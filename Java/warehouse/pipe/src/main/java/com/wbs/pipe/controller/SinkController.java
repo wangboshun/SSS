@@ -1,23 +1,21 @@
-package com.wbs.engine.controller.source;
+package com.wbs.pipe.controller;
 
-import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/engine/source")
+@RequestMapping("/engine/sink")
 @Tag(name = "engine", description = "engine模块")
-public class SourceController {
+public class SinkController {
 
     /**
-     * source测试
+     * sink测试
      * @return
      */
-    @ApiOperation("source测试")
     @GetMapping(value = "/test")
     public String test() {
-        return "source Test";
+        return "sink Test";
     }
 }

@@ -25,6 +25,7 @@
         <module>engine</module>
         <module>common</module>
         <module>iot</module>
+        <module>pipe</module>
     </modules>
 
     <dependencies>

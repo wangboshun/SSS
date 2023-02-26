@@ -1,4 +1,4 @@
-package com.wbs.engine.controller.transform;
+package com.wbs.pipe.controller;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -7,17 +7,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/engine/transform")
+@RequestMapping("/engine/source")
 @Tag(name = "engine", description = "engine模块")
-public class TransformController {
+public class SourceController {
 
     /**
-     * transform测试
+     * source测试
      * @return
      */
-    @ApiOperation("transform测试")
+    @ApiOperation("source测试")
     @GetMapping(value = "/test")
     public String test() {
-        return "transform Test";
+        return "source Test";
     }
 }

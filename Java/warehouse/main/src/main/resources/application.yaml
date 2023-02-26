@@ -5,7 +5,7 @@ spring:
     pathmatch:
       matching-strategy: ant-path-matcher
   profiles:
-    include: engine,common,iot
+    include: engine,common,iot,pipe
   data:
     mongodb:
       host: "123.60.141.63"
