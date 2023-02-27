@@ -63,13 +63,11 @@ public class AliController {
         properties.setProperty("endpoint", input.getEndpoint());
         aliApplication.config(properties);
         List<ProductInfoModel> productList = aliApplication.getProductList();
-
         List<DeviceInfoModel> list = new ArrayList<>();
         for (ProductInfoModel product : productList) {
             List<DeviceInfoModel> deviceList = aliApplication.getDeviceList(product);
             list.addAll(deviceList);
         }
-
         return list;
     }
 
@@ -105,11 +103,9 @@ public class AliController {
         properties.setProperty("accessKeySecret", input.getAccessKeySecret());
         properties.setProperty("endpoint", input.getEndpoint());
         aliApplication.config(properties);
-
         DeviceInfoModel device = new DeviceInfoModel();
         device.setName(input.getDeviceName());
         device.setProductId(input.getProductId());
-
         List<DeviceDataModel> list = aliApplication.getDeviceData(device);
         return list;
     }

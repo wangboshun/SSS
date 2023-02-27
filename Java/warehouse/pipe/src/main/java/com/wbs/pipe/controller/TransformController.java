@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/engine/transform")
-@Tag(name = "engine", description = "engine模块")
+@RequestMapping("/pipe/transform")
+@Tag(name = "pipe", description = "pipe模块")
 public class TransformController {
 
     /**

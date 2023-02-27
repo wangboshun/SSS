@@ -62,13 +62,11 @@ public class HuaWeiController {
         properties.setProperty("region", input.getRegion());
         huaWeiApplication.config(properties);
         List<ProductInfoModel> productList = huaWeiApplication.getProductList();
-
         List<DeviceInfoModel> list = new ArrayList<>();
         for (ProductInfoModel product : productList) {
             List<DeviceInfoModel> deviceList = huaWeiApplication.getDeviceList(product);
             list.addAll(deviceList);
         }
-
         return list;
     }
 
@@ -104,10 +102,8 @@ public class HuaWeiController {
         properties.setProperty("secretAccessKey", input.getSecretAccessKey());
         properties.setProperty("region", input.getRegion());
         huaWeiApplication.config(properties);
-
         DeviceInfoModel device = new DeviceInfoModel();
         device.setId(input.getDeviceId());
-
         List<DeviceDataModel> list = huaWeiApplication.getDeviceData(device);
         return list;
     }

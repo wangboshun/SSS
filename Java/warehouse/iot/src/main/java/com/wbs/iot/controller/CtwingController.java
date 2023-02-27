@@ -61,13 +61,11 @@ public class CtwingController {
         properties.setProperty("appSecret", input.getAppSecret());
         ctwingApplication.config(properties);
         List<ProductInfoModel> productList = ctwingApplication.getProductList();
-
         List<DeviceInfoModel> list = new ArrayList<>();
         for (ProductInfoModel product : productList) {
             List<DeviceInfoModel> deviceList = ctwingApplication.getDeviceList(product);
             list.addAll(deviceList);
         }
-
         return list;
     }
 
@@ -83,11 +81,9 @@ public class CtwingController {
         properties.setProperty("appKey", input.getAppKey());
         properties.setProperty("appSecret", input.getAppSecret());
         ctwingApplication.config(properties);
-
         ProductInfoModel product = new ProductInfoModel();
         product.setId(input.getProductId());
         product.setApiKey(input.getProductApiKey());
-
         List<DeviceInfoModel> list = ctwingApplication.getDeviceList(product);
         return list;
     }
@@ -104,11 +100,9 @@ public class CtwingController {
         properties.setProperty("appKey", input.getAppKey());
         properties.setProperty("appSecret", input.getAppSecret());
         ctwingApplication.config(properties);
-
         DeviceInfoModel device = new DeviceInfoModel();
         device.setId(input.getDeviceId());
         device.setProductId(input.getProductId());
-
         List<DeviceDataModel> list = ctwingApplication.getDeviceData(device);
         return list;
     }

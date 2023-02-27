@@ -12,50 +12,43 @@ public class SinkInfoModel {
     private String create_time;
     private int sink_status;
 
+    public ObjectId getId() {
+        return id;
+    }
 
-    public static final class Builder {
-        private ObjectId id;
-        private String name;
-        private String connect_id;
-        private String create_time;
-        private int sink_status;
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
 
-        private Builder() {
-        }
+    public String getName() {
+        return name;
+    }
 
-        public Builder id(ObjectId id) {
-            this.id = id;
-            return this;
-        }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
+    public String getConnect_id() {
+        return connect_id;
+    }
 
-        public Builder connect_id(String connect_id) {
-            this.connect_id = connect_id;
-            return this;
-        }
+    public void setConnect_id(String connect_id) {
+        this.connect_id = connect_id;
+    }
 
-        public Builder create_time(String create_time) {
-            this.create_time = create_time;
-            return this;
-        }
+    public String getCreate_time() {
+        return create_time;
+    }
 
-        public Builder sink_status(int sink_status) {
-            this.sink_status = sink_status;
-            return this;
-        }
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
+    }
 
-        public SinkInfoModel build() {
-            SinkInfoModel sinkInfoModel = new SinkInfoModel();
-            sinkInfoModel.connect_id = this.connect_id;
-            sinkInfoModel.sink_status = this.sink_status;
-            sinkInfoModel.id = this.id;
-            sinkInfoModel.create_time = this.create_time;
-            sinkInfoModel.name = this.name;
-            return sinkInfoModel;
-        }
+    public int getSink_status() {
+        return sink_status;
+    }
+
+    public void setSink_status(int sink_status) {
+        this.sink_status = sink_status;
     }
 }
