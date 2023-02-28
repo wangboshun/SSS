@@ -3,6 +3,7 @@ package com.wbs.iot.model.ali.dto;
 public class AliDeviceDataQueryInputDto extends AliAuthDto {
     private String deviceName;
     private String productId;
+    private String deviceId;
 
     public String getProductId() {
         return productId;
@@ -18,5 +19,13 @@ public class AliDeviceDataQueryInputDto extends AliAuthDto {
 
     public void setDeviceName(String deviceName) {
         this.deviceName = deviceName;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 }

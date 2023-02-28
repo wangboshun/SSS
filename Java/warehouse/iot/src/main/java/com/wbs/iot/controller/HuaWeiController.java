@@ -4,9 +4,11 @@ import com.wbs.iot.application.HuaWeiApplication;
 import com.wbs.iot.model.base.DeviceDataModel;
 import com.wbs.iot.model.base.DeviceInfoModel;
 import com.wbs.iot.model.base.ProductInfoModel;
+import com.wbs.iot.model.base.ThingInfoModel;
 import com.wbs.iot.model.huawei.dto.HuaWeiAuthDto;
 import com.wbs.iot.model.huawei.dto.HuaWeiDeviceDataQueryInputDto;
 import com.wbs.iot.model.huawei.dto.HuaWeiDeviceQueryInputDto;
+import com.wbs.iot.model.huawei.dto.HuaWeiThingQueryInputDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -86,6 +88,25 @@ public class HuaWeiController {
         ProductInfoModel product = new ProductInfoModel();
         product.setId(input.getProductId());
         List<DeviceInfoModel> list = huaWeiApplication.getDeviceList(product);
+        return list;
+    }
+
+    /**
+     * 获取指定产品的物模型
+     *
+     * @param input
+     * @return
+     */
+    @GetMapping("/get_thing_by_product")
+    public List<ThingInfoModel> getThingInfoByProduct(HuaWeiThingQueryInputDto input) {
+        Properties properties = new Properties();
+        properties.setProperty("accessKeyId", input.getAccessKeyId());
+        properties.setProperty("secretAccessKey", input.getSecretAccessKey());
+        properties.setProperty("region", input.getRegion());
+        huaWeiApplication.config(properties);
+        ProductInfoModel product = new ProductInfoModel();
+        product.setId(input.getProductId());
+        List<ThingInfoModel> list = huaWeiApplication.getThingInfoList(product);
         return list;
     }
 

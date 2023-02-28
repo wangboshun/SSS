@@ -5,6 +5,7 @@ import cn.hutool.json.JSONUtil;
 import com.wbs.iot.model.base.DeviceDataModel;
 import com.wbs.iot.model.base.DeviceInfoModel;
 import com.wbs.iot.model.base.ProductInfoModel;
+import com.wbs.iot.model.base.ThingInfoModel;
 import com.wbs.iot.model.onenet.DeviceDataResult;
 import com.wbs.iot.model.onenet.DeviceListResult;
 import org.springframework.stereotype.Service;
@@ -71,6 +72,11 @@ public class OneNetApplication implements IotInterface {
             System.out.println(e);
         }
         return list;
+    }
+
+    @Override
+    public List<ThingInfoModel> getThingInfoList(ProductInfoModel product) {
+        throw new UnsupportedOperationException("OneNet不支持获取物模型");
     }
 
     /**

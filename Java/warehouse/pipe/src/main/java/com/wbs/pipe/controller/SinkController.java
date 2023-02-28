@@ -24,7 +24,7 @@ public class SinkController {
     @GetMapping(value = "/query")
     public String query() {
         sinkApplication.query();
-        return "sink Test";
+        return "sink query";
     }
 
     /**
@@ -34,7 +34,7 @@ public class SinkController {
     @GetMapping(value = "/add")
     public String add() {
         sinkApplication.add();
-        return "sink Test";
+        return "sink add";
     }
 
     /**
@@ -44,7 +44,7 @@ public class SinkController {
     @GetMapping(value = "/update")
     public String update() {
         sinkApplication.update();
-        return "sink Test";
+        return "sink update";
     }
 
     /**
@@ -54,6 +54,6 @@ public class SinkController {
     @GetMapping(value = "/remove")
     public String remove() {
         sinkApplication.remove();
-        return "sink Test";
+        return "sink remove";
     }
 }

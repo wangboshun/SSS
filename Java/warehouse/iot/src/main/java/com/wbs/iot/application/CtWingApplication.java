@@ -5,10 +5,13 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.ctg.ag.sdk.biz.AepDeviceManagementClient;
+import com.ctg.ag.sdk.biz.AepDeviceModelClient;
 import com.ctg.ag.sdk.biz.AepDeviceStatusClient;
 import com.ctg.ag.sdk.biz.AepProductManagementClient;
 import com.ctg.ag.sdk.biz.aep_device_management.QueryDeviceListRequest;
 import com.ctg.ag.sdk.biz.aep_device_management.QueryDeviceListResponse;
+import com.ctg.ag.sdk.biz.aep_device_model.QueryPropertyListRequest;
+import com.ctg.ag.sdk.biz.aep_device_model.QueryPropertyListResponse;
 import com.ctg.ag.sdk.biz.aep_device_status.QueryDeviceStatusListRequest;
 import com.ctg.ag.sdk.biz.aep_device_status.QueryDeviceStatusListResponse;
 import com.ctg.ag.sdk.biz.aep_product_management.QueryProductListRequest;
@@ -17,6 +20,7 @@ import com.wbs.common.utils.DateUtils;
 import com.wbs.iot.model.base.DeviceDataModel;
 import com.wbs.iot.model.base.DeviceInfoModel;
 import com.wbs.iot.model.base.ProductInfoModel;
+import com.wbs.iot.model.base.ThingInfoModel;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -106,6 +110,40 @@ public class CtWingApplication implements IotInterface {
             }
             System.out.println("");
         } catch (Exception e) {
+        }
+        return list;
+    }
+
+    /**
+     * 获取产品物模型
+     *
+     * @param product 产品
+     * @return
+     */
+    @Override
+    public List<ThingInfoModel> getThingInfoList(ProductInfoModel product) {
+        List<ThingInfoModel> list = new ArrayList<>();
+        try {
+            AepDeviceModelClient client = AepDeviceModelClient.newClient().appKey(appKey).appSecret(appSecret).build();
+            QueryPropertyListRequest request = new QueryPropertyListRequest();
+            request.setParamMasterKey(product.getApiKey());
+            request.setParamProductId(product.getId());
+            QueryPropertyListResponse response = client.QueryPropertyList(request);
+            JSONObject json = JSONUtil.parseObj(new String(response.getBody()));
+            JSONArray array = json.getByPath("result.list", JSONArray.class);
+            List<Dict> dictList = JSONUtil.toList(array, Dict.class);
+            for (Dict item : dictList) {
+                ThingInfoModel model = new ThingInfoModel();
+                model.setName(item.getStr("propertyName"));
+                model.setProductId(product.getId());
+                model.setProperty(item.getStr("propertyFlag") );
+                model.setDataType(item.getStr("dataType"));
+                model.setUnit(item.getStr("unit"));
+                list.add(model);
+            }
+
+        } catch (Exception e) {
+
         }
         return list;
     }

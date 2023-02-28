@@ -10,6 +10,7 @@ import com.wbs.common.utils.DateUtils;
 import com.wbs.iot.model.base.DeviceDataModel;
 import com.wbs.iot.model.base.DeviceInfoModel;
 import com.wbs.iot.model.base.ProductInfoModel;
+import com.wbs.iot.model.base.ThingInfoModel;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -102,6 +103,32 @@ public class HuaWeiApplication implements IotInterface {
             }
         } catch (Exception e) {
             System.out.println(e);
+        }
+        return list;
+    }
+
+    @Override
+    public List<ThingInfoModel> getThingInfoList(ProductInfoModel product) {
+        List<ThingInfoModel> list = new ArrayList<>();
+        try {
+            ShowProductRequest request = new ShowProductRequest();
+            request.setProductId(product.getId());
+            ShowProductResponse response = client.showProduct(request);
+            List<ServiceCapability> serviceList = response.getServiceCapabilities();
+            for (ServiceCapability service : serviceList) {
+                List<ServiceProperty> properties = service.getProperties();
+                for (ServiceProperty item : properties) {
+                    ThingInfoModel model = new ThingInfoModel();
+                    model.setProperty(item.getPropertyName());
+                    model.setProductId(product.getId());
+                    model.setName(service.getServiceId() + "." + item.getPropertyName());
+                    model.setDataType(item.getDataType());
+                    model.setUnit(item.getUnit());
+                    list.add(model);
+                }
+            }
+        } catch (Exception e) {
+
         }
         return list;
     }

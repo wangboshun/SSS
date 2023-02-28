@@ -4,9 +4,11 @@ import com.wbs.iot.application.CtWingApplication;
 import com.wbs.iot.model.base.DeviceDataModel;
 import com.wbs.iot.model.base.DeviceInfoModel;
 import com.wbs.iot.model.base.ProductInfoModel;
+import com.wbs.iot.model.base.ThingInfoModel;
 import com.wbs.iot.model.ctwing.dto.CtwingAuthDto;
 import com.wbs.iot.model.ctwing.dto.CtwingDeviceDataQueryInputDto;
 import com.wbs.iot.model.ctwing.dto.CtwingDeviceQueryInputDto;
+import com.wbs.iot.model.ctwing.dto.CtwingThingQueryInputDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -85,6 +87,25 @@ public class CtwingController {
         product.setId(input.getProductId());
         product.setApiKey(input.getProductApiKey());
         List<DeviceInfoModel> list = ctwingApplication.getDeviceList(product);
+        return list;
+    }
+
+    /**
+     * 获取指定产品的物模型
+     *
+     * @param input
+     * @return
+     */
+    @GetMapping("/get_thing_by_product")
+    public List<ThingInfoModel> getThingInfoByProduct(CtwingThingQueryInputDto input) {
+        Properties properties = new Properties();
+        properties.setProperty("appKey", input.getAppKey());
+        properties.setProperty("appSecret", input.getAppSecret());
+        ctwingApplication.config(properties);
+        ProductInfoModel product = new ProductInfoModel();
+        product.setId(input.getProductId());
+        product.setApiKey(input.getProductApiKey());
+        List<ThingInfoModel> list = ctwingApplication.getThingInfoList(product);
         return list;
     }
 

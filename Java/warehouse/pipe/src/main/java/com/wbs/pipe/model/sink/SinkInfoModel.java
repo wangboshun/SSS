@@ -2,9 +2,7 @@ package com.wbs.pipe.model.sink;
 
 
 import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "sink_info")
 public class SinkInfoModel {
     private ObjectId id;
     private String name;

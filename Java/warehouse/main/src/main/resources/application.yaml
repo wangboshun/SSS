@@ -6,13 +6,6 @@ spring:
       matching-strategy: ant-path-matcher
   profiles:
     include: engine,common,iot,pipe
-  data:
-    mongodb:
-      host: "123.60.141.63"
-      port: 10010
-      database: "admin"
-      username: "admin"
-      password: "mima123456mima"
 
 springdoc:
   swagger-ui:
@@ -56,15 +49,3 @@ logging:
   config: "classpath:logback-spring.xml"
   file:
     path: logs
-
-url: jdbc:mysql://47.118.56.14:3306/sm
-user: root
-pass: slw123456.
-# 是否在日志中显示执行的SQL
-showSql: true
-# 是否格式化显示的SQL
-formatSql: true
-# 是否显示SQL参数
-showParams: true
-# 打印SQL的日志等级，默认debug，可以是info、warn、error
-sqlLevel: debug
