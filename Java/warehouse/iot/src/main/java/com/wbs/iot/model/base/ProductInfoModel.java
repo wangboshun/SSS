@@ -1,8 +1,14 @@
 package com.wbs.iot.model.base;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class ProductInfoModel {
+/**
+ * @author WBS
+ * @date 2023/2/23 9:59
+ * @desciption ProductInfoModel
+ */
+public class ProductInfoModel  implements Serializable {
     private String name;
     private String id;
     private String apiKey;

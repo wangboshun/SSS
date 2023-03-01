@@ -1,5 +1,6 @@
 package com.wbs.iot.model.onenet;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import java.util.List;
  * @LocalDateTime 2023/2/23 17:16
  * @desciption DeviceListResult
  */
-public class DeviceListResult {
+public class DeviceListResult  implements Serializable {
 
     private int errno;
     private Data data;

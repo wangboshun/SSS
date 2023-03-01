@@ -17,7 +17,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * LocalDateTime序列化处理
+ * @author WBS
+ * @date 2023/2/23 9:42
+ * @desciption LocalDateTime序列化处理
  */
 @Configuration
 public class LocalDateTimeConfig {

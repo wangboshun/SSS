@@ -1,8 +1,14 @@
 package com.wbs.iot.model.base;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class DeviceDataModel {
+/**
+ * @author WBS
+ * @date 2023/2/23 9:59
+ * @desciption DeviceDataModel
+ */
+public class DeviceDataModel  implements Serializable {
     public String name;
     public String value;
     public LocalDateTime time;

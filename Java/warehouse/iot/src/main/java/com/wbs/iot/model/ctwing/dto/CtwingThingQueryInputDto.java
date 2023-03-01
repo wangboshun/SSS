@@ -1,5 +1,10 @@
 package com.wbs.iot.model.ctwing.dto;
 
+/**
+ * @author WBS
+ * @date 2023/2/23 9:59
+ * @desciption CtwingThingQueryInputDto
+ */
 public class CtwingThingQueryInputDto extends CtwingAuthDto {
     public String productId;
     private String productApiKey;

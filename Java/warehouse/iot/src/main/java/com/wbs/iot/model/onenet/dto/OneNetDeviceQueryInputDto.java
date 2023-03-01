@@ -1,5 +1,10 @@
 package com.wbs.iot.model.onenet.dto;
 
+/**
+ * @author WBS
+ * @date 2023/2/23 9:59
+ * @desciption OneNetDeviceQueryInputDto
+ */
 public class OneNetDeviceQueryInputDto extends OneNetAuthDto {
     public String productName;
     public String productId;

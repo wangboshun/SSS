@@ -3,6 +3,11 @@ package com.wbs.pipe.application;
 import com.wbs.pipe.model.sink.SinkInfoModel;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author WBS
+ * @date 2023/2/23 9:59
+ * @desciption SinkApplication
+ */
 @Service
 public class SinkApplication {
 

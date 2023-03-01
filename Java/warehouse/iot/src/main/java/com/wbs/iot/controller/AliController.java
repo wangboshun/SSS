@@ -1,5 +1,6 @@
 package com.wbs.iot.controller;
 
+import com.wbs.common.extend.ResponseResult;
 import com.wbs.iot.application.AliApplication;
 import com.wbs.iot.model.ali.dto.AliAuthDto;
 import com.wbs.iot.model.ali.dto.AliDeviceDataQueryInputDto;
@@ -23,7 +24,6 @@ import java.util.Properties;
  * @date 2023/2/23 9:57
  * @desciption AliController
  */
-
 @RestController
 @RequestMapping("/iot/ali")
 @Tag(name = "iot", description = "iot模块")
@@ -41,14 +41,14 @@ public class AliController {
      * @return
      */
     @GetMapping("/get_product_list")
-    public List<ProductInfoModel> getProductList(AliAuthDto input) {
+    public ResponseResult getProductList(AliAuthDto input) {
         Properties properties = new Properties();
         properties.setProperty("accessKeyId", input.getAccessKeyId());
         properties.setProperty("accessKeySecret", input.getAccessKeySecret());
         properties.setProperty("endpoint", input.getEndpoint());
         aliApplication.config(properties);
         List<ProductInfoModel> list = aliApplication.getProductList();
-        return list;
+        return new ResponseResult().Ok(list);
     }
 
     /**
@@ -58,7 +58,7 @@ public class AliController {
      * @return
      */
     @GetMapping("/get_deivce_list")
-    public List<DeviceInfoModel> getDeviceList(AliAuthDto input) {
+    public ResponseResult getDeviceList(AliAuthDto input) {
         Properties properties = new Properties();
         properties.setProperty("accessKeyId", input.getAccessKeyId());
         properties.setProperty("accessKeySecret", input.getAccessKeySecret());
@@ -70,7 +70,7 @@ public class AliController {
             List<DeviceInfoModel> deviceList = aliApplication.getDeviceList(product);
             list.addAll(deviceList);
         }
-        return list;
+        return new ResponseResult().Ok(list);
     }
 
     /**
@@ -80,7 +80,7 @@ public class AliController {
      * @return
      */
     @GetMapping("/get_deivce_by_product")
-    public List<DeviceInfoModel> getDeviceListByProduct(AliDeviceQueryInputDto input) {
+    public ResponseResult getDeviceListByProduct(AliDeviceQueryInputDto input) {
         Properties properties = new Properties();
         properties.setProperty("accessKeyId", input.getAccessKeyId());
         properties.setProperty("accessKeySecret", input.getAccessKeySecret());
@@ -89,7 +89,7 @@ public class AliController {
         ProductInfoModel product = new ProductInfoModel();
         product.setId(input.getProductId());
         List<DeviceInfoModel> list = aliApplication.getDeviceList(product);
-        return list;
+        return new ResponseResult().Ok(list);
     }
 
     /**
@@ -99,7 +99,7 @@ public class AliController {
      * @return
      */
     @GetMapping("/get_thing_by_product")
-    public List<ThingInfoModel> getThingInfoByProduct(AliThingInfoQueryInputDto input) {
+    public ResponseResult getThingInfoByProduct(AliThingInfoQueryInputDto input) {
         Properties properties = new Properties();
         properties.setProperty("accessKeyId", input.getAccessKeyId());
         properties.setProperty("accessKeySecret", input.getAccessKeySecret());
@@ -108,7 +108,7 @@ public class AliController {
         ProductInfoModel product = new ProductInfoModel();
         product.setId(input.getProductId());
         List<ThingInfoModel> list = aliApplication.getThingInfoList(product);
-        return list;
+        return new ResponseResult().Ok(list);
     }
 
     /**
@@ -118,7 +118,7 @@ public class AliController {
      * @return
      */
     @GetMapping("/get_data_list")
-    public List<DeviceDataModel> getDeviceDataList(AliDeviceDataQueryInputDto input) {
+    public ResponseResult getDeviceDataList(AliDeviceDataQueryInputDto input) {
         Properties properties = new Properties();
         properties.setProperty("accessKeyId", input.getAccessKeyId());
         properties.setProperty("accessKeySecret", input.getAccessKeySecret());
@@ -129,6 +129,6 @@ public class AliController {
         device.setProductId(input.getProductId());
         device.setId(input.getDeviceId());
         List<DeviceDataModel> list = aliApplication.getDeviceData(device);
-        return list;
+        return new ResponseResult().Ok(list);
     }
 }

@@ -1,6 +1,13 @@
 package com.wbs.iot.model.ctwing.dto;
 
-public class CtwingAuthDto {
+import java.io.Serializable;
+
+/**
+ * @author WBS
+ * @date 2023/2/23 9:59
+ * @desciption CtwingAuthDto
+ */
+public class CtwingAuthDto  implements Serializable {
     private String appKey;
     private String appSecret;
 

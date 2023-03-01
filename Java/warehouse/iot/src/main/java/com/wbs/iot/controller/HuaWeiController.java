@@ -1,5 +1,6 @@
 package com.wbs.iot.controller;
 
+import com.wbs.common.extend.ResponseResult;
 import com.wbs.iot.application.HuaWeiApplication;
 import com.wbs.iot.model.base.DeviceDataModel;
 import com.wbs.iot.model.base.DeviceInfoModel;
@@ -40,14 +41,14 @@ public class HuaWeiController {
      * @return
      */
     @GetMapping("/get_product_list")
-    public List<ProductInfoModel> getProductList(HuaWeiAuthDto input) {
+    public ResponseResult getProductList(HuaWeiAuthDto input) {
         Properties properties = new Properties();
         properties.setProperty("accessKeyId", input.getAccessKeyId());
         properties.setProperty("secretAccessKey", input.getSecretAccessKey());
         properties.setProperty("region", input.getRegion());
         huaWeiApplication.config(properties);
         List<ProductInfoModel> list = huaWeiApplication.getProductList();
-        return list;
+        return new ResponseResult().Ok(list);
     }
 
     /**
@@ -57,7 +58,7 @@ public class HuaWeiController {
      * @return
      */
     @GetMapping("/get_deivce_list")
-    public List<DeviceInfoModel> getDeviceList(HuaWeiAuthDto input) {
+    public ResponseResult getDeviceList(HuaWeiAuthDto input) {
         Properties properties = new Properties();
         properties.setProperty("accessKeyId", input.getAccessKeyId());
         properties.setProperty("secretAccessKey", input.getSecretAccessKey());
@@ -69,7 +70,7 @@ public class HuaWeiController {
             List<DeviceInfoModel> deviceList = huaWeiApplication.getDeviceList(product);
             list.addAll(deviceList);
         }
-        return list;
+        return new ResponseResult().Ok(list);
     }
 
     /**
@@ -79,7 +80,7 @@ public class HuaWeiController {
      * @return
      */
     @GetMapping("/get_deivce_by_product")
-    public List<DeviceInfoModel> getDeviceListByProduct(HuaWeiDeviceQueryInputDto input) {
+    public ResponseResult getDeviceListByProduct(HuaWeiDeviceQueryInputDto input) {
         Properties properties = new Properties();
         properties.setProperty("accessKeyId", input.getAccessKeyId());
         properties.setProperty("secretAccessKey", input.getSecretAccessKey());
@@ -88,7 +89,7 @@ public class HuaWeiController {
         ProductInfoModel product = new ProductInfoModel();
         product.setId(input.getProductId());
         List<DeviceInfoModel> list = huaWeiApplication.getDeviceList(product);
-        return list;
+        return new ResponseResult().Ok(list);
     }
 
     /**
@@ -98,7 +99,7 @@ public class HuaWeiController {
      * @return
      */
     @GetMapping("/get_thing_by_product")
-    public List<ThingInfoModel> getThingInfoByProduct(HuaWeiThingQueryInputDto input) {
+    public ResponseResult getThingInfoByProduct(HuaWeiThingQueryInputDto input) {
         Properties properties = new Properties();
         properties.setProperty("accessKeyId", input.getAccessKeyId());
         properties.setProperty("secretAccessKey", input.getSecretAccessKey());
@@ -107,7 +108,7 @@ public class HuaWeiController {
         ProductInfoModel product = new ProductInfoModel();
         product.setId(input.getProductId());
         List<ThingInfoModel> list = huaWeiApplication.getThingInfoList(product);
-        return list;
+        return new ResponseResult().Ok(list);
     }
 
     /**
@@ -117,7 +118,7 @@ public class HuaWeiController {
      * @return
      */
     @GetMapping("/get_data_list")
-    public List<DeviceDataModel> getDeviceData(HuaWeiDeviceDataQueryInputDto input) {
+    public ResponseResult getDeviceData(HuaWeiDeviceDataQueryInputDto input) {
         Properties properties = new Properties();
         properties.setProperty("accessKeyId", input.getAccessKeyId());
         properties.setProperty("secretAccessKey", input.getSecretAccessKey());
@@ -126,6 +127,6 @@ public class HuaWeiController {
         DeviceInfoModel device = new DeviceInfoModel();
         device.setId(input.getDeviceId());
         List<DeviceDataModel> list = huaWeiApplication.getDeviceData(device);
-        return list;
+        return new ResponseResult().Ok(list);
     }
 }

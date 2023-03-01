@@ -1,6 +1,13 @@
 package com.wbs.iot.model.huawei.dto;
 
-public class HuaWeiAuthDto {
+import java.io.Serializable;
+
+/**
+ * @author WBS
+ * @date 2023/2/23 9:59
+ * @desciption HuaWeiAuthDto
+ */
+public class HuaWeiAuthDto  implements Serializable {
     private String accessKeyId;
     private String secretAccessKey;
     private String region;

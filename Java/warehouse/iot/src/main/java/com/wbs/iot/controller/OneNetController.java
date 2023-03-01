@@ -1,5 +1,6 @@
 package com.wbs.iot.controller;
 
+import com.wbs.common.extend.ResponseResult;
 import com.wbs.iot.application.OneNetApplication;
 import com.wbs.iot.model.base.DeviceDataModel;
 import com.wbs.iot.model.base.DeviceInfoModel;
@@ -35,12 +36,12 @@ public class OneNetController {
      * @return
      */
     @GetMapping("/get_deivce_list")
-    public List<DeviceInfoModel> getDeviceList(OneNetAuthDto input) {
+    public ResponseResult getDeviceList(OneNetAuthDto input) {
         Properties properties = new Properties();
         properties.setProperty("masterKey", input.getMasterKey());
         oneNetApplication.config(properties);
         List<DeviceInfoModel> list = oneNetApplication.getDeviceList(null);
-        return list;
+        return new ResponseResult().Ok(list);
     }
 
     /**
@@ -50,13 +51,13 @@ public class OneNetController {
      * @return
      */
     @GetMapping("/get_data_list")
-    public List<DeviceDataModel> getDeviceData(OneNetDeviceDataQueryInputDto input) {
+    public ResponseResult getDeviceData(OneNetDeviceDataQueryInputDto input) {
         Properties properties = new Properties();
         properties.setProperty("masterKey", input.getMasterKey());
         oneNetApplication.config(properties);
         DeviceInfoModel device = new DeviceInfoModel();
         device.setId(input.getDeviceId());
         List<DeviceDataModel> list = oneNetApplication.getDeviceData(device);
-        return list;
+        return new ResponseResult().Ok(list);
     }
 }

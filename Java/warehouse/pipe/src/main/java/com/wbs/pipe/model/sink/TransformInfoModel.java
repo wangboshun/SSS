@@ -3,7 +3,14 @@ package com.wbs.pipe.model.sink;
 
 import org.bson.types.ObjectId;
 
-public class TransformInfoModel {
+import java.io.Serializable;
+
+/**
+ * @author WBS
+ * @date 2023/2/23 9:59
+ * @desciption TransformInfoModel
+ */
+public class TransformInfoModel  implements Serializable {
     private ObjectId id;
     private String name;
     private String connect_id;

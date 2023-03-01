@@ -1,6 +1,13 @@
 package com.wbs.iot.model.ali.dto;
 
-public class AliAuthDto {
+import java.io.Serializable;
+
+/**
+ * @author WBS
+ * @date 2023/2/23 9:59
+ * @desciption AliAuthDto
+ */
+public class AliAuthDto  implements Serializable {
     private String accessKeyId;
     private String accessKeySecret;
     private String endpoint;

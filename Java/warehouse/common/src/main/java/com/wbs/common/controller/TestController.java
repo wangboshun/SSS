@@ -12,6 +12,11 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.util.Map;
 
+/**
+ * @author WBS
+ * @date 2023/2/23 9:42
+ * @desciption TestController
+ */
 @RestController
 @RequestMapping("/common/test")
 @Tag(name = "common", description = "common模块")

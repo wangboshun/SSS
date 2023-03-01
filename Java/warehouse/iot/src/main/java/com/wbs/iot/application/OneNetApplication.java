@@ -40,7 +40,7 @@ public class OneNetApplication implements IotInterface {
      */
     @Override
     public List<ProductInfoModel> getProductList() {
-        throw new UnsupportedOperationException("OneNet不支持获取产品列表");
+        throw new UnsupportedOperationException("OneNet多协议不支持获取产品列表");
     }
 
     /**
@@ -76,7 +76,7 @@ public class OneNetApplication implements IotInterface {
 
     @Override
     public List<ThingInfoModel> getThingInfoList(ProductInfoModel product) {
-        throw new UnsupportedOperationException("OneNet不支持获取物模型");
+        throw new UnsupportedOperationException("OneNet多协议不支持获取物模型");
     }
 
     /**

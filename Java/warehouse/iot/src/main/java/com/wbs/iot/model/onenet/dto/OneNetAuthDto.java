@@ -1,6 +1,13 @@
 package com.wbs.iot.model.onenet.dto;
 
-public class OneNetAuthDto {
+import java.io.Serializable;
+
+/**
+ * @author WBS
+ * @date 2023/2/23 9:59
+ * @desciption OneNetAuthDto
+ */
+public class OneNetAuthDto  implements Serializable {
     private String masterKey;
 
     public String getMasterKey() {

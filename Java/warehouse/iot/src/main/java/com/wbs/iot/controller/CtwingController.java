@@ -1,5 +1,6 @@
 package com.wbs.iot.controller;
 
+import com.wbs.common.extend.ResponseResult;
 import com.wbs.iot.application.CtWingApplication;
 import com.wbs.iot.model.base.DeviceDataModel;
 import com.wbs.iot.model.base.DeviceInfoModel;
@@ -23,7 +24,6 @@ import java.util.Properties;
  * @date 2023/2/23 9:59
  * @desciption CtwingController
  */
-
 @RestController
 @RequestMapping("/iot/ctwing")
 @Tag(name = "iot", description = "iot模块")
@@ -41,13 +41,13 @@ public class CtwingController {
      * @return
      */
     @GetMapping("/get_product_list")
-    public List<ProductInfoModel> getProductList(CtwingAuthDto input) {
+    public ResponseResult getProductList(CtwingAuthDto input) {
         Properties properties = new Properties();
         properties.setProperty("appKey", input.getAppKey());
         properties.setProperty("appSecret", input.getAppSecret());
         ctwingApplication.config(properties);
         List<ProductInfoModel> list = ctwingApplication.getProductList();
-        return list;
+        return new ResponseResult().Ok(list);
     }
 
     /**
@@ -57,7 +57,7 @@ public class CtwingController {
      * @return
      */
     @GetMapping("/get_deivce_list")
-    public List<DeviceInfoModel> getDeviceList(CtwingAuthDto input) {
+    public ResponseResult getDeviceList(CtwingAuthDto input) {
         Properties properties = new Properties();
         properties.setProperty("appKey", input.getAppKey());
         properties.setProperty("appSecret", input.getAppSecret());
@@ -68,7 +68,7 @@ public class CtwingController {
             List<DeviceInfoModel> deviceList = ctwingApplication.getDeviceList(product);
             list.addAll(deviceList);
         }
-        return list;
+        return new ResponseResult().Ok(list);
     }
 
     /**
@@ -78,7 +78,7 @@ public class CtwingController {
      * @return
      */
     @GetMapping("/get_deivce_by_product")
-    public List<DeviceInfoModel> getDeviceListByProduct(CtwingDeviceQueryInputDto input) {
+    public ResponseResult getDeviceListByProduct(CtwingDeviceQueryInputDto input) {
         Properties properties = new Properties();
         properties.setProperty("appKey", input.getAppKey());
         properties.setProperty("appSecret", input.getAppSecret());
@@ -87,7 +87,7 @@ public class CtwingController {
         product.setId(input.getProductId());
         product.setApiKey(input.getProductApiKey());
         List<DeviceInfoModel> list = ctwingApplication.getDeviceList(product);
-        return list;
+        return new ResponseResult().Ok(list);
     }
 
     /**
@@ -97,7 +97,7 @@ public class CtwingController {
      * @return
      */
     @GetMapping("/get_thing_by_product")
-    public List<ThingInfoModel> getThingInfoByProduct(CtwingThingQueryInputDto input) {
+    public ResponseResult getThingInfoByProduct(CtwingThingQueryInputDto input) {
         Properties properties = new Properties();
         properties.setProperty("appKey", input.getAppKey());
         properties.setProperty("appSecret", input.getAppSecret());
@@ -106,7 +106,7 @@ public class CtwingController {
         product.setId(input.getProductId());
         product.setApiKey(input.getProductApiKey());
         List<ThingInfoModel> list = ctwingApplication.getThingInfoList(product);
-        return list;
+        return new ResponseResult().Ok(list);
     }
 
     /**
@@ -116,7 +116,7 @@ public class CtwingController {
      * @return
      */
     @GetMapping("/get_data_list")
-    public List<DeviceDataModel> getDeviceData(CtwingDeviceDataQueryInputDto input) {
+    public ResponseResult getDeviceData(CtwingDeviceDataQueryInputDto input) {
         Properties properties = new Properties();
         properties.setProperty("appKey", input.getAppKey());
         properties.setProperty("appSecret", input.getAppSecret());
@@ -125,6 +125,6 @@ public class CtwingController {
         device.setId(input.getDeviceId());
         device.setProductId(input.getProductId());
         List<DeviceDataModel> list = ctwingApplication.getDeviceData(device);
-        return list;
+        return new ResponseResult().Ok(list);
     }
 }

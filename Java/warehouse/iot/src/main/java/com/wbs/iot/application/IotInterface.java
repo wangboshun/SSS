@@ -8,6 +8,11 @@ import com.wbs.iot.model.base.ThingInfoModel;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * @author WBS
+ * @date 2023/2/23 15:34
+ * @desciption IotInterface
+ */
 public interface IotInterface {
 
     /**

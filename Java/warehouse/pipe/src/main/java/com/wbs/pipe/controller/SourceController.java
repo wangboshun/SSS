@@ -6,6 +6,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * @author WBS
+ * @date 2023/2/23 9:59
+ * @desciption SourceController
+ */
 @RestController
 @RequestMapping("/pipe/source")
 @Tag(name = "pipe", description = "pipe模块")

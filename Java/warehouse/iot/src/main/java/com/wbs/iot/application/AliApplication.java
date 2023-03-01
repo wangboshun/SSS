@@ -121,7 +121,7 @@ public class AliApplication implements IotInterface {
     public List<ThingInfoModel> getThingInfoList(ProductInfoModel product) {
         List<ThingInfoModel> list = new ArrayList<>();
         try {
-            GetThingModelTslRequest request = new GetThingModelTslRequest().setProductKey(product.getApiKey());
+            GetThingModelTslRequest request = new GetThingModelTslRequest().setProductKey(product.getId());
             RuntimeOptions runtime = new RuntimeOptions();
             GetThingModelTslResponse response = client.getThingModelTslWithOptions(request, runtime);
             if (response != null && response.getStatusCode() == 200) {

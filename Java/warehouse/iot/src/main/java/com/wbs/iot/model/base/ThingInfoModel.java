@@ -1,11 +1,13 @@
 package com.wbs.iot.model.base;
 
+import java.io.Serializable;
+
 /**
  * @author WBS
  * @date 2023/2/27 17:47
  * @desciption ThingInfoModel
  */
-public class ThingInfoModel {
+public class ThingInfoModel  implements Serializable {
     private String name;
     private String productId;
     private String dataType;

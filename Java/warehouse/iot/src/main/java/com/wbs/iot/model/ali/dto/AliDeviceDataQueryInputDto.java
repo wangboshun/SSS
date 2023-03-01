@@ -1,5 +1,10 @@
 package com.wbs.iot.model.ali.dto;
 
+/**
+ * @author WBS
+ * @date 2023/2/23 9:59
+ * @desciption AliDeviceDataQueryInputDto
+ */
 public class AliDeviceDataQueryInputDto extends AliAuthDto {
     private String deviceName;
     private String productId;

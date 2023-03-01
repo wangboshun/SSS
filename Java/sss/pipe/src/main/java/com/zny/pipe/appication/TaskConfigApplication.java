@@ -71,12 +71,15 @@ public class TaskConfigApplication extends ServiceImpl<TaskConfigMapper, TaskCon
             SourceConfigModel sourceConfig = sourceConfigApplication.getById(taskConfig.getSource_id());
             ConnectConfigModel connectConfig = connectConfigApplication.getById(sourceConfig.getConnect_id());
             List<ColumnConfigModel> columnList = columnConfigApplication.getColumnByTaskId(taskId);
+            if (sourceConfig == null && connectConfig == null && columnList.size() < 1) {
+                return;
+            }
             DbTypeEnum e = DbTypeEnum.values()[connectConfig.getDb_type()];
             SourceBase source = pipeStrategy.getSource(e);
             Double score = redisTemplate.opsForZSet().incrementScore(RedisKeyEnum.TASK_COUNT_CACHE.toString(), taskConfig.getId(), 1);
             int version = score.intValue();
             boolean configSuccess = source.config(sourceConfig, connectConfig, taskConfig, columnList, version);
-            if(configSuccess){
+            if (configSuccess) {
                 source.start();
             }
         });
