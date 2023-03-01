@@ -179,6 +179,7 @@ public class AliApplication implements IotInterface {
                     model.setValue(item.getValue());
                     model.setTime(DateUtils.unixToDate(item.getTime()));
                     model.setDeviceId(device.getId());
+                    model.setProperty(item.getIdentifier());
                     list.add(model);
                 }
             }

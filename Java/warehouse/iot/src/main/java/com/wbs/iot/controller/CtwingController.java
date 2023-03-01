@@ -28,7 +28,7 @@ import java.util.Properties;
 @RequestMapping("/iot/ctwing")
 @Tag(name = "iot", description = "iot模块")
 public class CtwingController {
-    private CtWingApplication ctwingApplication;
+    private final CtWingApplication ctwingApplication;
 
     public CtwingController(CtWingApplication ctwingApplication) {
         this.ctwingApplication = ctwingApplication;

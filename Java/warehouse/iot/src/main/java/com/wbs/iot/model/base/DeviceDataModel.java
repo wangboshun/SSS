@@ -8,11 +8,13 @@ import java.time.LocalDateTime;
  * @date 2023/2/23 9:59
  * @desciption DeviceDataModel
  */
-public class DeviceDataModel  implements Serializable {
+public class DeviceDataModel implements Serializable {
+
     public String name;
     public String value;
     public LocalDateTime time;
     private String deviceId;
+    private String property;
 
     public String getName() {
         return name;
@@ -44,5 +46,13 @@ public class DeviceDataModel  implements Serializable {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public String getProperty() {
+        return property;
+    }
+
+    public void setProperty(String property) {
+        this.property = property;
     }
 }

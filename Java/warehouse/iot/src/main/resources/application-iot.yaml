@@ -1,0 +1,6 @@
+iot_db:
+  host: "123.60.141.63"
+  port: 10001
+  username: "root"
+  password: "mima123456mima"
+  database: "wbs"

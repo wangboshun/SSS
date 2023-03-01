@@ -28,7 +28,7 @@ import java.util.Properties;
 @RequestMapping("/iot/huawei")
 @Tag(name = "iot", description = "iot模块")
 public class HuaWeiController {
-    private HuaWeiApplication huaWeiApplication;
+    private final HuaWeiApplication huaWeiApplication;
 
     public HuaWeiController(HuaWeiApplication huaWeiApplication) {
         this.huaWeiApplication = huaWeiApplication;

@@ -4,6 +4,8 @@ import com.wbs.common.database.ConnectionFactory;
 import com.wbs.common.database.DataSourceFactory;
 import com.wbs.common.database.DbTypeEnum;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +23,7 @@ import java.util.Map;
 @RequestMapping("/common/test")
 @Tag(name = "common", description = "common模块")
 public class TestController {
-
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private DataSourceFactory dataSourceFactory;
     private ConnectionFactory connectionFactory;
 
@@ -45,8 +47,9 @@ public class TestController {
             Connection test2 = connectionFactory.createConnection("test2", dataSource2);
             Map<String, Connection> allConnection = connectionFactory.getAllConnection();
             System.out.println();
+            logger.info("test");
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            logger.error("error",e);
         }
         return "test Test";
     }

@@ -23,7 +23,7 @@ import java.util.Properties;
 @RequestMapping("/iot/onenet")
 @Tag(name = "iot", description = "iot模块")
 public class OneNetController {
-    private OneNetApplication oneNetApplication;
+    private final OneNetApplication oneNetApplication;
 
     public OneNetController(OneNetApplication oneNetApplication) {
         this.oneNetApplication = oneNetApplication;

@@ -28,7 +28,7 @@ import java.util.Properties;
 @RequestMapping("/iot/ali")
 @Tag(name = "iot", description = "iot模块")
 public class AliController {
-    private AliApplication aliApplication;
+    private final AliApplication aliApplication;
 
     public AliController(AliApplication aliApplication) {
         this.aliApplication = aliApplication;

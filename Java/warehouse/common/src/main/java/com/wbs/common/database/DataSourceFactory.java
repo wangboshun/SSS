@@ -47,12 +47,34 @@ public class DataSourceFactory {
        return dataSourceMap.get(dataSourceName);
     }
 
+    /**
+     * 创建数据源
+     * @param dataSourceName
+     * @param host
+     * @param port
+     * @param username
+     * @param password
+     * @param database
+     * @param type
+     * @return
+     * @throws SQLException
+     */
     public DataSource createDataSource(String dataSourceName, String host, int port, String username, String password, String database, DbTypeEnum type) throws SQLException {
         return createDataSource(dataSourceName, host, port, username, password, database, "", type);
     }
 
     /**
      * 创建数据源
+     * @param dataSourceName
+     * @param host
+     * @param port
+     * @param username
+     * @param password
+     * @param database
+     * @param schema
+     * @param type
+     * @return
+     * @throws SQLException
      */
     public DataSource createDataSource(String dataSourceName, String host, int port, String username, String password, String database, String schema, DbTypeEnum type) throws SQLException {
         DataSource dataSource = dataSourceMap.get(dataSourceName);
@@ -100,6 +122,7 @@ public class DataSourceFactory {
             }
             //测试数据源是否能打开
             connection = dataSource.getConnection();
+            dataSourceMap.put(dataSourceName, dataSource);
         } catch (Exception e) {
             System.out.println(e);
             throw new SQLException("数据源错误");

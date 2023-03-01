@@ -96,6 +96,7 @@ public class OneNetApplication implements IotInterface {
                 for (DeviceDataResult.Datastreams item : deviceItem.getDatastreams()) {
                     DeviceDataModel model = new DeviceDataModel();
                     model.setName(item.getId());
+                    model.setProperty(item.getId());
                     model.setValue(item.getValue());
                     model.setDeviceId(device.getId());
                     model.setTime(item.getAt());

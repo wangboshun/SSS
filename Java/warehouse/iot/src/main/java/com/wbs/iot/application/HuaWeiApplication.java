@@ -155,6 +155,7 @@ public class HuaWeiApplication implements IotInterface {
                     DeviceDataModel model = new DeviceDataModel();
                     model.setTime(time);
                     model.setName(key);
+                    model.setProperty(key);
                     model.setDeviceId(device.getId());
                     model.setValue(map.get(key) + "");
                     list.add(model);
