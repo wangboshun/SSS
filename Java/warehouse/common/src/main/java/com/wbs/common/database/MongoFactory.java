@@ -1,11 +1,16 @@
 package com.wbs.common.database;
 
+import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import org.bson.BsonDocument;
 import org.bson.BsonInt64;
 import org.bson.Document;
+import org.bson.codecs.configuration.CodecProvider;
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.conversions.Bson;
 import org.springframework.stereotype.Component;
 
@@ -53,12 +58,15 @@ public class MongoFactory {
 
     /**
      * 获取数据库
+     *
      * @param client
      * @param database
      * @return
      */
     public MongoDatabase getDatabase(MongoClient client, String database) {
-        return client.getDatabase(database);
+        CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
+        CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), CodecRegistries.fromProviders(pojoCodecProvider));
+        return client.getDatabase(database).withCodecRegistry(pojoCodecRegistry);
     }
 
     /**
@@ -73,9 +81,13 @@ public class MongoFactory {
      * @return
      */
     public MongoClient createClient(String clientName, String host, int port, String username, String password, String database) {
+        MongoClient mongoClient = clientMap.get(clientName);
+        if (mongoClient != null) {
+            return mongoClient;
+        }
         String uri = "mongodb://" + username + ":" + password + "@" + host + ":" + port + "/?authSource=" + database;
         try {
-            MongoClient mongoClient = MongoClients.create(uri);
+            mongoClient = MongoClients.create(uri);
             MongoDatabase db = mongoClient.getDatabase("admin");
             Bson command = new BsonDocument("ping", new BsonInt64(1));
             Document commandResult = db.runCommand(command);

@@ -36,14 +36,13 @@ public class MongoConfig {
 
     @Bean("defaultMongoClient")
     public MongoClient mongoClient() {
-        MongoClient client = this.mongoFactory.createClient("default", host, port, username, password, database);
-        mongoClient = client;
-        return client;
+        mongoClient = this.mongoFactory.createClient("default", host, port, username, password, database);
+        return mongoClient;
     }
 
     @Bean("defaultMongoDatabase")
     @DependsOn(value = {"defaultMongoClient"})
     public MongoDatabase mongoDatabase() {
-        return mongoClient.getDatabase(database);
+        return mongoFactory.getDatabase(mongoClient, database);
     }
 }
