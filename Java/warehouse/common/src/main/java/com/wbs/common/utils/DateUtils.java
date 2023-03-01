@@ -43,7 +43,6 @@ public class DateUtils {
         return time;
     }
 
-
     public static LocalDateTime unixToDate(long timestamp) {
         Instant instant = Instant.ofEpochMilli(timestamp);
         return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());

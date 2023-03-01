@@ -15,7 +15,7 @@ import java.util.Map;
  */
 @Component
 public class ConnectionFactory {
-    private volatile Map<String, Connection> connectionMap = new HashMap<>();
+    private final HashMap<String, Connection> connectionMap = new HashMap<>();
 
     /**
      * 获取所有连接
@@ -31,6 +31,13 @@ public class ConnectionFactory {
      */
     public void removeConnect(String connectionName) {
         connectionMap.remove(connectionName);
+    }
+
+    /**
+     * 获取连接
+     */
+    public Connection getConnect(String connectionName) {
+        return connectionMap.get(connectionName);
     }
 
     /**

@@ -20,7 +20,7 @@ import java.util.Properties;
  */
 @Component
 public class DataSourceFactory {
-    private volatile Map<String, DataSource> dataSourceMap = new HashMap<>();
+    private final HashMap<String, DataSource> dataSourceMap = new HashMap<>();
 
     /**
      * 获取所有数据源
@@ -36,6 +36,15 @@ public class DataSourceFactory {
      */
     public void removeDataSource(String dataSourceName) {
         dataSourceMap.remove(dataSourceName);
+    }
+
+    /**
+     * 获取数据源
+     * @param dataSourceName
+     * @return
+     */
+    public DataSource getDataSource(String dataSourceName) {
+       return dataSourceMap.get(dataSourceName);
     }
 
     public DataSource createDataSource(String dataSourceName, String host, int port, String username, String password, String database, DbTypeEnum type) throws SQLException {

@@ -1,6 +1,10 @@
 package com.wbs.pipe.application;
 
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import com.wbs.pipe.model.sink.SinkInfoModel;
+import org.bson.Document;
 import org.springframework.stereotype.Service;
 
 /**
@@ -10,12 +14,22 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SinkApplication {
+    private final MongoDatabase defaultMongoDatabase;
+
+    public SinkApplication(MongoDatabase defaultMongoDatabase) {
+        this.defaultMongoDatabase = defaultMongoDatabase;
+    }
 
     public void query() {
-
+        MongoCollection<Document> collection =defaultMongoDatabase.getCollection("sink_info");
+        FindIterable<Document> documents = collection.find();
+        for (Document document : documents) {
+            System.out.println(document.toString());
+        }
     }
 
     public void add() {
+
         SinkInfoModel model = new SinkInfoModel();
         model.setName("test");
         model.setConnect_id("123");
