@@ -39,6 +39,9 @@ public class IotSchedule {
     private final DataSourceFactory dataSourceFactory;
     private DataSource dataSource;
     private final Environment environment;
+    private static final String RELATE_TABLE = "zny_eqcloudeq_b";
+    private static final String DATA_TABLE = "iot_data";
+    private static final String CONFIG_TABLE = "zny_eqcloud_b";
 
     public IotSchedule(AliApplication aliApplication, HuaWeiApplication huaWeiApplication, OneNetApplication oneNetApplication, CtWingApplication ctWingApplication, DataSourceFactory dataSourceFactory, Environment environment) {
         this.aliApplication = aliApplication;
@@ -106,7 +109,7 @@ public class IotSchedule {
      */
     private String getLocalDevice(String deviceId, String tp) {
         try {
-            List<Entity> list = Db.use(dataSource).find(CollUtil.newArrayList("deviceId"), Entity.create("zny_eqcloudeq_b").set("cloudid", deviceId).set("tp", tp));
+            List<Entity> list = Db.use(dataSource).find(CollUtil.newArrayList("deviceId"), Entity.create(RELATE_TABLE).set("cloudid", deviceId).set("tp", tp));
             if (list.isEmpty()) {
                 return null;
             }
@@ -126,7 +129,7 @@ public class IotSchedule {
      */
     private boolean hasDeviceData(String deviceId, LocalDateTime time, String tp) {
         try {
-            List<Entity> all = Db.use(dataSource).find(CollUtil.newArrayList("deviceId"), Entity.create("iot_data").set("deviceId", deviceId).set("time", time).set("tp", tp));
+            List<Entity> all = Db.use(dataSource).find(CollUtil.newArrayList("deviceId"), Entity.create(DATA_TABLE).set("deviceId", deviceId).set("time", time).set("tp", tp));
             if (!all.isEmpty()) {
                 return true;
             }
@@ -151,7 +154,7 @@ public class IotSchedule {
                 if (hasDeviceData(item.getDeviceId(), item.getTime(), tp)) {
                     continue;
                 }
-                Entity model = new Entity("iot_data");
+                Entity model = new Entity(DATA_TABLE);
                 model.set("tp", tp);
                 model.set("name", item.getName());
                 model.set("value", item.getValue());
@@ -180,11 +183,11 @@ public class IotSchedule {
         try {
             List<Entity> listData = new ArrayList<>();
             for (DeviceInfoModel item : list) {
-                List<Entity> all = Db.use(dataSource).find(CollUtil.newArrayList("deviceId"), Entity.create("zny_eqcloudeq_b").set("deviceId", item.getId()));
+                List<Entity> all = Db.use(dataSource).find(CollUtil.newArrayList("deviceId"), Entity.create(RELATE_TABLE).set("cloudid", item.getId()));
                 if (!all.isEmpty()) {
                     continue;
                 }
-                Entity model = new Entity("zny_eqcloudeq_b");
+                Entity model = new Entity(RELATE_TABLE);
                 model.set("tp", tp);
                 model.set("cloudid", item.getId());
                 model.set("deviceId", "111---" + item.getId());
@@ -200,7 +203,7 @@ public class IotSchedule {
     private void ali_schedule() {
         List<DeviceDataModel> list = new ArrayList<>();
         try {
-            List<Entity> all = Db.use(dataSource).find(CollUtil.newArrayList("cfg"), Entity.create("zny_eqcloud_b").set("tp", "ali"));
+            List<Entity> all = Db.use(dataSource).find(CollUtil.newArrayList("cfg"), Entity.create(CONFIG_TABLE).set("tp", "ali"));
             for (Entity entity : all) {
                 String cfg = entity.get("cfg").toString();
                 Properties properties = getConfig(cfg, "ali");
@@ -228,7 +231,7 @@ public class IotSchedule {
     private void huawei_schedule() {
         List<DeviceDataModel> list = new ArrayList<>();
         try {
-            List<Entity> all = Db.use(dataSource).find(CollUtil.newArrayList("cfg"), Entity.create("zny_eqcloud_b").set("tp", "huawei"));
+            List<Entity> all = Db.use(dataSource).find(CollUtil.newArrayList("cfg"), Entity.create(CONFIG_TABLE).set("tp", "huawei"));
             for (Entity entity : all) {
                 String cfg = entity.get("cfg").toString();
                 Properties properties = getConfig(cfg, "huawei");
@@ -255,7 +258,7 @@ public class IotSchedule {
     private void ctwing_schedule() {
         List<DeviceDataModel> list = new ArrayList<>();
         try {
-            List<Entity> all = Db.use(dataSource).find(CollUtil.newArrayList("cfg"), Entity.create("zny_eqcloud_b").set("tp", "ctwing"));
+            List<Entity> all = Db.use(dataSource).find(CollUtil.newArrayList("cfg"), Entity.create(CONFIG_TABLE).set("tp", "ctwing"));
             for (Entity entity : all) {
                 String cfg = entity.get("cfg").toString();
                 Properties properties = getConfig(cfg, "ctwing");
@@ -282,7 +285,7 @@ public class IotSchedule {
     private void onenet_schedule() {
         List<DeviceDataModel> list = new ArrayList<>();
         try {
-            List<Entity> all = Db.use(dataSource).find(CollUtil.newArrayList("cfg"), Entity.create("zny_eqcloud_b").set("tp", "onenet"));
+            List<Entity> all = Db.use(dataSource).find(CollUtil.newArrayList("cfg"), Entity.create(CONFIG_TABLE).set("tp", "onenet"));
             for (Entity entity : all) {
                 String cfg = entity.get("cfg").toString();
                 Properties properties = getConfig(cfg, "onenet");
