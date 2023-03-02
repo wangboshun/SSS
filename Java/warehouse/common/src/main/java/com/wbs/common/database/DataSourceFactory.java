@@ -9,9 +9,8 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author WBS
@@ -20,14 +19,14 @@ import java.util.Properties;
  */
 @Component
 public class DataSourceFactory {
-    private final HashMap<String, DataSource> dataSourceMap = new HashMap<>();
+    private final ConcurrentHashMap<String, DataSource> dataSourceMap = new ConcurrentHashMap<>();
 
     /**
      * 获取所有数据源
      *
      * @return
      */
-    public Map<String, DataSource> getAllDataSource() {
+    public ConcurrentHashMap<String, DataSource> getAllDataSource() {
         return dataSourceMap;
     }
 

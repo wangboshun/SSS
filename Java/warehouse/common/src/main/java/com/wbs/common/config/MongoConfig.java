@@ -25,9 +25,7 @@ public class MongoConfig {
     private String password;
     @Value("${mongodb.database}")
     private String database;
-
     private final MongoFactory mongoFactory;
-
     private MongoClient mongoClient;
 
     public MongoConfig(MongoFactory mongoFactory) {

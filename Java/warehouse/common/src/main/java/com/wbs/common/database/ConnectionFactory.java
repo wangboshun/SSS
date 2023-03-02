@@ -5,8 +5,7 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author WBS
@@ -15,14 +14,14 @@ import java.util.Map;
  */
 @Component
 public class ConnectionFactory {
-    private final HashMap<String, Connection> connectionMap = new HashMap<>();
+    private final ConcurrentHashMap<String, Connection> connectionMap = new ConcurrentHashMap<>();
 
     /**
      * 获取所有连接
      *
      * @return
      */
-    public Map<String, Connection> getAllConnection() {
+    public ConcurrentHashMap<String, Connection> getAllConnection() {
         return connectionMap;
     }
 
