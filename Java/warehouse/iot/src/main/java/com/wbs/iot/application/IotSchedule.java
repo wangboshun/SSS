@@ -8,6 +8,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.wbs.common.database.DataSourceFactory;
 import com.wbs.common.database.DbTypeEnum;
+import com.wbs.iot.model.IotEnum;
 import com.wbs.iot.model.base.DeviceDataModel;
 import com.wbs.iot.model.base.DeviceInfoModel;
 import com.wbs.iot.model.base.ProductInfoModel;
@@ -37,7 +38,7 @@ public class IotSchedule {
     private final IotInterface ctWingApplication;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final DataSourceFactory dataSourceFactory;
-    private DataSource dataSource;
+    private Db currentDb;
     private final Environment environment;
     private static final String RELATE_TABLE = "zny_eqcloudeq_b";
     private static final String DATA_TABLE = "iot_data";
@@ -60,7 +61,8 @@ public class IotSchedule {
         String password = environment.getProperty("iot_db.password");
         String database = environment.getProperty("iot_db.database");
         try {
-            this.dataSource = dataSourceFactory.createDataSource("iot", host, port, username, password, database, DbTypeEnum.MySql);
+            DataSource dataSource = dataSourceFactory.createDataSource("iot", host, port, username, password, database, DbTypeEnum.MySql);
+            currentDb = Db.use(dataSource);
         } catch (SQLException e) {
             logger.error("------init error------", e);
         }
@@ -73,25 +75,25 @@ public class IotSchedule {
      * @param tp
      * @return
      */
-    private Properties getConfig(String cfg, String tp) {
+    private Properties getConfig(String cfg, IotEnum tp) {
         JSONObject jsonObject = JSONUtil.parseObj(cfg);
         Properties properties = new Properties();
         switch (tp) {
-            case "ali":
+            case Ali:
                 properties.setProperty("accessKeyId", jsonObject.getStr("accessKeyId"));
                 properties.setProperty("accessKeySecret", jsonObject.getStr("accessKeySecret"));
                 properties.setProperty("endpoint", jsonObject.getStr("endpoint"));
                 break;
-            case "huawei":
+            case HuaWei:
                 properties.setProperty("accessKeyId", jsonObject.getStr("accessKeyId"));
                 properties.setProperty("secretAccessKey", jsonObject.getStr("secretAccessKey"));
                 properties.setProperty("region", jsonObject.getStr("region"));
                 break;
-            case "ctwing":
+            case Ctwing:
                 properties.setProperty("appKey", jsonObject.getStr("appKey"));
                 properties.setProperty("appSecret", jsonObject.getStr("appSecret"));
                 break;
-            case "onenet":
+            case OneNet:
                 properties.setProperty("masterKey", jsonObject.getStr("masterKey"));
                 break;
             default:
@@ -107,9 +109,9 @@ public class IotSchedule {
      * @param tp
      * @return
      */
-    private String getLocalDevice(String deviceId, String tp) {
+    private String getLocalDevice(String deviceId, IotEnum tp) {
         try {
-            List<Entity> list = Db.use(dataSource).find(CollUtil.newArrayList("deviceId"), Entity.create(RELATE_TABLE).set("cloudid", deviceId).set("tp", tp));
+            List<Entity> list =currentDb.find(CollUtil.newArrayList("deviceId"), Entity.create(RELATE_TABLE).set("cloudid", deviceId).set("tp", tp.toString()));
             if (list.isEmpty()) {
                 return null;
             }
@@ -127,9 +129,9 @@ public class IotSchedule {
      * @param time
      * @return
      */
-    private boolean hasDeviceData(String deviceId, LocalDateTime time, String tp) {
+    private boolean hasDeviceData(String deviceId, LocalDateTime time, IotEnum tp) {
         try {
-            List<Entity> all = Db.use(dataSource).find(CollUtil.newArrayList("deviceId"), Entity.create(DATA_TABLE).set("deviceId", deviceId).set("time", time).set("tp", tp));
+            List<Entity> all = currentDb.find(CollUtil.newArrayList("deviceId"), Entity.create(DATA_TABLE).set("deviceId", deviceId).set("time", time).set("tp", tp.toString()));
             if (!all.isEmpty()) {
                 return true;
             }
@@ -146,7 +148,7 @@ public class IotSchedule {
      * @param list
      * @param tp
      */
-    private void insertData(List<DeviceDataModel> list, String tp) {
+    private void insertData(List<DeviceDataModel> list, IotEnum tp) {
         try {
             List<Entity> listData = new ArrayList<>();
             for (DeviceDataModel item : list) {
@@ -155,7 +157,7 @@ public class IotSchedule {
                     continue;
                 }
                 Entity model = new Entity(DATA_TABLE);
-                model.set("tp", tp);
+                model.set("tp", tp.toString());
                 model.set("name", item.getName());
                 model.set("value", item.getValue());
                 model.set("time", item.getTime());
@@ -167,7 +169,7 @@ public class IotSchedule {
                 }
                 listData.add(model);
             }
-            Db.use(dataSource).insert(listData);
+            currentDb.insert(listData);
         } catch (Exception e) {
             logger.error("------insertData error------", e);
         }
@@ -179,21 +181,21 @@ public class IotSchedule {
      * @param list
      * @param tp
      */
-    private void insertDevice(List<DeviceInfoModel> list, String tp) {
+    private void insertDevice(List<DeviceInfoModel> list, IotEnum tp) {
         try {
             List<Entity> listData = new ArrayList<>();
             for (DeviceInfoModel item : list) {
-                List<Entity> all = Db.use(dataSource).find(CollUtil.newArrayList("deviceId"), Entity.create(RELATE_TABLE).set("cloudid", item.getId()));
+                List<Entity> all =currentDb.find(CollUtil.newArrayList("deviceId"), Entity.create(RELATE_TABLE).set("cloudid", item.getId()));
                 if (!all.isEmpty()) {
                     continue;
                 }
                 Entity model = new Entity(RELATE_TABLE);
-                model.set("tp", tp);
+                model.set("tp", tp.toString());
                 model.set("cloudid", item.getId());
                 model.set("deviceId", "111---" + item.getId());
                 listData.add(model);
             }
-            Db.use(dataSource).insert(listData);
+            currentDb.insert(listData);
         } catch (Exception e) {
             logger.error("------insertDevice error------", e);
         }
@@ -203,15 +205,15 @@ public class IotSchedule {
     private void ali_schedule() {
         List<DeviceDataModel> list = new ArrayList<>();
         try {
-            List<Entity> all = Db.use(dataSource).find(CollUtil.newArrayList("cfg"), Entity.create(CONFIG_TABLE).set("tp", "ali"));
+            List<Entity> all =currentDb.find(CollUtil.newArrayList("cfg"), Entity.create(CONFIG_TABLE).set("tp", IotEnum.Ali.toString()));
             for (Entity entity : all) {
                 String cfg = entity.get("cfg").toString();
-                Properties properties = getConfig(cfg, "ali");
+                Properties properties = getConfig(cfg, IotEnum.Ali);
                 aliApplication.config(properties);
                 List<ProductInfoModel> productList = aliApplication.getProductList();
                 for (ProductInfoModel productInfo : productList) {
                     List<DeviceInfoModel> deviceList = aliApplication.getDeviceList(productInfo);
-                    insertDevice(deviceList, "ali");
+                    insertDevice(deviceList, IotEnum.Ali);
                     for (DeviceInfoModel deviceInfoModel : deviceList) {
                         List<DeviceDataModel> deviceData = aliApplication.getDeviceData(deviceInfoModel);
                         list.addAll(deviceData);
@@ -219,7 +221,7 @@ public class IotSchedule {
                 }
 
                 if (!list.isEmpty()) {
-                    insertData(list, "ali");
+                    insertData(list, IotEnum.Ali);
                 }
             }
         } catch (Exception e) {
@@ -231,22 +233,22 @@ public class IotSchedule {
     private void huawei_schedule() {
         List<DeviceDataModel> list = new ArrayList<>();
         try {
-            List<Entity> all = Db.use(dataSource).find(CollUtil.newArrayList("cfg"), Entity.create(CONFIG_TABLE).set("tp", "huawei"));
+            List<Entity> all =currentDb.find(CollUtil.newArrayList("cfg"), Entity.create(CONFIG_TABLE).set("tp", IotEnum.HuaWei.toString()));
             for (Entity entity : all) {
                 String cfg = entity.get("cfg").toString();
-                Properties properties = getConfig(cfg, "huawei");
+                Properties properties = getConfig(cfg, IotEnum.HuaWei);
                 huaWeiApplication.config(properties);
                 List<ProductInfoModel> productList = huaWeiApplication.getProductList();
                 for (ProductInfoModel productInfo : productList) {
                     List<DeviceInfoModel> deviceList = huaWeiApplication.getDeviceList(productInfo);
-                    insertDevice(deviceList, "huawei");
+                    insertDevice(deviceList, IotEnum.HuaWei);
                     for (DeviceInfoModel deviceInfoModel : deviceList) {
                         List<DeviceDataModel> deviceData = huaWeiApplication.getDeviceData(deviceInfoModel);
                         list.addAll(deviceData);
                     }
                 }
                 if (!list.isEmpty()) {
-                    insertData(list, "huawei");
+                    insertData(list, IotEnum.HuaWei);
                 }
             }
         } catch (Exception e) {
@@ -258,22 +260,22 @@ public class IotSchedule {
     private void ctwing_schedule() {
         List<DeviceDataModel> list = new ArrayList<>();
         try {
-            List<Entity> all = Db.use(dataSource).find(CollUtil.newArrayList("cfg"), Entity.create(CONFIG_TABLE).set("tp", "ctwing"));
+            List<Entity> all = currentDb.find(CollUtil.newArrayList("cfg"), Entity.create(CONFIG_TABLE).set("tp", IotEnum.Ctwing.toString()));
             for (Entity entity : all) {
                 String cfg = entity.get("cfg").toString();
-                Properties properties = getConfig(cfg, "ctwing");
+                Properties properties = getConfig(cfg, IotEnum.Ctwing);
                 ctWingApplication.config(properties);
                 List<ProductInfoModel> productList = ctWingApplication.getProductList();
                 for (ProductInfoModel productInfo : productList) {
                     List<DeviceInfoModel> deviceList = ctWingApplication.getDeviceList(productInfo);
-                    insertDevice(deviceList, "ctwing");
+                    insertDevice(deviceList, IotEnum.Ctwing);
                     for (DeviceInfoModel deviceInfoModel : deviceList) {
                         List<DeviceDataModel> deviceData = ctWingApplication.getDeviceData(deviceInfoModel);
                         list.addAll(deviceData);
                     }
                 }
                 if (!list.isEmpty()) {
-                    insertData(list, "ctwing");
+                    insertData(list, IotEnum.Ctwing);
                 }
             }
         } catch (Exception e) {
@@ -285,19 +287,19 @@ public class IotSchedule {
     private void onenet_schedule() {
         List<DeviceDataModel> list = new ArrayList<>();
         try {
-            List<Entity> all = Db.use(dataSource).find(CollUtil.newArrayList("cfg"), Entity.create(CONFIG_TABLE).set("tp", "onenet"));
+            List<Entity> all =currentDb.find(CollUtil.newArrayList("cfg"), Entity.create(CONFIG_TABLE).set("tp", IotEnum.OneNet.toString()));
             for (Entity entity : all) {
                 String cfg = entity.get("cfg").toString();
-                Properties properties = getConfig(cfg, "onenet");
+                Properties properties = getConfig(cfg, IotEnum.OneNet);
                 oneNetApplication.config(properties);
                 List<DeviceInfoModel> deviceList = oneNetApplication.getDeviceList(new ProductInfoModel());
-                insertDevice(deviceList, "onenet");
+                insertDevice(deviceList, IotEnum.OneNet);
                 for (DeviceInfoModel deviceInfoModel : deviceList) {
                     List<DeviceDataModel> deviceData = oneNetApplication.getDeviceData(deviceInfoModel);
                     list.addAll(deviceData);
                 }
                 if (!list.isEmpty()) {
-                    insertData(list, "onenet");
+                    insertData(list, IotEnum.OneNet);
                 }
             }
         } catch (Exception e) {

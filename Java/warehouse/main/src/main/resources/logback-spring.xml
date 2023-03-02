@@ -8,6 +8,7 @@
 
     <!--排查此包下的所有日志-->
     <logger name="springfox.documentation" level="OFF"/>
+    <logger name="HuaweiCloud-SDK-Access" level="OFF"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <target>System.out</target>
