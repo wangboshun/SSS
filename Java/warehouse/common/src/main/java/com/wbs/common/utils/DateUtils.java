@@ -2,7 +2,7 @@ package com.wbs.common.utils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -12,13 +12,13 @@ import java.time.format.DateTimeFormatter;
  */
 public class DateUtils {
 
+    public static String dateToStr(LocalDateTime date) {
+        return dateToStr(date, "yyyy-MM-dd HH:mm:ss");
+    }
+
     public static String dateToStr(LocalDateTime date, String format) {
         DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
         return date.format(df);
-    }
-
-    public static String dateToStr(LocalDateTime date) {
-        return dateToStr(date, "yyyy-MM-dd HH:mm:ss");
     }
 
 
@@ -43,14 +43,25 @@ public class DateUtils {
         return time;
     }
 
+
     public static LocalDateTime unixToDate(long timestamp) {
-        Instant instant = Instant.ofEpochMilli(timestamp);
-        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+        return unixToDate(timestamp, false);
     }
 
     public static LocalDateTime unixToDate(String str) {
+        return unixToDate(str, false);
+    }
+
+    public static LocalDateTime unixToDate(String str, boolean isUtc) {
         long timestamp = Long.parseLong(str);
-        Instant instant = Instant.ofEpochMilli(timestamp);
-        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+        return unixToDate(timestamp, isUtc);
+    }
+
+    public static LocalDateTime unixToDate(long timestamp, boolean isUtc) {
+        if (isUtc) {
+            return Instant.ofEpochMilli(timestamp).atZone(ZoneOffset.ofHours(8)).toLocalDateTime();
+        } else {
+            return Instant.ofEpochMilli(timestamp).atZone(ZoneOffset.ofHours(0)).toLocalDateTime();
+        }
     }
 }
