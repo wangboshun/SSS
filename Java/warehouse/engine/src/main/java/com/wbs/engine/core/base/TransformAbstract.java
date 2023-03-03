@@ -1,6 +1,10 @@
 package com.wbs.engine.core.base;
 
+import com.wbs.engine.model.DataRow;
+import com.wbs.engine.model.DataTable;
 import org.springframework.stereotype.Component;
+
+import java.util.*;
 
 /**
  * @author WBS
@@ -9,16 +13,19 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class TransformAbstract implements ITransform {
-    private IWriter writer;
-    private IReader reader;
-
     @Override
-    public void config(IReader reader, IWriter writer) {
-        this.writer = writer;
-        this.reader = reader;
-    }
-
-    public void mapper() {
-
+    public DataTable mapper(DataTable dt, Map<String, String> config) {
+        DataTable newDt = new DataTable();
+        for (DataRow item : dt) {
+            DataRow row = new DataRow();
+            for (Map.Entry<String, String> entry : config.entrySet()) {
+                String old = entry.getKey();// 旧键
+                if (item.containsKey(old)) {
+                    row.put(entry.getValue(), item.get(old));// 设置新的键值对
+                }
+            }
+            newDt.add(row);
+        }
+        return newDt;
     }
 }

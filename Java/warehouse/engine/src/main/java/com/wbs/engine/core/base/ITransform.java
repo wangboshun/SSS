@@ -1,10 +1,14 @@
 package com.wbs.engine.core.base;
 
+import com.wbs.engine.model.DataTable;
+
+import java.util.Map;
+
 /**
  * @author WBS
  * @date 2023/3/3 15:59
  * @desciption ITransform
  */
 public interface ITransform {
-    void config(IReader reader, IWriter writer);
+    public DataTable mapper(DataTable dt, Map<String, String> config);
 }

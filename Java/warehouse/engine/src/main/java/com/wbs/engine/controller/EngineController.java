@@ -4,6 +4,7 @@ import com.wbs.common.database.ConnectionFactory;
 import com.wbs.common.database.DataSourceFactory;
 import com.wbs.common.database.DbTypeEnum;
 import com.wbs.common.extend.ResponseResult;
+import com.wbs.engine.core.base.TransformAbstract;
 import com.wbs.engine.core.mysql.MySqlReader;
 import com.wbs.engine.core.mysql.MySqlWriter;
 import com.wbs.engine.model.DataRow;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author WBS
@@ -30,13 +33,15 @@ public class EngineController {
     private final MySqlWriter mySqlWriter;
     private final DataSourceFactory dataSourceFactory;
     private final ConnectionFactory connectionFactory;
+    private final TransformAbstract transformAbstract;
     private final Environment environment;
 
-    public EngineController(MySqlReader mySqlReader, MySqlWriter mySqlWriter, DataSourceFactory dataSourceFactory, ConnectionFactory connectionFactory, Environment environment) {
+    public EngineController(MySqlReader mySqlReader, MySqlWriter mySqlWriter, DataSourceFactory dataSourceFactory, ConnectionFactory connectionFactory, TransformAbstract transformAbstract, Environment environment) {
         this.mySqlReader = mySqlReader;
         this.mySqlWriter = mySqlWriter;
         this.dataSourceFactory = dataSourceFactory;
         this.connectionFactory = connectionFactory;
+        this.transformAbstract = transformAbstract;
         this.environment = environment;
     }
 
@@ -50,14 +55,20 @@ public class EngineController {
             String database = environment.getProperty("iot_db.database");
             DataSource dataSource = dataSourceFactory.createDataSource("iot", host, port, username, password, database, DbTypeEnum.MySql);
             Connection connection = connectionFactory.createConnection("iot", dataSource);
-            mySqlReader.config("iot_data",connection);
+            mySqlReader.config("iot_data", connection);
             DataTable list = mySqlReader.readData("select * from iot_data");
 
-            mySqlWriter.config("iot_data1",connection);
+
+            Map<String, String> mapping = new HashMap<>();
+            mapping.put("id", "aaa");
+            mapping.put("name", "bbb");
+            DataTable dataTable1 = transformAbstract.mapper(list, mapping);
+
+            mySqlWriter.config("iot_data1", connection);
             boolean b1 = mySqlWriter.writeData(list);
 
             DataRow row = list.get(0);
-            row.put("deviceId","1111111111111111111111");
+            row.put("deviceId", "1111111111111111111111");
             mySqlWriter.exists(row);
 
             DataTable dataTable = new DataTable();
