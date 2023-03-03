@@ -16,16 +16,15 @@ public class TransformAbstract implements ITransform {
     @Override
     public DataTable mapper(DataTable dt, Map<String, String> config) {
         DataTable newDt = new DataTable();
-        for (DataRow item : dt) {
+        dt.forEach(item -> {
             DataRow row = new DataRow();
-            for (Map.Entry<String, String> entry : config.entrySet()) {
-                String old = entry.getKey();// 旧键
+            config.forEach((old, news) -> {
                 if (item.containsKey(old)) {
-                    row.put(entry.getValue(), item.get(old));// 设置新的键值对
+                    row.put(news, item.get(old));
                 }
-            }
+            });
             newDt.add(row);
-        }
+        });
         return newDt;
     }
 }
