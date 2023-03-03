@@ -1,8 +1,10 @@
 package com.wbs.common.database;
 
+import com.wbs.common.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,15 +62,15 @@ public class DbUtils {
         int count = 0;
         try {
             int index = sql.indexOf("ORDER BY");
-            //如果有排序字段，去掉排序之后的语句
+            // 如果有排序字段，去掉排序之后的语句
             if (index > 0) {
                 sql = sql.substring(0, index);
             }
-            //如果是select * from table,直接替换
+            // 如果是select * from table,直接替换
             if (sql.contains("*")) {
                 sql = sql.replace("*", " COUNT(0) ");
             }
-            //如果是select a,b,c from table，需要找到中间的字段语句然后替换
+            // 如果是select a,b,c from table，需要找到中间的字段语句然后替换
             else {
                 int selectIndex = sql.indexOf("SELECT");
                 int fromIndex = sql.indexOf("FROM");
@@ -134,20 +136,117 @@ public class DbUtils {
     }
 
     public static String convertName(String tableName, Connection connection) {
-        try {
-            String driverName = connection.getMetaData().getDriverName().toUpperCase();
-            if ("MySql".contains(driverName)) {
-                return "`" + tableName + "`";
-            } else if ("SqlServer".contains(driverName)) {
-                return "[" + tableName + "]";
-            } else if ("ClickHouse".contains(driverName)) {
+        DbTypeEnum type = getDbType(connection);
+        return convertName(tableName, type);
+    }
 
-            } else if ("PostgreSql".contains(driverName)) {
-                return "\"" + tableName + "\"";
+    public static DbTypeEnum getDbType(Connection connection) {
+        try {
+            String driverName = connection.getMetaData().getDriverName().toLowerCase();
+            if (driverName.contains("mysql")) {
+                return DbTypeEnum.MySql;
+            } else if (driverName.contains("sqlserver")) {
+                return DbTypeEnum.MsSql;
+            } else if (driverName.contains("postgresql")) {
+                return DbTypeEnum.PostgreSql;
+            } else if (driverName.contains("clickhouse")) {
+                return DbTypeEnum.ClickHouse;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            logger.error("------DbUtils getDbType error------", e);
         }
-        return tableName;
+        return DbTypeEnum.None;
+    }
+
+    /**
+     * 设置参数
+     *
+     * @param pstm  参数
+     * @param index 序号
+     * @param val   值
+     * @param type  java类型
+     */
+    public static void setParam(PreparedStatement pstm, int index, Object val, String type) throws Exception {
+        try {
+            type = type.toUpperCase();
+            switch (type) {
+                case "STRING":
+                case "INT":
+                case "LONG":
+                case "INTEGER":
+                case "DOUBLE":
+                case "FLOAT":
+                case "DATE":
+                case "TIME":
+                case "DATETIME":
+                case "TIMESTAMP":
+                case "BIGDECIMAL":
+                case "LOCALDATETIME":
+                    setParam(pstm, index, val.toString(), type);
+                    break;
+                default:
+                    pstm.setObject(index, val);
+                    break;
+            }
+        } catch (Exception e) {
+            throw new SQLException("setParam exception：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 设置参数
+     *
+     * @param pstm  参数
+     * @param index 序号
+     * @param val   值
+     * @param type  java类型
+     */
+    public static void setParam(PreparedStatement pstm, int index, String val, String type) throws Exception {
+        try {
+            type = type.toUpperCase();
+            switch (type) {
+                case "INT":
+                case "INTEGER":
+                    pstm.setInt(index, Integer.parseInt(val));
+                    break;
+                case "LONG":
+                    pstm.setLong(index, Long.parseLong(val));
+                    break;
+                case "STRING":
+                    pstm.setString(index, val);
+                    break;
+                case "DOUBLE":
+                    pstm.setDouble(index, Double.parseDouble(val));
+                    break;
+                case "FLOAT":
+                    pstm.setFloat(index, Float.parseFloat(val));
+                    break;
+                case "DATETIME":
+                case "TIMESTAMP":
+                    pstm.setTimestamp(index, Timestamp.valueOf(val));
+                    break;
+                case "DATE":
+                    pstm.setDate(index, Date.valueOf(val));
+                    break;
+                case "TIME":
+                    pstm.setTime(index, Time.valueOf(val));
+                    break;
+                case "BIGDECIMAL":
+                    pstm.setBigDecimal(index, new BigDecimal(val));
+                    break;
+                case "LOCALDATETIME":
+                    if (val.contains("T")) {
+                        pstm.setObject(index, DateUtils.strToDate(val, "yyyy-MM-dd'T'HH:mm:ss"));
+                    } else {
+                        pstm.setObject(index, DateUtils.strToDate(val));
+                    }
+                    break;
+                default:
+                    pstm.setObject(index, val);
+                    break;
+            }
+        } catch (Exception e) {
+            throw new Exception("setParam exception：" + e.getMessage());
+        }
     }
 }

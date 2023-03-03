@@ -6,6 +6,12 @@ package com.wbs.common.database;
  * @desciption 数据库类型枚举
  */
 public enum DbTypeEnum {
+
+    /**
+     * 未知
+     */
+    None,
+
     /**
      * MySql
      */

@@ -3,9 +3,10 @@ package com.wbs.engine.controller;
 import com.wbs.common.database.ConnectionFactory;
 import com.wbs.common.database.DataSourceFactory;
 import com.wbs.common.database.DbTypeEnum;
-import com.wbs.common.database.DbUtils;
 import com.wbs.common.extend.ResponseResult;
 import com.wbs.engine.core.mysql.MySqlReader;
+import com.wbs.engine.core.mysql.MySqlWriter;
+import com.wbs.engine.model.DataTable;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,9 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.Statement;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author WBS
@@ -28,12 +26,14 @@ import java.util.Map;
 @Tag(name = "engine", description = "engine模块")
 public class EngineController {
     private final MySqlReader mySqlReader;
+    private final MySqlWriter mySqlWriter;
     private final DataSourceFactory dataSourceFactory;
     private final ConnectionFactory connectionFactory;
     private final Environment environment;
 
-    public EngineController(MySqlReader mySqlReader, DataSourceFactory dataSourceFactory, ConnectionFactory connectionFactory, Environment environment) {
+    public EngineController(MySqlReader mySqlReader, MySqlWriter mySqlWriter, DataSourceFactory dataSourceFactory, ConnectionFactory connectionFactory, Environment environment) {
         this.mySqlReader = mySqlReader;
+        this.mySqlWriter = mySqlWriter;
         this.dataSourceFactory = dataSourceFactory;
         this.connectionFactory = connectionFactory;
         this.environment = environment;
@@ -49,10 +49,11 @@ public class EngineController {
             String database = environment.getProperty("iot_db.database");
             DataSource dataSource = dataSourceFactory.createDataSource("iot", host, port, username, password, database, DbTypeEnum.MySql);
             Connection connection = connectionFactory.createConnection("iot", dataSource);
-            mySqlReader.config(connection);
-            Statement stmt = connection.createStatement();
-            Map<String, String> columns = DbUtils.getColumns(connection, "iot_data");
-            List<Map<String, Object>> list = mySqlReader.getData("select * from iot_data", stmt, columns);
+            mySqlReader.config("iot_data",connection);
+            DataTable list = mySqlReader.readData("select * from iot_data");
+
+            mySqlWriter.config("iot_data1",connection);
+            mySqlWriter.writeData(list.get(0));
         } catch (Exception e) {
 
         }

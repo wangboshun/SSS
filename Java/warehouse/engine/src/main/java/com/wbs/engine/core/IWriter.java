@@ -1,9 +1,9 @@
 package com.wbs.engine.core;
 
+import com.wbs.engine.model.DataRow;
+import com.wbs.engine.model.DataTable;
+
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,15 +12,13 @@ import java.util.Map;
  * @desciption IWriter
  */
 public interface IWriter {
-    public void config(Connection connection);
+    public void config(String tableName, Connection connection);
 
-    public int writeData(Map<String, Object> data, Statement stmt);
+    public void config(String tableName, Connection connection, Map<String, String> columns);
 
-    public int writeData(Map<String, Object> data, PreparedStatement pstmt);
+    public int writeData(DataRow row);
 
-    public int writeData(List<Map<String, Object>> list, Statement stmt);
-
-    public int writeData(List<Map<String, Object>> list, PreparedStatement pstmt);
+    public int writeData(DataTable dt);
 
     public boolean havaDate(Map<String, Object> data);
 }

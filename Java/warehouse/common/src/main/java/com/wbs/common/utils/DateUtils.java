@@ -35,6 +35,16 @@ public class DateUtils {
     }
 
     public static LocalDateTime strToDate(String str, String format, boolean isUtc) {
+        if (str.contains("T") && str.contains(".")) {// 如果有毫秒
+            if (!format.contains(".")) { // 格式里面没有毫秒
+                format += ".SSS";
+            }
+        }
+        if (str.contains("T") && str.contains("Z") && str.contains(".")) {// 如果有毫秒,有Z
+            if (!format.contains("Z") && !format.contains(".")) { // 格式里面没有毫秒,没有Z
+                format += ".SSS'Z'";
+            }
+        }
         DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
         LocalDateTime time = LocalDateTime.parse(str, df);
         if (isUtc) {

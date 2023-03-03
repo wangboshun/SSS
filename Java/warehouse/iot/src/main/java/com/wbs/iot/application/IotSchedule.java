@@ -1,6 +1,7 @@
 package com.wbs.iot.application;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
@@ -43,6 +44,7 @@ public class IotSchedule {
     private static final String RELATE_TABLE = "zny_eqcloudeq_b";
     private static final String DATA_TABLE = "iot_data";
     private static final String CONFIG_TABLE = "zny_eqcloud_b";
+    private static final String DEVICE_TABLE = "zny_device_instance";
 
     public IotSchedule(AliApplication aliApplication, HuaWeiApplication huaWeiApplication, OneNetApplication oneNetApplication, CtWingApplication ctWingApplication, DataSourceFactory dataSourceFactory, Environment environment) {
         this.aliApplication = aliApplication;
@@ -105,21 +107,50 @@ public class IotSchedule {
     /**
      * 获取本地对应设备
      *
-     * @param deviceId
+     * @param cloudId
      * @param tp
      * @return
      */
-    private String getLocalDevice(String deviceId, IotEnum tp) {
+    private String getLocalDevice(String cloudId, String name, IotEnum tp) {
         try {
-            List<Entity> list =currentDb.find(CollUtil.newArrayList("deviceId"), Entity.create(RELATE_TABLE).set("cloudid", deviceId).set("tp", tp.toString()));
+            List<Entity> list = currentDb.find(CollUtil.newArrayList("deviceid"), Entity.create(RELATE_TABLE).set("cloudid", cloudId).set("tp", tp.toString()));
             if (list.isEmpty()) {
-                return null;
+                return addLocalDevice(cloudId, name, tp);
             }
-            return list.get(0).get("deviceId").toString();
+            return list.get(0).get("deviceid").toString();
         } catch (SQLException e) {
             logger.error("------getStation error------", e);
             return null;
         }
+    }
+
+    /**
+     * 添加本地设备
+     *
+     * @param cloudId
+     * @param tp
+     */
+    private String addLocalDevice(String cloudId, String name, IotEnum tp) {
+        String deviceId = RandomUtil.randomInt(10, 100) + "";
+        try {
+            Entity deviceModel = new Entity(DEVICE_TABLE);
+            deviceModel.set("id", deviceId);
+            deviceModel.set("name", name);
+            deviceModel.set("product_id", "CloudProduct");
+            deviceModel.set("product_name", "云云对接产品");
+
+            currentDb.insert(deviceModel);
+
+            Entity relateModel = new Entity(RELATE_TABLE);
+            relateModel.set("cloudid", cloudId);
+            relateModel.set("deviceid", deviceId);
+            relateModel.set("tp", tp.toString());
+            currentDb.insert(relateModel);
+
+        } catch (Exception e) {
+            logger.error("------addLocalDevice error------", e);
+        }
+        return deviceId;
     }
 
     /**
@@ -152,7 +183,7 @@ public class IotSchedule {
         try {
             List<Entity> listData = new ArrayList<>();
             for (DeviceDataModel item : list) {
-                //如果有这条数据，跳过
+                // 如果有这条数据，跳过
                 if (hasDeviceData(item.getDeviceId(), item.getTime(), tp)) {
                     continue;
                 }
@@ -163,7 +194,7 @@ public class IotSchedule {
                 model.set("time", item.getTime());
                 model.set("deviceId", item.getDeviceId());
                 model.set("property", item.getProperty());
-                String s = getLocalDevice(item.getDeviceId(), tp);
+                String s = getLocalDevice(item.getDeviceId(), item.getName(), tp);
                 if (StrUtil.isNotBlank(s)) {
                     model.set("station", s);
                 }
@@ -183,19 +214,13 @@ public class IotSchedule {
      */
     private void insertDevice(List<DeviceInfoModel> list, IotEnum tp) {
         try {
-            List<Entity> listData = new ArrayList<>();
             for (DeviceInfoModel item : list) {
-                List<Entity> all =currentDb.find(CollUtil.newArrayList("deviceId"), Entity.create(RELATE_TABLE).set("cloudid", item.getId()));
+                List<Entity> all = currentDb.find(CollUtil.newArrayList("deviceId"), Entity.create(RELATE_TABLE).set("cloudid", item.getId()));
                 if (!all.isEmpty()) {
                     continue;
                 }
-                Entity model = new Entity(RELATE_TABLE);
-                model.set("tp", tp.toString());
-                model.set("cloudid", item.getId());
-                model.set("deviceId", "111---" + item.getId());
-                listData.add(model);
+                addLocalDevice(item.getId(), item.getName(), tp);
             }
-            currentDb.insert(listData);
         } catch (Exception e) {
             logger.error("------insertDevice error------", e);
         }
@@ -205,7 +230,7 @@ public class IotSchedule {
     private void ali_schedule() {
         List<DeviceDataModel> list = new ArrayList<>();
         try {
-            List<Entity> all =currentDb.find(CollUtil.newArrayList("cfg"), Entity.create(CONFIG_TABLE).set("tp", IotEnum.Ali.toString()));
+            List<Entity> all = currentDb.find(CollUtil.newArrayList("cfg"), Entity.create(CONFIG_TABLE).set("tp", IotEnum.Ali.toString()));
             for (Entity entity : all) {
                 String cfg = entity.get("cfg").toString();
                 Properties properties = getConfig(cfg, IotEnum.Ali);
@@ -233,7 +258,7 @@ public class IotSchedule {
     private void huawei_schedule() {
         List<DeviceDataModel> list = new ArrayList<>();
         try {
-            List<Entity> all =currentDb.find(CollUtil.newArrayList("cfg"), Entity.create(CONFIG_TABLE).set("tp", IotEnum.HuaWei.toString()));
+            List<Entity> all = currentDb.find(CollUtil.newArrayList("cfg"), Entity.create(CONFIG_TABLE).set("tp", IotEnum.HuaWei.toString()));
             for (Entity entity : all) {
                 String cfg = entity.get("cfg").toString();
                 Properties properties = getConfig(cfg, IotEnum.HuaWei);
@@ -287,7 +312,7 @@ public class IotSchedule {
     private void onenet_schedule() {
         List<DeviceDataModel> list = new ArrayList<>();
         try {
-            List<Entity> all =currentDb.find(CollUtil.newArrayList("cfg"), Entity.create(CONFIG_TABLE).set("tp", IotEnum.OneNet.toString()));
+            List<Entity> all = currentDb.find(CollUtil.newArrayList("cfg"), Entity.create(CONFIG_TABLE).set("tp", IotEnum.OneNet.toString()));
             for (Entity entity : all) {
                 String cfg = entity.get("cfg").toString();
                 Properties properties = getConfig(cfg, IotEnum.OneNet);

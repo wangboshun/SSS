@@ -1,9 +1,8 @@
 package com.wbs.engine.core;
 
+import com.wbs.engine.model.DataTable;
+
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,8 +12,8 @@ import java.util.Map;
  */
 public interface IReader {
 
-    public void config(Connection connection);
-    public List<Map<String, Object>> getData(String sql, Statement stmt, Map<String, String> columns);
+    public void config(String tableName, Connection connection);
+    public void config(String tableName, Connection connection, Map<String, String> columns);
 
-    public List<Map<String, Object>> getData(String sql, PreparedStatement pstmt, Map<String, String> columns);
+    public DataTable readData(String sql);
 }
