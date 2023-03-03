@@ -6,5 +6,5 @@ package com.wbs.engine.core.base;
  * @desciption ITransform
  */
 public interface ITransform {
-
+    void config(IReader reader, IWriter writer);
 }

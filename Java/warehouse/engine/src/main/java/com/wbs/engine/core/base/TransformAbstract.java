@@ -9,5 +9,16 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class TransformAbstract implements ITransform {
+    private IWriter writer;
+    private IReader reader;
 
+    @Override
+    public void config(IReader reader, IWriter writer) {
+        this.writer = writer;
+        this.reader = reader;
+    }
+
+    public void mapper() {
+
+    }
 }

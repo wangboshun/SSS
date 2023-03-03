@@ -42,7 +42,7 @@ public class IotSchedule {
     private Db currentDb;
     private final Environment environment;
     private static final String RELATE_TABLE = "zny_eqcloudeq_b";
-    private static final String DATA_TABLE = "iot_data";
+    private static final String DATA_TABLE = "st_data_r";
     private static final String CONFIG_TABLE = "zny_eqcloud_b";
     private static final String DEVICE_TABLE = "zny_device_instance";
 
@@ -162,7 +162,7 @@ public class IotSchedule {
      */
     private boolean hasDeviceData(String deviceId, LocalDateTime time, IotEnum tp) {
         try {
-            List<Entity> all = currentDb.find(CollUtil.newArrayList("deviceId"), Entity.create(DATA_TABLE).set("deviceId", deviceId).set("time", time).set("tp", tp.toString()));
+            List<Entity> all = currentDb.find(CollUtil.newArrayList("STCD"), Entity.create(DATA_TABLE).set("STCD", deviceId).set("TM", time));
             if (!all.isEmpty()) {
                 return true;
             }
@@ -188,15 +188,12 @@ public class IotSchedule {
                     continue;
                 }
                 Entity model = new Entity(DATA_TABLE);
-                model.set("tp", tp.toString());
-                model.set("name", item.getName());
-                model.set("value", item.getValue());
-                model.set("time", item.getTime());
-                model.set("deviceId", item.getDeviceId());
-                model.set("property", item.getProperty());
+                model.set("ID", item.getProperty());
+                model.set("Value", item.getValue());
+                model.set("TM", item.getTime());
                 String s = getLocalDevice(item.getDeviceId(), item.getName(), tp);
                 if (StrUtil.isNotBlank(s)) {
-                    model.set("station", s);
+                    model.set("STCD", s);
                 }
                 listData.add(model);
             }
