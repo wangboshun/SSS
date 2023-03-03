@@ -27,14 +27,14 @@ public abstract class WriterAbstract implements IWriter {
 
     @Override
     public void config(String tableName, Connection connection) {
-        config(tableName, connection, DbUtils.getColumns(connection, this.tableName));
+        config(tableName, connection, DbUtils.getColumns(connection, tableName));
     }
 
     @Override
     public void config(String tableName, Connection connection, Map<String, String> columns) {
         this.connection = connection;
         this.tableName = tableName;
-        dbType = DbUtils.getDbType(connection);
+        this.dbType = DbUtils.getDbType(connection);
         this.columns = columns;
     }
 

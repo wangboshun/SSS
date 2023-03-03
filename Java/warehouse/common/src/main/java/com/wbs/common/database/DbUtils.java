@@ -235,11 +235,28 @@ public class DbUtils {
                     pstm.setBigDecimal(index, new BigDecimal(val));
                     break;
                 case "LOCALDATETIME":
-                    if (val.contains("T")) {
-                        pstm.setObject(index, DateUtils.strToDate(val, "yyyy-MM-dd'T'HH:mm:ss"));
-                    } else {
-                        pstm.setObject(index, DateUtils.strToDate(val));
+                    String format = DateUtils.DATE_FORMAT;
+                    // 只有T
+                    if (val.contains("T") && !val.contains("Z") && !val.contains(".")) {
+                        format = "yyyy-MM-dd'T'HH:mm:ss";
                     }
+                    // 有T、有Z
+                    else if (val.contains("T") && val.contains("Z") && !val.contains(".")) {
+                        format = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+                    }
+                    // 有T、有毫秒
+                    else if (val.contains("T") && !val.contains("Z") && val.contains(".")) {
+                        format = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+                    }
+                    // 有T、有Z、有毫秒
+                    else if (val.contains("T") && val.contains("Z") && val.contains(".")) {
+                        format = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+                    }
+                    // 只有毫秒
+                    else if (!val.contains("T") && !val.contains("Z") && val.contains(".")) {
+                        format = "yyyy-MM-dd HH:mm:ss.SSS";
+                    }
+                    pstm.setObject(index, DateUtils.strToDate(val, format));
                     break;
                 default:
                     pstm.setObject(index, val);

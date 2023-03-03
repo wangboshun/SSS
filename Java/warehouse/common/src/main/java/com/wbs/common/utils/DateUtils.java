@@ -12,8 +12,11 @@ import java.time.format.DateTimeFormatter;
  */
 public class DateUtils {
 
+    public static final String DATE_FORMAT = "yyyyy-MM-dd HH:mm:ss";
+    public static final String DATE_FORMAT_MILLISECOND = "yyyyy-MM-dd HH:mm:ss.SSS";
+
     public static String dateToStr(LocalDateTime date) {
-        return dateToStr(date, "yyyy-MM-dd HH:mm:ss");
+        return dateToStr(date, DATE_FORMAT);
     }
 
     public static String dateToStr(LocalDateTime date, String format) {
@@ -23,11 +26,11 @@ public class DateUtils {
 
 
     public static LocalDateTime strToDate(String str) {
-        return strToDate(str, "yyyy-MM-dd HH:mm:ss", false);
+        return strToDate(str, DATE_FORMAT, false);
     }
 
     public static LocalDateTime strToDate(String str, boolean isUtc) {
-        return strToDate(str, "yyyy-MM-dd HH:mm:ss", isUtc);
+        return strToDate(str, DATE_FORMAT, isUtc);
     }
 
     public static LocalDateTime strToDate(String str, String format) {
@@ -35,16 +38,6 @@ public class DateUtils {
     }
 
     public static LocalDateTime strToDate(String str, String format, boolean isUtc) {
-        if (str.contains("T") && str.contains(".")) {// 如果有毫秒
-            if (!format.contains(".")) { // 格式里面没有毫秒
-                format += ".SSS";
-            }
-        }
-        if (str.contains("T") && str.contains("Z") && str.contains(".")) {// 如果有毫秒,有Z
-            if (!format.contains("Z") && !format.contains(".")) { // 格式里面没有毫秒,没有Z
-                format += ".SSS'Z'";
-            }
-        }
         DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
         LocalDateTime time = LocalDateTime.parse(str, df);
         if (isUtc) {
