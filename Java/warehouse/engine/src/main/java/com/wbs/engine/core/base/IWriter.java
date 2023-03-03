@@ -1,4 +1,4 @@
-package com.wbs.engine.core;
+package com.wbs.engine.core.base;
 
 import com.wbs.engine.model.DataRow;
 import com.wbs.engine.model.DataTable;
@@ -16,9 +16,8 @@ public interface IWriter {
 
     public void config(String tableName, Connection connection, Map<String, String> columns);
 
-    public int writeData(DataRow row);
+    public boolean writeData(DataTable dt);
 
-    public int writeData(DataTable dt);
-
-    public boolean havaDate(Map<String, Object> data);
+    public boolean updateData(DataTable dt);
+    boolean exists(DataRow row);
 }

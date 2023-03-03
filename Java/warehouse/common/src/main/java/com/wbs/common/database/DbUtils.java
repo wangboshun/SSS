@@ -6,7 +6,9 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,6 +47,24 @@ public class DbUtils {
         } finally {
             closeResultSet(result);
             closeStatement(stmt);
+        }
+        return columnMap;
+    }
+
+    public static List<String> getPrimaryKey(Connection connection, String tableName) {
+        List<String> columnMap = new ArrayList<>();
+        ResultSet result = null;
+        try {
+            DatabaseMetaData dbMeta = connection.getMetaData();
+            result = dbMeta.getPrimaryKeys(null, null, tableName);
+            while (result.next()) {
+                columnMap.add(result.getString("COLUMN_NAME"));
+            }
+
+        } catch (SQLException e) {
+            logger.error("------DbUtils getPrimaryKey error------", e);
+        } finally {
+            closeResultSet(result);
         }
         return columnMap;
     }

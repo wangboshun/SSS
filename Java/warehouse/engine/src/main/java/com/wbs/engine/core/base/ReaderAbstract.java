@@ -1,4 +1,4 @@
-package com.wbs.engine.core;
+package com.wbs.engine.core.base;
 
 import com.wbs.common.database.DbTypeEnum;
 import com.wbs.common.database.DbUtils;

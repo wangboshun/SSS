@@ -6,6 +6,7 @@ import com.wbs.common.database.DbTypeEnum;
 import com.wbs.common.extend.ResponseResult;
 import com.wbs.engine.core.mysql.MySqlReader;
 import com.wbs.engine.core.mysql.MySqlWriter;
+import com.wbs.engine.model.DataRow;
 import com.wbs.engine.model.DataTable;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.core.env.Environment;
@@ -53,9 +54,18 @@ public class EngineController {
             DataTable list = mySqlReader.readData("select * from iot_data");
 
             mySqlWriter.config("iot_data1",connection);
-            mySqlWriter.writeData(list.get(0));
-        } catch (Exception e) {
+            boolean b1 = mySqlWriter.writeData(list);
 
+            DataRow row = list.get(0);
+            row.put("deviceId","1111111111111111111111");
+            mySqlWriter.exists(row);
+
+            DataTable dataTable = new DataTable();
+            dataTable.add(row);
+            boolean b2 = mySqlWriter.updateData(dataTable);
+
+        } catch (Exception e) {
+            System.out.println(e);
         }
         return new ResponseResult().Ok("test");
     }

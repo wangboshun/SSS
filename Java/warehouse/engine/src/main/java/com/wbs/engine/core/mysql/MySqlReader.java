@@ -1,6 +1,6 @@
 package com.wbs.engine.core.mysql;
 
-import com.wbs.engine.core.ReaderAbstract;
+import com.wbs.engine.core.base.ReaderAbstract;
 import org.springframework.stereotype.Component;
 
 /**

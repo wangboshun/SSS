@@ -8,4 +8,22 @@ import java.util.ArrayList;
  * @desciption DataTable
  */
 public class DataTable extends ArrayList<DataRow> {
+
+    public DataTable() {
+
+    }
+
+    public DataTable(String name) {
+        this.setName(name);
+    }
+
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

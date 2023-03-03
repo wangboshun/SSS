@@ -1,4 +1,4 @@
-package com.wbs.engine.core;
+package com.wbs.engine.core.base;
 
 import com.wbs.engine.model.DataTable;
 
