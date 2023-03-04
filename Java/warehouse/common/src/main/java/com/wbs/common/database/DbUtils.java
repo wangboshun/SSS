@@ -33,8 +33,8 @@ public class DbUtils {
         try {
             String driverName = connection.getMetaData().getDriverName().toUpperCase();
             if (driverName.contains("SQL SERVER")) {
-                sql = "";
-                // TODO
+                db = connection.getCatalog();
+                sql = "SELECT a.name, b.[value] AS comment, c.rows as total FROM sys.tables AS a LEFT JOIN sys.extended_properties AS b ON a.object_id = b.major_id  AND b.minor_id= 0 INNER JOIN sysindexes AS c ON c.id= OBJECT_ID( a.name ) WHERE c.indid < 2";
             } else if (driverName.contains("MYSQL")) {
                 db = connection.getCatalog();
                 sql = "SELECT TABLE_NAME as name, TABLE_COMMENT as comment, TABLE_ROWS as total FROM information_schema.TABLES  WHERE TABLE_SCHEMA = '" + db + "' ;";
@@ -73,13 +73,13 @@ public class DbUtils {
         try {
             String driverName = connection.getMetaData().getDriverName().toUpperCase();
             if (driverName.contains("SQL SERVER")) {
-                sql = "";
+                sql = "SELECT name=A.NAME, [primary]=CASE   WHEN EXISTS (  SELECT   1   FROM   SYSOBJECTS   WHERE   XTYPE = 'PK'    AND PARENT_OBJ = A.ID    AND NAME IN ( SELECT NAME FROM SYSINDEXES WHERE INDID IN ( SELECT INDID FROM SYSINDEXKEYS WHERE ID = A.ID AND COLID = A.COLID ) )    ) THEN   1 ELSE 0   END,  type = B.NAME,  comment = ISNULL( G.[VALUE], '' )  FROM  SYSCOLUMNS A  LEFT JOIN SYSTYPES B ON A.XUSERTYPE= B.XUSERTYPE  INNER JOIN SYSOBJECTS D ON A.ID= D.ID     LEFT JOIN SYSCOMMENTS E ON A.CDEFAULT= E.ID  LEFT JOIN sys.extended_properties G ON A.ID= G.major_id   AND A.COLID= G.minor_id  WHERE D.NAME= '" + tableName + "'";
                 // TODO
             } else if (driverName.contains("MYSQL")) {
                 sql = "SELECT COLUMN_COMMENT AS 'comment',CASE  COLUMN_KEY   WHEN 'PRI' THEN  1 ELSE 0  END AS 'primary', COLUMN_NAME AS NAME, DATA_TYPE AS type FROM information_schema.COLUMNS WHERE table_name = 'iot_data'";
             } else if (driverName.contains("POSTGRESQL")) {
                 pgsqlPrimarys = getPGSQLPrimary(connection, tableName);
-                sql = "SELECT A.attname AS name,\tT.typname AS type,\tb.description AS comment  FROM  pg_namespace n  LEFT JOIN pg_class C ON n.OID = C.relnamespace  LEFT JOIN pg_attribute A ON A.attrelid = C.  OID LEFT JOIN pg_description b ON A.attrelid = b.objoid   AND A.attnum = b.objsubid  LEFT JOIN pg_type T ON A.atttypid = T.OID WHERE  n.nspname = 'public'   AND C.relname = '" + tableName + "'   AND A.attnum > 0";
+                sql = "SELECT A.attname AS name, T.typname AS type, b.description AS comment  FROM  pg_namespace n  LEFT JOIN pg_class C ON n.OID = C.relnamespace  LEFT JOIN pg_attribute A ON A.attrelid = C.  OID LEFT JOIN pg_description b ON A.attrelid = b.objoid   AND A.attnum = b.objsubid  LEFT JOIN pg_type T ON A.atttypid = T.OID WHERE  n.nspname = 'public'   AND C.relname = '" + tableName + "'   AND A.attnum > 0";
             } else if (driverName.contains("CLICKHOUSE")) {
                 sql = "select name,type,comment,is_in_primary_key as primary from system.columns where table='" + tableName + "'";
             }
