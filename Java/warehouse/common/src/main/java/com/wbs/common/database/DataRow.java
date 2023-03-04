@@ -1,12 +1,13 @@
-package com.wbs.engine.model;
+package com.wbs.common.database;
 
+import com.wbs.common.utils.DataUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * @author WBS
@@ -25,6 +26,21 @@ public class DataRow extends LinkedHashMap<String, Object> {
         super(initialCapacity);
     }
 
+    /**
+     * 删除key
+     *
+     * @param keys
+     */
+    public void removeKeys(List<String> keys) {
+        keys.forEach(this::remove);
+    }
+
+    /**
+     * 数据映射
+     *
+     * @param config
+     * @return
+     */
     public DataRow mapper(Map<String, String> config) {
         DataRow row = new DataRow();
         config.forEach((old, news) -> {
@@ -43,26 +59,26 @@ public class DataRow extends LinkedHashMap<String, Object> {
      */
     public void increase(String key, Object value) {
         Object v = this.get(key);
-        if (!isNumber(v) || !isNumber(value)) {
+        if (!DataUtils.isNumber(v) || !DataUtils.isNumber(value)) {
             return;
         }
         String type = v.getClass().getSimpleName().toLowerCase();
         try {
             if (type.contains("int")) {
-                int param = Integer.parseInt(value.toString());
-                int current = Integer.parseInt(v.toString());
+                int param = DataUtils.toInt(value);
+                int current = DataUtils.toInt(v);
                 this.replace(key, param + current);
             } else if ("float".equals(type)) {
-                float param = Float.parseFloat(value.toString());
-                float current = Float.parseFloat(v.toString());
+                float param = DataUtils.toFloat(value);
+                float current = DataUtils.toFloat(v);
                 this.replace(key, param + current);
             } else if ("double".equals(type)) {
-                double param = Double.parseDouble(value.toString());
-                double current = Double.parseDouble(v.toString());
+                double param = DataUtils.toDouble(value);
+                double current = DataUtils.toDouble(v);
                 this.replace(key, param + current);
             } else if ("bigdecimal".equals(type)) {
-                BigDecimal param = new BigDecimal(value.toString());
-                BigDecimal current = new BigDecimal(v.toString());
+                BigDecimal param = DataUtils.toDecimal(value);
+                BigDecimal current = DataUtils.toDecimal(v);
                 this.replace(key, param.add(current));
             }
         } catch (Exception e) {
@@ -78,26 +94,26 @@ public class DataRow extends LinkedHashMap<String, Object> {
      */
     public void decrease(String key, Object value) {
         Object v = this.get(key);
-        if (!isNumber(v) || !isNumber(value)) {
+        if (!DataUtils.isNumber(v) || !DataUtils.isNumber(value)) {
             return;
         }
         String type = v.getClass().getSimpleName().toLowerCase();
         try {
             if (type.contains("int")) {
-                int param = Integer.parseInt(value.toString());
-                int current = Integer.parseInt(v.toString());
+                int param = DataUtils.toInt(value);
+                int current = DataUtils.toInt(v);
                 this.replace(key, param - current);
             } else if ("float".equals(type)) {
-                float param = Float.parseFloat(value.toString());
-                float current = Float.parseFloat(v.toString());
+                float param = DataUtils.toFloat(value);
+                float current = DataUtils.toFloat(v);
                 this.replace(key, param - current);
             } else if ("double".equals(type)) {
-                double param = Double.parseDouble(value.toString());
-                double current = Double.parseDouble(v.toString());
+                double param = DataUtils.toDouble(value);
+                double current = DataUtils.toDouble(v);
                 this.replace(key, param - current);
             } else if ("bigdecimal".equals(type)) {
-                BigDecimal param = new BigDecimal(value.toString());
-                BigDecimal current = new BigDecimal(v.toString());
+                BigDecimal param = DataUtils.toDecimal(value);
+                BigDecimal current = DataUtils.toDecimal(v);
                 this.replace(key, param.subtract(current));
             }
         } catch (Exception e) {
@@ -156,19 +172,19 @@ public class DataRow extends LinkedHashMap<String, Object> {
             String type = v.getClass().getSimpleName().toLowerCase();
             // 如果是数字，需要判断是否合规
             if (type.contains("int") || "float".equals(type) || "double".equals(type) || "bigdecimal".equals(type)) {
-                if (!isNumber(result)) {
+                if (!DataUtils.isNumber(result)) {
                     return;
                 }
             }
 
             if (type.contains("int")) {
-                this.replace(key, Integer.parseInt(result));
+                this.replace(key, DataUtils.toInt(result));
             } else if ("float".equals(type)) {
-                this.replace(key, Float.parseFloat(result));
+                this.replace(key, DataUtils.toFloat(result));
             } else if ("double".equals(type)) {
-                this.replace(key, Double.parseDouble(result));
+                this.replace(key, DataUtils.toDouble(result));
             } else if ("bigdecimal".equals(type)) {
-                this.replace(key, new BigDecimal(result));
+                this.replace(key, DataUtils.toDecimal(result));
             } else if ("string".equals(type)) {
                 this.replace(key, result);
             }
@@ -191,34 +207,20 @@ public class DataRow extends LinkedHashMap<String, Object> {
         String type = v.getClass().getSimpleName().toLowerCase();
         // 如果是数字，需要判断是否合规
         if (type.contains("int") || "float".equals(type) || "double".equals(type) || "bigdecimal".equals(type)) {
-            if (!isNumber(result)) {
+            if (!DataUtils.isNumber(result)) {
                 return;
             }
         }
         if (type.contains("int")) {
-            this.replace(key, Integer.parseInt(result));
+            this.replace(key, DataUtils.toInt(result));
         } else if ("float".equals(type)) {
-            this.replace(key, Float.parseFloat(result));
+            this.replace(key, DataUtils.toFloat(result));
         } else if ("double".equals(type)) {
-            this.replace(key, Double.parseDouble(result));
+            this.replace(key, DataUtils.toDouble(result));
         } else if ("bigdecimal".equals(type)) {
-            this.replace(key, new BigDecimal(result));
+            this.replace(key, DataUtils.toDecimal(result));
         } else if ("string".equals(type)) {
             this.replace(key, result);
         }
-    }
-
-    /**
-     * 检查是否是数字
-     *
-     * @param value
-     * @return
-     */
-    private boolean isNumber(Object value) {
-        if (value == null) {
-            return false;
-        }
-        Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
-        return pattern.matcher(value.toString()).matches();
     }
 }

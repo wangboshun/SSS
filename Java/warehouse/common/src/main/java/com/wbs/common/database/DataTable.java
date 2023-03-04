@@ -1,6 +1,7 @@
-package com.wbs.engine.model;
+package com.wbs.common.database;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,6 +19,34 @@ public class DataTable extends ArrayList<DataRow> {
         this.setName(name);
     }
 
+    /**
+     * 删除key
+     *
+     * @param keys
+     */
+    public void removeKeys(List<String> keys) {
+        this.forEach(item -> {
+            item.removeKeys(keys);
+        });
+    }
+
+    /**
+     * 添加一行数据
+     *
+     * @param row
+     */
+    public void addRow(DataRow row) {
+        this.forEach(item -> {
+            item.putAll(row);
+        });
+    }
+
+    /**
+     * 数据映射
+     *
+     * @param config
+     * @return
+     */
     public DataTable mapper(Map<String, String> config) {
         DataTable result = new DataTable();
         this.forEach(item -> {
