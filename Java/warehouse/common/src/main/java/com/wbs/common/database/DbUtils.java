@@ -6,10 +6,8 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Date;
+import java.util.*;
 
 /**
  * @author WBS
@@ -26,10 +24,10 @@ public class DbUtils {
      * @param tableName
      * @return
      */
-    public static Map<String, String> getColumns(Connection connection, String tableName) {
+    public static LinkedHashMap<String, String> getColumns(Connection connection, String tableName) {
         Statement stmt = null;
         ResultSet result = null;
-        Map<String, String> columnMap = new HashMap<>();
+        LinkedHashMap<String, String> columnMap = new LinkedHashMap<>();
         try {
             stmt = connection.createStatement();
             result = stmt.executeQuery(String.format("SELECT * FROM %s WHERE 1=1 ", DbUtils.convertName(tableName, connection)));

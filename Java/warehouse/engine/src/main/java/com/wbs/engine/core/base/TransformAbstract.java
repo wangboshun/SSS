@@ -13,18 +13,4 @@ import java.util.*;
  */
 @Component
 public class TransformAbstract implements ITransform {
-    @Override
-    public DataTable mapper(DataTable dt, Map<String, String> config) {
-        DataTable newDt = new DataTable();
-        dt.forEach(item -> {
-            DataRow row = new DataRow();
-            config.forEach((old, news) -> {
-                if (item.containsKey(old)) {
-                    row.put(news, item.get(old));
-                }
-            });
-            newDt.add(row);
-        });
-        return newDt;
-    }
 }

@@ -10,5 +10,4 @@ import java.util.Map;
  * @desciption ITransform
  */
 public interface ITransform {
-    public DataTable mapper(DataTable dt, Map<String, String> config);
 }

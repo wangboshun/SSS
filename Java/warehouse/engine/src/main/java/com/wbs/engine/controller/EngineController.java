@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,18 +57,27 @@ public class EngineController {
             DataSource dataSource = dataSourceFactory.createDataSource("iot", host, port, username, password, database, DbTypeEnum.MySql);
             Connection connection = connectionFactory.createConnection("iot", dataSource);
             mySqlReader.config("iot_data", connection);
-            DataTable list = mySqlReader.readData("select * from iot_data");
+            DataTable dataTable1 = mySqlReader.readData("select * from iot_data");
 
 
             Map<String, String> mapping = new HashMap<>();
             mapping.put("id", "aaa");
             mapping.put("name", "bbb");
-            DataTable dataTable1 = transformAbstract.mapper(list, mapping);
+            mapping.put("val", "ccc");
+
+            DataRow row1 = dataTable1.get(1).mapper(mapping);
+
+            //row1.replaceValue("bbb", "u", 6);
+            // row1.increase("cc",new BigDecimal("22.22"));
+
+
+            DataTable dataTable2 = dataTable1.mapper(mapping);
+            dataTable2.replaceValue("bbb", "u", 6);
 
             mySqlWriter.config("iot_data1", connection);
-            boolean b1 = mySqlWriter.writeData(list);
+            boolean b1 = mySqlWriter.writeData(dataTable1);
 
-            DataRow row = list.get(0);
+            DataRow row = dataTable1.get(0);
             row.put("deviceId", "1111111111111111111111");
             mySqlWriter.exists(row);
 
