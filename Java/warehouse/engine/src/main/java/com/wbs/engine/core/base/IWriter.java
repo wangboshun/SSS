@@ -1,7 +1,7 @@
 package com.wbs.engine.core.base;
 
-import com.wbs.engine.model.DataRow;
-import com.wbs.engine.model.DataTable;
+import com.wbs.common.database.DataRow;
+import com.wbs.common.database.DataTable;
 
 import java.sql.Connection;
 import java.util.Map;

@@ -18,9 +18,9 @@ public enum DbTypeEnum {
     MySql,
 
     /**
-     * MsSql
+     * SqlServer
      */
-    MsSql,
+    SqlServer,
 
     /**
      * PostgreSql

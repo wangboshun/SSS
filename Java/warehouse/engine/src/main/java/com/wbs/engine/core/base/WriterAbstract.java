@@ -2,8 +2,8 @@ package com.wbs.engine.core.base;
 
 import com.wbs.common.database.DbTypeEnum;
 import com.wbs.common.database.DbUtils;
-import com.wbs.engine.model.DataRow;
-import com.wbs.engine.model.DataTable;
+import com.wbs.common.database.DataRow;
+import com.wbs.common.database.DataTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author WBS
@@ -23,10 +23,10 @@ import java.util.Map;
 public abstract class WriterAbstract implements IWriter {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private Connection connection;
-    private DbTypeEnum dbType;
+    protected DbTypeEnum dbType;
     private String tableName;
     private Map<String, String> columns;
-    private List<String> primaryColumns;
+    private Set<String> primaryColumns;
 
     @Override
     public void config(String tableName, Connection connection) {
@@ -37,7 +37,6 @@ public abstract class WriterAbstract implements IWriter {
     public void config(String tableName, Connection connection, Map<String, String> columns) {
         this.connection = connection;
         this.tableName = tableName;
-        this.dbType = DbUtils.getDbType(connection);
         this.columns = columns;
         this.primaryColumns = DbUtils.getPrimaryKey(connection, tableName);
     }
@@ -157,7 +156,7 @@ public abstract class WriterAbstract implements IWriter {
                 case MySql:
                     sql = String.format("select 1 as number from %s%s  limit  1 ", tableName, whereSql);
                     break;
-                case MsSql:
+                case SqlServer:
                     sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableName, whereSql);
                     break;
                 case PostgreSql:

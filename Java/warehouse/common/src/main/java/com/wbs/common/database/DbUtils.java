@@ -1,5 +1,7 @@
 package com.wbs.common.database;
 
+import com.wbs.common.database.model.ColumnInfo;
+import com.wbs.common.database.model.TableInfo;
 import com.wbs.common.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,123 @@ public class DbUtils {
     private final static Logger logger = LoggerFactory.getLogger("DbUtils");
 
     /**
+     * 获取当前连接库下的所有表
+     *
+     * @param connection 连接
+     */
+    public static List<TableInfo> getTables(Connection connection) {
+        List<TableInfo> list = new ArrayList<>();
+        Statement stmt = null;
+        ResultSet resultSet = null;
+        String sql = "";
+        String db = "";
+        try {
+            String driverName = connection.getMetaData().getDriverName().toUpperCase();
+            if (driverName.contains("SQL SERVER")) {
+                sql = "";
+                // TODO
+            } else if (driverName.contains("MYSQL")) {
+                db = connection.getCatalog();
+                sql = "SELECT TABLE_NAME as name, TABLE_COMMENT as comment, TABLE_ROWS as total FROM information_schema.TABLES  WHERE TABLE_SCHEMA = '" + db + "' ;";
+            } else if (driverName.contains("POSTGRESQL")) {
+                db = connection.getCatalog() + "." + connection.getSchema();
+                sql = "SELECT relname as name,n_live_tup as total, cast( obj_description ( relid, 'pg_class' ) AS VARCHAR ) AS comment FROM pg_stat_user_tables where schemaname='" + connection.getSchema() + "'  ";
+            } else if (driverName.contains("CLICKHOUSE")) {
+                db = connection.getSchema();
+                sql = "select name,comment,total_rows as total from `system`.tables  where database = '" + db + "'";
+            }
+            stmt = connection.createStatement();
+            resultSet = stmt.executeQuery(sql);
+            while (resultSet.next()) {
+                TableInfo model = new TableInfo();
+                model.setName(resultSet.getString("name"));
+                model.setComment(resultSet.getString("comment"));
+                model.setDb(db);
+                model.setTotal(resultSet.getInt("total"));
+                list.add(model);
+            }
+        } catch (SQLException e) {
+            logger.error("------DbUtils getTables error------", e);
+        } finally {
+            closeResultSet(resultSet);
+            closeStatement(stmt);
+        }
+        return list;
+    }
+
+    public static List<ColumnInfo> getColumn(Connection connection, String tableName) {
+        String sql = "select name,type,comment,is_in_primary_key as primary from system.columns where table='users'\n";
+        List<ColumnInfo> list = new ArrayList<>();
+        List<String> pgsqlPrimarys = new ArrayList<>();
+        Statement stmt = null;
+        ResultSet resultSet = null;
+        try {
+            String driverName = connection.getMetaData().getDriverName().toUpperCase();
+            if (driverName.contains("SQL SERVER")) {
+                sql = "";
+                // TODO
+            } else if (driverName.contains("MYSQL")) {
+                sql = "SELECT COLUMN_COMMENT AS 'comment',CASE  COLUMN_KEY   WHEN 'PRI' THEN  1 ELSE 0  END AS 'primary', COLUMN_NAME AS NAME, DATA_TYPE AS type FROM information_schema.COLUMNS WHERE table_name = 'iot_data'";
+            } else if (driverName.contains("POSTGRESQL")) {
+                pgsqlPrimarys = getPGSQLPrimary(connection, tableName);
+                sql = "SELECT A.attname AS name,\tT.typname AS type,\tb.description AS comment  FROM  pg_namespace n  LEFT JOIN pg_class C ON n.OID = C.relnamespace  LEFT JOIN pg_attribute A ON A.attrelid = C.  OID LEFT JOIN pg_description b ON A.attrelid = b.objoid   AND A.attnum = b.objsubid  LEFT JOIN pg_type T ON A.atttypid = T.OID WHERE  n.nspname = 'public'   AND C.relname = '" + tableName + "'   AND A.attnum > 0";
+            } else if (driverName.contains("CLICKHOUSE")) {
+                sql = "select name,type,comment,is_in_primary_key as primary from system.columns where table='" + tableName + "'";
+            }
+            stmt = connection.createStatement();
+            resultSet = stmt.executeQuery(sql);
+            while (resultSet.next()) {
+                ColumnInfo model = new ColumnInfo();
+                model.setName(resultSet.getString("name"));
+                model.setComment(resultSet.getString("comment"));
+                model.setTable(tableName);
+                model.setType(resultSet.getString("type"));
+                if (driverName.contains("POSTGRESQL")) {
+                    if (pgsqlPrimarys.contains(model.getName())) {
+                        model.setPrimary(1);
+                    } else {
+                        model.setPrimary(0);
+                    }
+                } else {
+                    model.setPrimary(resultSet.getInt("primary"));
+                }
+                list.add(model);
+            }
+        } catch (SQLException e) {
+            logger.error("------DbUtils getTables error------", e);
+        } finally {
+            closeResultSet(resultSet);
+            closeStatement(stmt);
+        }
+        return list;
+    }
+
+    /**
+     * 获取pgsql的主键，特殊处理
+     *
+     * @return
+     */
+    private static List<String> getPGSQLPrimary(Connection connection, String tableName) {
+        List<String> list = new ArrayList<>();
+        Statement stmt = null;
+        ResultSet resultSet = null;
+        try {
+            String sql = "SELECT   t3.attname as primary FROM   pg_constraint t1   INNER JOIN pg_class t2 ON t1.conrelid = t2.   OID INNER JOIN pg_attribute t3 ON t3.attrelid = t2.OID    AND array_position ( t1.conkey, t3.attnum )   IS NOT NULL INNER JOIN pg_tables t4 ON t4.tablename = t2.relname WHERE   t1.contype = 'p'    AND t2.OID = '" + tableName + "' :: REGCLASS;";
+            stmt = connection.createStatement();
+            resultSet = stmt.executeQuery(sql);
+            while (resultSet.next()) {
+                list.add(resultSet.getString("primary"));
+            }
+        } catch (SQLException e) {
+            logger.error("------DbUtils getPGSQLPrimary error------", e);
+        } finally {
+            closeResultSet(resultSet);
+            closeStatement(stmt);
+        }
+        return list;
+    }
+
+    /**
      * 获取列名和列类型
      *
      * @param connection
@@ -26,12 +145,12 @@ public class DbUtils {
      */
     public static LinkedHashMap<String, String> getColumns(Connection connection, String tableName) {
         Statement stmt = null;
-        ResultSet result = null;
+        ResultSet resultSet = null;
         LinkedHashMap<String, String> columnMap = new LinkedHashMap<>();
         try {
             stmt = connection.createStatement();
-            result = stmt.executeQuery(String.format("SELECT * FROM %s WHERE 1=1 ", DbUtils.convertName(tableName, connection)));
-            ResultSetMetaData meta = result.getMetaData();
+            resultSet = stmt.executeQuery(String.format("SELECT * FROM %s WHERE 1=1 ", DbUtils.convertName(tableName, connection)));
+            ResultSetMetaData meta = resultSet.getMetaData();
             int columnCount = meta.getColumnCount();
             for (int i = 1; i <= columnCount; i++) {
                 String columnName = meta.getColumnName(i);
@@ -43,26 +162,26 @@ public class DbUtils {
         } catch (Exception e) {
             logger.error("------DbUtils getColumns error------", e);
         } finally {
-            closeResultSet(result);
+            closeResultSet(resultSet);
             closeStatement(stmt);
         }
         return columnMap;
     }
 
-    public static List<String> getPrimaryKey(Connection connection, String tableName) {
-        List<String> columnMap = new ArrayList<>();
-        ResultSet result = null;
+    public static Set<String> getPrimaryKey(Connection connection, String tableName) {
+        Set<String> columnMap = new HashSet<>();
+        ResultSet resultSet = null;
         try {
             DatabaseMetaData dbMeta = connection.getMetaData();
-            result = dbMeta.getPrimaryKeys(null, null, tableName);
-            while (result.next()) {
-                columnMap.add(result.getString("COLUMN_NAME"));
+            resultSet = dbMeta.getPrimaryKeys(null, null, tableName);
+            while (resultSet.next()) {
+                columnMap.add(resultSet.getString("COLUMN_NAME"));
             }
 
         } catch (SQLException e) {
             logger.error("------DbUtils getPrimaryKey error------", e);
         } finally {
-            closeResultSet(result);
+            closeResultSet(resultSet);
         }
         return columnMap;
     }
@@ -76,7 +195,7 @@ public class DbUtils {
      */
     public static int getCount(Connection connection, String sql) {
         Statement stmt = null;
-        ResultSet result = null;
+        ResultSet resultSet = null;
         int count = 0;
         try {
             int index = sql.indexOf("ORDER BY");
@@ -96,14 +215,14 @@ public class DbUtils {
                 sql = sql.replace(str, " COUNT(0) ");
             }
             stmt = connection.createStatement();
-            result = stmt.executeQuery(sql);
-            if (result.next()) {
-                count = result.getInt(1);
+            resultSet = stmt.executeQuery(sql);
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);
             }
         } catch (Exception e) {
             logger.error("------ReaderAbstract getCount error------", e);
         } finally {
-            DbUtils.closeResultSet(result);
+            DbUtils.closeResultSet(resultSet);
             DbUtils.closeStatement(stmt);
         }
         return count;
@@ -144,7 +263,7 @@ public class DbUtils {
             case ClickHouse:
             case MySql:
                 return "`" + tableName + "`";
-            case MsSql:
+            case SqlServer:
                 return "[" + tableName + "]";
             case PostgreSql:
                 return "\"" + tableName + "\"";
@@ -164,7 +283,7 @@ public class DbUtils {
             if (driverName.contains("mysql")) {
                 return DbTypeEnum.MySql;
             } else if (driverName.contains("sqlserver")) {
-                return DbTypeEnum.MsSql;
+                return DbTypeEnum.SqlServer;
             } else if (driverName.contains("postgresql")) {
                 return DbTypeEnum.PostgreSql;
             } else if (driverName.contains("clickhouse")) {

@@ -2,8 +2,8 @@ package com.wbs.engine.core.base;
 
 import com.wbs.common.database.DbTypeEnum;
 import com.wbs.common.database.DbUtils;
-import com.wbs.engine.model.DataRow;
-import com.wbs.engine.model.DataTable;
+import com.wbs.common.database.DataRow;
+import com.wbs.common.database.DataTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -20,9 +20,10 @@ import java.util.*;
 public abstract class ReaderAbstract implements IReader {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private Connection connection;
-    private DbTypeEnum dbType;
+    protected DbTypeEnum dbType;
     private String tableName;
     private Map<String, String> columns;
+    private Set<String> primaryColumns;
 
     @Override
     public void config(String tableName, Connection connection) {
@@ -33,8 +34,8 @@ public abstract class ReaderAbstract implements IReader {
     public void config(String tableName, Connection connection, Map<String, String> columns) {
         this.connection = connection;
         this.tableName = tableName;
-        this.dbType = DbUtils.getDbType(connection);
         this.columns = columns;
+        this.primaryColumns = DbUtils.getPrimaryKey(connection, tableName);
     }
 
     @Override
@@ -63,17 +64,17 @@ public abstract class ReaderAbstract implements IReader {
     /**
      * 构建返回集合
      *
-     * @param result
+     * @param resultSet
      * @return
      */
-    private DataTable buildData(ResultSet result) {
+    private DataTable buildData(ResultSet resultSet) {
         DataTable dt = new DataTable();
         try {
-            while (result.next()) {
+            while (resultSet.next()) {
                 DataRow dr = new DataRow(this.columns.size());
                 for (Map.Entry<String, String> entry : this.columns.entrySet()) {
                     String key = entry.getKey();
-                    dr.put(key, result.getObject(key));
+                    dr.put(key, resultSet.getObject(key));
                 }
                 dt.add(dr);
             }

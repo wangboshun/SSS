@@ -1,5 +1,6 @@
 package com.wbs.engine.core.sqlserver;
 
+import com.wbs.common.database.DbTypeEnum;
 import com.wbs.engine.core.base.WriterAbstract;
 import org.springframework.stereotype.Component;
 
@@ -10,5 +11,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SqlServerWriter extends WriterAbstract {
-
+    public SqlServerWriter() {
+        this.dbType = DbTypeEnum.SqlServer;
+    }
 }

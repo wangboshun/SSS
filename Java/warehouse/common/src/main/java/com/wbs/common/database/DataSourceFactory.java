@@ -85,14 +85,14 @@ public class DataSourceFactory {
             String connectStr = "";
             switch (type) {
                 case MySql:
-                    connectStr = "jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&rewriteBatchedStatements=true";
+                    connectStr = "jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&rewriteBatchedStatements=true&useInformationSchema=true";
                     MysqlDataSource mysqlDataSource = new MysqlDataSource();
                     mysqlDataSource.setURL(connectStr);
                     mysqlDataSource.setUser(username);
                     mysqlDataSource.setPassword(password);
                     dataSource = mysqlDataSource;
                     break;
-                case MsSql:
+                case SqlServer:
                     connectStr = "jdbc:sqlserver://" + host + ":" + port + ";database=" + database + ";integratedSecurity=false;encrypt=true;trustServerCertificate=true";
                     SQLServerDataSource sqlServerDataSource = new SQLServerDataSource();
                     sqlServerDataSource.setURL(connectStr);
