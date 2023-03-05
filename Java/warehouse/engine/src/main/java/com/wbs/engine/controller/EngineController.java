@@ -1,6 +1,7 @@
 package com.wbs.engine.controller;
 
 import com.wbs.common.database.DbUtils;
+import com.wbs.common.database.base.DataTable;
 import com.wbs.common.database.base.DbTypeEnum;
 import com.wbs.common.database.base.model.ColumnInfo;
 import com.wbs.common.database.base.model.TableInfo;
@@ -64,22 +65,108 @@ public class EngineController {
         this.connectionFactory = connectionFactory;
         this.transformAbstract = transformAbstract;
         this.environment = environment;
+        mysqlInit();
+        sqlserverInit();
+        pgsqlInit();
+        ckInit();
+    }
+
+    public void mysqlInit() {
+        try {
+            String host = "123.60.141.63";
+            int port = 10001;
+            String username = "root";
+            String password = "mima123456mima";
+            String database = "wbs";
+            DataSource dataSource = dataSourceFactory.createDataSource("mysql", host, port, username, password, database, DbTypeEnum.MySql);
+            Connection connection = connectionFactory.createConnection("mysql", dataSource);
+        } catch (Exception e) {
+
+        }
+    }
+
+    public void sqlserverInit() {
+        try {
+            String host = "123.60.141.63";
+            int port = 10012;
+            String username = "sa";
+            String password = "mima123456mima";
+            String database = "test";
+            DataSource dataSource = dataSourceFactory.createDataSource("mssql", host, port, username, password, database, DbTypeEnum.SqlServer);
+            Connection connection = connectionFactory.createConnection("mssql", dataSource);
+        } catch (Exception e) {
+
+        }
+    }
+
+    public void pgsqlInit() {
+        try {
+            String host = "123.60.141.63";
+            int port = 10005;
+            String username = "postgres";
+            String password = "mima123456mima";
+            String database = "postgres";
+            DataSource dataSource = dataSourceFactory.createDataSource("pgsql", host, port, username, password, database, "public", DbTypeEnum.PostgreSql);
+            Connection connection = connectionFactory.createConnection("pgsql", dataSource);
+        } catch (Exception e) {
+
+        }
+    }
+
+    public void ckInit() {
+        try {
+            String host = "123.60.141.63";
+            int port = 10009;
+            String username = "default";
+            String password = "mima123456mima";
+            String database = "default";
+
+            DataSource dataSource = dataSourceFactory.createDataSource("ck", host, port, username, password, database, DbTypeEnum.ClickHouse);
+            Connection connection = connectionFactory.createConnection("ck", dataSource);
+        } catch (Exception e) {
+
+        }
+    }
+
+    public void getTableAndColumn() {
+        Connection mysqlConnection = connectionFactory.getConnect("mysql");
+        Connection sqlserverConnection = connectionFactory.getConnect("mssql");
+        Connection pgsqlConnection = connectionFactory.getConnect("pgsql");
+        Connection ckConnection = connectionFactory.getConnect("ck");
+
+        List<ColumnInfo> columns1 = DbUtils.getColumns(mysqlConnection, "iot_data");
+        List<ColumnInfo> columns2 = DbUtils.getColumns(sqlserverConnection, "iot_data");
+        List<ColumnInfo> columns3 = DbUtils.getColumns(pgsqlConnection, "iot_data");
+        List<ColumnInfo> columns4 = DbUtils.getColumns(ckConnection, "iot_data");
+
+        List<TableInfo> ckTables = DbUtils.getTables(ckConnection);
+        List<TableInfo> pgTables = DbUtils.getTables(pgsqlConnection);
+        List<TableInfo> mysqlTables = DbUtils.getTables(mysqlConnection);
+        List<TableInfo> sqlserverTables = DbUtils.getTables(sqlserverConnection);
+
+        System.out.println();
+    }
+
+    @GetMapping("/test")
+    public ResponseResult test() {
+        try {
+            getTableAndColumn();
+            System.out.println();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return new ResponseResult().Ok("test");
     }
 
     @GetMapping("/mysql")
     public ResponseResult mysql() {
         try {
-            String host = environment.getProperty("iot_db.host");
-            int port = Integer.parseInt(environment.getRequiredProperty("iot_db.port"));
-            String username = environment.getProperty("iot_db.username");
-            String password = environment.getProperty("iot_db.password");
-            String database = environment.getProperty("iot_db.database");
-
-            DataSource dataSource = dataSourceFactory.createDataSource("mysql", host, port, username, password, database, DbTypeEnum.MySql);
-            Connection connection = connectionFactory.createConnection("mysql", dataSource);
-            mySqlReader.config("iot_data", connection);
-            List<ColumnInfo> columns = DbUtils.getColumns(connection, "iot_data");
-            List<TableInfo> tables = DbUtils.getTables(connection);
+            getTableAndColumn();
+            Connection mysqlConnection = connectionFactory.getConnect("mysql");
+            mySqlReader.config("iot_data", mysqlConnection);
+            DataTable dataTable = mySqlReader.readData("select * from iot_data limit 1000 ");
+            mySqlWriter.config("iot_data1", mysqlConnection);
+            mySqlWriter.writeData(dataTable);
             System.out.println();
 
         } catch (Exception e) {
@@ -91,17 +178,12 @@ public class EngineController {
     @GetMapping("/mssql")
     public ResponseResult mssql() {
         try {
-            String host = "123.60.141.63";
-            int port = 10012;
-            String username = "sa";
-            String password = "mima123456mima";
-            String database = "test";
-
-            DataSource dataSource = dataSourceFactory.createDataSource("mssql", host, port, username, password, database, DbTypeEnum.SqlServer);
-            Connection connection = connectionFactory.createConnection("mssql", dataSource);
-            sqlServerReader.config("iot_data", connection);
-            List<ColumnInfo> columns = DbUtils.getColumns(connection, "iot_data");
-            List<TableInfo> tables = DbUtils.getTables(connection);
+            Connection mysqlConnection = connectionFactory.getConnect("mysql");
+            Connection sqlserverConnection = connectionFactory.getConnect("mssql");
+            mySqlReader.config("iot_data", mysqlConnection);
+            DataTable dataTable = mySqlReader.readData("select * from iot_data limit 1000");
+            sqlServerWriter.config("iot_data", sqlserverConnection);
+            sqlServerWriter.writeData(dataTable);
             System.out.println();
 
         } catch (Exception e) {
@@ -113,19 +195,13 @@ public class EngineController {
     @GetMapping("/ck")
     public ResponseResult ck() {
         try {
-            String host = "123.60.141.63";
-            int port = 10009;
-            String username = "default";
-            String password = "mima123456mima";
-            String database = "default";
-
-            DataSource dataSource = dataSourceFactory.createDataSource("ck", host, port, username, password, database, DbTypeEnum.ClickHouse);
-            Connection connection = connectionFactory.createConnection("ck", dataSource);
-            clickHouseReader.config("iot_data", connection);
-            List<ColumnInfo> columns = DbUtils.getColumns(connection, "iot_data");
-            List<TableInfo> tables = DbUtils.getTables(connection);
+            Connection mysqlConnection = connectionFactory.getConnect("mysql");
+            Connection ckConnection = connectionFactory.getConnect("ck");
+            mySqlReader.config("iot_data", mysqlConnection);
+            DataTable dataTable = mySqlReader.readData("select * from iot_data limit 1000 ");
+            clickHouseWriter.config("iot_data", ckConnection);
+            clickHouseWriter.writeData(dataTable);
             System.out.println();
-
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -135,18 +211,13 @@ public class EngineController {
     @GetMapping("/pg")
     public ResponseResult pg() {
         try {
-            String host = "123.60.141.63";
-            int port = 10005;
-            String username = "postgres";
-            String password = "mima123456mima";
-            String database = "postgres";
-
-            DataSource dataSource = dataSourceFactory.createDataSource("pg", host, port, username, password, database, "public", DbTypeEnum.PostgreSql);
-            Connection connection = connectionFactory.createConnection("pg", dataSource);
-            List<ColumnInfo> columns = DbUtils.getColumns(connection, "iot_data");
-            List<TableInfo> tables = DbUtils.getTables(connection);
+            Connection mysqlConnection = connectionFactory.getConnect("mysql");
+            Connection pgsqlConnection = connectionFactory.getConnect("pgsql");
+            mySqlReader.config("iot_data", mysqlConnection);
+            DataTable dataTable = mySqlReader.readData("select * from iot_data ");
+            pgSqlWriter.config("iot_data", pgsqlConnection);
+            pgSqlWriter.writeData(dataTable);
             System.out.println();
-
         } catch (Exception e) {
             System.out.println(e);
         }

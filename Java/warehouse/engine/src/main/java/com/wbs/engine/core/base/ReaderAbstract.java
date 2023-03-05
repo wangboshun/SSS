@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author WBS
@@ -39,7 +40,7 @@ public abstract class ReaderAbstract implements IReader {
         this.connection = connection;
         this.tableName = tableName;
         this.columns = columns;
-        this.primaryColumns = DbUtils.getPrimaryKey(connection, tableName);
+        this.primaryColumns = this.columns.stream().filter(x -> x.getPrimary() == 1).map(ColumnInfo::getName).collect(Collectors.toSet());
     }
 
     @Override
