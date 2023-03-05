@@ -1,4 +1,4 @@
-package com.wbs.common.database;
+package com.wbs.common.database.factory;
 
 import org.springframework.stereotype.Component;
 

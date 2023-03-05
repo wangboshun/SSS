@@ -7,7 +7,7 @@ import java.io.Serializable;
  * @date 2023/2/23 9:59
  * @desciption CtwingAuthDto
  */
-public class CtwingAuthDto  implements Serializable {
+public class CtwingAuthDto implements Serializable {
     private String appKey;
     private String appSecret;
 

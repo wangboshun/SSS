@@ -1,14 +1,15 @@
 package com.wbs.common.database;
 
-import com.wbs.common.database.model.ColumnInfo;
-import com.wbs.common.database.model.TableInfo;
+import com.wbs.common.database.base.DbTypeEnum;
+import com.wbs.common.database.base.model.ColumnInfo;
+import com.wbs.common.database.base.model.TableInfo;
 import com.wbs.common.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.sql.*;
 import java.sql.Date;
+import java.sql.*;
 import java.util.*;
 
 /**

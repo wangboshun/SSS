@@ -1,9 +1,9 @@
 package com.wbs.engine.core.base;
 
-import com.wbs.common.database.DbTypeEnum;
 import com.wbs.common.database.DbUtils;
-import com.wbs.common.database.DataRow;
-import com.wbs.common.database.DataTable;
+import com.wbs.common.database.base.DataRow;
+import com.wbs.common.database.base.DataTable;
+import com.wbs.common.database.base.DbTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -22,8 +22,8 @@ import java.util.Set;
 @Component
 public abstract class WriterAbstract implements IWriter {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private Connection connection;
     protected DbTypeEnum dbType;
+    private Connection connection;
     private String tableName;
     private Map<String, String> columns;
     private Set<String> primaryColumns;

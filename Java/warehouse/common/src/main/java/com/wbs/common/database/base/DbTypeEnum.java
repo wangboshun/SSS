@@ -1,4 +1,4 @@
-package com.wbs.common.database;
+package com.wbs.common.database.base;
 
 /**
  * @author WBS

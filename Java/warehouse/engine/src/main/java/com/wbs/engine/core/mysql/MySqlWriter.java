@@ -1,11 +1,8 @@
 package com.wbs.engine.core.mysql;
 
-import com.wbs.common.database.DbTypeEnum;
-import com.wbs.common.database.DbUtils;
+import com.wbs.common.database.base.DbTypeEnum;
 import com.wbs.engine.core.base.WriterAbstract;
 import org.springframework.stereotype.Component;
-
-import java.sql.Connection;
 
 /**
  * @author WBS

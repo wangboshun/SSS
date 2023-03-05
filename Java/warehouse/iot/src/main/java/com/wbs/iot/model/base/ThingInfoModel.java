@@ -7,7 +7,7 @@ import java.io.Serializable;
  * @date 2023/2/27 17:47
  * @desciption ThingInfoModel
  */
-public class ThingInfoModel  implements Serializable {
+public class ThingInfoModel implements Serializable {
     private String name;
     private String productId;
     private String dataType;

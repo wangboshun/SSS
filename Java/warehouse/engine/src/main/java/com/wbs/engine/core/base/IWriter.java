@@ -1,7 +1,7 @@
 package com.wbs.engine.core.base;
 
-import com.wbs.common.database.DataRow;
-import com.wbs.common.database.DataTable;
+import com.wbs.common.database.base.DataRow;
+import com.wbs.common.database.base.DataTable;
 
 import java.sql.Connection;
 import java.util.Map;
@@ -19,5 +19,6 @@ public interface IWriter {
     public boolean writeData(DataTable dt);
 
     public boolean updateData(DataTable dt);
+
     boolean exists(DataRow row);
 }

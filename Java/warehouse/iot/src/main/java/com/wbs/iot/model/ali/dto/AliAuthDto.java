@@ -7,7 +7,7 @@ import java.io.Serializable;
  * @date 2023/2/23 9:59
  * @desciption AliAuthDto
  */
-public class AliAuthDto  implements Serializable {
+public class AliAuthDto implements Serializable {
     private String accessKeyId;
     private String accessKeySecret;
     private String endpoint;

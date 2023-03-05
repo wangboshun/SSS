@@ -1,6 +1,9 @@
 package com.wbs.engine.controller;
 
-import com.wbs.common.database.*;
+import com.wbs.common.database.DbUtils;
+import com.wbs.common.database.base.DbTypeEnum;
+import com.wbs.common.database.factory.ConnectionFactory;
+import com.wbs.common.database.factory.DataSourceFactory;
 import com.wbs.common.extend.ResponseResult;
 import com.wbs.engine.core.base.TransformAbstract;
 import com.wbs.engine.core.clickhouse.ClickHouseReader;
@@ -19,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.*;
 
 /**
  * @author WBS

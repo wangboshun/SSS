@@ -26,6 +26,7 @@ public class SinkController {
 
     /**
      * sink query
+     *
      * @return
      */
     @GetMapping(value = "/query")
@@ -36,6 +37,7 @@ public class SinkController {
 
     /**
      * sink add
+     *
      * @return
      */
     @GetMapping(value = "/add")
@@ -46,6 +48,7 @@ public class SinkController {
 
     /**
      * sink update
+     *
      * @return
      */
     @GetMapping(value = "/update")
@@ -56,6 +59,7 @@ public class SinkController {
 
     /**
      * sink remove
+     *
      * @return
      */
     @GetMapping(value = "/remove")

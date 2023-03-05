@@ -1,6 +1,6 @@
 package com.wbs.engine.core.base;
 
-import com.wbs.common.database.DataTable;
+import com.wbs.common.database.base.DataTable;
 
 import java.sql.Connection;
 import java.util.Map;
@@ -13,6 +13,7 @@ import java.util.Map;
 public interface IReader {
 
     public void config(String tableName, Connection connection);
+
     public void config(String tableName, Connection connection, Map<String, String> columns);
 
     public DataTable readData(String sql);

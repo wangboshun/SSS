@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @date 2023/2/23 9:59
  * @desciption SourceInfoModel
  */
-public class SourceInfoModel  implements Serializable {
+public class SourceInfoModel implements Serializable {
     private ObjectId id;
     private String name;
     private String connect_id;

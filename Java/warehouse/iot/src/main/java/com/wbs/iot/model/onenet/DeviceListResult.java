@@ -9,7 +9,7 @@ import java.util.List;
  * @LocalDateTime 2023/2/23 17:16
  * @desciption DeviceListResult
  */
-public class DeviceListResult  implements Serializable {
+public class DeviceListResult implements Serializable {
 
     private int errno;
     private Data data;
@@ -183,36 +183,36 @@ public class DeviceListResult  implements Serializable {
         private int total_count;
         private int page;
 
-        public void setPer_page(int per_page) {
-            this.per_page = per_page;
-        }
-
         public int getPer_page() {
             return per_page;
         }
 
-        public void setDevices(List<Devices> devices) {
-            this.devices = devices;
+        public void setPer_page(int per_page) {
+            this.per_page = per_page;
         }
 
         public List<Devices> getDevices() {
             return devices;
         }
 
-        public void setTotal_count(int total_count) {
-            this.total_count = total_count;
+        public void setDevices(List<Devices> devices) {
+            this.devices = devices;
         }
 
         public int getTotal_count() {
             return total_count;
         }
 
-        public void setPage(int page) {
-            this.page = page;
+        public void setTotal_count(int total_count) {
+            this.total_count = total_count;
         }
 
         public int getPage() {
             return page;
+        }
+
+        public void setPage(int page) {
+            this.page = page;
         }
 
     }

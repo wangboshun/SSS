@@ -1,4 +1,4 @@
-package com.wbs.common.database;
+package com.wbs.common.database.base;
 
 import com.wbs.common.utils.DataUtils;
 import org.slf4j.Logger;

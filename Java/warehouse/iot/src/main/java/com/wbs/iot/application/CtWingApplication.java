@@ -136,7 +136,7 @@ public class CtWingApplication implements IotInterface {
                 ThingInfoModel model = new ThingInfoModel();
                 model.setName(item.getStr("propertyName"));
                 model.setProductId(product.getId());
-                model.setProperty(item.getStr("propertyFlag") );
+                model.setProperty(item.getStr("propertyFlag"));
                 model.setDataType(item.getStr("dataType"));
                 model.setUnit(item.getStr("unit"));
                 list.add(model);

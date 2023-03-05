@@ -7,7 +7,7 @@ import java.io.Serializable;
  * @date 2023/2/23 9:59
  * @desciption OneNetAuthDto
  */
-public class OneNetAuthDto  implements Serializable {
+public class OneNetAuthDto implements Serializable {
     private String masterKey;
 
     public String getMasterKey() {

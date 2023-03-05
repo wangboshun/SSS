@@ -7,8 +7,8 @@ import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.wbs.common.database.DataSourceFactory;
-import com.wbs.common.database.DbTypeEnum;
+import com.wbs.common.database.base.DbTypeEnum;
+import com.wbs.common.database.factory.DataSourceFactory;
 import com.wbs.iot.model.IotEnum;
 import com.wbs.iot.model.base.DeviceDataModel;
 import com.wbs.iot.model.base.DeviceInfoModel;
@@ -33,18 +33,18 @@ import java.util.Properties;
  */
 @Component
 public class IotSchedule {
+    private static final String RELATE_TABLE = "zny_eqcloudeq_b";
+    private static final String DATA_TABLE = "st_data_r";
+    private static final String CONFIG_TABLE = "zny_eqcloud_b";
+    private static final String DEVICE_TABLE = "zny_device_instance";
     private final IotInterface aliApplication;
     private final IotInterface huaWeiApplication;
     private final IotInterface oneNetApplication;
     private final IotInterface ctWingApplication;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final DataSourceFactory dataSourceFactory;
-    private Db currentDb;
     private final Environment environment;
-    private static final String RELATE_TABLE = "zny_eqcloudeq_b";
-    private static final String DATA_TABLE = "st_data_r";
-    private static final String CONFIG_TABLE = "zny_eqcloud_b";
-    private static final String DEVICE_TABLE = "zny_device_instance";
+    private Db currentDb;
 
     public IotSchedule(AliApplication aliApplication, HuaWeiApplication huaWeiApplication, OneNetApplication oneNetApplication, CtWingApplication ctWingApplication, DataSourceFactory dataSourceFactory, Environment environment) {
         this.aliApplication = aliApplication;

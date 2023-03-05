@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
  * @date 2023/2/23 9:59
  * @desciption DeviceInfoModel
  */
-public class DeviceInfoModel  implements Serializable {
+public class DeviceInfoModel implements Serializable {
     private String name;
     private String id;
     private int status;

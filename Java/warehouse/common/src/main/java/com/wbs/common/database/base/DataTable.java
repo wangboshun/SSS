@@ -1,4 +1,4 @@
-package com.wbs.common.database;
+package com.wbs.common.database.base;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,8 @@ import java.util.Map;
  * @desciption DataTable
  */
 public class DataTable extends ArrayList<DataRow> {
+
+    private String name;
 
     public DataTable() {
 
@@ -128,8 +130,6 @@ public class DataTable extends ArrayList<DataRow> {
             item.replaceValue(key, old, news);
         });
     }
-
-    private String name;
 
     public String getName() {
         return name;

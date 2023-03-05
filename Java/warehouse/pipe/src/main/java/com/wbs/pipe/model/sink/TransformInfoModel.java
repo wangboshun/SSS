@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @date 2023/2/23 9:59
  * @desciption TransformInfoModel
  */
-public class TransformInfoModel  implements Serializable {
+public class TransformInfoModel implements Serializable {
     private ObjectId id;
     private String name;
     private String connect_id;

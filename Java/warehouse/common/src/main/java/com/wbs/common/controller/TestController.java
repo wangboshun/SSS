@@ -1,8 +1,8 @@
 package com.wbs.common.controller;
 
-import com.wbs.common.database.ConnectionFactory;
-import com.wbs.common.database.DataSourceFactory;
-import com.wbs.common.database.DbTypeEnum;
+import com.wbs.common.database.base.DbTypeEnum;
+import com.wbs.common.database.factory.ConnectionFactory;
+import com.wbs.common.database.factory.DataSourceFactory;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +49,7 @@ public class TestController {
             System.out.println();
             logger.info("test");
         } catch (Exception e) {
-            logger.error("error",e);
+            logger.error("error", e);
         }
         return "test Test";
     }

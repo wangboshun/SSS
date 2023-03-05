@@ -22,15 +22,15 @@ public class ThreadPoolConfig {
         int corePoolSize = (int) (processNum / (1 - 0.2));
         int maxPoolSize = (int) (processNum / (1 - 0.5));
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        //核心线程池大小
+        // 核心线程池大小
         executor.setCorePoolSize(corePoolSize);
-        //最大线程数
+        // 最大线程数
         executor.setMaxPoolSize(maxPoolSize);
-        //队列容量
+        // 队列容量
         executor.setQueueCapacity(maxPoolSize * 10);
-        //活跃时间
+        // 活跃时间
         executor.setKeepAliveSeconds(60);
-        //线程名字前缀
+        // 线程名字前缀
         executor.setThreadNamePrefix("线程---");
         /*
           拒绝处理策略

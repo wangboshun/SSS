@@ -1,8 +1,9 @@
-package com.wbs.common.database;
+package com.wbs.common.database.factory;
 
 import com.clickhouse.jdbc.ClickHouseDataSource;
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 import com.mysql.cj.jdbc.MysqlDataSource;
+import com.wbs.common.database.base.DbTypeEnum;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.springframework.stereotype.Component;
 
@@ -39,15 +40,17 @@ public class DataSourceFactory {
 
     /**
      * 获取数据源
+     *
      * @param dataSourceName
      * @return
      */
     public DataSource getDataSource(String dataSourceName) {
-       return dataSourceMap.get(dataSourceName);
+        return dataSourceMap.get(dataSourceName);
     }
 
     /**
      * 创建数据源
+     *
      * @param dataSourceName
      * @param host
      * @param port
@@ -64,6 +67,7 @@ public class DataSourceFactory {
 
     /**
      * 创建数据源
+     *
      * @param dataSourceName
      * @param host
      * @param port
@@ -119,7 +123,7 @@ public class DataSourceFactory {
                 default:
                     break;
             }
-            //测试数据源是否能打开
+            // 测试数据源是否能打开
             connection = dataSource.getConnection();
             dataSourceMap.put(dataSourceName, dataSource);
         } catch (Exception e) {

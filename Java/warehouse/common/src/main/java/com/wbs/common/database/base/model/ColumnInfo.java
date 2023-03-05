@@ -1,4 +1,4 @@
-package com.wbs.common.database.model;
+package com.wbs.common.database.base.model;
 
 import java.io.Serializable;
 
