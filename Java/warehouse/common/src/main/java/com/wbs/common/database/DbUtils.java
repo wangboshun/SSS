@@ -65,8 +65,16 @@ public class DbUtils {
         return list;
     }
 
-    public static List<ColumnInfo> getColumn(Connection connection, String tableName) {
-        String sql = "select name,type,comment,is_in_primary_key as primary from system.columns where table='users'\n";
+    /**
+     * 获取字段类型，包括名称、备注、数据库类型、java类型
+     *
+     * @param connection
+     * @param tableName
+     * @return
+     */
+    public static List<ColumnInfo> getColumns(Connection connection, String tableName) {
+        LinkedHashMap<String, String> javaTypeMap = getColumnJavaType(connection, tableName);
+        String sql = "";
         List<ColumnInfo> list = new ArrayList<>();
         List<String> pgsqlPrimarys = new ArrayList<>();
         Statement stmt = null;
@@ -91,7 +99,8 @@ public class DbUtils {
                 model.setName(resultSet.getString("name"));
                 model.setComment(resultSet.getString("comment"));
                 model.setTable(tableName);
-                model.setType(resultSet.getString("type"));
+                model.setDbType(resultSet.getString("type"));
+                model.setJavaType(javaTypeMap.get(model.getName()));
                 if (driverName.contains("POSTGRESQL")) {
                     if (pgsqlPrimarys.contains(model.getName())) {
                         model.setPrimary(1);
@@ -138,13 +147,13 @@ public class DbUtils {
     }
 
     /**
-     * 获取列名和列类型
+     * 获取字段对应Java类型
      *
      * @param connection
      * @param tableName
      * @return
      */
-    public static LinkedHashMap<String, String> getColumns(Connection connection, String tableName) {
+    private static LinkedHashMap<String, String> getColumnJavaType(Connection connection, String tableName) {
         Statement stmt = null;
         ResultSet resultSet = null;
         LinkedHashMap<String, String> columnMap = new LinkedHashMap<>();
@@ -299,15 +308,15 @@ public class DbUtils {
     /**
      * 设置参数
      *
-     * @param pstm  参数
-     * @param index 序号
-     * @param val   值
-     * @param type  java类型
+     * @param pstm     参数
+     * @param index    序号
+     * @param val      值
+     * @param javaType java类型
      */
-    public static void setParam(PreparedStatement pstm, int index, Object val, String type) throws Exception {
+    public static void setParam(PreparedStatement pstm, int index, Object val, String javaType) throws Exception {
         try {
-            type = type.toUpperCase();
-            switch (type) {
+            javaType = javaType.toUpperCase();
+            switch (javaType) {
                 case "STRING":
                 case "INT":
                 case "LONG":
@@ -320,7 +329,7 @@ public class DbUtils {
                 case "TIMESTAMP":
                 case "BIGDECIMAL":
                 case "LOCALDATETIME":
-                    setParam(pstm, index, val.toString(), type);
+                    setParam(pstm, index, val.toString(), javaType);
                     break;
                 default:
                     pstm.setObject(index, val);
@@ -334,15 +343,15 @@ public class DbUtils {
     /**
      * 设置参数
      *
-     * @param pstm  参数
-     * @param index 序号
-     * @param val   值
-     * @param type  java类型
+     * @param pstm     参数
+     * @param index    序号
+     * @param val      值
+     * @param javaType java类型
      */
-    public static void setParam(PreparedStatement pstm, int index, String val, String type) throws Exception {
+    public static void setParam(PreparedStatement pstm, int index, String val, String javaType) throws Exception {
         try {
-            type = type.toUpperCase();
-            switch (type) {
+            javaType = javaType.toUpperCase();
+            switch (javaType) {
                 case "INT":
                 case "INTEGER":
                     pstm.setInt(index, Integer.parseInt(val));

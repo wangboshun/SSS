@@ -4,6 +4,7 @@ import com.wbs.common.database.DbUtils;
 import com.wbs.common.database.base.DataRow;
 import com.wbs.common.database.base.DataTable;
 import com.wbs.common.database.base.DbTypeEnum;
+import com.wbs.common.database.base.model.ColumnInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -25,7 +26,7 @@ public abstract class WriterAbstract implements IWriter {
     protected DbTypeEnum dbType;
     private Connection connection;
     private String tableName;
-    private Map<String, String> columns;
+    private List<ColumnInfo> columns;
     private Set<String> primaryColumns;
 
     @Override
@@ -34,7 +35,7 @@ public abstract class WriterAbstract implements IWriter {
     }
 
     @Override
-    public void config(String tableName, Connection connection, Map<String, String> columns) {
+    public void config(String tableName, Connection connection, List<ColumnInfo> columns) {
         this.connection = connection;
         this.tableName = tableName;
         this.columns = columns;
@@ -47,9 +48,8 @@ public abstract class WriterAbstract implements IWriter {
         try {
             StringBuilder columnSql = new StringBuilder();
             StringBuilder valueSql = new StringBuilder();
-            for (Map.Entry<String, String> entry : this.columns.entrySet()) {
-                String key = entry.getKey();
-                columnSql.append(DbUtils.convertName(key, dbType)).append(",");
+            for (ColumnInfo col : this.columns) {
+                columnSql.append(DbUtils.convertName(col.getName(), dbType)).append(",");
                 valueSql.append("?,");
             }
 
@@ -60,8 +60,8 @@ public abstract class WriterAbstract implements IWriter {
             pstm = connection.prepareStatement(sql);
             for (DataRow row : dt) {
                 int index = 1;
-                for (Map.Entry<String, String> entry : this.columns.entrySet()) {
-                    DbUtils.setParam(pstm, index, row.get(entry.getKey()), entry.getValue());
+                for (ColumnInfo col : this.columns) {
+                    DbUtils.setParam(pstm, index, row.get(col.getName()), col.getJavaType());
                     index++;
                 }
                 pstm.addBatch();
@@ -87,16 +87,16 @@ public abstract class WriterAbstract implements IWriter {
         try {
             StringBuilder columnSql = new StringBuilder();
             StringBuilder whereSql = new StringBuilder();
-            for (Map.Entry<String, String> entry : this.columns.entrySet()) {
-                String column = entry.getKey();
+            for (ColumnInfo col : this.columns) {
+                String columnName = col.getName();
                 // 主键
-                if (this.primaryColumns.contains(column)) {
-                    whereSql.append(DbUtils.convertName(column, dbType)).append("=?");
+                if (this.primaryColumns.contains(columnName)) {
+                    whereSql.append(DbUtils.convertName(columnName, dbType)).append("=?");
                     whereSql.append(" AND ");
                 }
                 // 非主键
                 else {
-                    columnSql.append(DbUtils.convertName(column, dbType)).append("=?");
+                    columnSql.append(DbUtils.convertName(columnName, dbType)).append("=?");
                     columnSql.append(",");
                 }
             }
@@ -108,17 +108,17 @@ public abstract class WriterAbstract implements IWriter {
             for (DataRow row : dt) {
                 int index = 1;
                 // 这里做了特殊处理，因为sql语句中非主键的参数在前面，所以先把非主键和参数先封装进去
-                for (Map.Entry<String, String> entry : this.columns.entrySet()) {
-                    String column = entry.getKey();
-                    String javaType = entry.getValue();
-                    if (this.primaryColumns.contains(column)) {
+                for (ColumnInfo col : this.columns) {
+                    String columnName = col.getName();
+                    if (this.primaryColumns.contains(columnName)) {
                         continue;
                     }
-                    DbUtils.setParam(pstm, index, row.get(column), javaType);
+                    DbUtils.setParam(pstm, index, row.get(columnName), col.getJavaType());
                     index++;
                 }
-                for (String column : primaryColumns) {
-                    DbUtils.setParam(pstm, index, row.get(column), this.columns.get(column));
+                for (String columnName : primaryColumns) {
+                    String javaType = this.columns.stream().filter(x -> x.getName().equals(columnName)).findFirst().get().getJavaType();
+                    DbUtils.setParam(pstm, index, row.get(columnName), javaType);
                     index++;
                 }
                 pstm.addBatch();
@@ -147,8 +147,8 @@ public abstract class WriterAbstract implements IWriter {
         try {
             String sql = "";
             StringBuilder whereSql = new StringBuilder(" WHERE ");
-            for (String column : primaryColumns) {
-                whereSql.append(DbUtils.convertName(column, dbType)).append("=?");
+            for (String columnName : primaryColumns) {
+                whereSql.append(DbUtils.convertName(columnName, dbType)).append("=?");
                 whereSql.append(" AND ");
             }
             whereSql.delete(whereSql.length() - 5, whereSql.length());
@@ -171,8 +171,9 @@ public abstract class WriterAbstract implements IWriter {
             }
             pstm = connection.prepareStatement(sql);
             int index = 1;
-            for (String column : primaryColumns) {
-                DbUtils.setParam(pstm, index, row.get(column), this.columns.get(column));
+            for (String columnName : primaryColumns) {
+                String javaType = this.columns.stream().filter(x -> x.getName().equals(columnName)).findFirst().get().getJavaType();
+                DbUtils.setParam(pstm, index, row.get(columnName), javaType);
                 index++;
             }
 

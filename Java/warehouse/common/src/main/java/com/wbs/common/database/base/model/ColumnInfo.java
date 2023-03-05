@@ -9,10 +9,11 @@ import java.io.Serializable;
  */
 public class ColumnInfo implements Serializable {
     public String name;
-    public String type;
+    public String dbType;
     public String table;
     public String comment;
     public int primary;
+    private String javaType;
 
     public String getName() {
         return name;
@@ -22,12 +23,12 @@ public class ColumnInfo implements Serializable {
         this.name = name;
     }
 
-    public String getType() {
-        return type;
+    public String getDbType() {
+        return dbType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
     }
 
     public String getTable() {
@@ -52,5 +53,13 @@ public class ColumnInfo implements Serializable {
 
     public void setPrimary(int primary) {
         this.primary = primary;
+    }
+
+    public String getJavaType() {
+        return javaType;
+    }
+
+    public void setJavaType(String javaType) {
+        this.javaType = javaType;
     }
 }

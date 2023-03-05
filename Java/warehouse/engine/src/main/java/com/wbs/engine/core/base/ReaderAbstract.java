@@ -4,6 +4,7 @@ import com.wbs.common.database.DbUtils;
 import com.wbs.common.database.base.DataRow;
 import com.wbs.common.database.base.DataTable;
 import com.wbs.common.database.base.DbTypeEnum;
+import com.wbs.common.database.base.model.ColumnInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -25,7 +26,7 @@ public abstract class ReaderAbstract implements IReader {
     protected DbTypeEnum dbType;
     private Connection connection;
     private String tableName;
-    private Map<String, String> columns;
+    private List<ColumnInfo> columns;
     private Set<String> primaryColumns;
 
     @Override
@@ -34,7 +35,7 @@ public abstract class ReaderAbstract implements IReader {
     }
 
     @Override
-    public void config(String tableName, Connection connection, Map<String, String> columns) {
+    public void config(String tableName, Connection connection, List<ColumnInfo> columns) {
         this.connection = connection;
         this.tableName = tableName;
         this.columns = columns;
@@ -75,9 +76,9 @@ public abstract class ReaderAbstract implements IReader {
         try {
             while (resultSet.next()) {
                 DataRow dr = new DataRow(this.columns.size());
-                for (Map.Entry<String, String> entry : this.columns.entrySet()) {
-                    String key = entry.getKey();
-                    dr.put(key, resultSet.getObject(key));
+                for (ColumnInfo col : this.columns) {
+                    String columnName = col.getName();
+                    dr.put(columnName, resultSet.getObject(columnName));
                 }
                 dt.add(dr);
             }

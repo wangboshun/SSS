@@ -2,6 +2,8 @@ package com.wbs.engine.controller;
 
 import com.wbs.common.database.DbUtils;
 import com.wbs.common.database.base.DbTypeEnum;
+import com.wbs.common.database.base.model.ColumnInfo;
+import com.wbs.common.database.base.model.TableInfo;
 import com.wbs.common.database.factory.ConnectionFactory;
 import com.wbs.common.database.factory.DataSourceFactory;
 import com.wbs.common.extend.ResponseResult;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.util.List;
 
 /**
  * @author WBS
@@ -75,8 +78,8 @@ public class EngineController {
             DataSource dataSource = dataSourceFactory.createDataSource("mysql", host, port, username, password, database, DbTypeEnum.MySql);
             Connection connection = connectionFactory.createConnection("mysql", dataSource);
             mySqlReader.config("iot_data", connection);
-            DbUtils.getColumn(connection, "iot_data");
-            DbUtils.getTables(connection);
+            List<ColumnInfo> columns = DbUtils.getColumns(connection, "iot_data");
+            List<TableInfo> tables = DbUtils.getTables(connection);
             System.out.println();
 
         } catch (Exception e) {
@@ -97,8 +100,8 @@ public class EngineController {
             DataSource dataSource = dataSourceFactory.createDataSource("mssql", host, port, username, password, database, DbTypeEnum.SqlServer);
             Connection connection = connectionFactory.createConnection("mssql", dataSource);
             sqlServerReader.config("iot_data", connection);
-            DbUtils.getColumn(connection, "iot_data");
-            DbUtils.getTables(connection);
+            List<ColumnInfo> columns = DbUtils.getColumns(connection, "iot_data");
+            List<TableInfo> tables = DbUtils.getTables(connection);
             System.out.println();
 
         } catch (Exception e) {
@@ -108,19 +111,19 @@ public class EngineController {
     }
 
     @GetMapping("/ck")
-    public ResponseResult test2() {
+    public ResponseResult ck() {
         try {
             String host = "123.60.141.63";
             int port = 10009;
             String username = "default";
             String password = "mima123456mima";
-            String database = "system";
+            String database = "default";
 
             DataSource dataSource = dataSourceFactory.createDataSource("ck", host, port, username, password, database, DbTypeEnum.ClickHouse);
             Connection connection = connectionFactory.createConnection("ck", dataSource);
             clickHouseReader.config("iot_data", connection);
-            DbUtils.getColumn(connection, "iot_data");
-            DbUtils.getTables(connection);
+            List<ColumnInfo> columns = DbUtils.getColumns(connection, "iot_data");
+            List<TableInfo> tables = DbUtils.getTables(connection);
             System.out.println();
 
         } catch (Exception e) {
@@ -130,7 +133,7 @@ public class EngineController {
     }
 
     @GetMapping("/pg")
-    public ResponseResult test3() {
+    public ResponseResult pg() {
         try {
             String host = "123.60.141.63";
             int port = 10005;
@@ -140,8 +143,8 @@ public class EngineController {
 
             DataSource dataSource = dataSourceFactory.createDataSource("pg", host, port, username, password, database, "public", DbTypeEnum.PostgreSql);
             Connection connection = connectionFactory.createConnection("pg", dataSource);
-            DbUtils.getColumn(connection, "iot_data");
-            DbUtils.getTables(connection);
+            List<ColumnInfo> columns = DbUtils.getColumns(connection, "iot_data");
+            List<TableInfo> tables = DbUtils.getTables(connection);
             System.out.println();
 
         } catch (Exception e) {
