@@ -84,12 +84,12 @@ public class DbUtils {
         try {
             String driverName = connection.getMetaData().getDriverName().toUpperCase();
             if (driverName.contains("SQL SERVER")) {
-                sql = "SELECT name=A.NAME, [primary]=CASE   WHEN EXISTS (  SELECT   1   FROM   SYSOBJECTS   WHERE   XTYPE = 'PK'    AND PARENT_OBJ = A.ID    AND NAME IN ( SELECT NAME FROM SYSINDEXES WHERE INDID IN ( SELECT INDID FROM SYSINDEXKEYS WHERE ID = A.ID AND COLID = A.COLID ) )    ) THEN   1 ELSE 0   END,  type = B.NAME,  comment = ISNULL( G.[VALUE], '' )  FROM  SYSCOLUMNS A  LEFT JOIN SYSTYPES B ON A.XUSERTYPE= B.XUSERTYPE  INNER JOIN SYSOBJECTS D ON A.ID= D.ID     LEFT JOIN SYSCOMMENTS E ON A.CDEFAULT= E.ID  LEFT JOIN sys.extended_properties G ON A.ID= G.major_id   AND A.COLID= G.minor_id  WHERE D.NAME= '" + tableName + "'";
+                sql = "SELECT name=A.NAME, [primary]=CASE   WHEN EXISTS ( SELECT 1 FROM SYSOBJECTS WHERE XTYPE = 'PK' AND PARENT_OBJ=A.ID AND NAME IN ( SELECT NAME FROM SYSINDEXES WHERE INDID IN ( SELECT INDID FROM SYSINDEXKEYS WHERE ID=A.ID AND COLID=A.COLID))) THEN 1 ELSE 0 END,type=B.NAME,comment=ISNULL( G.[VALUE], '' )  FROM  SYSCOLUMNS A  LEFT JOIN SYSTYPES B ON A.XUSERTYPE=B.XUSERTYPE  INNER JOIN SYSOBJECTS D ON A.ID=D.ID LEFT JOIN SYSCOMMENTS E ON A.CDEFAULT=E.ID  LEFT JOIN sys.extended_properties G ON A.ID=G.major_id   AND A.COLID=G.minor_id  WHERE D.NAME= '" + tableName + "'";
             } else if (driverName.contains("MYSQL")) {
-                sql = "SELECT COLUMN_COMMENT AS 'comment',CASE  COLUMN_KEY   WHEN 'PRI' THEN  1 ELSE 0  END AS 'primary', COLUMN_NAME AS NAME, DATA_TYPE AS type FROM information_schema.COLUMNS WHERE table_name = '" + tableName + "' and table_schema='" + connection.getCatalog() + "'";
+                sql = "SELECT COLUMN_COMMENT AS 'comment',CASE COLUMN_KEY WHEN 'PRI' THEN  1 ELSE 0  END AS 'primary', COLUMN_NAME AS NAME, DATA_TYPE AS type FROM information_schema.COLUMNS WHERE table_name='" + tableName + "' and table_schema='" + connection.getCatalog() + "'";
             } else if (driverName.contains("POSTGRESQL")) {
                 pgsqlPrimarys = getPGSQLPrimary(connection, tableName);
-                sql = "SELECT A.attname AS name, T.typname AS type, b.description AS comment  FROM  pg_namespace n  LEFT JOIN pg_class C ON n.OID = C.relnamespace  LEFT JOIN pg_attribute A ON A.attrelid = C.  OID LEFT JOIN pg_description b ON A.attrelid = b.objoid   AND A.attnum = b.objsubid  LEFT JOIN pg_type T ON A.atttypid = T.OID WHERE  n.nspname = '" + connection.getSchema() + "'   AND C.relname = '" + tableName + "'   AND A.attnum > 0";
+                sql = "SELECT A.attname AS name, T.typname AS type, b.description AS comment  FROM  pg_namespace n  LEFT JOIN pg_class C ON n.OID=C.relnamespace  LEFT JOIN pg_attribute A ON A.attrelid=C.OID LEFT JOIN pg_description b ON A.attrelid=b.objoid   AND A.attnum=b.objsubid  LEFT JOIN pg_type T ON A.atttypid=T.OID WHERE  n.nspname='" + connection.getSchema() + "'   AND C.relname='" + tableName + "'   AND A.attnum>0";
             } else if (driverName.contains("CLICKHOUSE")) {
                 sql = "select name,type,comment,is_in_primary_key as primary from system.columns where table='" + tableName + "' and database='" + connection.getSchema() + "'";
             }
@@ -132,7 +132,7 @@ public class DbUtils {
         Statement stmt = null;
         ResultSet resultSet = null;
         try {
-            String sql = "SELECT   t3.attname as primary FROM   pg_constraint t1   INNER JOIN pg_class t2 ON t1.conrelid = t2.   OID INNER JOIN pg_attribute t3 ON t3.attrelid = t2.OID    AND array_position ( t1.conkey, t3.attnum )   IS NOT NULL INNER JOIN pg_tables t4 ON t4.tablename = t2.relname WHERE   t1.contype = 'p'    AND t2.OID = '" + tableName + "' :: REGCLASS;";
+            String sql = "SELECT t3.attname as primary FROM   pg_constraint t1   INNER JOIN pg_class t2 ON t1.conrelid = t2.OID INNER JOIN pg_attribute t3 ON t3.attrelid=t2.OID    AND array_position ( t1.conkey, t3.attnum )   IS NOT NULL INNER JOIN pg_tables t4 ON t4.tablename=t2.relname WHERE   t1.contype='p'    AND t2.OID='" + tableName + "' :: REGCLASS;";
             stmt = connection.createStatement();
             resultSet = stmt.executeQuery(sql);
             while (resultSet.next()) {
