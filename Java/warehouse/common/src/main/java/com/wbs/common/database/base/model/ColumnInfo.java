@@ -8,12 +8,30 @@ import java.io.Serializable;
  * @desciption ColumnInfo
  */
 public class ColumnInfo implements Serializable {
-    public String name;
-    public String dbType;
-    public String table;
-    public String comment;
-    public int primary;
+    private String name;
+    private String dbType;
+    private String table;
+    private String comment;
+    private int primary;
     private String javaType;
+    private int isNullAble;
+    private int point;
+
+    public int getIsNullAble() {
+        return isNullAble;
+    }
+
+    public void setIsNullAble(int isNullAble) {
+        this.isNullAble = isNullAble;
+    }
+
+    public int getPoint() {
+        return point;
+    }
+
+    public void setPoint(int point) {
+        this.point = point;
+    }
 
     public String getName() {
         return name;
