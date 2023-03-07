@@ -6,6 +6,7 @@ import com.wbs.common.database.base.DataTable;
 import com.wbs.common.database.base.DbTypeEnum;
 import com.wbs.common.database.base.model.ColumnInfo;
 import com.wbs.common.database.base.model.WhereInfo;
+import com.wbs.common.utils.DataUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -50,27 +51,45 @@ public abstract class ReaderAbstract implements IReader {
         ResultSet result = null;
         PreparedStatement pstmt = null;
         try {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sql = new StringBuilder();
             String lastStr = " WHERE ";
-            sb.append("SELECT  ");
-            sb.append(columnList.stream().map(ColumnInfo::getName).collect(Collectors.joining(",")));
-            sb.append(" FROM ");
-            sb.append(DbUtils.convertName(tableName, connection));
-            sb.append(lastStr);
+            sql.append("SELECT  ");
+            sql.append(columnList.stream().map(ColumnInfo::getName).collect(Collectors.joining(",")));
+            sql.append(" FROM ");
+            sql.append(DbUtils.convertName(tableName, connection));
+            sql.append(lastStr);
 
             for (WhereInfo item : whereList) {
-                sb.append(DbUtils.convertName(item.getColumn(), dbType));
-                sb.append(item.getSymbol()).append("?");
+                sql.append(DbUtils.convertName(item.getColumn(), dbType));
+                if (item.getSymbol().toLowerCase().contains("in")) {
+                    sql.append(" ").append(item.getSymbol()).append("(");
+                    List<Object> valueList = DataUtils.toList(item.getValue());
+                    for (int i = 0; i < valueList.size(); i++) {
+                        sql.append("?");
+                        sql.append(",");
+                    }
+                    sql.deleteCharAt(sql.length() - 1);
+                    sql.append(")");
+                } else {
+                    sql.append(item.getSymbol()).append("?");
+                }
                 lastStr = " " + item.getOperate() + " ";
-                sb.append(lastStr);
+                sql.append(lastStr);
             }
-            sb.delete(sb.length() - lastStr.length(), sb.length());
-            pstmt = connection.prepareStatement(sb.toString(), ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+            sql.delete(sql.length() - lastStr.length(), sql.length());
+            pstmt = connection.prepareStatement(sql.toString(), ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 
             int index = 1;
             for (WhereInfo item : whereList) {
                 String javaType = DbUtils.getColumnJavaType(columnList, item.getColumn());
-                DbUtils.setParam(pstmt, index, item.getValue(), javaType);
+                if (item.getSymbol().toLowerCase().contains("in")) {
+                    List<Object> valueList = DataUtils.toList(item.getValue());
+                    for (int i = 0; i < valueList.size(); i++) {
+                        DbUtils.setParam(pstmt, index + i, valueList.get(i), valueList.get(i).getClass().getSimpleName());
+                    }
+                } else {
+                    DbUtils.setParam(pstmt, index, item.getValue(), javaType);
+                }
                 index++;
             }
             result = pstmt.executeQuery();

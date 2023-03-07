@@ -170,7 +170,12 @@ public class EngineController {
             WhereInfo where = new WhereInfo();
             where.setColumn("name");
             where.setSymbol("=");
-            where.setValue("Chu Fat");
+
+
+            List<String> list = new ArrayList<>();
+            list.add("Chu Fat");
+            where.setValue(list);
+            where.setSymbol("not IN");
             where.setOperate("AND");
             whereList.add(where);
             DataTable dataTable = mySqlReader.readData(whereList);

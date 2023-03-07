@@ -1,6 +1,8 @@
 package com.wbs.common.utils;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -21,6 +23,20 @@ public class DataUtils {
         }
         Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
         return pattern.matcher(value.toString()).matches();
+    }
+
+    /**
+     * Object转List
+     */
+    public static List<Object> toList(Object obj) {
+        List<Object> list = new ArrayList<>();
+        if (obj instanceof ArrayList<?>) {
+            for (Object o : (List<?>) obj) {
+                list.add(o);
+            }
+            return list;
+        }
+        return null;
     }
 
     public static int toInt(String value) {
