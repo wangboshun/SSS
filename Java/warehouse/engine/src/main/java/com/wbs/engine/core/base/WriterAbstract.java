@@ -27,8 +27,8 @@ public abstract class WriterAbstract implements IWriter {
     protected DbTypeEnum dbType;
     private Connection connection;
     private String tableName;
-    private List<ColumnInfo> columns;
-    private Set<String> primaryColumns;
+    private List<ColumnInfo> columnList;
+    private Set<String> primarySet;
 
     @Override
     public void config(String tableName, Connection connection) {
@@ -36,11 +36,11 @@ public abstract class WriterAbstract implements IWriter {
     }
 
     @Override
-    public void config(String tableName, Connection connection, List<ColumnInfo> columns) {
+    public void config(String tableName, Connection connection, List<ColumnInfo> columnList) {
         this.connection = connection;
         this.tableName = tableName;
-        this.columns = columns;
-        this.primaryColumns = this.columns.stream().filter(x -> x.getPrimary() == 1).map(ColumnInfo::getName).collect(Collectors.toSet());
+        this.columnList = columnList;
+        this.primarySet = this.columnList.stream().filter(x -> x.getPrimary() == 1).map(ColumnInfo::getName).collect(Collectors.toSet());
     }
 
     @Override
@@ -49,7 +49,7 @@ public abstract class WriterAbstract implements IWriter {
         try {
             StringBuilder columnSql = new StringBuilder();
             StringBuilder valueSql = new StringBuilder();
-            for (ColumnInfo col : this.columns) {
+            for (ColumnInfo col : this.columnList) {
                 columnSql.append(DbUtils.convertName(col.getName(), dbType)).append(",");
                 valueSql.append("?,");
             }
@@ -61,7 +61,7 @@ public abstract class WriterAbstract implements IWriter {
             pstm = connection.prepareStatement(sql);
             for (DataRow row : dt) {
                 int index = 1;
-                for (ColumnInfo col : this.columns) {
+                for (ColumnInfo col : this.columnList) {
                     DbUtils.setParam(pstm, index, row.get(col.getName()), col.getJavaType());
                     index++;
                 }
@@ -85,17 +85,17 @@ public abstract class WriterAbstract implements IWriter {
 
     @Override
     public boolean updateData(DataTable dt) {
-        if (primaryColumns.isEmpty()) {
+        if (primarySet.isEmpty()) {
             throw new RuntimeException("该表没有主键，无法更新！");
         }
         PreparedStatement pstm = null;
         try {
             StringBuilder columnSql = new StringBuilder();
             StringBuilder whereSql = new StringBuilder();
-            for (ColumnInfo col : this.columns) {
+            for (ColumnInfo col : this.columnList) {
                 String columnName = col.getName();
                 // 主键
-                if (this.primaryColumns.contains(columnName)) {
+                if (this.primarySet.contains(columnName)) {
                     whereSql.append(DbUtils.convertName(columnName, dbType)).append("=?");
                     whereSql.append(" AND ");
                 }
@@ -113,18 +113,21 @@ public abstract class WriterAbstract implements IWriter {
             for (DataRow row : dt) {
                 int index = 1;
                 // 这里做了特殊处理，因为sql语句中非主键的参数在前面，所以先把非主键和参数先封装进去
-                for (ColumnInfo col : this.columns) {
+                for (ColumnInfo col : this.columnList) {
                     String columnName = col.getName();
-                    if (this.primaryColumns.contains(columnName)) {
+                    if (this.primarySet.contains(columnName)) {
                         continue;
                     }
                     DbUtils.setParam(pstm, index, row.get(columnName), col.getJavaType());
                     index++;
                 }
-                for (String columnName : primaryColumns) {
-                    String javaType = this.columns.stream().filter(x -> x.getName().equals(columnName)).findFirst().get().getJavaType();
-                    DbUtils.setParam(pstm, index, row.get(columnName), javaType);
-                    index++;
+
+                for (ColumnInfo col : this.columnList) {
+                    String columnName = col.getName();
+                    if (this.primarySet.contains(columnName)) {
+                        DbUtils.setParam(pstm, index, row.get(columnName), col.getJavaType());
+                        index++;
+                    }
                 }
                 pstm.addBatch();
             }
@@ -152,7 +155,7 @@ public abstract class WriterAbstract implements IWriter {
         try {
             String sql = "";
             StringBuilder whereSql = new StringBuilder(" WHERE ");
-            for (String columnName : primaryColumns) {
+            for (String columnName : primarySet) {
                 whereSql.append(DbUtils.convertName(columnName, dbType)).append("=?");
                 whereSql.append(" AND ");
             }
@@ -176,8 +179,8 @@ public abstract class WriterAbstract implements IWriter {
             }
             pstm = connection.prepareStatement(sql);
             int index = 1;
-            for (String columnName : primaryColumns) {
-                String javaType = this.columns.stream().filter(x -> x.getName().equals(columnName)).findFirst().get().getJavaType();
+            for (String columnName : primarySet) {
+                String javaType = this.columnList.stream().filter(x -> x.getName().equals(columnName)).findFirst().get().getJavaType();
                 DbUtils.setParam(pstm, index, row.get(columnName), javaType);
                 index++;
             }

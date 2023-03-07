@@ -5,6 +5,7 @@ import com.wbs.common.database.base.DataTable;
 import com.wbs.common.database.base.DbTypeEnum;
 import com.wbs.common.database.base.model.ColumnInfo;
 import com.wbs.common.database.base.model.TableInfo;
+import com.wbs.common.database.base.model.WhereInfo;
 import com.wbs.common.database.factory.ConnectionFactory;
 import com.wbs.common.database.factory.DataSourceFactory;
 import com.wbs.common.extend.ResponseResult;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -151,6 +153,27 @@ public class EngineController {
     public ResponseResult test() {
         try {
             getTableAndColumn();
+            System.out.println();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return new ResponseResult().Ok("test");
+    }
+
+    @GetMapping("/where")
+    public ResponseResult where() {
+        try {
+            Connection mysqlConnection = connectionFactory.getConnect("mysql");
+            mySqlReader.config("iot_data", mysqlConnection);
+
+            List<WhereInfo> whereList = new ArrayList<>();
+            WhereInfo where = new WhereInfo();
+            where.setColumn("name");
+            where.setOperate("=");
+            where.setValue("Chu Fat");
+            whereList.add(where);
+            DataTable dataTable = mySqlReader.readData(whereList);
+
             System.out.println();
         } catch (Exception e) {
             System.out.println(e);

@@ -6,7 +6,6 @@ import com.wbs.common.database.base.model.ColumnInfo;
 
 import java.sql.Connection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author WBS
@@ -16,7 +15,7 @@ import java.util.Map;
 public interface IWriter {
     public void config(String tableName, Connection connection);
 
-    public void config(String tableName, Connection connection, List<ColumnInfo> columns);
+    public void config(String tableName, Connection connection, List<ColumnInfo> columnList);
 
     public boolean writeData(DataTable dt);
 

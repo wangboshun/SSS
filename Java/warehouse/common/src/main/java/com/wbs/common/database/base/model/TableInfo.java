@@ -8,9 +8,9 @@ import java.io.Serializable;
  * @desciption TableInfo
  */
 public class TableInfo implements Serializable {
-    public String name;
-    public String comment;
-    public String db;
+    private String name;
+    private String comment;
+    private String db;
     private int total;
 
     public String getName() {

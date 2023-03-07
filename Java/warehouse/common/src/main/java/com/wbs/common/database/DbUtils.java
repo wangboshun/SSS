@@ -36,6 +36,21 @@ public class DbUtils {
     }
 
     /**
+     * 获取字段的java类型
+     *
+     * @param columns    列集合
+     * @param columnName 列名
+     */
+    public static String getColumnJavaType(List<ColumnInfo> columns, String columnName) {
+        ColumnInfo column = columns.stream().filter(x -> columnName.equals(x.getName())).findAny().orElse(null);
+        if (column != null) {
+            return column.getJavaType();
+        } else {
+            return "";
+        }
+    }
+
+    /**
      * 获取当前连接库下的所有表
      *
      * @param connection 连接
