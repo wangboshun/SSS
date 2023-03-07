@@ -9,8 +9,9 @@ import java.io.Serializable;
  */
 public class WhereInfo implements Serializable {
     private String column;
-    private String operate;
+    private String symbol;
     private Object value;
+    private String operate;
 
     public String getColumn() {
         return column;
@@ -20,12 +21,12 @@ public class WhereInfo implements Serializable {
         this.column = column;
     }
 
-    public String getOperate() {
-        return operate;
+    public String getSymbol() {
+        return symbol;
     }
 
-    public void setOperate(String operate) {
-        this.operate = operate;
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
     }
 
     public Object getValue() {
@@ -34,5 +35,13 @@ public class WhereInfo implements Serializable {
 
     public void setValue(Object value) {
         this.value = value;
+    }
+
+    public String getOperate() {
+        return operate;
+    }
+
+    public void setOperate(String operate) {
+        this.operate = operate;
     }
 }

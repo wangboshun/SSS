@@ -51,18 +51,20 @@ public abstract class ReaderAbstract implements IReader {
         PreparedStatement pstmt = null;
         try {
             StringBuilder sb = new StringBuilder();
+            String lastStr = " WHERE ";
             sb.append("SELECT  ");
             sb.append(columnList.stream().map(ColumnInfo::getName).collect(Collectors.joining(",")));
             sb.append(" FROM ");
             sb.append(DbUtils.convertName(tableName, connection));
-            sb.append(" WHERE ");
+            sb.append(lastStr);
 
             for (WhereInfo item : whereList) {
                 sb.append(DbUtils.convertName(item.getColumn(), dbType));
-                sb.append(item.getOperate()).append("?");
-                sb.append("  AND  ");
+                sb.append(item.getSymbol()).append("?");
+                lastStr = " " + item.getOperate() + " ";
+                sb.append(lastStr);
             }
-            sb.delete(sb.length() - 6, sb.length());
+            sb.delete(sb.length() - lastStr.length(), sb.length());
             pstmt = connection.prepareStatement(sb.toString(), ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 
             int index = 1;

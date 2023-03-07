@@ -169,8 +169,9 @@ public class EngineController {
             List<WhereInfo> whereList = new ArrayList<>();
             WhereInfo where = new WhereInfo();
             where.setColumn("name");
-            where.setOperate("=");
+            where.setSymbol("=");
             where.setValue("Chu Fat");
+            where.setOperate("AND");
             whereList.add(where);
             DataTable dataTable = mySqlReader.readData(whereList);
 
