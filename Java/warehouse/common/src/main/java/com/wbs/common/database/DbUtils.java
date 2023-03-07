@@ -7,13 +7,15 @@ import com.wbs.common.database.base.model.TableInfo;
 import com.wbs.common.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.*;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
@@ -21,8 +23,17 @@ import java.util.concurrent.Future;
  * @date 2023/3/2 16:11
  * @desciption DbUtils
  */
+@Component
 public class DbUtils {
     private final static Logger logger = LoggerFactory.getLogger("DbUtils");
+    @Autowired
+    private ThreadPoolTaskExecutor customExecutor;
+    private static ThreadPoolTaskExecutor threadPool;
+
+    @PostConstruct
+    public void init() {
+        threadPool = this.customExecutor;
+    }
 
     /**
      * 获取当前连接库下的所有表
@@ -79,9 +90,8 @@ public class DbUtils {
      * @return
      */
     public static List<ColumnInfo> getColumns(Connection connection, String tableName) {
-        ExecutorService newCachedThreadPool = Executors.newCachedThreadPool();
-        Future<LinkedHashMap<String, String>> submit1 = newCachedThreadPool.submit(() -> getColumnJavaType(connection, tableName));
-        Future<Set<String>> submit2 = newCachedThreadPool.submit(() -> getPrimaryKey(connection, tableName));
+        Future<LinkedHashMap<String, String>> submit1 = threadPool.submit(() -> getColumnJavaType(connection, tableName));
+        Future<Set<String>> submit2 = threadPool.submit(() -> getPrimaryKey(connection, tableName));
         List<ColumnInfo> list = new ArrayList<>();
         ResultSet resultSet = null;
         try {

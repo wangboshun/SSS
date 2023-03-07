@@ -1,6 +1,5 @@
 package com.wbs.common.controller;
 
-import com.wbs.common.database.base.DbTypeEnum;
 import com.wbs.common.database.factory.ConnectionFactory;
 import com.wbs.common.database.factory.DataSourceFactory;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,10 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.util.Map;
 
 /**
  * @author WBS
@@ -39,18 +34,6 @@ public class TestController {
      */
     @GetMapping(value = "/test")
     public String test() {
-        try {
-            DataSource dataSource1 = dataSourceFactory.createDataSource("test1", "127.0.0.1", 3307, "root", "123456", "test", DbTypeEnum.MySql);
-            DataSource dataSource2 = dataSourceFactory.createDataSource("test2", "123.60.141.63", 10009, "default", "mima123456mima", "default", DbTypeEnum.ClickHouse);
-            Map<String, DataSource> allDataSource = dataSourceFactory.getAllDataSource();
-            Connection test1 = connectionFactory.createConnection("test1", dataSource1);
-            Connection test2 = connectionFactory.createConnection("test2", dataSource2);
-            Map<String, Connection> allConnection = connectionFactory.getAllConnection();
-            System.out.println();
-            logger.info("test");
-        } catch (Exception e) {
-            logger.error("error", e);
-        }
         return "test Test";
     }
 }
