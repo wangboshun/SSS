@@ -167,17 +167,39 @@ public class EngineController {
             mySqlReader.config("iot_data", mysqlConnection);
 
             List<WhereInfo> whereList = new ArrayList<>();
-            WhereInfo where = new WhereInfo();
-            where.setColumn("name");
-            where.setSymbol("=");
+            WhereInfo where1 = new WhereInfo();
+            where1.setColumn("id");
+            List<Integer> list = new ArrayList<>();
+            list.add(1);
+            where1.setValue(list);
+            where1.setSymbol("IN");
+            where1.setOperate("AND");
+            whereList.add(where1);
 
 
-            List<String> list = new ArrayList<>();
-            list.add("Chu Fat");
-            where.setValue(list);
-            where.setSymbol("not IN");
-            where.setOperate("AND");
-            whereList.add(where);
+            WhereInfo where2 = new WhereInfo();
+            where2.setColumn("val");
+            where2.setValue("916.92");
+            where2.setSymbol("=");
+            where2.setOperate("AND");
+            whereList.add(where2);
+
+
+            WhereInfo where3 = new WhereInfo();
+            where3.setColumn("name");
+            where3.setValue("%Shimizu Hazuki%");
+            where3.setSymbol("like");
+            where3.setOperate("AND");
+            whereList.add(where3);
+
+
+            WhereInfo where4 = new WhereInfo();
+            where4.setColumn("tm");
+            where4.setSymbol("is not null");
+            whereList.add(where4);
+
+
+            //
             DataTable dataTable = mySqlReader.readData(whereList);
 
             System.out.println();

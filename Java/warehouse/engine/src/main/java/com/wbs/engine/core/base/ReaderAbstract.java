@@ -60,18 +60,24 @@ public abstract class ReaderAbstract implements IReader {
             sql.append(lastStr);
 
             for (WhereInfo item : whereList) {
-                sql.append(DbUtils.convertName(item.getColumn(), dbType));
+                if (item.getValue() == null) {
+                    continue;
+                }
+                sql.append(DbUtils.convertName(item.getColumn(), dbType)).append(" ");
                 if (item.getSymbol().toLowerCase().contains("in")) {
-                    sql.append(" ").append(item.getSymbol()).append("(");
+                    sql.append(item.getSymbol()).append("(");
                     List<Object> valueList = DataUtils.toList(item.getValue());
-                    for (int i = 0; i < valueList.size(); i++) {
+                    valueList.forEach(x -> {
                         sql.append("?");
                         sql.append(",");
-                    }
+                    });
                     sql.deleteCharAt(sql.length() - 1);
                     sql.append(")");
+                } else if (item.getSymbol().toLowerCase().contains("like")) {
+                    sql.append(item.getSymbol()).append(" ");
+                    sql.append("?");
                 } else {
-                    sql.append(item.getSymbol()).append("?");
+                    sql.append(item.getSymbol()).append(" ").append("?");
                 }
                 lastStr = " " + item.getOperate() + " ";
                 sql.append(lastStr);
@@ -81,6 +87,9 @@ public abstract class ReaderAbstract implements IReader {
 
             int index = 1;
             for (WhereInfo item : whereList) {
+                if (item.getValue() == null) {
+                    continue;
+                }
                 String javaType = DbUtils.getColumnJavaType(columnList, item.getColumn());
                 if (item.getSymbol().toLowerCase().contains("in")) {
                     List<Object> valueList = DataUtils.toList(item.getValue());
