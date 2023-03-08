@@ -112,7 +112,6 @@ public class DbUtils {
         try {
             LinkedHashMap<String, String> javaTypeMap = submit1.get();
             Set<String> primarySet = submit2.get();
-
             DatabaseMetaData metaData = connection.getMetaData();
             resultSet = metaData.getColumns(connection.getCatalog(), "%", tableName, "%");
             while (resultSet.next()) {
@@ -152,7 +151,7 @@ public class DbUtils {
      * @param tableName
      * @return
      */
-    private static LinkedHashMap<String, String> getColumnJavaType(Connection connection, String tableName) {
+    public  static LinkedHashMap<String, String> getColumnJavaType(Connection connection, String tableName) {
         Statement stmt = null;
         ResultSet resultSet = null;
         LinkedHashMap<String, String> columnMap = new LinkedHashMap<>();

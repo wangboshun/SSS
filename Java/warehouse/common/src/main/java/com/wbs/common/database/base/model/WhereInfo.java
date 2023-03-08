@@ -8,9 +8,25 @@ import java.io.Serializable;
  * @desciption WhereInfo
  */
 public class WhereInfo implements Serializable {
+
+    /**
+     * 字段
+     */
     private String column;
+
+    /**
+     * 运算符：=、>、<、IN、LIKE、IS NULL
+     */
     private String symbol;
+
+    /**
+     * 值
+     */
     private Object value;
+
+    /**
+     * 操作符：AND、OR
+     */
     private String operate;
 
     public String getColumn() {
