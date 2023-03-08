@@ -34,7 +34,7 @@ public class MongoConfig {
 
     @Bean("defaultMongoClient")
     public MongoClient mongoClient() {
-        mongoClient = this.mongoFactory.createClient("default", host, port, username, password, database);
+        mongoClient = this.mongoFactory.createClient("defaultMongoClient", host, port, username, password, database);
         return mongoClient;
     }
 

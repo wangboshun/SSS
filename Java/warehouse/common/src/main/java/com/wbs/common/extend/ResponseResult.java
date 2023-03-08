@@ -24,7 +24,7 @@ public class ResponseResult implements Serializable {
     }
 
     public ResponseResult Ok(Object data) {
-        return new ResponseResult("请求成功", data, 200, true);
+        return new ResponseResult("处理成功", data, 200, true);
     }
 
     public ResponseResult Ok(String message, Object data) {
@@ -32,7 +32,7 @@ public class ResponseResult implements Serializable {
     }
 
     public ResponseResult Error(Object data) {
-        return new ResponseResult("请求失败", data, 500, false);
+        return new ResponseResult("处理失败", data, 500, false);
     }
 
     public ResponseResult Error(String message, Object data) {

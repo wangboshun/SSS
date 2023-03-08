@@ -53,7 +53,7 @@ public class MongoFactory {
      * 获取默认客户端
      */
     public MongoClient getClient() {
-        return getClient("default");
+        return getClient("defaultMongoClient");
     }
 
     /**

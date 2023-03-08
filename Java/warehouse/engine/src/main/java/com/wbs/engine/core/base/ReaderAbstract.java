@@ -64,6 +64,7 @@ public abstract class ReaderAbstract implements IReader {
                     continue;
                 }
                 sql.append(DbUtils.convertName(item.getColumn(), dbType)).append(" ");
+                // in和not in
                 if (item.getSymbol().toLowerCase().contains("in")) {
                     sql.append(item.getSymbol()).append("(");
                     List<Object> valueList = DataUtils.toList(item.getValue());
@@ -73,7 +74,9 @@ public abstract class ReaderAbstract implements IReader {
                     });
                     sql.deleteCharAt(sql.length() - 1);
                     sql.append(")");
-                } else if (item.getSymbol().toLowerCase().contains("like")) {
+                }
+                // like
+                else if (item.getSymbol().toLowerCase().contains("like")) {
                     sql.append(item.getSymbol()).append(" ");
                     sql.append("?");
                 } else {
@@ -91,6 +94,7 @@ public abstract class ReaderAbstract implements IReader {
                     continue;
                 }
                 String javaType = DbUtils.getColumnJavaType(columnList, item.getColumn());
+                // in和not in
                 if (item.getSymbol().toLowerCase().contains("in")) {
                     List<Object> valueList = DataUtils.toList(item.getValue());
                     for (int i = 0; i < valueList.size(); i++) {

@@ -176,14 +176,12 @@ public class EngineController {
             where1.setOperate("AND");
             whereList.add(where1);
 
-
             WhereInfo where2 = new WhereInfo();
             where2.setColumn("val");
-            where2.setValue("916.92");
+            where2.setValue(916.92);
             where2.setSymbol("=");
             where2.setOperate("AND");
             whereList.add(where2);
-
 
             WhereInfo where3 = new WhereInfo();
             where3.setColumn("name");
@@ -192,14 +190,11 @@ public class EngineController {
             where3.setOperate("AND");
             whereList.add(where3);
 
-
             WhereInfo where4 = new WhereInfo();
             where4.setColumn("tm");
             where4.setSymbol("is not null");
             whereList.add(where4);
 
-
-            //
             DataTable dataTable = mySqlReader.readData(whereList);
 
             System.out.println();

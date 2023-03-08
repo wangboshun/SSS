@@ -1,5 +1,6 @@
 package com.wbs.pipe.application;
 
+import cn.hutool.json.JSONUtil;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -36,7 +37,7 @@ public class SinkApplication {
         MongoCollection<SinkInfoModel> list = defaultMongoDatabase.getCollection("sink_info", SinkInfoModel.class);
         FindIterable<SinkInfoModel> models = list.find();
         for (SinkInfoModel model : models) {
-            System.out.println(model.toString());
+            System.out.println(JSONUtil.toJsonPrettyStr(model));
         }
     }
 
