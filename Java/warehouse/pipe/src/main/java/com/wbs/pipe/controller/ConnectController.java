@@ -1,13 +1,13 @@
 package com.wbs.pipe.controller;
 
+import cn.hutool.core.util.StrUtil;
+import com.wbs.common.enums.HttpEnum;
 import com.wbs.common.extend.ResponseResult;
 import com.wbs.pipe.application.ConnectApplication;
 import com.wbs.pipe.model.connect.ConnectInfoModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * @author WBS
@@ -28,28 +28,20 @@ public class ConnectController {
 
     @GetMapping(value = "/list")
     public ResponseResult list() {
-        List<ConnectInfoModel> list = connectApplication.getConnectList();
-        return new ResponseResult().Ok(list);
+        return connectApplication.getConnectList();
     }
 
     @GetMapping(value = "/info")
     public ResponseResult info(@RequestParam(required = false) String id, @RequestParam(required = false) String name) {
-        ConnectInfoModel model = connectApplication.getConnectInfo(id, name);
-        if (model != null) {
-            return new ResponseResult().Ok(model);
-        } else {
-            return new ResponseResult().Error("无此记录!");
+        if (StrUtil.isEmpty(id) && StrUtil.isEmpty(name)) {
+            return new ResponseResult().ERROR("请输入id或名称", HttpEnum.PARAM_VALID_ERROR);
         }
+        return connectApplication.getConnectInfo(id, name);
     }
 
     @GetMapping(value = "/{id}")
     public ResponseResult get(@PathVariable String id) {
-        ConnectInfoModel model = connectApplication.getConnectInfo(id, null);
-        if (model != null) {
-            return new ResponseResult().Ok(model);
-        } else {
-            return new ResponseResult().Error("无此记录!");
-        }
+        return connectApplication.getConnectInfo(id, null);
     }
 
     @PostMapping(value = "/add")
@@ -59,21 +51,11 @@ public class ConnectController {
 
     @DeleteMapping(value = "/{id}")
     public ResponseResult delete(@PathVariable String id) {
-        boolean b = connectApplication.deleteConnect(id);
-        if (b) {
-            return new ResponseResult().Ok("删除成功!");
-        } else {
-            return new ResponseResult().Error("删除失败!");
-        }
+        return connectApplication.deleteConnect(id);
     }
 
     @PatchMapping(value = "/update")
     public ResponseResult update(@RequestBody ConnectInfoModel model) {
-        boolean b = connectApplication.updateConnect(model);
-        if (b) {
-            return new ResponseResult().Ok("更新成功!");
-        } else {
-            return new ResponseResult().Error("更新失败!");
-        }
+        return connectApplication.updateConnect(model);
     }
 }

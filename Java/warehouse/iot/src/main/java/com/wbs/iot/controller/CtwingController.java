@@ -47,7 +47,7 @@ public class CtwingController {
         properties.setProperty("appSecret", input.getAppSecret());
         ctwingApplication.config(properties);
         List<ProductInfoModel> list = ctwingApplication.getProductList();
-        return new ResponseResult().Ok(list);
+        return new ResponseResult().OK(list);
     }
 
     /**
@@ -68,7 +68,7 @@ public class CtwingController {
             List<DeviceInfoModel> deviceList = ctwingApplication.getDeviceList(product);
             list.addAll(deviceList);
         }
-        return new ResponseResult().Ok(list);
+        return new ResponseResult().OK(list);
     }
 
     /**
@@ -87,7 +87,7 @@ public class CtwingController {
         product.setId(input.getProductId());
         product.setApiKey(input.getProductApiKey());
         List<DeviceInfoModel> list = ctwingApplication.getDeviceList(product);
-        return new ResponseResult().Ok(list);
+        return new ResponseResult().OK(list);
     }
 
     /**
@@ -106,7 +106,7 @@ public class CtwingController {
         product.setId(input.getProductId());
         product.setApiKey(input.getProductApiKey());
         List<ThingInfoModel> list = ctwingApplication.getThingInfoList(product);
-        return new ResponseResult().Ok(list);
+        return new ResponseResult().OK(list);
     }
 
     /**
@@ -125,6 +125,6 @@ public class CtwingController {
         device.setId(input.getDeviceId());
         device.setProductId(input.getProductId());
         List<DeviceDataModel> list = ctwingApplication.getDeviceData(device);
-        return new ResponseResult().Ok(list);
+        return new ResponseResult().OK(list);
     }
 }

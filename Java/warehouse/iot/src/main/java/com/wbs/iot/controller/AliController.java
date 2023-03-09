@@ -48,7 +48,7 @@ public class AliController {
         properties.setProperty("endpoint", input.getEndpoint());
         aliApplication.config(properties);
         List<ProductInfoModel> list = aliApplication.getProductList();
-        return new ResponseResult().Ok(list);
+        return new ResponseResult().OK(list);
     }
 
     /**
@@ -70,7 +70,7 @@ public class AliController {
             List<DeviceInfoModel> deviceList = aliApplication.getDeviceList(product);
             list.addAll(deviceList);
         }
-        return new ResponseResult().Ok(list);
+        return new ResponseResult().OK(list);
     }
 
     /**
@@ -89,7 +89,7 @@ public class AliController {
         ProductInfoModel product = new ProductInfoModel();
         product.setId(input.getProductId());
         List<DeviceInfoModel> list = aliApplication.getDeviceList(product);
-        return new ResponseResult().Ok(list);
+        return new ResponseResult().OK(list);
     }
 
     /**
@@ -108,7 +108,7 @@ public class AliController {
         ProductInfoModel product = new ProductInfoModel();
         product.setId(input.getProductId());
         List<ThingInfoModel> list = aliApplication.getThingInfoList(product);
-        return new ResponseResult().Ok(list);
+        return new ResponseResult().OK(list);
     }
 
     /**
@@ -129,6 +129,6 @@ public class AliController {
         device.setProductId(input.getProductId());
         device.setId(input.getDeviceId());
         List<DeviceDataModel> list = aliApplication.getDeviceData(device);
-        return new ResponseResult().Ok(list);
+        return new ResponseResult().OK(list);
     }
 }

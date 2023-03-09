@@ -48,7 +48,7 @@ public class HuaWeiController {
         properties.setProperty("region", input.getRegion());
         huaWeiApplication.config(properties);
         List<ProductInfoModel> list = huaWeiApplication.getProductList();
-        return new ResponseResult().Ok(list);
+        return new ResponseResult().OK(list);
     }
 
     /**
@@ -70,7 +70,7 @@ public class HuaWeiController {
             List<DeviceInfoModel> deviceList = huaWeiApplication.getDeviceList(product);
             list.addAll(deviceList);
         }
-        return new ResponseResult().Ok(list);
+        return new ResponseResult().OK(list);
     }
 
     /**
@@ -89,7 +89,7 @@ public class HuaWeiController {
         ProductInfoModel product = new ProductInfoModel();
         product.setId(input.getProductId());
         List<DeviceInfoModel> list = huaWeiApplication.getDeviceList(product);
-        return new ResponseResult().Ok(list);
+        return new ResponseResult().OK(list);
     }
 
     /**
@@ -108,7 +108,7 @@ public class HuaWeiController {
         ProductInfoModel product = new ProductInfoModel();
         product.setId(input.getProductId());
         List<ThingInfoModel> list = huaWeiApplication.getThingInfoList(product);
-        return new ResponseResult().Ok(list);
+        return new ResponseResult().OK(list);
     }
 
     /**
@@ -127,6 +127,6 @@ public class HuaWeiController {
         DeviceInfoModel device = new DeviceInfoModel();
         device.setId(input.getDeviceId());
         List<DeviceDataModel> list = huaWeiApplication.getDeviceData(device);
-        return new ResponseResult().Ok(list);
+        return new ResponseResult().OK(list);
     }
 }

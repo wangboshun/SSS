@@ -157,7 +157,7 @@ public class EngineController {
         } catch (Exception e) {
             System.out.println(e);
         }
-        return new ResponseResult().Ok("test");
+        return new ResponseResult().OK();
     }
 
     @GetMapping("/where")
@@ -201,7 +201,7 @@ public class EngineController {
         } catch (Exception e) {
             System.out.println(e);
         }
-        return new ResponseResult().Ok("test");
+        return new ResponseResult().OK();
     }
 
     @GetMapping("/mysql")
@@ -218,7 +218,7 @@ public class EngineController {
         } catch (Exception e) {
             System.out.println(e);
         }
-        return new ResponseResult().Ok("test");
+        return new ResponseResult().OK();
     }
 
     @GetMapping("/mssql")
@@ -235,7 +235,7 @@ public class EngineController {
         } catch (Exception e) {
             System.out.println(e);
         }
-        return new ResponseResult().Ok("test");
+        return new ResponseResult().OK();
     }
 
     @GetMapping("/ck")
@@ -251,7 +251,7 @@ public class EngineController {
         } catch (Exception e) {
             System.out.println(e);
         }
-        return new ResponseResult().Ok("test");
+        return new ResponseResult().OK();
     }
 
     @GetMapping("/pg")
@@ -267,6 +267,6 @@ public class EngineController {
         } catch (Exception e) {
             System.out.println(e);
         }
-        return new ResponseResult().Ok("test");
+        return new ResponseResult().OK();
     }
 }

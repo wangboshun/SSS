@@ -7,6 +7,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import com.wbs.common.enums.HttpEnum;
 import com.wbs.common.extend.ResponseResult;
 import com.wbs.pipe.model.connect.ConnectInfoModel;
 import org.bson.conversions.Bson;
@@ -29,54 +30,69 @@ public class ConnectApplication {
         this.collection = defaultMongoDatabase.getCollection("connect_info", ConnectInfoModel.class);
     }
 
-    public List<ConnectInfoModel> getConnectList() {
+    public ResponseResult getConnectList() {
         List<ConnectInfoModel> list = new ArrayList<>();
         FindIterable<ConnectInfoModel> iterable = collection.find();
         iterable.into(list);
-        return list;
+        if (list.isEmpty()) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(list);
+        }
     }
 
-    public ConnectInfoModel getConnectInfo(String id, String name) {
+    public ResponseResult getConnectInfo(String id, String name) {
         Bson query;
         if (StrUtil.isNotBlank(id)) {
             query = Filters.eq("_id", id);
         } else if (StrUtil.isNotBlank(name)) {
             query = Filters.eq("name", name);
         } else {
-            return null;
+            return new ResponseResult().NULL();
         }
-        return collection.find(query).first();
+        ConnectInfoModel model = collection.find(query).first();
+        if (model == null) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(model);
+        }
     }
 
     public ResponseResult addConnect(ConnectInfoModel model) {
-        ConnectInfoModel info = getConnectInfo(null, model.getName());
-        if (info != null) {
-            return new ResponseResult().Error("名称已存在!");
+        ResponseResult info = getConnectInfo(null, model.getName());
+        if (info.getData() != null) {
+            return new ResponseResult().ERROR(HttpEnum.EXISTS);
         }
         try {
             ObjectId id = new ObjectId();
             model.setId(id.toString());
             collection.insertOne(model);
-            return new ResponseResult().Ok("添加成功!");
+            return new ResponseResult().OK();
         } catch (Exception e) {
-            return new ResponseResult().Error("添加失败!");
+            return new ResponseResult().ERROR(HttpEnum.EXCEPTION);
         }
     }
 
-    public boolean deleteConnect(String id) {
-        Bson query;
-        if (StrUtil.isNotBlank(id)) {
-            query = Filters.eq("_id", id);
-        } else {
-            return false;
-        }
+    public ResponseResult deleteConnect(String id) {
+        Bson query = Filters.eq("_id", id);
         DeleteResult result = collection.deleteOne(query);
-        return result.getDeletedCount() > 0;
+        if (result.getDeletedCount() > 0) {
+            return new ResponseResult().OK();
+        } else {
+            return new ResponseResult().FAILED();
+        }
     }
 
-    public boolean updateConnect(ConnectInfoModel model) {
+    public ResponseResult updateConnect(ConnectInfoModel model) {
+        if (StrUtil.isBlank(model.getId())) {
+            return new ResponseResult().ERROR("id不可为空！", HttpEnum.PARAM_VALID_ERROR);
+        }
         Bson query = Filters.eq("_id", model.getId());
         UpdateResult result = collection.replaceOne(query, model);
-        return result.getModifiedCount() > 0;
+        if (result.getModifiedCount() > 0) {
+            return new ResponseResult().OK();
+        } else {
+            return new ResponseResult().FAILED();
+        }
     }
 }

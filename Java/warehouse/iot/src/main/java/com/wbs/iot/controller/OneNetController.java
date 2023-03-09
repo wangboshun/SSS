@@ -41,7 +41,7 @@ public class OneNetController {
         properties.setProperty("masterKey", input.getMasterKey());
         oneNetApplication.config(properties);
         List<DeviceInfoModel> list = oneNetApplication.getDeviceList(null);
-        return new ResponseResult().Ok(list);
+        return new ResponseResult().OK(list);
     }
 
     /**
@@ -58,6 +58,6 @@ public class OneNetController {
         DeviceInfoModel device = new DeviceInfoModel();
         device.setId(input.getDeviceId());
         List<DeviceDataModel> list = oneNetApplication.getDeviceData(device);
-        return new ResponseResult().Ok(list);
+        return new ResponseResult().OK(list);
     }
 }
