@@ -1,17 +1,22 @@
 package com.wbs.pipe.application;
 
-import cn.hutool.json.JSONUtil;
+import cn.hutool.core.util.StrUtil;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
-import com.mongodb.client.result.InsertOneResult;
+import com.mongodb.client.result.UpdateResult;
+import com.wbs.common.enums.HttpEnum;
+import com.wbs.common.extend.ResponseResult;
 import com.wbs.pipe.model.sink.SinkInfoModel;
-import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author WBS
@@ -20,48 +25,84 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SinkApplication {
-    private final MongoDatabase defaultMongoDatabase;
+    private final MongoCollection<SinkInfoModel> collection;
 
     public SinkApplication(MongoDatabase defaultMongoDatabase) {
-        this.defaultMongoDatabase = defaultMongoDatabase;
+        this.collection = defaultMongoDatabase.getCollection("sink_info", SinkInfoModel.class);
     }
 
-    public void query() {
-        MongoCollection<Document> collection = defaultMongoDatabase.getCollection("sink_info");
-//      FindIterable<Document> documents = collection.find(Filters.eq("name", "test"));
-        FindIterable<Document> documents = collection.find();
-        for (Document document : documents) {
-            System.out.println(document.toString());
-        }
-
-        MongoCollection<SinkInfoModel> list = defaultMongoDatabase.getCollection("sink_info", SinkInfoModel.class);
-        FindIterable<SinkInfoModel> models = list.find();
-        for (SinkInfoModel model : models) {
-            System.out.println(JSONUtil.toJsonPrettyStr(model));
+    public ResponseResult getSinkList() {
+        List<SinkInfoModel> list = new ArrayList<>();
+        FindIterable<SinkInfoModel> iterable = collection.find();
+        iterable.into(list);
+        if (list.isEmpty()) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(list);
         }
     }
 
-    public void add() {
-        SinkInfoModel model = new SinkInfoModel();
-        model.setName("test");
-        model.setConnect_id("112233");
-        model.setSink_status(2);
-        model.setCreate_time("2022-01-01 22:22:22");
-
-        MongoCollection<SinkInfoModel> list = defaultMongoDatabase.getCollection("sink_info", SinkInfoModel.class);
-        InsertOneResult insertOneResult = list.insertOne(model);
+    public ResponseResult getSinkInfo(String id, String name) {
+        Bson query;
+        if (StrUtil.isNotBlank(id)) {
+            query = Filters.eq("_id", id);
+        } else if (StrUtil.isNotBlank(name)) {
+            query = Filters.eq("name", name);
+        } else {
+            return new ResponseResult().NULL();
+        }
+        SinkInfoModel model = collection.find(query).first();
+        if (model == null) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(model);
+        }
     }
 
-    public void remove() {
-        MongoCollection<Document> collection = defaultMongoDatabase.getCollection("sink_info");
-        Bson query = Filters.eq("name", "12222");
-        DeleteResult deleteResult = collection.deleteOne(query);
+    public ResponseResult addSink(SinkInfoModel model) {
+        ResponseResult info = getSinkInfo(null, model.getName());
+        if (info.getData() != null) {
+            return new ResponseResult().ERROR(HttpEnum.EXISTS);
+        }
+        try {
+            model.setCreate_time(LocalDateTime.now());
+            model.setUpdate_time(null);
+            ObjectId id = new ObjectId();
+            model.setId(id.toString());
+            collection.insertOne(model);
+            return new ResponseResult().OK();
+        } catch (Exception e) {
+            return new ResponseResult().ERROR(HttpEnum.EXCEPTION);
+        }
     }
 
-    public void update() {
-        MongoCollection<Document> collection = defaultMongoDatabase.getCollection("sink_info");
-        Bson query = Filters.eq("name", "test");
-        Bson update = Updates.set("sink_status", 20);
-        collection.updateMany(query, update);
+    public ResponseResult deleteSink(String id) {
+        Bson query = Filters.eq("_id", id);
+        DeleteResult result = collection.deleteOne(query);
+        if (result.getDeletedCount() > 0) {
+            return new ResponseResult().OK();
+        } else {
+            return new ResponseResult().FAILED();
+        }
+    }
+
+    public ResponseResult updateSink(SinkInfoModel model) {
+        if (StrUtil.isBlank(model.getId())) {
+            return new ResponseResult().ERROR("id不可为空！", HttpEnum.PARAM_VALID_ERROR);
+        }
+        Bson query = Filters.eq("_id", model.getId());
+        SinkInfoModel old = collection.find(query).first();
+        if (old != null) {
+            model.setUpdate_time(LocalDateTime.now());
+            model.setCreate_time(old.getCreate_time());
+            UpdateResult result = collection.replaceOne(query, model);
+            if (result.getModifiedCount() > 0) {
+                return new ResponseResult().OK();
+            } else {
+                return new ResponseResult().FAILED();
+            }
+        } else {
+            return new ResponseResult().NULL();
+        }
     }
 }

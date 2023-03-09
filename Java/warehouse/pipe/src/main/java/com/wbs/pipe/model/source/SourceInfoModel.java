@@ -1,4 +1,4 @@
-package com.wbs.pipe.model.sink;
+package com.wbs.pipe.model.source;
 
 
 import java.io.Serializable;
@@ -7,9 +7,9 @@ import java.time.LocalDateTime;
 /**
  * @author WBS
  * @date 2023/2/23 9:59
- * @desciption SinkInfoModel
+ * @desciption SourceInfoModel
  */
-public class SinkInfoModel implements Serializable {
+public class SourceInfoModel implements Serializable {
     private String id;
     private String name;
     private int type;

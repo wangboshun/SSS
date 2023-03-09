@@ -1,10 +1,12 @@
 package com.wbs.pipe.controller;
 
-import io.swagger.annotations.ApiOperation;
+import cn.hutool.core.util.StrUtil;
+import com.wbs.common.enums.HttpEnum;
+import com.wbs.common.extend.ResponseResult;
+import com.wbs.pipe.application.SourceApplication;
+import com.wbs.pipe.model.source.SourceInfoModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author WBS
@@ -16,14 +18,42 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "pipe", description = "pipe模块")
 public class SourceController {
 
-    /**
-     * source测试
-     *
-     * @return
-     */
-    @ApiOperation("source测试")
-    @GetMapping(value = "/test")
-    public String test() {
-        return "source Test";
+    private SourceApplication sourceApplication;
+
+    public SourceController(SourceApplication sourceApplication) {
+        this.sourceApplication = sourceApplication;
+    }
+
+    @GetMapping(value = "/list")
+    public ResponseResult list() {
+        return sourceApplication.getSourceList();
+    }
+
+    @GetMapping(value = "/info")
+    public ResponseResult info(@RequestParam(required = false) String id, @RequestParam(required = false) String name) {
+        if (StrUtil.isEmpty(id) && StrUtil.isEmpty(name)) {
+            return new ResponseResult().ERROR("请输入id或名称", HttpEnum.PARAM_VALID_ERROR);
+        }
+        return sourceApplication.getSourceInfo(id, name);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseResult get(@PathVariable String id) {
+        return sourceApplication.getSourceInfo(id, null);
+    }
+
+    @PostMapping(value = "/add")
+    public ResponseResult add(@RequestBody SourceInfoModel model) {
+        return sourceApplication.addSource(model);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseResult delete(@PathVariable String id) {
+        return sourceApplication.deleteSource(id);
+    }
+
+    @PatchMapping(value = "/update")
+    public ResponseResult update(@RequestBody SourceInfoModel model) {
+        return sourceApplication.updateSource(model);
     }
 }

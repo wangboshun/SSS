@@ -14,6 +14,7 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,6 +65,8 @@ public class ConnectApplication {
             return new ResponseResult().ERROR(HttpEnum.EXISTS);
         }
         try {
+            model.setCreate_time(LocalDateTime.now());
+            model.setUpdate_time(null);
             ObjectId id = new ObjectId();
             model.setId(id.toString());
             collection.insertOne(model);
@@ -88,11 +91,18 @@ public class ConnectApplication {
             return new ResponseResult().ERROR("id不可为空！", HttpEnum.PARAM_VALID_ERROR);
         }
         Bson query = Filters.eq("_id", model.getId());
-        UpdateResult result = collection.replaceOne(query, model);
-        if (result.getModifiedCount() > 0) {
-            return new ResponseResult().OK();
+        ConnectInfoModel old = collection.find(query).first();
+        if (old != null) {
+            model.setUpdate_time(LocalDateTime.now());
+            model.setCreate_time(old.getCreate_time());
+            UpdateResult result = collection.replaceOne(query, model);
+            if (result.getModifiedCount() > 0) {
+                return new ResponseResult().OK();
+            } else {
+                return new ResponseResult().FAILED();
+            }
         } else {
-            return new ResponseResult().FAILED();
+            return new ResponseResult().NULL();
         }
     }
 }

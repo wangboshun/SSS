@@ -1,11 +1,13 @@
 package com.wbs.pipe.controller;
 
+import cn.hutool.core.util.StrUtil;
+import com.wbs.common.enums.HttpEnum;
+import com.wbs.common.extend.ResponseResult;
 import com.wbs.pipe.application.SinkApplication;
+import com.wbs.pipe.model.sink.SinkInfoModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author WBS
@@ -24,47 +26,36 @@ public class SinkController {
         this.sinkApplication = sinkApplication;
     }
 
-    /**
-     * sink query
-     *
-     * @return
-     */
-    @GetMapping(value = "/query")
-    public String query() {
-        sinkApplication.query();
-        return "sink query";
+    @GetMapping(value = "/list")
+    public ResponseResult list() {
+        return sinkApplication.getSinkList();
     }
 
-    /**
-     * sink add
-     *
-     * @return
-     */
-    @GetMapping(value = "/add")
-    public String add() {
-        sinkApplication.add();
-        return "sink add";
+    @GetMapping(value = "/info")
+    public ResponseResult info(@RequestParam(required = false) String id, @RequestParam(required = false) String name) {
+        if (StrUtil.isEmpty(id) && StrUtil.isEmpty(name)) {
+            return new ResponseResult().ERROR("请输入id或名称", HttpEnum.PARAM_VALID_ERROR);
+        }
+        return sinkApplication.getSinkInfo(id, name);
     }
 
-    /**
-     * sink update
-     *
-     * @return
-     */
-    @GetMapping(value = "/update")
-    public String update() {
-        sinkApplication.update();
-        return "sink update";
+    @GetMapping(value = "/{id}")
+    public ResponseResult get(@PathVariable String id) {
+        return sinkApplication.getSinkInfo(id, null);
     }
 
-    /**
-     * sink remove
-     *
-     * @return
-     */
-    @GetMapping(value = "/remove")
-    public String remove() {
-        sinkApplication.remove();
-        return "sink remove";
+    @PostMapping(value = "/add")
+    public ResponseResult add(@RequestBody SinkInfoModel model) {
+        return sinkApplication.addSink(model);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseResult delete(@PathVariable String id) {
+        return sinkApplication.deleteSink(id);
+    }
+
+    @PatchMapping(value = "/update")
+    public ResponseResult update(@RequestBody SinkInfoModel model) {
+        return sinkApplication.updateSink(model);
     }
 }
