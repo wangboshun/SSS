@@ -9,7 +9,6 @@ import com.wbs.common.database.base.model.WhereInfo;
 import com.wbs.common.database.factory.ConnectionFactory;
 import com.wbs.common.database.factory.DataSourceFactory;
 import com.wbs.common.extend.ResponseResult;
-import com.wbs.engine.core.base.TransformAbstract;
 import com.wbs.engine.core.clickhouse.ClickHouseReader;
 import com.wbs.engine.core.clickhouse.ClickHouseWriter;
 import com.wbs.engine.core.mysql.MySqlReader;
@@ -51,10 +50,9 @@ public class EngineController {
 
     private final DataSourceFactory dataSourceFactory;
     private final ConnectionFactory connectionFactory;
-    private final TransformAbstract transformAbstract;
     private final Environment environment;
 
-    public EngineController(MySqlReader mySqlReader, MySqlWriter mySqlWriter, SqlServerReader sqlServerReader, SqlServerWriter sqlServerWriter, ClickHouseReader clickHouseReader, ClickHouseWriter clickHouseWriter, PgSqlReader pgSqlReader, PgSqlWriter pgSqlWriter, DataSourceFactory dataSourceFactory, ConnectionFactory connectionFactory, TransformAbstract transformAbstract, Environment environment) {
+    public EngineController(MySqlReader mySqlReader, MySqlWriter mySqlWriter, SqlServerReader sqlServerReader, SqlServerWriter sqlServerWriter, ClickHouseReader clickHouseReader, ClickHouseWriter clickHouseWriter, PgSqlReader pgSqlReader, PgSqlWriter pgSqlWriter, DataSourceFactory dataSourceFactory, ConnectionFactory connectionFactory,  Environment environment) {
         this.mySqlReader = mySqlReader;
         this.mySqlWriter = mySqlWriter;
         this.sqlServerReader = sqlServerReader;
@@ -65,7 +63,6 @@ public class EngineController {
         this.pgSqlWriter = pgSqlWriter;
         this.dataSourceFactory = dataSourceFactory;
         this.connectionFactory = connectionFactory;
-        this.transformAbstract = transformAbstract;
         this.environment = environment;
     }
 

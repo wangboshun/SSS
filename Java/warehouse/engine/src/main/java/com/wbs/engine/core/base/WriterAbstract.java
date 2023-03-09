@@ -1,5 +1,9 @@
 package com.wbs.engine.core.base;
 
+import cn.hutool.cache.Cache;
+import cn.hutool.cache.CacheUtil;
+import cn.hutool.crypto.SecureUtil;
+import com.mysql.cj.jdbc.ConnectionImpl;
 import com.wbs.common.database.DbUtils;
 import com.wbs.common.database.base.DataRow;
 import com.wbs.common.database.base.DataTable;
@@ -27,12 +31,20 @@ public abstract class WriterAbstract implements IWriter {
     protected DbTypeEnum dbType;
     private Connection connection;
     private String tableName;
-    private List<ColumnInfo> columnList;
+    protected List<ColumnInfo> columnList;
     private Set<String> primarySet;
+    Cache<String, List<ColumnInfo>> fifoCache = CacheUtil.newFIFOCache(100);
 
     @Override
     public void config(String tableName, Connection connection) {
-        config(tableName, connection, DbUtils.getColumns(connection, tableName));
+        String url = ((ConnectionImpl) connection).getURL();
+        String md5 = SecureUtil.md5(url + "_" + tableName);
+        List<ColumnInfo> columns = fifoCache.get(md5);
+        if (columnList==null) {
+            columns = DbUtils.getColumns(connection, tableName);
+            fifoCache.put(md5, columns);
+        }
+        config(tableName, connection, columns);
     }
 
     @Override
