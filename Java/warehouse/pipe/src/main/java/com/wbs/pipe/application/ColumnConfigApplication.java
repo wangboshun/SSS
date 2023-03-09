@@ -9,7 +9,7 @@ import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import com.wbs.common.enums.HttpEnum;
 import com.wbs.common.extend.ResponseResult;
-import com.wbs.pipe.model.source.SourceInfoModel;
+import com.wbs.pipe.model.ColumnConfigModel;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -20,20 +20,20 @@ import java.util.List;
 
 /**
  * @author WBS
- * @date 2023/2/23 9:59
- * @desciption SourceApplication
+ * @date 2023/3/9 10:54
+ * @desciption ColumnConfigApplication
  */
-@Service()
-public class SourceApplication {
-    private final MongoCollection<SourceInfoModel> collection;
+@Service
+public class ColumnConfigApplication {
+    private final MongoCollection<ColumnConfigModel> collection;
 
-    public SourceApplication(MongoDatabase defaultMongoDatabase) {
-        this.collection = defaultMongoDatabase.getCollection("source_info", SourceInfoModel.class);
+    public ColumnConfigApplication(MongoDatabase defaultMongoDatabase) {
+        this.collection = defaultMongoDatabase.getCollection("column_config", ColumnConfigModel.class);
     }
 
-    public ResponseResult getSourceList() {
-        List<SourceInfoModel> list = new ArrayList<>();
-        FindIterable<SourceInfoModel> iterable = collection.find();
+    public ResponseResult getColumnConfigList() {
+        List<ColumnConfigModel> list = new ArrayList<>();
+        FindIterable<ColumnConfigModel> iterable = collection.find();
         iterable.into(list);
         if (list.isEmpty()) {
             return new ResponseResult().NULL();
@@ -42,16 +42,16 @@ public class SourceApplication {
         }
     }
 
-    public ResponseResult getSource(String id, String name) {
+    public ResponseResult getColumnConfig(String id, String taskId) {
         Bson query;
         if (StrUtil.isNotBlank(id)) {
             query = Filters.eq("_id", id);
-        } else if (StrUtil.isNotBlank(name)) {
-            query = Filters.eq("name", name);
+        } else if (StrUtil.isNotBlank(taskId)) {
+            query = Filters.eq("task_id", taskId);
         } else {
             return new ResponseResult().NULL();
         }
-        SourceInfoModel model = collection.find(query).first();
+        ColumnConfigModel model = collection.find(query).first();
         if (model == null) {
             return new ResponseResult().NULL();
         } else {
@@ -59,11 +59,7 @@ public class SourceApplication {
         }
     }
 
-    public ResponseResult addSource(SourceInfoModel model) {
-        ResponseResult info = getSource(null, model.getName());
-        if (info.getData() != null) {
-            return new ResponseResult().ERROR(HttpEnum.EXISTS);
-        }
+    public ResponseResult addColumnConfig(ColumnConfigModel model) {
         try {
             model.setCreate_time(LocalDateTime.now());
             model.setUpdate_time(null);
@@ -76,7 +72,7 @@ public class SourceApplication {
         }
     }
 
-    public ResponseResult deleteSource(String id) {
+    public ResponseResult deleteColumnConfig(String id) {
         Bson query = Filters.eq("_id", id);
         DeleteResult result = collection.deleteOne(query);
         if (result.getDeletedCount() > 0) {
@@ -86,12 +82,12 @@ public class SourceApplication {
         }
     }
 
-    public ResponseResult updateSource(SourceInfoModel model) {
+    public ResponseResult updateColumnConfig(ColumnConfigModel model) {
         if (StrUtil.isBlank(model.getId())) {
             return new ResponseResult().ERROR("id不可为空！", HttpEnum.PARAM_VALID_ERROR);
         }
         Bson query = Filters.eq("_id", model.getId());
-        SourceInfoModel old = collection.find(query).first();
+        ColumnConfigModel old = collection.find(query).first();
         if (old != null) {
             model.setUpdate_time(LocalDateTime.now());
             model.setCreate_time(old.getCreate_time());

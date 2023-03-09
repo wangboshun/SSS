@@ -42,7 +42,7 @@ public class SinkApplication {
         }
     }
 
-    public ResponseResult getSinkInfo(String id, String name) {
+    public ResponseResult getSink(String id, String name) {
         Bson query;
         if (StrUtil.isNotBlank(id)) {
             query = Filters.eq("_id", id);
@@ -60,7 +60,7 @@ public class SinkApplication {
     }
 
     public ResponseResult addSink(SinkInfoModel model) {
-        ResponseResult info = getSinkInfo(null, model.getName());
+        ResponseResult info = getSink(null, model.getName());
         if (info.getData() != null) {
             return new ResponseResult().ERROR(HttpEnum.EXISTS);
         }

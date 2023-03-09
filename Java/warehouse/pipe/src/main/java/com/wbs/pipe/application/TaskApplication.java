@@ -9,7 +9,7 @@ import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import com.wbs.common.enums.HttpEnum;
 import com.wbs.common.extend.ResponseResult;
-import com.wbs.pipe.model.source.SourceInfoModel;
+import com.wbs.pipe.model.task.TaskInfoModel;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -20,20 +20,20 @@ import java.util.List;
 
 /**
  * @author WBS
- * @date 2023/2/23 9:59
- * @desciption SourceApplication
+ * @date 2023/3/9 10:54
+ * @desciption TaskInfoApplication
  */
-@Service()
-public class SourceApplication {
-    private final MongoCollection<SourceInfoModel> collection;
+@Service
+public class TaskApplication {
+    private final MongoCollection<TaskInfoModel> collection;
 
-    public SourceApplication(MongoDatabase defaultMongoDatabase) {
-        this.collection = defaultMongoDatabase.getCollection("source_info", SourceInfoModel.class);
+    public TaskApplication(MongoDatabase defaultMongoDatabase) {
+        this.collection = defaultMongoDatabase.getCollection("task_info", TaskInfoModel.class);
     }
 
-    public ResponseResult getSourceList() {
-        List<SourceInfoModel> list = new ArrayList<>();
-        FindIterable<SourceInfoModel> iterable = collection.find();
+    public ResponseResult getTaskList() {
+        List<TaskInfoModel> list = new ArrayList<>();
+        FindIterable<TaskInfoModel> iterable = collection.find();
         iterable.into(list);
         if (list.isEmpty()) {
             return new ResponseResult().NULL();
@@ -42,7 +42,7 @@ public class SourceApplication {
         }
     }
 
-    public ResponseResult getSource(String id, String name) {
+    public ResponseResult getTask(String id, String name) {
         Bson query;
         if (StrUtil.isNotBlank(id)) {
             query = Filters.eq("_id", id);
@@ -51,7 +51,7 @@ public class SourceApplication {
         } else {
             return new ResponseResult().NULL();
         }
-        SourceInfoModel model = collection.find(query).first();
+        TaskInfoModel model = collection.find(query).first();
         if (model == null) {
             return new ResponseResult().NULL();
         } else {
@@ -59,11 +59,7 @@ public class SourceApplication {
         }
     }
 
-    public ResponseResult addSource(SourceInfoModel model) {
-        ResponseResult info = getSource(null, model.getName());
-        if (info.getData() != null) {
-            return new ResponseResult().ERROR(HttpEnum.EXISTS);
-        }
+    public ResponseResult addTask(TaskInfoModel model) {
         try {
             model.setCreate_time(LocalDateTime.now());
             model.setUpdate_time(null);
@@ -76,7 +72,7 @@ public class SourceApplication {
         }
     }
 
-    public ResponseResult deleteSource(String id) {
+    public ResponseResult deleteTask(String id) {
         Bson query = Filters.eq("_id", id);
         DeleteResult result = collection.deleteOne(query);
         if (result.getDeletedCount() > 0) {
@@ -86,12 +82,12 @@ public class SourceApplication {
         }
     }
 
-    public ResponseResult updateSource(SourceInfoModel model) {
+    public ResponseResult updateTask(TaskInfoModel model) {
         if (StrUtil.isBlank(model.getId())) {
             return new ResponseResult().ERROR("id不可为空！", HttpEnum.PARAM_VALID_ERROR);
         }
         Bson query = Filters.eq("_id", model.getId());
-        SourceInfoModel old = collection.find(query).first();
+        TaskInfoModel old = collection.find(query).first();
         if (old != null) {
             model.setUpdate_time(LocalDateTime.now());
             model.setCreate_time(old.getCreate_time());

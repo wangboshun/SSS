@@ -3,8 +3,8 @@ package com.wbs.pipe.controller;
 import cn.hutool.core.util.StrUtil;
 import com.wbs.common.enums.HttpEnum;
 import com.wbs.common.extend.ResponseResult;
-import com.wbs.pipe.application.SinkApplication;
-import com.wbs.pipe.model.sink.SinkInfoModel;
+import com.wbs.pipe.application.TaskApplication;
+import com.wbs.pipe.model.task.TaskInfoModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -12,23 +12,23 @@ import org.springframework.web.bind.annotation.*;
 /**
  * @author WBS
  * @date 2023/2/23 9:59
- * @desciption SinkController
+ * @desciption TaskController
  */
 @Controller
 @RestController
-@RequestMapping("/pipe/sink")
+@RequestMapping("/pipe/task")
 @Tag(name = "pipe", description = "pipe模块")
-public class SinkController {
+public class TaskController {
 
-    private SinkApplication sinkApplication;
+    private TaskApplication taskApplication;
 
-    public SinkController(SinkApplication sinkApplication) {
-        this.sinkApplication = sinkApplication;
+    public TaskController(TaskApplication taskApplication) {
+        this.taskApplication = taskApplication;
     }
 
     @GetMapping(value = "/list")
     public ResponseResult list() {
-        return sinkApplication.getSinkList();
+        return taskApplication.getTaskList();
     }
 
     @GetMapping(value = "/info")
@@ -36,26 +36,26 @@ public class SinkController {
         if (StrUtil.isEmpty(id) && StrUtil.isEmpty(name)) {
             return new ResponseResult().ERROR("请输入id或名称", HttpEnum.PARAM_VALID_ERROR);
         }
-        return sinkApplication.getSink(id, name);
+        return taskApplication.getTask(id, name);
     }
 
     @GetMapping(value = "/{id}")
     public ResponseResult get(@PathVariable String id) {
-        return sinkApplication.getSink(id, null);
+        return taskApplication.getTask(id, null);
     }
 
     @PostMapping(value = "/add")
-    public ResponseResult add(@RequestBody SinkInfoModel model) {
-        return sinkApplication.addSink(model);
+    public ResponseResult add(@RequestBody TaskInfoModel model) {
+        return taskApplication.addTask(model);
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseResult delete(@PathVariable String id) {
-        return sinkApplication.deleteSink(id);
+        return taskApplication.deleteTask(id);
     }
 
     @PatchMapping(value = "/update")
-    public ResponseResult update(@RequestBody SinkInfoModel model) {
-        return sinkApplication.updateSink(model);
+    public ResponseResult update(@RequestBody TaskInfoModel model) {
+        return taskApplication.updateTask(model);
     }
 }

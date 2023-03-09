@@ -34,12 +34,12 @@ public class SourceController {
         if (StrUtil.isEmpty(id) && StrUtil.isEmpty(name)) {
             return new ResponseResult().ERROR("请输入id或名称", HttpEnum.PARAM_VALID_ERROR);
         }
-        return sourceApplication.getSourceInfo(id, name);
+        return sourceApplication.getSource(id, name);
     }
 
     @GetMapping(value = "/{id}")
     public ResponseResult get(@PathVariable String id) {
-        return sourceApplication.getSourceInfo(id, null);
+        return sourceApplication.getSource(id, null);
     }
 
     @PostMapping(value = "/add")
