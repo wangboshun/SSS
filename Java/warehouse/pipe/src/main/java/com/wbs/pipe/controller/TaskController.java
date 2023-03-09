@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @author WBS
  * @date 2023/2/23 9:59
@@ -28,7 +30,12 @@ public class TaskController {
 
     @GetMapping(value = "/list")
     public ResponseResult list() {
-        return taskApplication.getTaskList();
+        List<TaskInfoModel> list = taskApplication.getTaskList();
+        if (list.isEmpty()) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(list);
+        }
     }
 
     @GetMapping(value = "/info")
@@ -36,12 +43,22 @@ public class TaskController {
         if (StrUtil.isEmpty(id) && StrUtil.isEmpty(name)) {
             return new ResponseResult().ERROR("请输入id或名称", HttpEnum.PARAM_VALID_ERROR);
         }
-        return taskApplication.getTask(id, name);
+        TaskInfoModel model = taskApplication.getTask(id, name);
+        if (model == null) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(model);
+        }
     }
 
     @GetMapping(value = "/{id}")
     public ResponseResult get(@PathVariable String id) {
-        return taskApplication.getTask(id, null);
+        TaskInfoModel model = taskApplication.getTask(id, null);
+        if (model == null) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(model);
+        }
     }
 
     @PostMapping(value = "/add")
@@ -52,6 +69,11 @@ public class TaskController {
     @DeleteMapping(value = "/{id}")
     public ResponseResult delete(@PathVariable String id) {
         return taskApplication.deleteTask(id);
+    }
+
+    @DeleteMapping(value = "/delete_all")
+    public ResponseResult deleteAll() {
+        return taskApplication.deleteAll();
     }
 
     @PatchMapping(value = "/update")

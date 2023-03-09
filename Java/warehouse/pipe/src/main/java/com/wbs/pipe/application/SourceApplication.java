@@ -34,38 +34,30 @@ public class SourceApplication {
         this.collection = defaultMongoDatabase.getCollection("source_info", SourceInfoModel.class);
     }
 
-    public ResponseResult getSourceList() {
+    public List<SourceInfoModel> getSourceList() {
         List<SourceInfoModel> list = new ArrayList<>();
         FindIterable<SourceInfoModel> iterable = collection.find();
         iterable.into(list);
-        if (list.isEmpty()) {
-            return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(list);
-        }
+        return list;
     }
 
-    public ResponseResult getSource(String id, String name) {
+    public SourceInfoModel getSource(String id, String name) {
         List<Bson> query = new ArrayList<>();
         if (StrUtil.isNotBlank(id)) {
             query.add(eq("_id", id));
         }
         if (StrUtil.isNotBlank(name)) {
             query.add(eq("name", name));
-        } else {
-            return new ResponseResult().NULL();
         }
-        SourceInfoModel model = collection.find(or(query)).first();
-        if (model == null) {
-            return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(model);
+        if (query.isEmpty()) {
+            return null;
         }
+        return collection.find(or(query)).first();
     }
 
     public ResponseResult addSource(SourceInfoModel model) {
-        ResponseResult info = getSource(null, model.getName());
-        if (info.getData() != null) {
+        SourceInfoModel info = getSource(null, model.getName());
+        if (info != null) {
             return new ResponseResult().ERROR(HttpEnum.EXISTS);
         }
         try {
@@ -88,6 +80,15 @@ public class SourceApplication {
         } else {
             return new ResponseResult().FAILED();
         }
+    }
+
+    public ResponseResult deleteAll() {
+        List<SourceInfoModel> taskList = getSourceList();
+        taskList.forEach(x -> {
+            Bson query = Filters.eq("_id", x.getId());
+            collection.deleteOne(query);
+        });
+        return new ResponseResult().OK();
     }
 
     public ResponseResult updateSource(SourceInfoModel model) {

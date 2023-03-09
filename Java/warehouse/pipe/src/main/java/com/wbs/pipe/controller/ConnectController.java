@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @author WBS
  * @date 2023/3/8 14:43
@@ -28,7 +30,12 @@ public class ConnectController {
 
     @GetMapping(value = "/list")
     public ResponseResult list() {
-        return connectApplication.getConnectList();
+        List<ConnectInfoModel> list = connectApplication.getConnectList();
+        if (list.isEmpty()) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(list);
+        }
     }
 
     @GetMapping(value = "/info")
@@ -36,12 +43,22 @@ public class ConnectController {
         if (StrUtil.isEmpty(id) && StrUtil.isEmpty(name)) {
             return new ResponseResult().ERROR("请输入id或名称", HttpEnum.PARAM_VALID_ERROR);
         }
-        return connectApplication.getConnectInfo(id, name);
+        ConnectInfoModel model = connectApplication.getConnectInfo(id, name);
+        if (model == null) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(model);
+        }
     }
 
     @GetMapping(value = "/{id}")
     public ResponseResult get(@PathVariable String id) {
-        return connectApplication.getConnectInfo(id, null);
+        ConnectInfoModel model = connectApplication.getConnectInfo(id, null);
+        if (model == null) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(model);
+        }
     }
 
     @PostMapping(value = "/add")
@@ -52,6 +69,11 @@ public class ConnectController {
     @DeleteMapping(value = "/{id}")
     public ResponseResult delete(@PathVariable String id) {
         return connectApplication.deleteConnect(id);
+    }
+
+    @DeleteMapping(value = "/delete_all")
+    public ResponseResult deleteAll() {
+        return connectApplication.deleteAll();
     }
 
     @PatchMapping(value = "/update")

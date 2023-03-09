@@ -34,38 +34,30 @@ public class ConnectApplication {
         this.collection = defaultMongoDatabase.getCollection("connect_info", ConnectInfoModel.class);
     }
 
-    public ResponseResult getConnectList() {
+    public List<ConnectInfoModel> getConnectList() {
         List<ConnectInfoModel> list = new ArrayList<>();
         FindIterable<ConnectInfoModel> iterable = collection.find();
         iterable.into(list);
-        if (list.isEmpty()) {
-            return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(list);
-        }
+        return list;
     }
 
-    public ResponseResult getConnectInfo(String id, String name) {
+    public ConnectInfoModel getConnectInfo(String id, String name) {
         List<Bson> query = new ArrayList<>();
         if (StrUtil.isNotBlank(id)) {
             query.add(eq("_id", id));
         }
         if (StrUtil.isNotBlank(name)) {
             query.add(eq("name", name));
-        } else {
-            return new ResponseResult().NULL();
         }
-        ConnectInfoModel model = collection.find(or(query)).first();
-        if (model == null) {
-            return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(model);
+        if (query.isEmpty()) {
+            return null;
         }
+        return collection.find(or(query)).first();
     }
 
     public ResponseResult addConnect(ConnectInfoModel model) {
-        ResponseResult info = getConnectInfo(null, model.getName());
-        if (info.getData() != null) {
+        ConnectInfoModel info = getConnectInfo(null, model.getName());
+        if (info != null) {
             return new ResponseResult().ERROR(HttpEnum.EXISTS);
         }
         try {
@@ -88,6 +80,15 @@ public class ConnectApplication {
         } else {
             return new ResponseResult().FAILED();
         }
+    }
+
+    public ResponseResult deleteAll() {
+        List<ConnectInfoModel> taskList = getConnectList();
+        taskList.forEach(x -> {
+            Bson query = Filters.eq("_id", x.getId());
+            collection.deleteOne(query);
+        });
+        return new ResponseResult().OK();
     }
 
     public ResponseResult updateConnect(ConnectInfoModel model) {

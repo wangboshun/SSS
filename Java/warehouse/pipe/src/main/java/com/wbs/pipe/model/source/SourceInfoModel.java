@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class SourceInfoModel implements Serializable {
     private String id;
     private String name;
+    private String table_name;
     private int type;
     private int status;
     private String desc;
@@ -81,5 +82,13 @@ public class SourceInfoModel implements Serializable {
 
     public void setConnect_id(String connect_id) {
         this.connect_id = connect_id;
+    }
+
+    public String getTable_name() {
+        return table_name;
+    }
+
+    public void setTable_name(String table_name) {
+        this.table_name = table_name;
     }
 }

@@ -34,38 +34,30 @@ public class TaskApplication {
         this.collection = defaultMongoDatabase.getCollection("task_info", TaskInfoModel.class);
     }
 
-    public ResponseResult getTaskList() {
+    public List<TaskInfoModel> getTaskList() {
         List<TaskInfoModel> list = new ArrayList<>();
         FindIterable<TaskInfoModel> iterable = collection.find();
         iterable.into(list);
-        if (list.isEmpty()) {
-            return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(list);
-        }
+        return list;
     }
 
-    public ResponseResult getTask(String id, String name) {
+    public TaskInfoModel getTask(String id, String name) {
         List<Bson> query = new ArrayList<>();
         if (StrUtil.isNotBlank(id)) {
             query.add(eq("_id", id));
         }
         if (StrUtil.isNotBlank(name)) {
             query.add(eq("name", name));
-        } else {
-            return new ResponseResult().NULL();
         }
-        TaskInfoModel model = collection.find(or(query)).first();
-        if (model == null) {
-            return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(model);
+        if (query.isEmpty()) {
+            return null;
         }
+        return collection.find(or(query)).first();
     }
 
     public ResponseResult addTask(TaskInfoModel model) {
-        ResponseResult info = getTask(null, model.getName());
-        if (info.getData() != null) {
+        TaskInfoModel info = getTask(null, model.getName());
+        if (info != null) {
             return new ResponseResult().ERROR(HttpEnum.EXISTS);
         }
         try {
@@ -88,6 +80,15 @@ public class TaskApplication {
         } else {
             return new ResponseResult().FAILED();
         }
+    }
+
+    public ResponseResult deleteAll() {
+        List<TaskInfoModel> taskList = getTaskList();
+        taskList.forEach(x -> {
+            Bson query = Filters.eq("_id", x.getId());
+            collection.deleteOne(query);
+        });
+        return new ResponseResult().OK();
     }
 
     public ResponseResult updateTask(TaskInfoModel model) {

@@ -67,10 +67,6 @@ public class EngineController {
         this.connectionFactory = connectionFactory;
         this.transformAbstract = transformAbstract;
         this.environment = environment;
-        mysqlInit();
-        sqlserverInit();
-        pgsqlInit();
-        ckInit();
     }
 
     public void mysqlInit() {
@@ -131,6 +127,11 @@ public class EngineController {
     }
 
     public void getTableAndColumn() {
+        mysqlInit();
+        sqlserverInit();
+        pgsqlInit();
+        ckInit();
+
         Connection mysqlConnection = connectionFactory.getConnect("mysql");
         Connection sqlserverConnection = connectionFactory.getConnect("mssql");
         Connection pgsqlConnection = connectionFactory.getConnect("pgsql");

@@ -1,13 +1,13 @@
 package com.wbs.pipe.controller;
 
-import cn.hutool.core.util.StrUtil;
-import com.wbs.common.enums.HttpEnum;
 import com.wbs.common.extend.ResponseResult;
 import com.wbs.pipe.application.ColumnConfigApplication;
 import com.wbs.pipe.model.ColumnConfigModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author WBS
@@ -28,20 +28,22 @@ public class ColumnConfigController {
 
     @GetMapping(value = "/list")
     public ResponseResult list() {
-        return columnConfigApplication.getColumnConfigList();
-    }
-
-    @GetMapping(value = "/info")
-    public ResponseResult info(@RequestParam(required = false) String id, @RequestParam(required = false) String taskId) {
-        if (StrUtil.isEmpty(id) && StrUtil.isEmpty(taskId)) {
-            return new ResponseResult().ERROR("请输入id或名称", HttpEnum.PARAM_VALID_ERROR);
+        List<ColumnConfigModel> list = columnConfigApplication.getColumnConfigList();
+        if (list.isEmpty()) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(list);
         }
-        return columnConfigApplication.getColumnConfig(id, taskId);
     }
 
-    @GetMapping(value = "/{id}")
-    public ResponseResult get(@PathVariable String id) {
-        return columnConfigApplication.getColumnConfig(id, null);
+    @GetMapping(value = "/{taskId}")
+    public ResponseResult get(@PathVariable String taskId) {
+        ColumnConfigModel model = columnConfigApplication.getColumnConfigByTask(taskId);
+        if (model == null) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(model);
+        }
     }
 
     @PostMapping(value = "/add")
@@ -52,6 +54,11 @@ public class ColumnConfigController {
     @DeleteMapping(value = "/{id}")
     public ResponseResult delete(@PathVariable String id) {
         return columnConfigApplication.deleteColumnConfig(id);
+    }
+
+    @DeleteMapping(value = "/delete_all")
+    public ResponseResult deleteAll() {
+        return columnConfigApplication.deleteAll();
     }
 
     @PatchMapping(value = "/update")

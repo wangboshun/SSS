@@ -8,6 +8,8 @@ import com.wbs.pipe.model.source.SourceInfoModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @author WBS
  * @date 2023/2/23 9:59
@@ -26,7 +28,12 @@ public class SourceController {
 
     @GetMapping(value = "/list")
     public ResponseResult list() {
-        return sourceApplication.getSourceList();
+        List<SourceInfoModel> list = sourceApplication.getSourceList();
+        if (list.isEmpty()) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(list);
+        }
     }
 
     @GetMapping(value = "/info")
@@ -34,12 +41,22 @@ public class SourceController {
         if (StrUtil.isEmpty(id) && StrUtil.isEmpty(name)) {
             return new ResponseResult().ERROR("请输入id或名称", HttpEnum.PARAM_VALID_ERROR);
         }
-        return sourceApplication.getSource(id, name);
+        SourceInfoModel model = sourceApplication.getSource(id, name);
+        if (model == null) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(model);
+        }
     }
 
     @GetMapping(value = "/{id}")
     public ResponseResult get(@PathVariable String id) {
-        return sourceApplication.getSource(id, null);
+        SourceInfoModel model = sourceApplication.getSource(id, null);
+        if (model == null) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(model);
+        }
     }
 
     @PostMapping(value = "/add")
@@ -50,6 +67,11 @@ public class SourceController {
     @DeleteMapping(value = "/{id}")
     public ResponseResult delete(@PathVariable String id) {
         return sourceApplication.deleteSource(id);
+    }
+
+    @DeleteMapping(value = "/delete_all")
+    public ResponseResult deleteAll() {
+        return sourceApplication.deleteAll();
     }
 
     @PatchMapping(value = "/update")

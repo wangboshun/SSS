@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import com.wbs.common.enums.HttpEnum;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.or;
 
 /**
  * @author WBS
@@ -33,40 +33,23 @@ public class ColumnConfigApplication {
         this.collection = defaultMongoDatabase.getCollection("column_config", ColumnConfigModel.class);
     }
 
-    public ResponseResult getColumnConfigList() {
+    public List<ColumnConfigModel> getColumnConfigList() {
         List<ColumnConfigModel> list = new ArrayList<>();
         FindIterable<ColumnConfigModel> iterable = collection.find();
         iterable.into(list);
-        if (list.isEmpty()) {
-            return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(list);
-        }
+        return list;
     }
 
-    public ResponseResult getColumnConfig(String id, String taskId) {
-        List<Bson> query = new ArrayList<>();
-        if (StrUtil.isNotBlank(id)) {
-            query.add(eq("_id", id));
-        }
+    public ColumnConfigModel getColumnConfigByTask(String taskId) {
         if (StrUtil.isNotBlank(taskId)) {
-            query.add(eq("task_id", taskId));
+            Bson query = eq("task_id", taskId);
+            return collection.find(query).first();
         } else {
-            return new ResponseResult().NULL();
-        }
-        ColumnConfigModel model = collection.find(or(query)).first();
-        if (model == null) {
-            return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(model);
+            return null;
         }
     }
 
     public ResponseResult addColumnConfig(ColumnConfigModel model) {
-        ResponseResult info = getColumnConfig(model.getId(), model.getTask_id());
-        if (info.getData() != null) {
-            return new ResponseResult().ERROR(HttpEnum.EXISTS);
-        }
         try {
             model.setCreate_time(LocalDateTime.now());
             model.setUpdate_time(null);
@@ -87,6 +70,15 @@ public class ColumnConfigApplication {
         } else {
             return new ResponseResult().FAILED();
         }
+    }
+
+    public ResponseResult deleteAll() {
+        List<ColumnConfigModel> taskList = getColumnConfigList();
+        taskList.forEach(x -> {
+            Bson query = Filters.eq("_id", x.getId());
+            collection.deleteOne(query);
+        });
+        return new ResponseResult().OK();
     }
 
     public ResponseResult updateColumnConfig(ColumnConfigModel model) {

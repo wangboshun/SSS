@@ -34,38 +34,31 @@ public class SinkApplication {
         this.collection = defaultMongoDatabase.getCollection("sink_info", SinkInfoModel.class);
     }
 
-    public ResponseResult getSinkList() {
+    public List<SinkInfoModel> getSinkList() {
         List<SinkInfoModel> list = new ArrayList<>();
         FindIterable<SinkInfoModel> iterable = collection.find();
         iterable.into(list);
-        if (list.isEmpty()) {
-            return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(list);
-        }
+        return list;
     }
 
-    public ResponseResult getSink(String id, String name) {
+    public SinkInfoModel getSink(String id, String name) {
         List<Bson> query = new ArrayList<>();
         if (StrUtil.isNotBlank(id)) {
             query.add(eq("_id", id));
         }
         if (StrUtil.isNotBlank(name)) {
             query.add(eq("name", name));
-        } else {
-            return new ResponseResult().NULL();
+        }
+        if (query.isEmpty()) {
+            return null;
         }
         SinkInfoModel model = collection.find(or(query)).first();
-        if (model == null) {
-            return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(model);
-        }
+        return model;
     }
 
     public ResponseResult addSink(SinkInfoModel model) {
-        ResponseResult info = getSink(null, model.getName());
-        if (info.getData() != null) {
+        SinkInfoModel info = getSink(null, model.getName());
+        if (info != null) {
             return new ResponseResult().ERROR(HttpEnum.EXISTS);
         }
         try {
@@ -88,6 +81,15 @@ public class SinkApplication {
         } else {
             return new ResponseResult().FAILED();
         }
+    }
+
+    public ResponseResult deleteAll() {
+        List<SinkInfoModel> taskList = getSinkList();
+        taskList.forEach(x -> {
+            Bson query = Filters.eq("_id", x.getId());
+            collection.deleteOne(query);
+        });
+        return new ResponseResult().OK();
     }
 
     public ResponseResult updateSink(SinkInfoModel model) {

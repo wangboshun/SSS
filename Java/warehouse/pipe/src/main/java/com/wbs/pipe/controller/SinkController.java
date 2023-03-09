@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @author WBS
  * @date 2023/2/23 9:59
@@ -28,7 +30,12 @@ public class SinkController {
 
     @GetMapping(value = "/list")
     public ResponseResult list() {
-        return sinkApplication.getSinkList();
+        List<SinkInfoModel> list = sinkApplication.getSinkList();
+        if (list.isEmpty()) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(list);
+        }
     }
 
     @GetMapping(value = "/info")
@@ -36,12 +43,22 @@ public class SinkController {
         if (StrUtil.isEmpty(id) && StrUtil.isEmpty(name)) {
             return new ResponseResult().ERROR("请输入id或名称", HttpEnum.PARAM_VALID_ERROR);
         }
-        return sinkApplication.getSink(id, name);
+        SinkInfoModel model = sinkApplication.getSink(id, name);
+        if (model == null) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(model);
+        }
     }
 
     @GetMapping(value = "/{id}")
     public ResponseResult get(@PathVariable String id) {
-        return sinkApplication.getSink(id, null);
+        SinkInfoModel model = sinkApplication.getSink(id, null);
+        if (model == null) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(model);
+        }
     }
 
     @PostMapping(value = "/add")
@@ -52,6 +69,11 @@ public class SinkController {
     @DeleteMapping(value = "/{id}")
     public ResponseResult delete(@PathVariable String id) {
         return sinkApplication.deleteSink(id);
+    }
+
+    @DeleteMapping(value = "/delete_all")
+    public ResponseResult deleteAll() {
+        return sinkApplication.deleteAll();
     }
 
     @PatchMapping(value = "/update")
