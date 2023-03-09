@@ -4,7 +4,6 @@ import cn.hutool.core.util.StrUtil;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import com.wbs.common.enums.HttpEnum;
@@ -17,6 +16,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.or;
 
 /**
  * @author WBS
@@ -43,15 +45,16 @@ public class ColumnConfigApplication {
     }
 
     public ResponseResult getColumnConfig(String id, String taskId) {
-        Bson query;
+        List<Bson> query = new ArrayList<>();
         if (StrUtil.isNotBlank(id)) {
-            query = Filters.eq("_id", id);
-        } else if (StrUtil.isNotBlank(taskId)) {
-            query = Filters.eq("task_id", taskId);
+            query.add(eq("_id", id));
+        }
+        if (StrUtil.isNotBlank(taskId)) {
+            query.add(eq("task_id", taskId));
         } else {
             return new ResponseResult().NULL();
         }
-        ColumnConfigModel model = collection.find(query).first();
+        ColumnConfigModel model = collection.find(or(query)).first();
         if (model == null) {
             return new ResponseResult().NULL();
         } else {
@@ -60,6 +63,10 @@ public class ColumnConfigApplication {
     }
 
     public ResponseResult addColumnConfig(ColumnConfigModel model) {
+        ResponseResult info = getColumnConfig(model.getId(), model.getTask_id());
+        if (info.getData() != null) {
+            return new ResponseResult().ERROR(HttpEnum.EXISTS);
+        }
         try {
             model.setCreate_time(LocalDateTime.now());
             model.setUpdate_time(null);
@@ -73,7 +80,7 @@ public class ColumnConfigApplication {
     }
 
     public ResponseResult deleteColumnConfig(String id) {
-        Bson query = Filters.eq("_id", id);
+        Bson query = eq("_id", id);
         DeleteResult result = collection.deleteOne(query);
         if (result.getDeletedCount() > 0) {
             return new ResponseResult().OK();
@@ -86,7 +93,7 @@ public class ColumnConfigApplication {
         if (StrUtil.isBlank(model.getId())) {
             return new ResponseResult().ERROR("id不可为空！", HttpEnum.PARAM_VALID_ERROR);
         }
-        Bson query = Filters.eq("_id", model.getId());
+        Bson query = eq("_id", model.getId());
         ColumnConfigModel old = collection.find(query).first();
         if (old != null) {
             model.setUpdate_time(LocalDateTime.now());

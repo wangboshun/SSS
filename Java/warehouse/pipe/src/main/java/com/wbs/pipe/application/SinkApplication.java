@@ -18,6 +18,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.or;
+
 /**
  * @author WBS
  * @date 2023/2/23 9:59
@@ -43,15 +46,16 @@ public class SinkApplication {
     }
 
     public ResponseResult getSink(String id, String name) {
-        Bson query;
+        List<Bson> query = new ArrayList<>();
         if (StrUtil.isNotBlank(id)) {
-            query = Filters.eq("_id", id);
-        } else if (StrUtil.isNotBlank(name)) {
-            query = Filters.eq("name", name);
+            query.add(eq("_id", id));
+        }
+        if (StrUtil.isNotBlank(name)) {
+            query.add(eq("name", name));
         } else {
             return new ResponseResult().NULL();
         }
-        SinkInfoModel model = collection.find(query).first();
+        SinkInfoModel model = collection.find(or(query)).first();
         if (model == null) {
             return new ResponseResult().NULL();
         } else {
