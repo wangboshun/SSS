@@ -210,7 +210,7 @@ public class EngineController {
             mySqlReader.config("iot_data", mysqlConnection);
             DataTable dataTable = mySqlReader.readData("select * from iot_data limit 1000 ");
             mySqlWriter.config("iot_data1", mysqlConnection);
-            mySqlWriter.writeData(dataTable);
+            mySqlWriter.insertData(dataTable);
             System.out.println();
 
         } catch (Exception e) {
@@ -227,7 +227,7 @@ public class EngineController {
             mySqlReader.config("iot_data", mysqlConnection);
             DataTable dataTable = mySqlReader.readData("select * from iot_data limit 1000");
             sqlServerWriter.config("iot_data", sqlserverConnection);
-            sqlServerWriter.writeData(dataTable);
+            sqlServerWriter.insertData(dataTable);
             System.out.println();
 
         } catch (Exception e) {
@@ -244,7 +244,7 @@ public class EngineController {
             mySqlReader.config("iot_data", mysqlConnection);
             DataTable dataTable = mySqlReader.readData("select * from iot_data limit 1000 ");
             clickHouseWriter.config("iot_data", ckConnection);
-            clickHouseWriter.writeData(dataTable);
+            clickHouseWriter.insertData(dataTable);
             System.out.println();
         } catch (Exception e) {
             System.out.println(e);
@@ -260,7 +260,7 @@ public class EngineController {
             mySqlReader.config("iot_data", mysqlConnection);
             DataTable dataTable = mySqlReader.readData("select * from iot_data ");
             pgSqlWriter.config("iot_data", pgsqlConnection);
-            pgSqlWriter.writeData(dataTable);
+            pgSqlWriter.insertData(dataTable);
             System.out.println();
         } catch (Exception e) {
             System.out.println(e);

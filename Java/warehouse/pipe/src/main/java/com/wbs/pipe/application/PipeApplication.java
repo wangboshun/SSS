@@ -12,6 +12,7 @@ import com.wbs.engine.core.pgsql.PgSqlReader;
 import com.wbs.engine.core.pgsql.PgSqlWriter;
 import com.wbs.engine.core.sqlserver.SqlServerReader;
 import com.wbs.engine.core.sqlserver.SqlServerWriter;
+import com.wbs.engine.model.WriterResult;
 import com.wbs.pipe.model.ColumnConfigModel;
 import com.wbs.pipe.model.connect.ConnectInfoModel;
 import com.wbs.pipe.model.sink.SinkInfoModel;
@@ -105,19 +106,23 @@ public class PipeApplication {
         switch (dbType) {
             case MySql:
                 mySqlWriter.config(sinkInfo.getTable_name(), connection);
-                mySqlWriter.writeData(dataTable);
+                WriterResult result = mySqlWriter.insertData(dataTable);
+                if(result.getExitsData()!=null){
+                    WriterResult result1 = mySqlWriter.updateData(result.getExitsData());
+                    System.out.println();
+                }
                 break;
             case SqlServer:
                 sqlServerWriter.config(sinkInfo.getTable_name(), connection);
-                sqlServerWriter.writeData(dataTable);
+                sqlServerWriter.insertData(dataTable);
                 break;
             case ClickHouse:
                 clickHouseWriter.config(sinkInfo.getTable_name(), connection);
-                clickHouseWriter.writeData(dataTable);
+                clickHouseWriter.insertData(dataTable);
                 break;
             case PostgreSql:
                 pgSqlWriter.config(sinkInfo.getTable_name(), connection);
-                pgSqlWriter.writeData(dataTable);
+                pgSqlWriter.insertData(dataTable);
                 break;
             default:
                 break;
@@ -137,7 +142,7 @@ public class PipeApplication {
         Connection sourceConnection = getConnection(sourceInfo.getConnect_id());
         DbTypeEnum dbType = DbTypeEnum.values()[sourceInfo.getType()];
         DataTable dataTable = new DataTable();
-        String sql = format("select * from %s ORDER BY tm desc  LIMIT  %d ", sourceInfo.getTable_name(), 10000000);
+        String sql = format("select * from %s ORDER BY tm desc  LIMIT  %d ", sourceInfo.getTable_name(), 1000);
         switch (dbType) {
             case MySql:
                 mySqlReader.config(sourceInfo.getTable_name(), sourceConnection);
