@@ -137,7 +137,7 @@ public class PipeApplication {
         Connection sourceConnection = getConnection(sourceInfo.getConnect_id());
         DbTypeEnum dbType = DbTypeEnum.values()[sourceInfo.getType()];
         DataTable dataTable = new DataTable();
-        String sql = format("select * from %s limit %d", sourceInfo.getTable_name(), 1000);
+        String sql = format("select * from %s ORDER BY tm desc  LIMIT  %d ", sourceInfo.getTable_name(), 10000000);
         switch (dbType) {
             case MySql:
                 mySqlReader.config(sourceInfo.getTable_name(), sourceConnection);

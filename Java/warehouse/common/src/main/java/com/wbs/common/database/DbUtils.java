@@ -113,7 +113,7 @@ public class DbUtils {
             LinkedHashMap<String, String> javaTypeMap = submit1.get();
             Set<String> primarySet = submit2.get();
             DatabaseMetaData metaData = connection.getMetaData();
-            resultSet = metaData.getColumns(connection.getCatalog(), "%", tableName, "%");
+            resultSet = metaData.getColumns(connection.getCatalog(), connection.getSchema(), tableName, "%");
             while (resultSet.next()) {
                 ColumnInfo model = new ColumnInfo();
                 model.setName(resultSet.getString(ResultEnum.COLUMN_NAME.name()));
@@ -188,7 +188,7 @@ public class DbUtils {
         ResultSet resultSet = null;
         try {
             DatabaseMetaData dbMeta = connection.getMetaData();
-            resultSet = dbMeta.getPrimaryKeys(null, null, tableName);
+            resultSet = dbMeta.getPrimaryKeys(connection.getCatalog(), connection.getSchema(), tableName);
             while (resultSet.next()) {
                 columnMap.add(resultSet.getString("COLUMN_NAME"));
             }
