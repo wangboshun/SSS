@@ -119,8 +119,9 @@ public class DbUtils {
                 model.setName(resultSet.getString(ResultEnum.COLUMN_NAME.name()));
                 model.setComment(resultSet.getString(ResultEnum.REMARKS.name()));
                 model.setTable(tableName);
-                model.setPoint(resultSet.getInt(ResultEnum.DECIMAL_DIGITS.name()));
+                model.setScale(resultSet.getInt(ResultEnum.DECIMAL_DIGITS.name()));
                 model.setDbType(resultSet.getString(ResultEnum.TYPE_NAME.name()));
+                model.setLenght(resultSet.getInt(ResultEnum.COLUMN_SIZE.name()));
                 model.setJavaType(javaTypeMap.get(model.getName()));
                 // 是否可空
                 if (resultSet.getString(ResultEnum.IS_NULLABLE.name()).equals("YES")) {

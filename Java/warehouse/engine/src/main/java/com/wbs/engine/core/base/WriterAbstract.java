@@ -253,23 +253,11 @@ public abstract class WriterAbstract implements IWriter {
             String sql = buildUpdateSql();
             this.connection.setAutoCommit(true);
             pstm = connection.prepareStatement(sql);
-            int paramIndex = 1;
-            // 这里做了特殊处理，因为sql语句中非主键的参数在前面，所以先把非主键和参数先封装进去
+            Map<String, Integer> columnSort = buildColumnSort();
             for (ColumnInfo col : this.columnList) {
                 String columnName = col.getName();
-                if (this.primarySet.contains(columnName)) {
-                    continue;
-                }
+                Integer paramIndex = columnSort.get(columnName);
                 DbUtils.setParam(pstm, paramIndex, row.get(columnName), col.getJavaType());
-                paramIndex++;
-            }
-
-            for (ColumnInfo col : this.columnList) {
-                String columnName = col.getName();
-                if (this.primarySet.contains(columnName)) {
-                    DbUtils.setParam(pstm, paramIndex, row.get(columnName), col.getJavaType());
-                    paramIndex++;
-                }
             }
             pstm.execute();
         } catch (Exception e) {
@@ -336,9 +324,8 @@ public abstract class WriterAbstract implements IWriter {
         DataTable errorData = null;
 
         // 查找已存在数据
-        if (exceptionData.size() > 0) {
-            exitsData = findExitsData(exceptionData);
-        }
+        exitsData = findExitsData(exceptionData);
+
         // 如果有已存在数据，去差集
         if (exitsData.size() > 0) {
             result.setExitsData(exitsData);
@@ -443,17 +430,11 @@ public abstract class WriterAbstract implements IWriter {
             whereSql.delete(whereSql.length() - 5, whereSql.length());
             switch (dbType) {
                 case MySql:
-                    sql = String.format("select 1 as number from %s%s  limit  1 ", tableNameConvert, whereSql);
-                    break;
-                case SqlServer:
-                    sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableNameConvert, whereSql);
-                    break;
                 case PostgreSql:
                     sql = String.format("select 1 as number from %s%s  limit  1 ", tableNameConvert, whereSql);
                     break;
+                case SqlServer:
                 case ClickHouse:
-                    sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableNameConvert, whereSql);
-                    break;
                 default:
                     sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableNameConvert, whereSql);
                     break;

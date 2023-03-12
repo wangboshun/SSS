@@ -8,9 +8,25 @@ import java.io.Serializable;
  * @desciption TableInfo
  */
 public class TableInfo implements Serializable {
+
+    /**
+     * 表名
+     */
     private String name;
+
+    /**
+     * 备注
+     */
     private String comment;
+
+    /**
+     * 库名
+     */
     private String db;
+
+    /**
+     * 数据量
+     */
     private int total;
 
     public String getName() {
