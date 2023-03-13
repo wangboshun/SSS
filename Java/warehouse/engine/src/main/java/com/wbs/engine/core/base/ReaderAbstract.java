@@ -42,7 +42,7 @@ public abstract class ReaderAbstract implements IReader {
         String url = ((ConnectionImpl) connection).getURL();
         String md5 = SecureUtil.md5(url + "_" + tableName);
         List<ColumnInfo> columns = fifoCache.get(md5);
-        if (columnList==null) {
+        if (columnList == null) {
             columns = DbUtils.getColumns(connection, tableName);
             fifoCache.put(md5, columns);
         }
@@ -105,7 +105,12 @@ public abstract class ReaderAbstract implements IReader {
                 if (item.getValue() == null) {
                     continue;
                 }
-                String javaType = DbUtils.getColumnJavaType(columnList, item.getColumn());
+                String javaType = "";
+                ColumnInfo column = columnList.stream().filter(x -> item.getColumn().equals(x.getName())).findAny().orElse(null);
+                if (column != null) {
+                    javaType = column.getJavaType();
+                }
+
                 // in和not in
                 if (item.getSymbol().toLowerCase().contains("in")) {
                     List<Object> valueList = DataUtils.toList(item.getValue());
