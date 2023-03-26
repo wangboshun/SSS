@@ -428,16 +428,10 @@ public abstract class WriterAbstract implements IWriter {
                 whereSql.append(" AND ");
             }
             whereSql.delete(whereSql.length() - 5, whereSql.length());
-            switch (dbType) {
-                case MySql:
-                case PostgreSql:
-                    sql = String.format("select 1 as number from %s%s  limit  1 ", tableNameConvert, whereSql);
-                    break;
-                case SqlServer:
-                case ClickHouse:
-                default:
-                    sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableNameConvert, whereSql);
-                    break;
+            if (dbType == DbTypeEnum.SqlServer) {
+                sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableNameConvert, whereSql);
+            } else {
+                sql = String.format("select 1 as number from %s%s  limit  1 ", tableNameConvert, whereSql);
             }
             pstm = connection.prepareStatement(sql);
             int index = 1;

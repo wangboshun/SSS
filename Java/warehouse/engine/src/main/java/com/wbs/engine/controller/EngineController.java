@@ -3,7 +3,6 @@ package com.wbs.engine.controller;
 import com.wbs.common.database.DbUtils;
 import com.wbs.common.database.base.DataTable;
 import com.wbs.common.database.base.DbTypeEnum;
-import com.wbs.common.database.base.model.ColumnInfo;
 import com.wbs.common.database.base.model.TableInfo;
 import com.wbs.common.database.base.model.WhereInfo;
 import com.wbs.common.database.factory.ConnectionFactory;
@@ -134,10 +133,10 @@ public class EngineController {
         Connection pgsqlConnection = connectionFactory.getConnect("pgsql");
         Connection ckConnection = connectionFactory.getConnect("ck");
 
-        List<ColumnInfo> columns1 = DbUtils.getColumns(mysqlConnection, "iot_data");
-        List<ColumnInfo> columns2 = DbUtils.getColumns(sqlserverConnection, "iot_data");
-        List<ColumnInfo> columns3 = DbUtils.getColumns(pgsqlConnection, "iot_data");
-        List<ColumnInfo> columns4 = DbUtils.getColumns(ckConnection, "iot_data");
+        // List<ColumnInfo> columns1 = DbUtils.getColumns(mysqlConnection, "iot_data");
+        // List<ColumnInfo> columns2 = DbUtils.getColumns(sqlserverConnection, "iot_data");
+        // List<ColumnInfo> columns3 = DbUtils.getColumns(pgsqlConnection, "iot_data");
+        // List<ColumnInfo> columns4 = DbUtils.getColumns(ckConnection, "iot_data");
 
         List<TableInfo> ckTables = DbUtils.getTables(ckConnection);
         List<TableInfo> pgTables = DbUtils.getTables(pgsqlConnection);

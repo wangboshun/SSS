@@ -25,9 +25,23 @@ public class TableInfo implements Serializable {
     private String db;
 
     /**
+     * 表类型
+     */
+    private String type;
+
+    /**
      * 数据量
      */
     private int total;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+
+    }
 
     public String getName() {
         return name;

@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.*;
 import java.util.*;
-import java.util.concurrent.Future;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author WBS
@@ -35,19 +35,19 @@ public class DbUtils {
         threadPool = this.customExecutor;
     }
 
-    /**
-     * 获取字段的java类型
-     *
-     * @param columns    列集合
-     * @param columnName 列名
-     */
-    public static String getColumnJavaType(List<ColumnInfo> columns, String columnName) {
-        ColumnInfo column = columns.stream().filter(x -> columnName.equals(x.getName())).findAny().orElse(null);
-        if (column != null) {
-            return column.getJavaType();
-        } else {
-            return "";
+    public static List<TableInfo> getTables(Connection connection) {
+        List<TableInfo> list = new ArrayList<>();
+        try {
+            CompletableFuture<List<TableInfo>> future1 = CompletableFuture.supplyAsync(() -> getTableBaseInfo(connection), threadPool);
+            CompletableFuture<LinkedHashMap<String, Integer>> future2 = CompletableFuture.supplyAsync(() -> getTableRows(connection), threadPool);
+            CompletableFuture.allOf(future1, future2);
+            list = future1.get();
+            LinkedHashMap<String, Integer> rowsMap = future2.get();
+            list.forEach(item -> item.setTotal(rowsMap.get(item.getName())));
+        } catch (Exception e) {
+            logger.error("------DbUtils getTables error------", e);
         }
+        return list;
     }
 
     /**
@@ -55,38 +55,59 @@ public class DbUtils {
      *
      * @param connection 连接
      */
-    public static List<TableInfo> getTables(Connection connection) {
+    public static List<TableInfo> getTableBaseInfo(Connection connection) {
         List<TableInfo> list = new ArrayList<>();
+        ResultSet resultSet = null;
+        String db = "";
+        try {
+            resultSet = connection.getMetaData().getTables(connection.getCatalog(), connection.getSchema(), null, new String[]{"TABLE"});
+            while (resultSet.next()) {
+                TableInfo model = new TableInfo();
+                model.setName(resultSet.getString("TABLE_NAME"));
+                model.setComment(resultSet.getString("REMARKS"));
+                // sqlserver没有这个字段
+                if (getDbType(connection) != DbTypeEnum.SqlServer) {
+                    model.setType(resultSet.getString("TYPE_NAME"));
+                }
+                model.setDb(db);
+                list.add(model);
+            }
+        } catch (SQLException e) {
+            logger.error("------DbUtils getTableBaseInfo error------", e);
+        } finally {
+            closeResultSet(resultSet);
+        }
+        return list;
+    }
+
+    /**
+     * 获取当前连接库下的所有表
+     *
+     * @param connection 连接
+     */
+    public static LinkedHashMap<String, Integer> getTableRows(Connection connection) {
+        LinkedHashMap<String, Integer> rowMap = new LinkedHashMap<>();
         Statement stmt = null;
         ResultSet resultSet = null;
         String sql = "";
-        String db = "";
         try {
             stmt = connection.createStatement();
             String driverName = connection.getMetaData().getDriverName().toUpperCase();
             if (driverName.contains("SQL SERVER")) {
-                db = connection.getCatalog();
-                sql = "SELECT a.name, b.[value] AS comment, c.rows as total FROM sys.tables AS a LEFT JOIN sys.extended_properties AS b ON a.object_id=b.major_id  AND b.minor_id=0 INNER JOIN sysindexes AS c ON c.id=OBJECT_ID( a.name ) WHERE c.indid<2";
+                sql = "SELECT a.name,b.rows AS total FROM sys.tables AS a INNER JOIN sysindexes AS b ON b.id= OBJECT_ID( a.name ) WHERE b.indid<2";
             } else if (driverName.contains("MYSQL")) {
-                db = connection.getCatalog();
                 sql = "SET SESSION information_schema_stats_expiry=0"; // 临时设置实时刷新
                 stmt.execute(sql);
-                sql = "SELECT TABLE_NAME as name, TABLE_COMMENT as comment, TABLE_ROWS as total FROM information_schema.TABLES  WHERE TABLE_SCHEMA = '" + db + "' ;";
+                sql = "SELECT TABLE_NAME as name,TABLE_ROWS as total FROM information_schema.TABLES  WHERE TABLE_SCHEMA = '" + connection.getCatalog() + "' ;";
             } else if (driverName.contains("POSTGRESQL")) {
-                db = connection.getCatalog() + "." + connection.getSchema();
-                sql = "SELECT relname as name,n_live_tup as total, cast( obj_description ( relid, 'pg_class' ) AS VARCHAR ) AS comment FROM pg_stat_user_tables where schemaname='" + connection.getSchema() + "'  ";
+                sql = "SELECT  relname as name,n_live_tup as total FROM pg_stat_user_tables where schemaname='" + connection.getSchema() + "'  ";
             } else if (driverName.contains("CLICKHOUSE")) {
-                db = connection.getSchema();
-                sql = "select name,comment,total_rows as total from `system`.tables  where database = '" + db + "'";
+                sql = "select name,total_rows as total from `system`.tables  where database = '" + connection.getSchema() + "'";
             }
+
             resultSet = stmt.executeQuery(sql);
             while (resultSet.next()) {
-                TableInfo model = new TableInfo();
-                model.setName(resultSet.getString("name"));
-                model.setComment(resultSet.getString("comment"));
-                model.setDb(db);
-                model.setTotal(resultSet.getInt("total"));
-                list.add(model);
+                rowMap.put(resultSet.getString("name"), resultSet.getInt("total"));
             }
         } catch (SQLException e) {
             logger.error("------DbUtils getTables error------", e);
@@ -94,7 +115,7 @@ public class DbUtils {
             closeResultSet(resultSet);
             closeStatement(stmt);
         }
-        return list;
+        return rowMap;
     }
 
     /**
@@ -105,13 +126,40 @@ public class DbUtils {
      * @return
      */
     public static List<ColumnInfo> getColumns(Connection connection, String tableName) {
-        Future<LinkedHashMap<String, String>> submit1 = threadPool.submit(() -> getColumnJavaType(connection, tableName));
-        Future<Set<String>> submit2 = threadPool.submit(() -> getPrimaryKey(connection, tableName));
+        List<ColumnInfo> list = new ArrayList<>();
+        try {
+            CompletableFuture<LinkedHashMap<String, String>> future1 = CompletableFuture.supplyAsync(() -> getColumnJavaType(connection, tableName), threadPool);
+            CompletableFuture<Set<String>> future2 = CompletableFuture.supplyAsync(() -> getPrimaryKey(connection, tableName), threadPool);
+            CompletableFuture<List<ColumnInfo>> future3 = CompletableFuture.supplyAsync(() -> getColumnBaseInfo(connection, tableName), threadPool);
+            CompletableFuture.allOf(future1, future2, future3);
+            LinkedHashMap<String, String> javaTypeMap = future1.get();
+            Set<String> primarySet = future2.get();
+            list = future3.get();
+            list.forEach(item -> {
+                if (primarySet.contains(item.getName())) {
+                    item.setPrimary(1);
+                } else {
+                    item.setPrimary(0);
+                }
+                item.setJavaType(javaTypeMap.get(item.getName()));
+            });
+        } catch (Exception e) {
+            logger.error("------DbUtils getColumns error------", e);
+        }
+        return list;
+    }
+
+    /**
+     * 获取表基础信息
+     *
+     * @param connection
+     * @param tableName
+     * @return
+     */
+    private static List<ColumnInfo> getColumnBaseInfo(Connection connection, String tableName) {
         List<ColumnInfo> list = new ArrayList<>();
         ResultSet resultSet = null;
         try {
-            LinkedHashMap<String, String> javaTypeMap = submit1.get();
-            Set<String> primarySet = submit2.get();
             DatabaseMetaData metaData = connection.getMetaData();
             resultSet = metaData.getColumns(connection.getCatalog(), connection.getSchema(), tableName, "%");
             while (resultSet.next()) {
@@ -122,23 +170,16 @@ public class DbUtils {
                 model.setScale(resultSet.getInt(ResultEnum.DECIMAL_DIGITS.name()));
                 model.setDbType(resultSet.getString(ResultEnum.TYPE_NAME.name()));
                 model.setLenght(resultSet.getInt(ResultEnum.COLUMN_SIZE.name()));
-                model.setJavaType(javaTypeMap.get(model.getName()));
                 // 是否可空
                 if (resultSet.getString(ResultEnum.IS_NULLABLE.name()).equals("YES")) {
                     model.setIsNullable(1);
                 } else {
                     model.setIsNullable(0);
                 }
-                // 是否为主键
-                if (primarySet.contains(model.getName())) {
-                    model.setPrimary(1);
-                } else {
-                    model.setPrimary(0);
-                }
                 list.add(model);
             }
         } catch (Exception e) {
-            logger.error("------DbUtils getTables error------", e);
+            logger.error("------DbUtils getColumnBaseInfo error------", e);
         } finally {
             closeResultSet(resultSet);
         }
@@ -152,7 +193,7 @@ public class DbUtils {
      * @param tableName
      * @return
      */
-    public  static LinkedHashMap<String, String> getColumnJavaType(Connection connection, String tableName) {
+    public static LinkedHashMap<String, String> getColumnJavaType(Connection connection, String tableName) {
         Statement stmt = null;
         ResultSet resultSet = null;
         LinkedHashMap<String, String> columnMap = new LinkedHashMap<>();
@@ -295,7 +336,7 @@ public class DbUtils {
 
     public static DbTypeEnum getDbType(Connection connection) {
         try {
-            String driverName = connection.getMetaData().getDriverName().toLowerCase();
+            String driverName = DriverManager.getDriver(connection.getMetaData().getURL()).getClass().getName().toLowerCase();
             if (driverName.contains("mysql")) {
                 return DbTypeEnum.MySql;
             } else if (driverName.contains("sqlserver")) {
