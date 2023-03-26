@@ -42,7 +42,7 @@ public class ColumnInfo implements Serializable {
     /**
      * 可否为空
      */
-    private int isNullAble;
+    private int isNullable;
 
     /**
      * 小数点保留位
@@ -54,12 +54,12 @@ public class ColumnInfo implements Serializable {
      */
     private int lenght;
 
-    public int getIsNullAble() {
-        return isNullAble;
+    public int getIsNullable() {
+        return isNullable;
     }
 
-    public void setIsNullAble(int isNullAble) {
-        this.isNullAble = isNullAble;
+    public void setIsNullable(int isNullable) {
+        this.isNullable = isNullable;
     }
 
     public int getScale() {

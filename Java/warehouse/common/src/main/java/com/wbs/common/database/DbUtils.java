@@ -125,9 +125,9 @@ public class DbUtils {
                 model.setJavaType(javaTypeMap.get(model.getName()));
                 // 是否可空
                 if (resultSet.getString(ResultEnum.IS_NULLABLE.name()).equals("YES")) {
-                    model.setIsNullAble(1);
+                    model.setIsNullable(1);
                 } else {
-                    model.setIsNullAble(0);
+                    model.setIsNullable(0);
                 }
                 // 是否为主键
                 if (primarySet.contains(model.getName())) {
