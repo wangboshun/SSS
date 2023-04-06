@@ -22,7 +22,7 @@ import java.util.List;
 @RequestMapping("/pipe/connect")
 @Tag(name = "pipe", description = "pipe模块")
 public class ConnectController {
-    private ConnectApplication connectApplication;
+    private final ConnectApplication connectApplication;
 
     public ConnectController(ConnectApplication connectApplication) {
         this.connectApplication = connectApplication;

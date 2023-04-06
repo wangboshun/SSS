@@ -20,7 +20,7 @@ import java.util.List;
 @Tag(name = "pipe", description = "pipe模块")
 public class SourceController {
 
-    private SourceApplication sourceApplication;
+    private final SourceApplication sourceApplication;
 
     public SourceController(SourceApplication sourceApplication) {
         this.sourceApplication = sourceApplication;

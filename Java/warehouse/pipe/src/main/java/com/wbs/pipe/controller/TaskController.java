@@ -22,7 +22,7 @@ import java.util.List;
 @Tag(name = "pipe", description = "pipe模块")
 public class TaskController {
 
-    private TaskApplication taskApplication;
+    private final TaskApplication taskApplication;
 
     public TaskController(TaskApplication taskApplication) {
         this.taskApplication = taskApplication;

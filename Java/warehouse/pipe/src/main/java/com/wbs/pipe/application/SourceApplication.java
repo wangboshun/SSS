@@ -1,7 +1,6 @@
 package com.wbs.pipe.application;
 
 import cn.hutool.core.text.CharSequenceUtil;
-import cn.hutool.core.util.StrUtil;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -62,8 +61,8 @@ public class SourceApplication {
             return new ResponseResult().ERROR(HttpEnum.EXISTS);
         }
         try {
-            model.setCreate_time(LocalDateTime.now());
-            model.setUpdate_time(null);
+            model.setCt(LocalDateTime.now());
+            model.setUt(null);
             ObjectId id = new ObjectId();
             model.setId(id.toString());
             collection.insertOne(model);
@@ -99,8 +98,8 @@ public class SourceApplication {
         Bson query = Filters.eq("_id", model.getId());
         SourceInfoModel old = collection.find(query).first();
         if (old != null) {
-            model.setUpdate_time(LocalDateTime.now());
-            model.setCreate_time(old.getCreate_time());
+            model.setUt(LocalDateTime.now());
+            model.setCt(old.getCt());
             UpdateResult result = collection.replaceOne(query, model);
             if (result.getModifiedCount() > 0) {
                 return new ResponseResult().OK();

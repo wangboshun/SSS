@@ -1,31 +1,18 @@
 package com.wbs.pipe.model.task;
 
-import java.time.LocalDateTime;
+import com.wbs.common.model.BaseStatusModel;
 
 /**
  * @author WBS
  * @date 2023/3/9 11:04
  * @desciption TaskInfoModel
  */
-public class TaskInfoModel {
-    private String id;
+public class TaskInfoModel extends BaseStatusModel {
     private String name;
     private int type;
-    private int status;
     private String desc;
     private String sink_id;
     private String source_id;
-    private LocalDateTime create_time;
-    private LocalDateTime update_time;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
@@ -40,14 +27,6 @@ public class TaskInfoModel {
 
     public void setType(int type) {
         this.type = type;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
     }
 
     public String getDesc() {
@@ -72,21 +51,5 @@ public class TaskInfoModel {
 
     public void setSource_id(String source_id) {
         this.source_id = source_id;
-    }
-
-    public LocalDateTime getCreate_time() {
-        return create_time;
-    }
-
-    public void setCreate_time(LocalDateTime create_time) {
-        this.create_time = create_time;
-    }
-
-    public LocalDateTime getUpdate_time() {
-        return update_time;
-    }
-
-    public void setUpdate_time(LocalDateTime update_time) {
-        this.update_time = update_time;
     }
 }

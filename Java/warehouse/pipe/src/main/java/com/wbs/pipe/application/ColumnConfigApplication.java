@@ -51,8 +51,8 @@ public class ColumnConfigApplication {
 
     public ResponseResult addColumnConfig(ColumnConfigModel model) {
         try {
-            model.setCreate_time(LocalDateTime.now());
-            model.setUpdate_time(null);
+            model.setCt(LocalDateTime.now());
+            model.setUt(null);
             ObjectId id = new ObjectId();
             model.setId(id.toString());
             collection.insertOne(model);
@@ -88,8 +88,8 @@ public class ColumnConfigApplication {
         Bson query = eq("_id", model.getId());
         ColumnConfigModel old = collection.find(query).first();
         if (old != null) {
-            model.setUpdate_time(LocalDateTime.now());
-            model.setCreate_time(old.getCreate_time());
+            model.setUt(LocalDateTime.now());
+            model.setCt(old.getCt());
             UpdateResult result = collection.replaceOne(query, model);
             if (result.getModifiedCount() > 0) {
                 return new ResponseResult().OK();

@@ -22,7 +22,7 @@ import java.util.List;
 @Tag(name = "pipe", description = "pipe模块")
 public class SinkController {
 
-    private SinkApplication sinkApplication;
+    private final SinkApplication sinkApplication;
 
     public SinkController(SinkApplication sinkApplication) {
         this.sinkApplication = sinkApplication;

@@ -1,15 +1,14 @@
 package com.wbs.pipe.model.connect;
-import java.io.Serializable;
-import java.time.LocalDateTime;
+
+import com.wbs.common.model.BaseStatusModel;
 
 /**
  * @author WBS
  * @date 2023/3/8 14:37
  * @desciption ConnectInfoModel
  */
-public class ConnectInfoModel implements Serializable {
+public class ConnectInfoModel extends BaseStatusModel {
 
-    private String id;
     private String name;
     private String host;
     private int port;
@@ -18,10 +17,7 @@ public class ConnectInfoModel implements Serializable {
     private String database;
     private String schema;
     private int type;
-    private int status;
     private String desc;
-    private LocalDateTime create_time;
-    private LocalDateTime update_time;
 
     public String getName() {
         return name;
@@ -30,15 +26,6 @@ public class ConnectInfoModel implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getHost() {
         return host;
     }
@@ -87,36 +74,12 @@ public class ConnectInfoModel implements Serializable {
         this.type = type;
     }
 
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
     public String getDesc() {
         return desc;
     }
 
     public void setDesc(String desc) {
         this.desc = desc;
-    }
-
-    public LocalDateTime getCreate_time() {
-        return create_time;
-    }
-
-    public void setCreate_time(LocalDateTime create_time) {
-        this.create_time = create_time;
-    }
-
-    public LocalDateTime getUpdate_time() {
-        return update_time;
-    }
-
-    public void setUpdate_time(LocalDateTime update_time) {
-        this.update_time = update_time;
     }
 
     public String getSchema() {

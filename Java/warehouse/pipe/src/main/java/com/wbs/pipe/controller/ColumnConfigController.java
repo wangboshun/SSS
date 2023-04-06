@@ -20,7 +20,7 @@ import java.util.List;
 @Tag(name = "pipe", description = "pipe模块")
 public class ColumnConfigController {
 
-    private ColumnConfigApplication columnConfigApplication;
+    private final ColumnConfigApplication columnConfigApplication;
 
     public ColumnConfigController(ColumnConfigApplication columnConfigApplication) {
         this.columnConfigApplication = columnConfigApplication;
