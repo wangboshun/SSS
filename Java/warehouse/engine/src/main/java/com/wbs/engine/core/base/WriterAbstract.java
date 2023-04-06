@@ -44,7 +44,7 @@ public abstract class WriterAbstract implements IWriter {
     Cache<String, List<ColumnInfo>> fifoCache = CacheUtil.newFIFOCache(100);
     @Autowired
     private ThreadPoolTaskExecutor customExecutor;
-    private static int BATCH_SIZE = 10000;
+    private static final int BATCH_SIZE = 10000;
 
     @Override
     public void config(String tableName, Connection connection) {
@@ -215,7 +215,7 @@ public abstract class WriterAbstract implements IWriter {
             this.connection.setAutoCommit(false);
             pstm = connection.prepareStatement(sql);
             int rowIndex = 0;
-            Map<String, Integer> columnSort = buildColumnSort();
+            Map<String, Integer> columnSort = buildColumnSql();
             for (DataRow row : rows) {
                 for (ColumnInfo col : this.columnList) {
                     String columnName = col.getName();
@@ -253,7 +253,7 @@ public abstract class WriterAbstract implements IWriter {
             String sql = buildUpdateSql();
             this.connection.setAutoCommit(true);
             pstm = connection.prepareStatement(sql);
-            Map<String, Integer> columnSort = buildColumnSort();
+            Map<String, Integer> columnSort = buildColumnSql();
             for (ColumnInfo col : this.columnList) {
                 String columnName = col.getName();
                 Integer paramIndex = columnSort.get(columnName);
@@ -326,11 +326,12 @@ public abstract class WriterAbstract implements IWriter {
         // 查找已存在数据
         exitsData = findExitsData(exceptionData);
 
-        // 如果有已存在数据，去差集
+        // 如果有已存在数据，保存已存在数据
         if (exitsData.size() > 0) {
             result.setExitsData(exitsData);
-            exceptionData.removeAll(exitsData);
+            exceptionData.removeAll(exitsData); // 并去差集
         }
+        // 保存错误数据
         if (exceptionData.size() > 0) {
             errorData = findErrorData(exceptionData, type);
             if (errorData.size() > 0) {
@@ -345,7 +346,7 @@ public abstract class WriterAbstract implements IWriter {
      *
      * @return
      */
-    private Map<String, Integer> buildColumnSort() {
+    private Map<String, Integer> buildColumnSql() {
         Integer paramIndex = 1;
         Map<String, Integer> columnSort = new HashMap<String, Integer>();
         for (ColumnInfo col : this.columnList) {

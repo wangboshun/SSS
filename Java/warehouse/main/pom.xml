@@ -38,12 +38,6 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
-        <!--<dependency>-->
-        <!--    <groupId>com.wbs</groupId>-->
-        <!--    <artifactId>iot</artifactId>-->
-        <!--    <version>0.0.1-SNAPSHOT</version>-->
-        <!--</dependency>-->
-
         <dependency>
             <groupId>com.wbs.pipe</groupId>
             <artifactId>pipe</artifactId>
