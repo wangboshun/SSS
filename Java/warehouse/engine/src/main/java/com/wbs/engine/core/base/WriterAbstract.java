@@ -21,10 +21,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -437,9 +434,12 @@ public abstract class WriterAbstract implements IWriter {
             pstm = connection.prepareStatement(sql);
             int index = 1;
             for (String columnName : primarySet) {
-                String javaType = this.columnList.stream().filter(x -> x.getName().equals(columnName)).findFirst().get().getJavaType();
-                DbUtils.setParam(pstm, index, row.get(columnName), javaType);
-                index++;
+                Optional<ColumnInfo> first = this.columnList.stream().filter(x -> x.getName().equals(columnName)).findFirst();
+                if (first.isPresent()) {
+                    String javaType = first.get().getJavaType();
+                    DbUtils.setParam(pstm, index, row.get(columnName), javaType);
+                    index++;
+                }
             }
 
             resultSet = pstm.executeQuery();

@@ -1,6 +1,6 @@
 package com.wbs.pipe.application;
 
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.text.CharSequenceUtil;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -41,7 +41,7 @@ public class ColumnConfigApplication {
     }
 
     public ColumnConfigModel getColumnConfigByTask(String taskId) {
-        if (StrUtil.isNotBlank(taskId)) {
+        if (CharSequenceUtil.isNotBlank(taskId)) {
             Bson query = eq("task_id", taskId);
             return collection.find(query).first();
         } else {
@@ -82,7 +82,7 @@ public class ColumnConfigApplication {
     }
 
     public ResponseResult updateColumnConfig(ColumnConfigModel model) {
-        if (StrUtil.isBlank(model.getId())) {
+        if (CharSequenceUtil.isBlank(model.getId())) {
             return new ResponseResult().ERROR("id不可为空！", HttpEnum.PARAM_VALID_ERROR);
         }
         Bson query = eq("_id", model.getId());

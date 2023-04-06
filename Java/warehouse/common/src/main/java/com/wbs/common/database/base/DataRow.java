@@ -125,9 +125,8 @@ public class DataRow extends LinkedHashMap<String, Object> {
      * 插入头部
      *
      * @param key
-     * @param value
      */
-    public void appendHead(String key, Object value) {
+    public void appendHead(String key) {
         this.append(key, values(), 0);
     }
 
@@ -135,9 +134,8 @@ public class DataRow extends LinkedHashMap<String, Object> {
      * 插入尾部
      *
      * @param key
-     * @param value
      */
-    public void appendTail(String key, Object value) {
+    public void appendTail(String key) {
         this.append(key, values(), -1);
     }
 
@@ -171,10 +169,8 @@ public class DataRow extends LinkedHashMap<String, Object> {
             }
             String type = v.getClass().getSimpleName().toLowerCase();
             // 如果是数字，需要判断是否合规
-            if (type.contains("int") || "float".equals(type) || "double".equals(type) || "bigdecimal".equals(type)) {
-                if (!DataUtils.isNumber(result)) {
-                    return;
-                }
+            if (type.contains("int") || "float".equals(type) || "double".equals(type) || "bigdecimal".equals(type) && (!DataUtils.isNumber(result))) {
+                return;
             }
 
             if (type.contains("int")) {
@@ -206,10 +202,8 @@ public class DataRow extends LinkedHashMap<String, Object> {
         String result = current.replaceAll(old.toString(), news.toString());
         String type = v.getClass().getSimpleName().toLowerCase();
         // 如果是数字，需要判断是否合规
-        if (type.contains("int") || "float".equals(type) || "double".equals(type) || "bigdecimal".equals(type)) {
-            if (!DataUtils.isNumber(result)) {
-                return;
-            }
+        if (type.contains("int") || "float".equals(type) || "double".equals(type) || "bigdecimal".equals(type) && (!DataUtils.isNumber(result))) {
+            return;
         }
         if (type.contains("int")) {
             this.replace(key, DataUtils.toInt(result));

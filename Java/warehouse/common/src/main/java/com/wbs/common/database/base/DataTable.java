@@ -29,9 +29,7 @@ public class DataTable extends ArrayList<DataRow> {
      * @param keys
      */
     public void removeKeys(List<String> keys) {
-        this.forEach(item -> {
-            item.removeKeys(keys);
-        });
+        this.forEach(item -> item.removeKeys(keys));
     }
 
     /**
@@ -40,9 +38,7 @@ public class DataTable extends ArrayList<DataRow> {
      * @param row
      */
     public void addRow(DataRow row) {
-        this.forEach(item -> {
-            item.putAll(row);
-        });
+        this.forEach(item -> item.putAll(row));
     }
 
     /**
@@ -53,9 +49,7 @@ public class DataTable extends ArrayList<DataRow> {
      */
     public DataTable mapper(Map<String, String> config) {
         DataTable result = new DataTable();
-        this.forEach(item -> {
-            result.add(item.mapper(config));
-        });
+        this.forEach(item -> result.add(item.mapper(config)));
         return result;
     }
 
@@ -66,9 +60,7 @@ public class DataTable extends ArrayList<DataRow> {
      * @param value 传递int、float、double、BIgDecimal数值
      */
     public void increase(String key, Object value) {
-        this.forEach(item -> {
-            item.increase(key, value);
-        });
+        this.forEach(item -> item.increase(key, value));
     }
 
     /**
@@ -78,33 +70,25 @@ public class DataTable extends ArrayList<DataRow> {
      * @param value 传递int、float、double、BIgDecimal数值
      */
     public void decrease(String key, Object value) {
-        this.forEach(item -> {
-            item.decrease(key, value);
-        });
+        this.forEach(item -> item.decrease(key, value));
     }
 
     /**
      * 插入头部
      *
      * @param key
-     * @param value
      */
-    public void appendHead(String key, Object value) {
-        this.forEach(item -> {
-            item.appendHead(key, value);
-        });
+    public void appendHead(String key) {
+        this.forEach(item -> item.appendHead(key));
     }
 
     /**
      * 插入尾部
      *
      * @param key
-     * @param value
      */
-    public void appendTail(String key, Object value) {
-        this.forEach(item -> {
-            item.appendTail(key, value);
-        });
+    public void appendTail(String key) {
+        this.forEach(item -> item.appendTail(key));
     }
 
     /**
@@ -115,9 +99,7 @@ public class DataTable extends ArrayList<DataRow> {
      * @param position 插入位置，0和1为在头部插入，-1和超出下标在尾部插入
      */
     public void append(String key, Object value, int position) {
-        this.forEach(item -> {
-            item.append(key, value, position);
-        });
+        this.forEach(item -> item.append(key, value, position));
     }
 
     /**
@@ -128,9 +110,7 @@ public class DataTable extends ArrayList<DataRow> {
      * @param news news
      */
     public void replaceValue(String key, Object old, Object news) {
-        this.forEach(item -> {
-            item.replaceValue(key, old, news);
-        });
+        this.forEach(item -> item.replaceValue(key, old, news));
     }
 
     public String getName() {

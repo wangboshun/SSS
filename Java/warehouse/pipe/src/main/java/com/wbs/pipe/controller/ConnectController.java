@@ -1,6 +1,6 @@
 package com.wbs.pipe.controller;
 
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.text.CharSequenceUtil;
 import com.wbs.common.enums.HttpEnum;
 import com.wbs.common.extend.ResponseResult;
 import com.wbs.pipe.application.ConnectApplication;
@@ -40,7 +40,7 @@ public class ConnectController {
 
     @GetMapping(value = "/info")
     public ResponseResult info(@RequestParam(required = false) String id, @RequestParam(required = false) String name) {
-        if (StrUtil.isEmpty(id) && StrUtil.isEmpty(name)) {
+        if (CharSequenceUtil.isEmpty(id) && CharSequenceUtil.isEmpty(name)) {
             return new ResponseResult().ERROR("请输入id或名称", HttpEnum.PARAM_VALID_ERROR);
         }
         ConnectInfoModel model = connectApplication.getConnectInfo(id, name);

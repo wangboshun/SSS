@@ -25,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
  */
 @Component
 public class DbUtils {
-    private final static Logger logger = LoggerFactory.getLogger("DbUtils");
+    private static final Logger logger = LoggerFactory.getLogger("DbUtils");
     @Autowired
     private ThreadPoolTaskExecutor customExecutor;
     private static ThreadPoolTaskExecutor threadPool;

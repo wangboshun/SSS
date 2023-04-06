@@ -68,9 +68,9 @@ public enum HttpEnum {
      */
     EXCEPTION("E00O01", 500, "抛出异常");
 
-    public String sysCode;
-    public Integer responseCode;
-    public String message;
+    private String sysCode;
+    private Integer responseCode;
+    private String message;
 
     HttpEnum(String sysCode, Integer responseCode, String message) {
         this.sysCode = sysCode;
@@ -82,23 +82,11 @@ public enum HttpEnum {
         return sysCode;
     }
 
-    public void setSysCode(String sysCode) {
-        this.sysCode = sysCode;
-    }
-
     public int getResponseCode() {
         return responseCode;
     }
 
-    public void setResponseCode(int responseCode) {
-        this.responseCode = responseCode;
-    }
-
     public String getMessage() {
         return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 }

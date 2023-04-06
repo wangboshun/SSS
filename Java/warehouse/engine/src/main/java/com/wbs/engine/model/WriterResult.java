@@ -10,9 +10,9 @@ import java.io.Serializable;
  * @desciption WriterResult
  */
 public class WriterResult implements Serializable {
-    public float spend;
-    public DataTable errorData;
-    public DataTable exitsData;
+    private float spend;
+    private DataTable errorData;
+    private DataTable exitsData;
     private int insertCount;
     private int updateCount;
 

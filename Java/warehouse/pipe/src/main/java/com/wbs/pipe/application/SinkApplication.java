@@ -1,5 +1,6 @@
 package com.wbs.pipe.application;
 
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.StrUtil;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -43,17 +44,16 @@ public class SinkApplication {
 
     public SinkInfoModel getSink(String id, String name) {
         List<Bson> query = new ArrayList<>();
-        if (StrUtil.isNotBlank(id)) {
+        if (CharSequenceUtil.isNotBlank(id)) {
             query.add(eq("_id", id));
         }
-        if (StrUtil.isNotBlank(name)) {
+        if (CharSequenceUtil.isNotBlank(name)) {
             query.add(eq("name", name));
         }
         if (query.isEmpty()) {
             return null;
         }
-        SinkInfoModel model = collection.find(or(query)).first();
-        return model;
+        return collection.find(or(query)).first();
     }
 
     public ResponseResult addSink(SinkInfoModel model) {
@@ -93,7 +93,7 @@ public class SinkApplication {
     }
 
     public ResponseResult updateSink(SinkInfoModel model) {
-        if (StrUtil.isBlank(model.getId())) {
+        if (CharSequenceUtil.isBlank(model.getId())) {
             return new ResponseResult().ERROR("id不可为空！", HttpEnum.PARAM_VALID_ERROR);
         }
         Bson query = Filters.eq("_id", model.getId());

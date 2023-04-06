@@ -39,10 +39,9 @@ public class DateUtils {
             format = "yyyy-MM-dd HH:mm:ss.SSS";
         }
         // 数据库里面秒为00的时候，把秒的格式删除掉
-        if (val.contains(":")) {
-            if (val.split(":").length < 3) {
+        if (val.contains(":") && (val.split(":").length < 3)) {
                 format=format.replace(":ss", "");
-            }
+
         }
         return format;
     }
