@@ -7,6 +7,9 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import com.wbs.common.database.DbUtils;
+import com.wbs.common.database.base.model.ColumnInfo;
+import com.wbs.common.database.base.model.TableInfo;
 import com.wbs.common.enums.HttpEnum;
 import com.wbs.common.extend.ResponseResult;
 import com.wbs.pipe.model.sink.SinkInfoModel;
@@ -14,6 +17,7 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
+import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +33,11 @@ import static com.mongodb.client.model.Filters.or;
 @Service
 public class SinkApplication {
     private final MongoCollection<SinkInfoModel> collection;
+    private final ConnectApplication connectApplication;
 
-    public SinkApplication(MongoDatabase defaultMongoDatabase) {
+    public SinkApplication(MongoDatabase defaultMongoDatabase, ConnectApplication connectApplication) {
         this.collection = defaultMongoDatabase.getCollection("sink_info", SinkInfoModel.class);
+        this.connectApplication = connectApplication;
     }
 
     public List<SinkInfoModel> getSinkList() {
@@ -109,5 +115,17 @@ public class SinkApplication {
         } else {
             return new ResponseResult().NULL();
         }
+    }
+
+    public List<TableInfo> getTables(String id) {
+        SinkInfoModel sinkInfo = this.getSink(id, null);
+        Connection connection = connectApplication.getConnection(sinkInfo.getConnect_id());
+        return DbUtils.getTables(connection);
+    }
+
+    public List<ColumnInfo> getColumns(String id, String table) {
+        SinkInfoModel sourceInfo = this.getSink(id, null);
+        Connection connection = connectApplication.getConnection(sourceInfo.getConnect_id());
+        return DbUtils.getColumns(connection, table);
     }
 }

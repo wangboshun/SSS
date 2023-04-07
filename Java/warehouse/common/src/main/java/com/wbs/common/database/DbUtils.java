@@ -1,10 +1,11 @@
 package com.wbs.common.database;
 
+import com.mysql.cj.jdbc.ConnectionImpl;
 import com.wbs.common.database.base.DbTypeEnum;
 import com.wbs.common.database.base.model.ColumnInfo;
 import com.wbs.common.database.base.model.ResultEnum;
 import com.wbs.common.database.base.model.TableInfo;
-import com.wbs.common.utils.DateUtils;
+import com.wbs.common.utils.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +59,9 @@ public class DbUtils {
     public static List<TableInfo> getTableBaseInfo(Connection connection) {
         List<TableInfo> list = new ArrayList<>();
         ResultSet resultSet = null;
-        String db = "";
         try {
+            String db = ((ConnectionImpl) connection).getDatabase();
+            String schema = connection.getSchema();
             resultSet = connection.getMetaData().getTables(connection.getCatalog(), connection.getSchema(), null, new String[]{"TABLE"});
             while (resultSet.next()) {
                 TableInfo model = new TableInfo();
@@ -69,6 +71,7 @@ public class DbUtils {
                 if (getDbType(connection) != DbTypeEnum.SqlServer) {
                     model.setType(resultSet.getString("TYPE_NAME"));
                 }
+                model.setSchema(schema);
                 model.setDb(db);
                 list.add(model);
             }
@@ -81,7 +84,7 @@ public class DbUtils {
     }
 
     /**
-     * 获取当前连接库下的所有表
+     * 获取表记录数
      *
      * @param connection 连接
      */
@@ -417,7 +420,7 @@ public class DbUtils {
                     break;
                 case "DATETIME":
                 case "TIMESTAMP":
-                    pstm.setTimestamp(index, DateUtils.strToTimestamp(val, DateUtils.getDateFormat(val)));
+                    pstm.setTimestamp(index, TimeUtils.strToTimestamp(val, TimeUtils.getDateFormat(val)));
                     break;
                 case "DATE":
                     pstm.setDate(index, Date.valueOf(val));
@@ -429,7 +432,7 @@ public class DbUtils {
                     pstm.setBigDecimal(index, new BigDecimal(val));
                     break;
                 case "LOCALDATETIME":
-                    pstm.setObject(index, DateUtils.strToDate(val, DateUtils.getDateFormat(val)));
+                    pstm.setObject(index, TimeUtils.strToDate(val, TimeUtils.getDateFormat(val)));
                     break;
                 default:
                     pstm.setObject(index, val);

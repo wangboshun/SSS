@@ -1,6 +1,8 @@
 package com.wbs.pipe.controller;
 
 import cn.hutool.core.text.CharSequenceUtil;
+import com.wbs.common.database.base.model.ColumnInfo;
+import com.wbs.common.database.base.model.TableInfo;
 import com.wbs.common.enums.HttpEnum;
 import com.wbs.common.extend.ResponseResult;
 import com.wbs.pipe.application.SourceApplication;
@@ -77,5 +79,25 @@ public class SourceController {
     @PatchMapping(value = "/update")
     public ResponseResult update(@RequestBody SourceInfoModel model) {
         return sourceApplication.updateSource(model);
+    }
+
+    @GetMapping(value = "/tables/{id}")
+    public ResponseResult tables(@PathVariable String id) {
+        List<TableInfo> list = sourceApplication.getTables(id);
+        if (list.isEmpty()) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(list);
+        }
+    }
+
+    @GetMapping(value = "/columns/{id}/{table}")
+    public ResponseResult columns(@PathVariable String id, @PathVariable String table) {
+        List<ColumnInfo> list = sourceApplication.getColumns(id,table);
+        if (list.isEmpty()) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(list);
+        }
     }
 }

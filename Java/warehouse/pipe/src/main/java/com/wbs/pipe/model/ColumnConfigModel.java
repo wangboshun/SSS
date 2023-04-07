@@ -1,6 +1,6 @@
 package com.wbs.pipe.model;
 
-import com.wbs.common.model.BaseStatusModel;
+import com.wbs.common.extend.BaseStatusModel;
 
 import java.util.Map;
 

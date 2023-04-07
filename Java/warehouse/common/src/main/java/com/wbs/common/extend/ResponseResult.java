@@ -28,7 +28,7 @@ public class ResponseResult implements Serializable {
     }
 
     public ResponseResult OK(String message, Object data) {
-        return new ResponseResult(true, message, data, HttpEnum.SUCCESS.getResponseCode(), HttpEnum.SUCCESS.getSysCode());
+        return new ResponseResult(true, message, data, HttpEnum.SUCCESS.getResponseCode(), null);
     }
 
     public ResponseResult OK() {

@@ -9,7 +9,7 @@ public enum HttpEnum {
     /**
      * 成功
      */
-    SUCCESS("000000", 200, "成功"),
+    SUCCESS("0", 200, "成功"),
 
     /**
      * 成功

@@ -24,6 +24,8 @@ public class TableInfo implements Serializable {
      */
     private String db;
 
+    private String schema;
+
     /**
      * 表类型
      */
@@ -73,5 +75,13 @@ public class TableInfo implements Serializable {
 
     public void setTotal(int total) {
         this.total = total;
+    }
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
     }
 }

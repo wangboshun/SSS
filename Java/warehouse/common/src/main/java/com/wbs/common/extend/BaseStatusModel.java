@@ -1,4 +1,4 @@
-package com.wbs.common.model;
+package com.wbs.common.extend;
 
 /**
  * @author WBS

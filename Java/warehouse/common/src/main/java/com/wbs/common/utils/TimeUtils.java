@@ -11,13 +11,13 @@ import java.time.format.DateTimeFormatter;
  * @date 2023/2/23 9:42
  * @desciption DateUtils
  */
-public class DateUtils {
+public class TimeUtils {
 
     public static final String DATE_FORMAT = "yyyyy-MM-dd HH:mm:ss";
     public static final String DATE_FORMAT_MILLISECOND = "yyyyy-MM-dd HH:mm:ss.SSS";
 
     public static String getDateFormat(String val) {
-        String format = DateUtils.DATE_FORMAT;
+        String format = TimeUtils.DATE_FORMAT;
         // 只有T
         if (val.contains("T") && !val.contains("Z") && !val.contains(".")) {
             format = "yyyy-MM-dd'T'HH:mm:ss";
@@ -104,7 +104,7 @@ public class DateUtils {
     }
 
     public static Timestamp strToTimestamp(String str, String format) {
-        LocalDateTime localDateTime = DateUtils.strToDate(str, format);
+        LocalDateTime localDateTime = TimeUtils.strToDate(str, format);
         return Timestamp.valueOf(localDateTime);
     }
 
@@ -114,6 +114,6 @@ public class DateUtils {
 
     public static String timestampToStr(Timestamp timestamp, String format) {
         LocalDateTime localDateTime = timestamp.toLocalDateTime();
-        return DateUtils.dateToStr(localDateTime, format);
+        return TimeUtils.dateToStr(localDateTime, format);
     }
 }

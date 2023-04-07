@@ -7,6 +7,9 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import com.wbs.common.database.base.DbTypeEnum;
+import com.wbs.common.database.factory.ConnectionFactory;
+import com.wbs.common.database.factory.DataSourceFactory;
 import com.wbs.common.enums.HttpEnum;
 import com.wbs.common.extend.ResponseResult;
 import com.wbs.pipe.model.connect.ConnectInfoModel;
@@ -14,6 +17,8 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +34,36 @@ import static com.mongodb.client.model.Filters.or;
 @Service
 public class ConnectApplication {
     private final MongoCollection<ConnectInfoModel> collection;
+    private final DataSourceFactory dataSourceFactory;
+    private final ConnectionFactory connectionFactory;
 
-    public ConnectApplication(MongoDatabase defaultMongoDatabase) {
+    public ConnectApplication(MongoDatabase defaultMongoDatabase, DataSourceFactory dataSourceFactory, ConnectionFactory connectionFactory) {
         this.collection = defaultMongoDatabase.getCollection("connect_info", ConnectInfoModel.class);
+        this.dataSourceFactory = dataSourceFactory;
+        this.connectionFactory = connectionFactory;
+    }
+
+    /**
+     * 获取连接
+     *
+     * @param connectId
+     * @return
+     */
+    public Connection getConnection(String connectId) {
+        try {
+            ConnectInfoModel model = getConnectInfo(connectId, null);
+            String host = model.getHost();
+            int port = model.getPort();
+            String username = model.getUsername();
+            String password = model.getPassword();
+            String database = model.getDatabase();
+            String schema = model.getSchema();
+            DbTypeEnum dbType = DbTypeEnum.values()[model.getType()];
+            DataSource dataSource = dataSourceFactory.createDataSource(model.getName(), host, port, username, password, database, schema, dbType);
+            return connectionFactory.createConnection(model.getName(), dataSource);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public List<ConnectInfoModel> getConnectList() {

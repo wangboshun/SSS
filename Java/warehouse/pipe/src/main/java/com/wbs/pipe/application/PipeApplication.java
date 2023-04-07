@@ -14,13 +14,11 @@ import com.wbs.engine.core.sqlserver.SqlServerReader;
 import com.wbs.engine.core.sqlserver.SqlServerWriter;
 import com.wbs.engine.model.WriterResult;
 import com.wbs.pipe.model.ColumnConfigModel;
-import com.wbs.pipe.model.connect.ConnectInfoModel;
 import com.wbs.pipe.model.sink.SinkInfoModel;
 import com.wbs.pipe.model.source.SourceInfoModel;
 import com.wbs.pipe.model.task.TaskInfoModel;
 import org.springframework.stereotype.Service;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 
 import static java.lang.String.format;
@@ -101,7 +99,7 @@ public class PipeApplication {
      */
     private boolean writeData(String sinkId, DataTable dataTable) {
         SinkInfoModel sinkInfo = sinkApplication.getSink(sinkId, null);
-        Connection connection = getConnection(sinkInfo.getConnect_id());
+        Connection connection =connectApplication.getConnection(sinkInfo.getConnect_id());
         DbTypeEnum dbType = DbTypeEnum.values()[sinkInfo.getType()];
         switch (dbType) {
             case MySql:
@@ -139,7 +137,7 @@ public class PipeApplication {
      */
     private DataTable readData(String sourceId) {
         SourceInfoModel sourceInfo = sourceApplication.getSource(sourceId, null);
-        Connection sourceConnection = getConnection(sourceInfo.getConnect_id());
+        Connection sourceConnection = connectApplication.getConnection(sourceInfo.getConnect_id());
         DbTypeEnum dbType = DbTypeEnum.values()[sourceInfo.getType()];
         DataTable dataTable = new DataTable();
         String sql = format("select * from %s ORDER BY tm desc  LIMIT  %d ", sourceInfo.getTable_name(), 1000);
@@ -165,28 +163,5 @@ public class PipeApplication {
         }
 
         return dataTable;
-    }
-
-    /**
-     * 获取连接
-     *
-     * @param connectId
-     * @return
-     */
-    private Connection getConnection(String connectId) {
-        try {
-            ConnectInfoModel model = connectApplication.getConnectInfo(connectId, null);
-            String host = model.getHost();
-            int port = model.getPort();
-            String username = model.getUsername();
-            String password = model.getPassword();
-            String database = model.getDatabase();
-            String schema = model.getSchema();
-            DbTypeEnum dbType = DbTypeEnum.values()[model.getType()];
-            DataSource dataSource = dataSourceFactory.createDataSource(model.getName(), host, port, username, password, database, schema, dbType);
-            return connectionFactory.createConnection(model.getName(), dataSource);
-        } catch (Exception e) {
-            return null;
-        }
     }
 }

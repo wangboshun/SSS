@@ -1,7 +1,7 @@
 package com.wbs.pipe.model.source;
 
 
-import com.wbs.common.model.BaseStatusModel;
+import com.wbs.common.extend.BaseStatusModel;
 
 /**
  * @author WBS

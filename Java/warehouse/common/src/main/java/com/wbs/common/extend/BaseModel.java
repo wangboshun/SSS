@@ -1,4 +1,4 @@
-package com.wbs.common.model;
+package com.wbs.common.extend;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
