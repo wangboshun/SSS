@@ -66,13 +66,14 @@ public abstract class WriterAbstract implements IWriter {
     /**
      * 插入数据
      *
-     * @param dt
+     * @param dt dt
      * @return 返回错误数据
      */
     @Override
     public WriterResult insertData(DataTable dt) {
         DataTable exceptionData = new DataTable();
         LocalDateTime start = LocalDateTime.now();
+        // 如果小于设置批大小
         if (dt.size() < BATCH_SIZE) {
             try {
                 batchInsert(dt);
@@ -91,8 +92,8 @@ public abstract class WriterAbstract implements IWriter {
         float tm = Duration.between(start, end).toMillis() / 1000f;
         System.out.println("插入耗时：" + tm);
         WriterResult result = builderResult(exceptionData, 1);
-        result.setSpend(tm);
-        result.setInsertCount(dt.size() - exceptionData.size());
+        result.setSpend(String.format("%.2f", tm));
+        result.setInsertCount(dt.size() - result.getExitsCount() - result.getErrorCount());
         return result;
     }
 
@@ -128,8 +129,8 @@ public abstract class WriterAbstract implements IWriter {
         float tm = Duration.between(start, end).toMillis() / 1000f;
         System.out.println("更新耗时：" + tm);
         WriterResult result = builderResult(exceptionData, 2);
-        result.setSpend(tm);
-        result.setUpdateCount(dt.size() - exceptionData.size());
+        result.setSpend(String.format("%.2f", tm));
+        result.setUpdateCount(dt.size() - result.getErrorCount());
         return result;
     }
 
@@ -284,7 +285,7 @@ public abstract class WriterAbstract implements IWriter {
     }
 
     /**
-     * 保存错误数据
+     * 查找错误数据，单条插入或更新时还是报错即为错误数据
      *
      * @param dt   数据
      * @param type 1为插入、2为更新
@@ -314,25 +315,25 @@ public abstract class WriterAbstract implements IWriter {
      */
     private WriterResult builderResult(DataTable exceptionData, int type) {
         WriterResult result = new WriterResult();
-        if (exceptionData.size() < 1) {
+        if (exceptionData.isEmpty()) {
             return result;
         }
-        DataTable exitsData = null;
-        DataTable errorData = null;
-
-        // 查找已存在数据
-        exitsData = findExitsData(exceptionData);
-
-        // 如果有已存在数据，保存已存在数据
-        if (exitsData.size() > 0) {
-            result.setExitsData(exitsData);
-            exceptionData.removeAll(exitsData); // 并去差集
+        // 插入情况才进行存在数据处理
+        if (type == 1) {
+            DataTable exitsData = findExitsData(exceptionData);  // 查找已存在数据
+            // 如果有已存在数据，保存已存在数据
+            if (!exitsData.isEmpty()) {
+                result.setExitsData(exitsData);
+                result.setExitsCount(exitsData.size());
+                exceptionData.removeAll(exitsData); // 并去差集
+            }
         }
-        // 保存错误数据
-        if (exceptionData.size() > 0) {
-            errorData = findErrorData(exceptionData, type);
-            if (errorData.size() > 0) {
+        // 处理错误数据
+        if (!exceptionData.isEmpty()) {
+            DataTable errorData = findErrorData(exceptionData, type);
+            if (!errorData.isEmpty()) {
                 result.setErrorData(errorData);
+                result.setErrorCount(errorData.size());
             }
         }
         return result;

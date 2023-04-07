@@ -10,17 +10,35 @@ import java.io.Serializable;
  * @desciption WriterResult
  */
 public class WriterResult implements Serializable {
-    private float spend;
+    private String spend;
     private DataTable errorData;
     private DataTable exitsData;
     private int insertCount;
     private int updateCount;
+    private int errorCount;
+    private int exitsCount;
 
-    public float getSpend() {
+    public int getExitsCount() {
+        return exitsCount;
+    }
+
+    public void setExitsCount(int exitsCount) {
+        this.exitsCount = exitsCount;
+    }
+
+    public int getErrorCount() {
+        return errorCount;
+    }
+
+    public void setErrorCount(int errorCount) {
+        this.errorCount = errorCount;
+    }
+
+    public String getSpend() {
         return spend;
     }
 
-    public void setSpend(float spend) {
+    public void setSpend(String spend) {
         this.spend = spend;
     }
 

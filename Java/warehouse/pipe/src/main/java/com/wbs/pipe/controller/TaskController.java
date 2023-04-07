@@ -5,6 +5,7 @@ import com.wbs.common.enums.HttpEnum;
 import com.wbs.common.extend.ResponseResult;
 import com.wbs.pipe.application.TaskApplication;
 import com.wbs.pipe.model.task.TaskInfoModel;
+import com.wbs.pipe.model.task.TaskLogModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -79,5 +80,33 @@ public class TaskController {
     @PatchMapping(value = "/update")
     public ResponseResult update(@RequestBody TaskInfoModel model) {
         return taskApplication.updateTask(model);
+    }
+
+
+
+
+
+
+
+
+
+    @GetMapping(value = "/log/list")
+    public ResponseResult taskLogList() {
+        List<TaskLogModel> list = taskApplication.getTaskLogList();
+        if (list.isEmpty()) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(list);
+        }
+    }
+
+    @GetMapping(value = "/log/{id}")
+    public ResponseResult getTaskLog(@PathVariable String id) {
+        TaskLogModel model = taskApplication.getTaskLog(id);
+        if (model == null) {
+            return new ResponseResult().NULL();
+        } else {
+            return new ResponseResult().OK(model);
+        }
     }
 }

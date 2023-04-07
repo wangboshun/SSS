@@ -1,9 +1,9 @@
 package com.wbs.pipe.application;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import com.wbs.common.database.base.DataTable;
 import com.wbs.common.database.base.DbTypeEnum;
-import com.wbs.common.database.factory.ConnectionFactory;
-import com.wbs.common.database.factory.DataSourceFactory;
 import com.wbs.engine.core.clickhouse.ClickHouseReader;
 import com.wbs.engine.core.clickhouse.ClickHouseWriter;
 import com.wbs.engine.core.mysql.MySqlReader;
@@ -16,10 +16,14 @@ import com.wbs.engine.model.WriterResult;
 import com.wbs.pipe.model.ColumnConfigModel;
 import com.wbs.pipe.model.sink.SinkInfoModel;
 import com.wbs.pipe.model.source.SourceInfoModel;
+import com.wbs.pipe.model.task.TaskEnum;
 import com.wbs.pipe.model.task.TaskInfoModel;
+import com.wbs.pipe.model.task.TaskLogModel;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
+import java.time.LocalDateTime;
 
 import static java.lang.String.format;
 
@@ -43,10 +47,18 @@ public class PipeApplication {
     private final ClickHouseWriter clickHouseWriter;
     private final PgSqlReader pgSqlReader;
     private final PgSqlWriter pgSqlWriter;
-    private final DataSourceFactory dataSourceFactory;
-    private final ConnectionFactory connectionFactory;
+    private final MongoCollection<TaskLogModel> taskLogCollection;
 
-    public PipeApplication(TaskApplication taskApplication, SourceApplication sourceApplication, SinkApplication sinkApplication, ColumnConfigApplication columnConfigApplication, ConnectApplication connectApplication, MySqlReader mySqlReader, MySqlWriter mySqlWriter, SqlServerReader sqlServerReader, SqlServerWriter sqlServerWriter, ClickHouseReader clickHouseReader, ClickHouseWriter clickHouseWriter, PgSqlReader pgSqlReader, PgSqlWriter pgSqlWriter, DataSourceFactory dataSourceFactory, ConnectionFactory connectionFactory) {
+
+    private TaskEnum taskEnum;
+    private String taskId;
+    private LocalDateTime st;
+    private LocalDateTime et;
+    private WriterResult insertResult;
+    private WriterResult updateResult;
+
+
+    public PipeApplication(MongoDatabase defaultMongoDatabase, TaskApplication taskApplication, SourceApplication sourceApplication, SinkApplication sinkApplication, ColumnConfigApplication columnConfigApplication, ConnectApplication connectApplication, MySqlReader mySqlReader, MySqlWriter mySqlWriter, SqlServerReader sqlServerReader, SqlServerWriter sqlServerWriter, ClickHouseReader clickHouseReader, ClickHouseWriter clickHouseWriter, PgSqlReader pgSqlReader, PgSqlWriter pgSqlWriter) {
         this.taskApplication = taskApplication;
         this.sourceApplication = sourceApplication;
         this.sinkApplication = sinkApplication;
@@ -60,8 +72,7 @@ public class PipeApplication {
         this.clickHouseWriter = clickHouseWriter;
         this.pgSqlReader = pgSqlReader;
         this.pgSqlWriter = pgSqlWriter;
-        this.dataSourceFactory = dataSourceFactory;
-        this.connectionFactory = connectionFactory;
+        this.taskLogCollection = defaultMongoDatabase.getCollection("task_log", TaskLogModel.class);
     }
 
     /**
@@ -71,21 +82,31 @@ public class PipeApplication {
      */
     public boolean startTask(String taskId) {
         try {
+            taskEnum = TaskEnum.WAIT;
+            this.taskId = taskId;
+            this.insertResult = new WriterResult();
+            this.updateResult = new WriterResult();
+            this.st = LocalDateTime.now();
             TaskInfoModel taskInfoModel = taskApplication.getTask(taskId, null);
 
             String sinkId = taskInfoModel.getSink_id();
             String sourceId = taskInfoModel.getSource_id();
-
+            taskEnum = TaskEnum.RUNNING;
             DataTable dataTable = readData(sourceId);
 
             ColumnConfigModel columnConfig = columnConfigApplication.getColumnConfigByTask(taskId);
-            dataTable = dataTable.mapper(columnConfig.getMapper()); // 转换
-
-            boolean b = writeData(sinkId, dataTable);
-
-            System.out.println();
+            if (columnConfig != null) {
+                // 转换
+                dataTable = dataTable.mapper(columnConfig.getMapper());
+            }
+            writeData(sinkId, dataTable);
+            this.et = LocalDateTime.now();
+            taskEnum = TaskEnum.COMPLETE;
         } catch (Exception e) {
+            taskEnum = TaskEnum.ERROR;
             return false;
+        } finally {
+            addTaskLog();
         }
         return true;
     }
@@ -97,36 +118,43 @@ public class PipeApplication {
      * @param dataTable
      * @return
      */
-    private boolean writeData(String sinkId, DataTable dataTable) {
+    private void writeData(String sinkId, DataTable dataTable) {
         SinkInfoModel sinkInfo = sinkApplication.getSink(sinkId, null);
-        Connection connection =connectApplication.getConnection(sinkInfo.getConnect_id());
+        Connection connection = connectApplication.getConnection(sinkInfo.getConnect_id());
         DbTypeEnum dbType = DbTypeEnum.values()[sinkInfo.getType()];
         switch (dbType) {
             case MySql:
                 mySqlWriter.config(sinkInfo.getTable_name(), connection);
-                WriterResult result = mySqlWriter.insertData(dataTable);
-                if(result.getExitsData()!=null){
-                    WriterResult result1 = mySqlWriter.updateData(result.getExitsData());
-                    System.out.println();
+                insertResult = mySqlWriter.insertData(dataTable);
+                if (insertResult.getExitsData() != null) {
+                    updateResult = mySqlWriter.updateData(insertResult.getExitsData());
                 }
                 break;
             case SqlServer:
                 sqlServerWriter.config(sinkInfo.getTable_name(), connection);
-                sqlServerWriter.insertData(dataTable);
+                insertResult = sqlServerWriter.insertData(dataTable);
+                if (insertResult.getExitsData() != null) {
+                    updateResult = sqlServerWriter.updateData(insertResult.getExitsData());
+                }
                 break;
             case ClickHouse:
                 clickHouseWriter.config(sinkInfo.getTable_name(), connection);
-                clickHouseWriter.insertData(dataTable);
+                insertResult = clickHouseWriter.insertData(dataTable);
+                if (insertResult.getExitsData() != null) {
+                    updateResult = clickHouseWriter.updateData(insertResult.getExitsData());
+                }
                 break;
             case PostgreSql:
                 pgSqlWriter.config(sinkInfo.getTable_name(), connection);
-                pgSqlWriter.insertData(dataTable);
+                insertResult = pgSqlWriter.insertData(dataTable);
+                if (insertResult.getExitsData() != null) {
+                    updateResult = pgSqlWriter.updateData(insertResult.getExitsData());
+                }
                 break;
             default:
                 break;
         }
 
-        return true;
     }
 
     /**
@@ -140,7 +168,7 @@ public class PipeApplication {
         Connection sourceConnection = connectApplication.getConnection(sourceInfo.getConnect_id());
         DbTypeEnum dbType = DbTypeEnum.values()[sourceInfo.getType()];
         DataTable dataTable = new DataTable();
-        String sql = format("select * from %s ORDER BY tm desc  LIMIT  %d ", sourceInfo.getTable_name(), 1000);
+        String sql = format("select * from %s  ", sourceInfo.getTable_name());
         switch (dbType) {
             case MySql:
                 mySqlReader.config(sourceInfo.getTable_name(), sourceConnection);
@@ -164,4 +192,24 @@ public class PipeApplication {
 
         return dataTable;
     }
+
+    public void addTaskLog() {
+        try {
+            TaskLogModel model = new TaskLogModel();
+            ObjectId id = new ObjectId();
+            model.setId(id.toString());
+            model.setInsert(this.insertResult);
+            model.setUpdate(this.updateResult);
+            model.setCt(LocalDateTime.now());
+            model.setTask_id(this.taskId);
+            model.setSt(this.st);
+            model.setEt(this.et);
+            model.setStatus(this.taskEnum.name());
+            taskLogCollection.insertOne(model);
+        } catch (Exception e) {
+
+        }
+    }
+
+
 }

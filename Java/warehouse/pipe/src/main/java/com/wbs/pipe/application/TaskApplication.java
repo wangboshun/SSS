@@ -10,6 +10,7 @@ import com.mongodb.client.result.UpdateResult;
 import com.wbs.common.enums.HttpEnum;
 import com.wbs.common.extend.ResponseResult;
 import com.wbs.pipe.model.task.TaskInfoModel;
+import com.wbs.pipe.model.task.TaskLogModel;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -29,9 +30,11 @@ import static com.mongodb.client.model.Filters.or;
 @Service
 public class TaskApplication {
     private final MongoCollection<TaskInfoModel> collection;
+    private final MongoCollection<TaskLogModel> taskLogCollection;
 
     public TaskApplication(MongoDatabase defaultMongoDatabase) {
         this.collection = defaultMongoDatabase.getCollection("task_info", TaskInfoModel.class);
+        this.taskLogCollection = defaultMongoDatabase.getCollection("task_log", TaskLogModel.class);
     }
 
     public List<TaskInfoModel> getTaskList() {
@@ -109,5 +112,31 @@ public class TaskApplication {
         } else {
             return new ResponseResult().NULL();
         }
+    }
+
+
+
+
+
+
+
+
+
+    public List<TaskLogModel> getTaskLogList() {
+        List<TaskLogModel> list = new ArrayList<>();
+        FindIterable<TaskLogModel> iterable = taskLogCollection.find();
+        iterable.into(list);
+        return list;
+    }
+
+    public TaskLogModel getTaskLog(String id) {
+        List<Bson> query = new ArrayList<>();
+        if (CharSequenceUtil.isNotBlank(id)) {
+            query.add(eq("_id", id));
+        }
+        if (query.isEmpty()) {
+            return null;
+        }
+        return taskLogCollection.find(or(query)).first();
     }
 }
