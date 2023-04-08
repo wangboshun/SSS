@@ -20,6 +20,8 @@ import com.wbs.pipe.model.task.TaskEnum;
 import com.wbs.pipe.model.task.TaskInfoModel;
 import com.wbs.pipe.model.task.TaskLogModel;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -34,6 +36,7 @@ import static java.lang.String.format;
  */
 @Service
 public class PipeApplication {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final TaskApplication taskApplication;
     private final SourceApplication sourceApplication;
     private final SinkApplication sinkApplication;
@@ -82,12 +85,16 @@ public class PipeApplication {
      */
     public boolean startTask(String taskId) {
         try {
+            TaskInfoModel taskInfoModel = taskApplication.getTask(taskId, null);
+            if (taskInfoModel == null) {
+                throw new RuntimeException("任务不存在！");
+            }
+
             taskEnum = TaskEnum.WAIT;
             this.taskId = taskId;
             this.insertResult = new WriterResult();
             this.updateResult = new WriterResult();
             this.st = LocalDateTime.now();
-            TaskInfoModel taskInfoModel = taskApplication.getTask(taskId, null);
 
             String sinkId = taskInfoModel.getSink_id();
             String sourceId = taskInfoModel.getSource_id();
@@ -176,15 +183,15 @@ public class PipeApplication {
                 break;
             case SqlServer:
                 sqlServerReader.config(sourceInfo.getTable_name(), sourceConnection);
-                dataTable = mySqlReader.readData(sql);
+                dataTable = sqlServerReader.readData(sql);
                 break;
             case ClickHouse:
                 clickHouseReader.config(sourceInfo.getTable_name(), sourceConnection);
-                dataTable = mySqlReader.readData(sql);
+                dataTable = clickHouseReader.readData(sql);
                 break;
             case PostgreSql:
                 pgSqlReader.config(sourceInfo.getTable_name(), sourceConnection);
-                dataTable = mySqlReader.readData(sql);
+                dataTable = pgSqlReader.readData(sql);
                 break;
             default:
                 break;
@@ -193,6 +200,9 @@ public class PipeApplication {
         return dataTable;
     }
 
+    /**
+     * 添加任务日志
+     */
     public void addTaskLog() {
         try {
             TaskLogModel model = new TaskLogModel();
@@ -207,9 +217,7 @@ public class PipeApplication {
             model.setStatus(this.taskEnum.name());
             taskLogCollection.insertOne(model);
         } catch (Exception e) {
-
+            logger.error("------PipeApplication addTaskLog error------", e);
         }
     }
-
-
 }

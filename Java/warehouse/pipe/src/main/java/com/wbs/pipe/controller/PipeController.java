@@ -28,12 +28,9 @@ public class PipeController {
     @PostMapping(value = "/start/{id}")
     public ResponseResult start(@PathVariable String id) {
         boolean b = pipeApplication.startTask(id);
-        if (b) {
+        if (!b) {
             return new ResponseResult().FAILED();
-        } else {
-            return new ResponseResult().OK();
         }
+        return new ResponseResult().OK();
     }
-
-
 }

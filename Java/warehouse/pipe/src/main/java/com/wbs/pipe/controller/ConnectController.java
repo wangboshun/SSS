@@ -33,9 +33,8 @@ public class ConnectController {
         List<ConnectInfoModel> list = connectApplication.getConnectList();
         if (list.isEmpty()) {
             return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(list);
         }
+        return new ResponseResult().OK(list);
     }
 
     @GetMapping(value = "/info")
@@ -46,9 +45,8 @@ public class ConnectController {
         ConnectInfoModel model = connectApplication.getConnectInfo(id, name);
         if (model == null) {
             return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(model);
         }
+        return new ResponseResult().OK(model);
     }
 
     @GetMapping(value = "/{id}")
@@ -56,9 +54,8 @@ public class ConnectController {
         ConnectInfoModel model = connectApplication.getConnectInfo(id, null);
         if (model == null) {
             return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(model);
         }
+        return new ResponseResult().OK(model);
     }
 
     @PostMapping(value = "/add")

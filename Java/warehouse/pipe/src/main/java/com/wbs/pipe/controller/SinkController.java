@@ -35,9 +35,8 @@ public class SinkController {
         List<SinkInfoModel> list = sinkApplication.getSinkList();
         if (list.isEmpty()) {
             return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(list);
         }
+        return new ResponseResult().OK(list);
     }
 
     @GetMapping(value = "/info")
@@ -48,9 +47,8 @@ public class SinkController {
         SinkInfoModel model = sinkApplication.getSink(id, name);
         if (model == null) {
             return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(model);
         }
+        return new ResponseResult().OK(model);
     }
 
     @GetMapping(value = "/{id}")
@@ -58,9 +56,8 @@ public class SinkController {
         SinkInfoModel model = sinkApplication.getSink(id, null);
         if (model == null) {
             return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(model);
         }
+        return new ResponseResult().OK(model);
     }
 
     @PostMapping(value = "/add")
@@ -88,18 +85,16 @@ public class SinkController {
         List<TableInfo> list = sinkApplication.getTables(id);
         if (list.isEmpty()) {
             return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(list);
         }
+        return new ResponseResult().OK(list);
     }
 
     @GetMapping(value = "/columns/{id}/{table}")
     public ResponseResult columns(@PathVariable String id, @PathVariable String table) {
-        List<ColumnInfo> list = sinkApplication.getColumns(id,table);
+        List<ColumnInfo> list = sinkApplication.getColumns(id, table);
         if (list.isEmpty()) {
             return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(list);
         }
+        return new ResponseResult().OK(list);
     }
 }

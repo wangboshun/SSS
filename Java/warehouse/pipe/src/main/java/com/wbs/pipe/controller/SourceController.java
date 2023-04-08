@@ -33,9 +33,8 @@ public class SourceController {
         List<SourceInfoModel> list = sourceApplication.getSourceList();
         if (list.isEmpty()) {
             return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(list);
         }
+        return new ResponseResult().OK(list);
     }
 
     @GetMapping(value = "/info")
@@ -46,9 +45,8 @@ public class SourceController {
         SourceInfoModel model = sourceApplication.getSource(id, name);
         if (model == null) {
             return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(model);
         }
+        return new ResponseResult().OK(model);
     }
 
     @GetMapping(value = "/{id}")
@@ -56,9 +54,8 @@ public class SourceController {
         SourceInfoModel model = sourceApplication.getSource(id, null);
         if (model == null) {
             return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(model);
         }
+        return new ResponseResult().OK(model);
     }
 
     @PostMapping(value = "/add")
@@ -86,9 +83,8 @@ public class SourceController {
         List<TableInfo> list = sourceApplication.getTables(id);
         if (list.isEmpty()) {
             return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(list);
         }
+        return new ResponseResult().OK(list);
     }
 
     @GetMapping(value = "/columns/{id}/{table}")
@@ -96,8 +92,7 @@ public class SourceController {
         List<ColumnInfo> list = sourceApplication.getColumns(id,table);
         if (list.isEmpty()) {
             return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(list);
         }
+        return new ResponseResult().OK(list);
     }
 }

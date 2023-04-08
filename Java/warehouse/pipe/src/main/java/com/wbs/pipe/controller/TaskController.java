@@ -34,9 +34,8 @@ public class TaskController {
         List<TaskInfoModel> list = taskApplication.getTaskList();
         if (list.isEmpty()) {
             return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(list);
         }
+        return new ResponseResult().OK(list);
     }
 
     @GetMapping(value = "/info")
@@ -47,9 +46,8 @@ public class TaskController {
         TaskInfoModel model = taskApplication.getTask(id, name);
         if (model == null) {
             return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(model);
         }
+        return new ResponseResult().OK(model);
     }
 
     @GetMapping(value = "/{id}")
@@ -83,30 +81,24 @@ public class TaskController {
     }
 
 
-
-
-
-
-
-
-
     @GetMapping(value = "/log/list")
     public ResponseResult taskLogList() {
         List<TaskLogModel> list = taskApplication.getTaskLogList();
         if (list.isEmpty()) {
             return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(list);
         }
+        return new ResponseResult().OK(list);
     }
 
-    @GetMapping(value = "/log/{id}")
-    public ResponseResult getTaskLog(@PathVariable String id) {
+    @GetMapping(value = "/log")
+    public ResponseResult getTaskLog(@RequestParam(required = true) String id) {
+        if (CharSequenceUtil.isEmpty(id)) {
+            return new ResponseResult().ERROR("请输入id", HttpEnum.PARAM_VALID_ERROR);
+        }
         TaskLogModel model = taskApplication.getTaskLog(id);
         if (model == null) {
             return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(model);
         }
+        return new ResponseResult().OK(model);
     }
 }

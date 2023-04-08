@@ -31,9 +31,8 @@ public class ColumnConfigController {
         List<ColumnConfigModel> list = columnConfigApplication.getColumnConfigList();
         if (list.isEmpty()) {
             return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(list);
         }
+        return new ResponseResult().OK(list);
     }
 
     @GetMapping(value = "/{taskId}")
@@ -41,9 +40,8 @@ public class ColumnConfigController {
         ColumnConfigModel model = columnConfigApplication.getColumnConfigByTask(taskId);
         if (model == null) {
             return new ResponseResult().NULL();
-        } else {
-            return new ResponseResult().OK(model);
         }
+        return new ResponseResult().OK(model);
     }
 
     @PostMapping(value = "/add")
