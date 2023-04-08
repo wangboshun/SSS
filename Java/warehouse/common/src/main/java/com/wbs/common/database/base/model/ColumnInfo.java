@@ -1,5 +1,8 @@
 package com.wbs.common.database.base.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 
 /**
@@ -7,6 +10,8 @@ import java.io.Serializable;
  * @date 2023/3/4 17:41
  * @desciption ColumnInfo
  */
+@Setter
+@Getter
 public class ColumnInfo implements Serializable {
 
     /**
@@ -53,76 +58,4 @@ public class ColumnInfo implements Serializable {
      * 数据长度
      */
     private int lenght;
-
-    public int getIsNullable() {
-        return isNullable;
-    }
-
-    public void setIsNullable(int isNullable) {
-        this.isNullable = isNullable;
-    }
-
-    public int getScale() {
-        return scale;
-    }
-
-    public void setScale(int scale) {
-        this.scale = scale;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDbType() {
-        return dbType;
-    }
-
-    public void setDbType(String dbType) {
-        this.dbType = dbType;
-    }
-
-    public String getTable() {
-        return table;
-    }
-
-    public void setTable(String table) {
-        this.table = table;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public int getPrimary() {
-        return primary;
-    }
-
-    public void setPrimary(int primary) {
-        this.primary = primary;
-    }
-
-    public String getJavaType() {
-        return javaType;
-    }
-
-    public void setJavaType(String javaType) {
-        this.javaType = javaType;
-    }
-
-    public int getLenght() {
-        return lenght;
-    }
-
-    public void setLenght(int lenght) {
-        this.lenght = lenght;
-    }
 }

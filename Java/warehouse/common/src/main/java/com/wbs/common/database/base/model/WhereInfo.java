@@ -1,5 +1,8 @@
 package com.wbs.common.database.base.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 
 /**
@@ -7,6 +10,8 @@ import java.io.Serializable;
  * @date 2023/3/7 14:26
  * @desciption WhereInfo
  */
+@Setter
+@Getter
 public class WhereInfo implements Serializable {
 
     /**
@@ -28,36 +33,4 @@ public class WhereInfo implements Serializable {
      * 操作符：AND、OR
      */
     private String operate;
-
-    public String getColumn() {
-        return column;
-    }
-
-    public void setColumn(String column) {
-        this.column = column;
-    }
-
-    public String getSymbol() {
-        return symbol;
-    }
-
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
-    }
-
-    public String getOperate() {
-        return operate;
-    }
-
-    public void setOperate(String operate) {
-        this.operate = operate;
-    }
 }
