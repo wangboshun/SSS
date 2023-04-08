@@ -41,11 +41,6 @@ knife4j:
         api-rule: package
         api-rule-resources:
           - "com.wbs.common"
-      iot:
-        group-name: "iot"
-        api-rule: package
-        api-rule-resources:
-          - "com.wbs.iot"
       pipe:
         group-name: "pipe"
         api-rule: package
