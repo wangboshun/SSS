@@ -12,6 +12,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class MySqlWriter extends WriterAbstract {
     public MySqlWriter() {
-        this.dbType = DbTypeEnum.MySql;
+        this.dbType = DbTypeEnum.MYSQL;
     }
 }

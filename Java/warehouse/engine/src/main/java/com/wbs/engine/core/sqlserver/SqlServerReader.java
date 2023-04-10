@@ -12,6 +12,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class SqlServerReader extends ReaderAbstract {
     public SqlServerReader() {
-        this.dbType = DbTypeEnum.SqlServer;
+        this.dbType = DbTypeEnum.SQLSERVER;
     }
 }

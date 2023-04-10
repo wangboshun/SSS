@@ -12,6 +12,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ClickHouseWriter extends WriterAbstract {
     public ClickHouseWriter() {
-        this.dbType = DbTypeEnum.ClickHouse;
+        this.dbType = DbTypeEnum.CLICKHOUSE;
     }
 }

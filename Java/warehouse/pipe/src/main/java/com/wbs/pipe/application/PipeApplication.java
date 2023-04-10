@@ -1,9 +1,11 @@
 package com.wbs.pipe.application;
 
+import cn.hutool.core.util.EnumUtil;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.wbs.common.database.base.DataTable;
 import com.wbs.common.database.base.DbTypeEnum;
+import com.wbs.engine.core.base.WriteTypeEnum;
 import com.wbs.engine.core.clickhouse.ClickHouseReader;
 import com.wbs.engine.core.clickhouse.ClickHouseWriter;
 import com.wbs.engine.core.mysql.MySqlReader;
@@ -16,7 +18,7 @@ import com.wbs.engine.model.WriterResult;
 import com.wbs.pipe.model.ColumnConfigModel;
 import com.wbs.pipe.model.sink.SinkInfoModel;
 import com.wbs.pipe.model.source.SourceInfoModel;
-import com.wbs.pipe.model.task.TaskEnum;
+import com.wbs.pipe.model.task.TaskStatusEnum;
 import com.wbs.pipe.model.task.TaskInfoModel;
 import com.wbs.pipe.model.task.TaskLogModel;
 import org.bson.types.ObjectId;
@@ -53,8 +55,8 @@ public class PipeApplication {
     private final MongoCollection<TaskLogModel> taskLogCollection;
 
 
-    private TaskEnum taskEnum;
-    private String taskId;
+    private TaskStatusEnum taskStatusEnum;
+    private TaskInfoModel currentTask;
     private LocalDateTime st;
     private LocalDateTime et;
     private WriterResult insertResult;
@@ -85,20 +87,19 @@ public class PipeApplication {
      */
     public boolean startTask(String taskId) {
         try {
-            TaskInfoModel taskInfoModel = taskApplication.getTask(taskId, null);
-            if (taskInfoModel == null) {
+            this.currentTask = taskApplication.getTask(taskId, null);
+            if (this.currentTask == null) {
                 throw new RuntimeException("任务不存在！");
             }
 
-            taskEnum = TaskEnum.WAIT;
-            this.taskId = taskId;
+            taskStatusEnum = TaskStatusEnum.WAIT;
             this.insertResult = new WriterResult();
             this.updateResult = new WriterResult();
             this.st = LocalDateTime.now();
 
-            String sinkId = taskInfoModel.getSink_id();
-            String sourceId = taskInfoModel.getSource_id();
-            taskEnum = TaskEnum.RUNNING;
+            String sinkId = this.currentTask.getSink_id();
+            String sourceId = this.currentTask.getSource_id();
+            taskStatusEnum = TaskStatusEnum.RUNNING;
             DataTable dataTable = readData(sourceId);
 
             ColumnConfigModel columnConfig = columnConfigApplication.getColumnConfigByTask(taskId);
@@ -108,9 +109,9 @@ public class PipeApplication {
             }
             writeData(sinkId, dataTable);
             this.et = LocalDateTime.now();
-            taskEnum = TaskEnum.COMPLETE;
+            taskStatusEnum = TaskStatusEnum.COMPLETE;
         } catch (Exception e) {
-            taskEnum = TaskEnum.ERROR;
+            taskStatusEnum = TaskStatusEnum.ERROR;
             return false;
         } finally {
             addTaskLog();
@@ -128,40 +129,45 @@ public class PipeApplication {
     private void writeData(String sinkId, DataTable dataTable) {
         SinkInfoModel sinkInfo = sinkApplication.getSink(sinkId, null);
         Connection connection = connectApplication.getConnection(sinkInfo.getConnect_id());
-        DbTypeEnum dbType = DbTypeEnum.values()[sinkInfo.getType()];
+        DbTypeEnum dbType = EnumUtil.getEnumMap(DbTypeEnum.class).get(sinkInfo.getType().toUpperCase());
+        WriteTypeEnum writeTypeEnum = EnumUtil.getEnumMap(WriteTypeEnum.class).get(this.currentTask.getExist_type().toUpperCase());
         switch (dbType) {
-            case MySql:
+            case MYSQL:
                 mySqlWriter.config(sinkInfo.getTable_name(), connection);
                 insertResult = mySqlWriter.insertData(dataTable);
-                if (insertResult.getExitsData() != null) {
-                    updateResult = mySqlWriter.updateData(insertResult.getExitsData());
+                if (writeTypeEnum.equals(WriteTypeEnum.UPSERT) && insertResult.getExistData() != null) {
+                    updateResult = mySqlWriter.updateData(insertResult.getExistData());
                 }
                 break;
-            case SqlServer:
+            case SQLSERVER:
                 sqlServerWriter.config(sinkInfo.getTable_name(), connection);
                 insertResult = sqlServerWriter.insertData(dataTable);
-                if (insertResult.getExitsData() != null) {
-                    updateResult = sqlServerWriter.updateData(insertResult.getExitsData());
+                if (writeTypeEnum.equals(WriteTypeEnum.UPSERT) && insertResult.getExistData() != null) {
+                    updateResult = sqlServerWriter.updateData(insertResult.getExistData());
                 }
                 break;
-            case ClickHouse:
+            case CLICKHOUSE:
                 clickHouseWriter.config(sinkInfo.getTable_name(), connection);
                 insertResult = clickHouseWriter.insertData(dataTable);
-                if (insertResult.getExitsData() != null) {
-                    updateResult = clickHouseWriter.updateData(insertResult.getExitsData());
+                if (writeTypeEnum.equals(WriteTypeEnum.UPSERT) && insertResult.getExistData() != null) {
+                    updateResult = clickHouseWriter.updateData(insertResult.getExistData());
                 }
                 break;
-            case PostgreSql:
+            case POSTGRESQL:
                 pgSqlWriter.config(sinkInfo.getTable_name(), connection);
                 insertResult = pgSqlWriter.insertData(dataTable);
-                if (insertResult.getExitsData() != null) {
-                    updateResult = pgSqlWriter.updateData(insertResult.getExitsData());
+                if (writeTypeEnum.equals(WriteTypeEnum.UPSERT) && insertResult.getExistData() != null) {
+                    updateResult = pgSqlWriter.updateData(insertResult.getExistData());
                 }
                 break;
             default:
                 break;
         }
 
+        // 如果是存在忽略
+        if (writeTypeEnum.equals(WriteTypeEnum.IGNORE) && insertResult.getExistData() != null) {
+            insertResult.setIgnoreCount(insertResult.getExistData().size());
+        }
     }
 
     /**
@@ -173,23 +179,23 @@ public class PipeApplication {
     private DataTable readData(String sourceId) {
         SourceInfoModel sourceInfo = sourceApplication.getSource(sourceId, null);
         Connection sourceConnection = connectApplication.getConnection(sourceInfo.getConnect_id());
-        DbTypeEnum dbType = DbTypeEnum.values()[sourceInfo.getType()];
+        DbTypeEnum dbType = EnumUtil.getEnumMap(DbTypeEnum.class).get(sourceInfo.getType().toUpperCase());
         DataTable dataTable = new DataTable();
         String sql = format("select * from %s  ", sourceInfo.getTable_name());
         switch (dbType) {
-            case MySql:
+            case MYSQL:
                 mySqlReader.config(sourceInfo.getTable_name(), sourceConnection);
                 dataTable = mySqlReader.readData(sql);
                 break;
-            case SqlServer:
+            case SQLSERVER:
                 sqlServerReader.config(sourceInfo.getTable_name(), sourceConnection);
                 dataTable = sqlServerReader.readData(sql);
                 break;
-            case ClickHouse:
+            case CLICKHOUSE:
                 clickHouseReader.config(sourceInfo.getTable_name(), sourceConnection);
                 dataTable = clickHouseReader.readData(sql);
                 break;
-            case PostgreSql:
+            case POSTGRESQL:
                 pgSqlReader.config(sourceInfo.getTable_name(), sourceConnection);
                 dataTable = pgSqlReader.readData(sql);
                 break;
@@ -211,10 +217,10 @@ public class PipeApplication {
             model.setInsert(this.insertResult);
             model.setUpdate(this.updateResult);
             model.setCt(LocalDateTime.now());
-            model.setTask_id(this.taskId);
+            model.setTask_id(this.currentTask.getId());
             model.setSt(this.st);
             model.setEt(this.et);
-            model.setStatus(this.taskEnum.name());
+            model.setStatus(this.taskStatusEnum.name());
             taskLogCollection.insertOne(model);
         } catch (Exception e) {
             logger.error("------PipeApplication addTaskLog error------", e);

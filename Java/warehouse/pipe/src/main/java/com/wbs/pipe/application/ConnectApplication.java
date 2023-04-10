@@ -1,6 +1,7 @@
 package com.wbs.pipe.application;
 
 import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.core.util.EnumUtil;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -58,7 +59,7 @@ public class ConnectApplication {
             String password = model.getPassword();
             String database = model.getDatabase();
             String schema = model.getSchema();
-            DbTypeEnum dbType = DbTypeEnum.values()[model.getType()];
+            DbTypeEnum dbType = EnumUtil.getEnumMap(DbTypeEnum.class).get(model.getType().toUpperCase());
             DataSource dataSource = dataSourceFactory.createDataSource(model.getName(), host, port, username, password, database, schema, dbType);
             return connectionFactory.createConnection(model.getName(), dataSource);
         } catch (Exception e) {

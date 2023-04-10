@@ -12,6 +12,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class SqlServerWriter extends WriterAbstract {
     public SqlServerWriter() {
-        this.dbType = DbTypeEnum.SqlServer;
+        this.dbType = DbTypeEnum.SQLSERVER;
     }
 }

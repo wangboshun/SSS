@@ -12,6 +12,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class PgSqlReader extends ReaderAbstract {
     public PgSqlReader() {
-        this.dbType = DbTypeEnum.PostgreSql;
+        this.dbType = DbTypeEnum.POSTGRESQL;
     }
 }

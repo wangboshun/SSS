@@ -12,6 +12,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class MySqlReader extends ReaderAbstract {
     public MySqlReader() {
-        this.dbType = DbTypeEnum.MySql;
+        this.dbType = DbTypeEnum.MYSQL;
     }
 }

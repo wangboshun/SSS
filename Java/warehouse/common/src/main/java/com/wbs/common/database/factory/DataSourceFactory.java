@@ -91,19 +91,19 @@ public class DataSourceFactory {
         try {
             String url = "";
             switch (type) {
-                case MySql:
+                case MYSQL:
                     url = "jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&rewriteBatchedStatements=true&useInformationSchema=true&characterEncoding=UTF-8";
                     dataSource = getMySqlDataSource(url, username, password);
                     break;
-                case SqlServer:
+                case SQLSERVER:
                     url = "jdbc:sqlserver://" + host + ":" + port + ";database=" + database + ";integratedSecurity=false;encrypt=true;trustServerCertificate=true";
                     dataSource = getSqlServerDataSource(url, username, password);
                     break;
-                case PostgreSql:
+                case POSTGRESQL:
                     url = "jdbc:postgresql://" + host + ":" + port + "/" + database + "?currentSchema=" + schema;
                     dataSource = getPostgreSqlDataSource(url, username, password);
                     break;
-                case ClickHouse:
+                case CLICKHOUSE:
                     url = "jdbc:clickhouse://" + host + ":" + port + "/" + database;
                     dataSource = getClickHouseDataSource(url, username, password);
                     break;

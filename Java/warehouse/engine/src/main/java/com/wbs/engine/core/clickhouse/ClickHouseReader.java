@@ -12,6 +12,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ClickHouseReader extends ReaderAbstract {
     public ClickHouseReader() {
-        this.dbType = DbTypeEnum.ClickHouse;
+        this.dbType = DbTypeEnum.CLICKHOUSE;
     }
 }

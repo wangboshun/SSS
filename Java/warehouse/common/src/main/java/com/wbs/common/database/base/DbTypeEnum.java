@@ -10,25 +10,25 @@ public enum DbTypeEnum {
     /**
      * 未知
      */
-    None,
+    NONE,
 
     /**
      * MySql
      */
-    MySql,
+    MYSQL,
 
     /**
      * SqlServer
      */
-    SqlServer,
+    SQLSERVER,
 
     /**
      * PostgreSql
      */
-    PostgreSql,
+    POSTGRESQL,
 
     /**
      * ClickHouse
      */
-    ClickHouse
+    CLICKHOUSE
 }

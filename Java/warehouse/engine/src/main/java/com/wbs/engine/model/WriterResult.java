@@ -16,9 +16,10 @@ import java.io.Serializable;
 public class WriterResult implements Serializable {
     private String spend;
     private DataTable errorData;
-    private DataTable exitsData;
+    private DataTable existData;
     private int insertCount;
     private int updateCount;
     private int errorCount;
     private int exitsCount;
+    private int ignoreCount;
 }

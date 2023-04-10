@@ -12,6 +12,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class PgSqlWriter extends WriterAbstract {
     public PgSqlWriter() {
-        this.dbType = DbTypeEnum.PostgreSql;
+        this.dbType = DbTypeEnum.POSTGRESQL;
     }
 }

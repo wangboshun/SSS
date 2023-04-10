@@ -139,7 +139,7 @@ public abstract class ReaderAbstract implements IReader {
         DataTable dt = new DataTable();
         try {
             pstmt = connection.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-            if (dbType == DbTypeEnum.PostgreSql) {
+            if (dbType == DbTypeEnum.POSTGRESQL) {
                 pstmt.setFetchSize(10000);
             } else {
                 pstmt.setFetchSize(Integer.MIN_VALUE);

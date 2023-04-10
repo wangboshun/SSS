@@ -68,7 +68,7 @@ public class DbUtils {
                 model.setName(resultSet.getString("TABLE_NAME"));
                 model.setComment(resultSet.getString("REMARKS"));
                 // sqlserver没有这个字段
-                if (getDbType(connection) != DbTypeEnum.SqlServer) {
+                if (getDbType(connection) != DbTypeEnum.SQLSERVER) {
                     model.setType(resultSet.getString("TYPE_NAME"));
                 }
                 model.setSchema(schema);
@@ -320,12 +320,12 @@ public class DbUtils {
 
     public static String convertName(String tableName, DbTypeEnum dbType) {
         switch (dbType) {
-            case ClickHouse:
-            case MySql:
+            case CLICKHOUSE:
+            case MYSQL:
                 return "`" + tableName + "`";
-            case SqlServer:
+            case SQLSERVER:
                 return "[" + tableName + "]";
-            case PostgreSql:
+            case POSTGRESQL:
                 return "\"" + tableName + "\"";
             default:
                 return tableName;
@@ -341,18 +341,18 @@ public class DbUtils {
         try {
             String driverName = DriverManager.getDriver(connection.getMetaData().getURL()).getClass().getName().toLowerCase();
             if (driverName.contains("mysql")) {
-                return DbTypeEnum.MySql;
+                return DbTypeEnum.MYSQL;
             } else if (driverName.contains("sqlserver")) {
-                return DbTypeEnum.SqlServer;
+                return DbTypeEnum.SQLSERVER;
             } else if (driverName.contains("postgresql")) {
-                return DbTypeEnum.PostgreSql;
+                return DbTypeEnum.POSTGRESQL;
             } else if (driverName.contains("clickhouse")) {
-                return DbTypeEnum.ClickHouse;
+                return DbTypeEnum.CLICKHOUSE;
             }
         } catch (SQLException e) {
             logger.error("------DbUtils getDbType error------", e);
         }
-        return DbTypeEnum.None;
+        return DbTypeEnum.NONE;
     }
 
     /**

@@ -323,7 +323,7 @@ public abstract class WriterAbstract implements IWriter {
             DataTable exitsData = findExitsData(exceptionData);  // 查找已存在数据
             // 如果有已存在数据，保存已存在数据
             if (!exitsData.isEmpty()) {
-                result.setExitsData(exitsData);
+                result.setExistData(exitsData);
                 result.setExitsCount(exitsData.size());
                 exceptionData.removeAll(exitsData); // 并去差集
             }
@@ -427,7 +427,7 @@ public abstract class WriterAbstract implements IWriter {
                 whereSql.append(" AND ");
             }
             whereSql.delete(whereSql.length() - 5, whereSql.length());
-            if (dbType == DbTypeEnum.SqlServer) {
+            if (dbType == DbTypeEnum.SQLSERVER) {
                 sql = String.format("SELECT TOP 1 1 as number FROM %s%s", tableNameConvert, whereSql);
             } else {
                 sql = String.format("select 1 as number from %s%s  limit  1 ", tableNameConvert, whereSql);

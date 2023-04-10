@@ -73,7 +73,7 @@ public class EngineController {
             String username = "root";
             String password = "mima123456mima";
             String database = "wbs";
-            DataSource dataSource = dataSourceFactory.createDataSource("mysql", host, port, username, password, database, DbTypeEnum.MySql);
+            DataSource dataSource = dataSourceFactory.createDataSource("mysql", host, port, username, password, database, DbTypeEnum.MYSQL);
             Connection connection = connectionFactory.createConnection("mysql", dataSource);
         } catch (Exception e) {
 
@@ -87,7 +87,7 @@ public class EngineController {
             String username = "sa";
             String password = "mima123456mima";
             String database = "test";
-            DataSource dataSource = dataSourceFactory.createDataSource("mssql", host, port, username, password, database, DbTypeEnum.SqlServer);
+            DataSource dataSource = dataSourceFactory.createDataSource("mssql", host, port, username, password, database, DbTypeEnum.SQLSERVER);
             Connection connection = connectionFactory.createConnection("mssql", dataSource);
         } catch (Exception e) {
 
@@ -101,7 +101,7 @@ public class EngineController {
             String username = "postgres";
             String password = "mima123456mima";
             String database = "postgres";
-            DataSource dataSource = dataSourceFactory.createDataSource("pgsql", host, port, username, password, database, "public", DbTypeEnum.PostgreSql);
+            DataSource dataSource = dataSourceFactory.createDataSource("pgsql", host, port, username, password, database, "public", DbTypeEnum.POSTGRESQL);
             Connection connection = connectionFactory.createConnection("pgsql", dataSource);
         } catch (Exception e) {
 
@@ -116,7 +116,7 @@ public class EngineController {
             String password = "mima123456mima";
             String database = "default";
 
-            DataSource dataSource = dataSourceFactory.createDataSource("ck", host, port, username, password, database, DbTypeEnum.ClickHouse);
+            DataSource dataSource = dataSourceFactory.createDataSource("ck", host, port, username, password, database, DbTypeEnum.CLICKHOUSE);
             Connection connection = connectionFactory.createConnection("ck", dataSource);
         } catch (Exception e) {
 

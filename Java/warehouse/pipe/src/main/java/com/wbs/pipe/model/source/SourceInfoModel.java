@@ -15,7 +15,7 @@ import lombok.Setter;
 public class SourceInfoModel extends BaseStatusModel {
     private String name;
     private String table_name;
-    private int type;
+    private String type;
     private String desc;
     private String connect_id;
 }

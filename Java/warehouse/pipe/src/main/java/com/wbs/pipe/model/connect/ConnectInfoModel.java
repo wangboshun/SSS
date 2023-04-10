@@ -20,6 +20,6 @@ public class ConnectInfoModel extends BaseStatusModel {
     private String password;
     private String database;
     private String schema;
-    private int type;
+    private String type;
     private String desc;
 }
