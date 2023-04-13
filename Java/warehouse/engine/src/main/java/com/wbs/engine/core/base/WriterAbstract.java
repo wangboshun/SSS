@@ -91,7 +91,6 @@ public abstract class WriterAbstract implements IWriter {
         }
         LocalDateTime end = LocalDateTime.now();
         float tm = Duration.between(start, end).toMillis() / 1000f;
-        System.out.println("插入耗时：" + tm);
         WriterResult result = builderResult(exceptionData, 1);
         result.setSpend(String.format("%.2f", tm));
         result.setInsertCount(dt.size() - result.getExitsCount() - result.getErrorCount());
@@ -128,7 +127,6 @@ public abstract class WriterAbstract implements IWriter {
         }
         LocalDateTime end = LocalDateTime.now();
         float tm = Duration.between(start, end).toMillis() / 1000f;
-        System.out.println("更新耗时：" + tm);
         WriterResult result = builderResult(exceptionData, 2);
         result.setSpend(String.format("%.2f", tm));
         result.setUpdateCount(dt.size() - result.getErrorCount());
@@ -142,10 +140,6 @@ public abstract class WriterAbstract implements IWriter {
      * @param rows
      */
     private void batchInsert(List<DataRow> rows) {
-        // 如果线程中断，停止写入
-        if (Thread.currentThread().isInterrupted()) {
-            return;
-        }
         PreparedStatement pstm = null;
         try {
             String sql = buildInsertSql();
@@ -153,6 +147,10 @@ public abstract class WriterAbstract implements IWriter {
             pstm = connection.prepareStatement(sql);
             int rowIndex = 0;
             for (DataRow row : rows) {
+                // 如果线程中断，停止写入
+                if (Thread.currentThread().isInterrupted()) {
+                    return;
+                }
                 int paramIndex = 1;
                 for (ColumnInfo col : this.columnList) {
                     DbUtils.setParam(pstm, paramIndex, row.get(col.getName()), col.getJavaType());
@@ -162,7 +160,6 @@ public abstract class WriterAbstract implements IWriter {
                 if (rowIndex > 0 && rowIndex % BATCH_SIZE == 0) {
                     pstm.executeBatch();
                     pstm.clearBatch();
-                    System.out.println("插入一批:" + rowIndex);
                 }
                 rowIndex++;
             }
@@ -211,10 +208,6 @@ public abstract class WriterAbstract implements IWriter {
      * @param rows
      */
     private void batchUpdate(List<DataRow> rows) {
-        // 如果线程中断，停止更新
-        if (Thread.currentThread().isInterrupted()) {
-            return;
-        }
         PreparedStatement pstm = null;
         try {
             // 非主键，这里做了特殊处理，因为sql语句中非主键的参数在前面，所以先把非主键和参数先封装进去
@@ -224,6 +217,10 @@ public abstract class WriterAbstract implements IWriter {
             int rowIndex = 0;
             Map<String, Integer> columnSort = buildColumnSql();
             for (DataRow row : rows) {
+                // 如果线程中断，停止更新
+                if (Thread.currentThread().isInterrupted()) {
+                    return;
+                }
                 for (ColumnInfo col : this.columnList) {
                     String columnName = col.getName();
                     Integer paramIndex = columnSort.get(columnName);
@@ -233,7 +230,6 @@ public abstract class WriterAbstract implements IWriter {
                 if (rowIndex > 0 && rowIndex % BATCH_SIZE == 0) {
                     pstm.executeBatch();
                     pstm.clearBatch();
-                    System.out.println("更新一批:" + rowIndex);
                 }
                 rowIndex++;
             }
@@ -312,7 +308,6 @@ public abstract class WriterAbstract implements IWriter {
                 }
             }
         });
-        System.out.println(result);
         return result;
     }
 

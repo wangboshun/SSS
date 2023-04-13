@@ -143,17 +143,13 @@ public class EngineController {
         List<TableInfo> pgTables = DbUtils.getTables(pgsqlConnection);
         List<TableInfo> mysqlTables = DbUtils.getTables(mysqlConnection);
         List<TableInfo> sqlserverTables = DbUtils.getTables(sqlserverConnection);
-
-        System.out.println();
     }
 
     @GetMapping("/test")
     public ResponseResult test() {
         try {
             getTableAndColumn();
-            System.out.println();
         } catch (Exception e) {
-            System.out.println(e);
         }
         return new ResponseResult().OK();
     }
@@ -192,12 +188,8 @@ public class EngineController {
             where4.setColumn("tm");
             where4.setSymbol("is not null");
             whereList.add(where4);
-
             DataTable dataTable = mySqlReader.readData(whereList);
-
-            System.out.println();
         } catch (Exception e) {
-            System.out.println(e);
         }
         return new ResponseResult().OK();
     }
@@ -211,10 +203,7 @@ public class EngineController {
             DataTable dataTable = mySqlReader.readData("select * from iot_data limit 1000 ");
             mySqlWriter.config("iot_data1", mysqlConnection);
             mySqlWriter.insertData(dataTable);
-            System.out.println();
-
         } catch (Exception e) {
-            System.out.println(e);
         }
         return new ResponseResult().OK();
     }
@@ -228,10 +217,7 @@ public class EngineController {
             DataTable dataTable = mySqlReader.readData("select * from iot_data limit 1000");
             sqlServerWriter.config("iot_data", sqlserverConnection);
             sqlServerWriter.insertData(dataTable);
-            System.out.println();
-
         } catch (Exception e) {
-            System.out.println(e);
         }
         return new ResponseResult().OK();
     }
@@ -245,9 +231,7 @@ public class EngineController {
             DataTable dataTable = mySqlReader.readData("select * from iot_data limit 1000 ");
             clickHouseWriter.config("iot_data", ckConnection);
             clickHouseWriter.insertData(dataTable);
-            System.out.println();
         } catch (Exception e) {
-            System.out.println(e);
         }
         return new ResponseResult().OK();
     }
@@ -261,9 +245,7 @@ public class EngineController {
             DataTable dataTable = mySqlReader.readData("select * from iot_data ");
             pgSqlWriter.config("iot_data", pgsqlConnection);
             pgSqlWriter.insertData(dataTable);
-            System.out.println();
         } catch (Exception e) {
-            System.out.println(e);
         }
         return new ResponseResult().OK();
     }

@@ -12,6 +12,8 @@ import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.conversions.Bson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -25,7 +27,7 @@ import java.util.Map;
 @Component
 public class MongoFactory {
     private final HashMap<String, MongoClient> clientMap = new HashMap<>();
-
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     /**
      * 获取所有客户端
      *
@@ -96,7 +98,7 @@ public class MongoFactory {
                 return mongoClient;
             }
         } catch (Exception e) {
-            System.out.println(e);
+            logger.error("createClient exception", e);
         }
         return null;
     }

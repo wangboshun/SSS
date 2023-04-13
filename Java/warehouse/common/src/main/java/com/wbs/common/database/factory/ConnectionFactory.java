@@ -1,5 +1,7 @@
 package com.wbs.common.database.factory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -15,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class ConnectionFactory {
     private final ConcurrentHashMap<String, Connection> connectionMap = new ConcurrentHashMap<>();
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * 获取所有连接
@@ -56,7 +59,7 @@ public class ConnectionFactory {
             connectionMap.put(connectionName, connection);
             return connection;
         } catch (SQLException e) {
-            System.out.println(e);
+            logger.error("createConnection exception", e);
         }
         return connection;
     }
