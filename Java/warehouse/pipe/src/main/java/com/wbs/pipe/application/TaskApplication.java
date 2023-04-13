@@ -13,6 +13,8 @@ import com.wbs.pipe.model.task.TaskInfoModel;
 import com.wbs.pipe.model.task.TaskLogModel;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,6 +33,7 @@ import static com.mongodb.client.model.Filters.or;
 public class TaskApplication {
     private final MongoCollection<TaskInfoModel> collection;
     private final MongoCollection<TaskLogModel> taskLogCollection;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public TaskApplication(MongoDatabase defaultMongoDatabase) {
         this.collection = defaultMongoDatabase.getCollection("task_info", TaskInfoModel.class);
@@ -115,13 +118,6 @@ public class TaskApplication {
     }
 
 
-
-
-
-
-
-
-
     public List<TaskLogModel> getTaskLogList() {
         List<TaskLogModel> list = new ArrayList<>();
         FindIterable<TaskLogModel> iterable = taskLogCollection.find();
@@ -138,5 +134,19 @@ public class TaskApplication {
             return null;
         }
         return taskLogCollection.find(or(query)).first();
+    }
+
+    /**
+     * 添加任务日志
+     */
+    public void addTaskLog(TaskLogModel model) {
+        try {
+             ObjectId id = new ObjectId();
+             model.setId(id.toString());
+             model.setCt(LocalDateTime.now());
+            taskLogCollection.insertOne(model);
+        } catch (Exception e) {
+            logger.error("------PipeApplication addTaskLog error------", e);
+        }
     }
 }

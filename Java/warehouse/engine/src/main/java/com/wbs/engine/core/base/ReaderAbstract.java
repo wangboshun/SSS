@@ -165,6 +165,10 @@ public abstract class ReaderAbstract implements IReader {
         DataTable dt = new DataTable();
         try {
             while (resultSet.next()) {
+                // 如果线程中断，停止查询
+                if (Thread.currentThread().isInterrupted()) {
+                    break;
+                }
                 DataRow dr = new DataRow(this.columnList.size());
                 for (ColumnInfo col : this.columnList) {
                     String columnName = col.getName();

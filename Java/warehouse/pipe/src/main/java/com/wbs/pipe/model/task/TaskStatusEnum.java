@@ -17,6 +17,11 @@ public enum TaskStatusEnum {
     RUNNING,
 
     /**
+     * 取消
+     */
+    CANCEL,
+
+    /**
      * 错误
      */
     ERROR,

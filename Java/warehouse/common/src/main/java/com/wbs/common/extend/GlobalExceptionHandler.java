@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     public ResponseResult exceptionHandler(HttpServletRequest request, Exception e) {
-        logger.error("请求异常", e);
-        return new ResponseResult().ERROR(HttpEnum.EXCEPTION);
+        logger.error("发生异常：" + e.getMessage(), e);
+        return new ResponseResult().ERROR(e.getMessage(), HttpEnum.EXCEPTION);
     }
 }

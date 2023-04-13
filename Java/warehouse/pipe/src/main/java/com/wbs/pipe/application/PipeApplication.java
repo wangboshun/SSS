@@ -1,8 +1,6 @@
 package com.wbs.pipe.application;
 
 import cn.hutool.core.util.EnumUtil;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import com.wbs.common.database.base.DataTable;
 import com.wbs.common.database.base.DbTypeEnum;
 import com.wbs.engine.core.base.WriteTypeEnum;
@@ -18,16 +16,19 @@ import com.wbs.engine.model.WriterResult;
 import com.wbs.pipe.model.ColumnConfigModel;
 import com.wbs.pipe.model.sink.SinkInfoModel;
 import com.wbs.pipe.model.source.SourceInfoModel;
-import com.wbs.pipe.model.task.TaskStatusEnum;
 import com.wbs.pipe.model.task.TaskInfoModel;
 import com.wbs.pipe.model.task.TaskLogModel;
-import org.bson.types.ObjectId;
+import com.wbs.pipe.model.task.TaskStatusEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Future;
 
 import static java.lang.String.format;
 
@@ -52,7 +53,7 @@ public class PipeApplication {
     private final ClickHouseWriter clickHouseWriter;
     private final PgSqlReader pgSqlReader;
     private final PgSqlWriter pgSqlWriter;
-    private final MongoCollection<TaskLogModel> taskLogCollection;
+    private final ThreadPoolTaskExecutor defaultExecutor;
 
 
     private TaskStatusEnum taskStatusEnum;
@@ -61,9 +62,10 @@ public class PipeApplication {
     private LocalDateTime et;
     private WriterResult insertResult;
     private WriterResult updateResult;
+    private Map<String, Future> threadMap = new HashMap<>();
 
 
-    public PipeApplication(MongoDatabase defaultMongoDatabase, TaskApplication taskApplication, SourceApplication sourceApplication, SinkApplication sinkApplication, ColumnConfigApplication columnConfigApplication, ConnectApplication connectApplication, MySqlReader mySqlReader, MySqlWriter mySqlWriter, SqlServerReader sqlServerReader, SqlServerWriter sqlServerWriter, ClickHouseReader clickHouseReader, ClickHouseWriter clickHouseWriter, PgSqlReader pgSqlReader, PgSqlWriter pgSqlWriter) {
+    public PipeApplication(TaskApplication taskApplication, SourceApplication sourceApplication, SinkApplication sinkApplication, ColumnConfigApplication columnConfigApplication, ConnectApplication connectApplication, MySqlReader mySqlReader, MySqlWriter mySqlWriter, SqlServerReader sqlServerReader, SqlServerWriter sqlServerWriter, ClickHouseReader clickHouseReader, ClickHouseWriter clickHouseWriter, PgSqlReader pgSqlReader, PgSqlWriter pgSqlWriter, ThreadPoolTaskExecutor defaultExecutor) {
         this.taskApplication = taskApplication;
         this.sourceApplication = sourceApplication;
         this.sinkApplication = sinkApplication;
@@ -77,7 +79,7 @@ public class PipeApplication {
         this.clickHouseWriter = clickHouseWriter;
         this.pgSqlReader = pgSqlReader;
         this.pgSqlWriter = pgSqlWriter;
-        this.taskLogCollection = defaultMongoDatabase.getCollection("task_log", TaskLogModel.class);
+        this.defaultExecutor = defaultExecutor;
     }
 
     /**
@@ -86,38 +88,54 @@ public class PipeApplication {
      * @param taskId
      */
     public boolean startTask(String taskId) {
-        try {
-            this.currentTask = taskApplication.getTask(taskId, null);
-            if (this.currentTask == null) {
-                throw new RuntimeException("任务不存在！");
-            }
-
-            taskStatusEnum = TaskStatusEnum.WAIT;
-            this.insertResult = new WriterResult();
-            this.updateResult = new WriterResult();
-            this.st = LocalDateTime.now();
-
-            String sinkId = this.currentTask.getSink_id();
-            String sourceId = this.currentTask.getSource_id();
-            taskStatusEnum = TaskStatusEnum.RUNNING;
-            DataTable dataTable = readData(sourceId);
-
-            ColumnConfigModel columnConfig = columnConfigApplication.getColumnConfigByTask(taskId);
-            if (columnConfig != null) {
-                // 转换
-                dataTable = dataTable.mapper(columnConfig.getMapper());
-            }
-            writeData(sinkId, dataTable);
-            this.et = LocalDateTime.now();
-            taskStatusEnum = TaskStatusEnum.COMPLETE;
-        } catch (Exception e) {
-            taskStatusEnum = TaskStatusEnum.ERROR;
-            return false;
-        } finally {
-            addTaskLog();
+        this.currentTask = taskApplication.getTask(taskId, null);
+        if (this.currentTask == null) {
+            throw new RuntimeException("任务不存在！");
         }
+        Future<?> future = defaultExecutor.submit(() -> {
+            try {
+                taskStatusEnum = TaskStatusEnum.WAIT;
+                this.insertResult = new WriterResult();
+                this.updateResult = new WriterResult();
+                this.st = LocalDateTime.now();
+
+                String sinkId = this.currentTask.getSink_id();
+                String sourceId = this.currentTask.getSource_id();
+                taskStatusEnum = TaskStatusEnum.RUNNING;
+                DataTable dataTable = readData(sourceId);
+
+                // 如果线程中断，停止后续
+                if ( Thread.currentThread().isInterrupted()) {
+                    this.et = LocalDateTime.now();
+                    taskStatusEnum = TaskStatusEnum.CANCEL;
+                } else {
+                    ColumnConfigModel columnConfig = columnConfigApplication.getColumnConfigByTask(taskId);
+                    if (columnConfig != null) {
+                        // 转换
+                        dataTable = dataTable.mapper(columnConfig.getMapper());
+                    }
+                    writeData(sinkId, dataTable);
+                    this.et = LocalDateTime.now();
+                    taskStatusEnum = TaskStatusEnum.COMPLETE;
+                }
+            } catch (Exception e) {
+                taskStatusEnum = TaskStatusEnum.ERROR;
+                logger.error("startTask Exception", e);
+            } finally {
+                addTaskLog();
+            }
+        });
+        threadMap.put(taskId, future);
         return true;
     }
+
+
+    public boolean stopTask(String taskId) {
+        Future future = threadMap.get(taskId);
+        future.cancel(true);
+        return true;
+    }
+
 
     /**
      * 写入数据
@@ -211,17 +229,16 @@ public class PipeApplication {
      */
     public void addTaskLog() {
         try {
-            TaskLogModel model = new TaskLogModel();
-            ObjectId id = new ObjectId();
-            model.setId(id.toString());
-            model.setInsert(this.insertResult);
-            model.setUpdate(this.updateResult);
-            model.setCt(LocalDateTime.now());
-            model.setTask_id(this.currentTask.getId());
-            model.setSt(this.st);
-            model.setEt(this.et);
-            model.setStatus(this.taskStatusEnum.name());
-            taskLogCollection.insertOne(model);
+            defaultExecutor.execute(() -> {
+                TaskLogModel model = new TaskLogModel();
+                model.setInsert(this.insertResult);
+                model.setUpdate(this.updateResult);
+                model.setTask_id(this.currentTask.getId());
+                model.setSt(this.st);
+                model.setEt(this.et);
+                model.setStatus(this.taskStatusEnum.name());
+                taskApplication.addTaskLog(model);
+            });
         } catch (Exception e) {
             logger.error("------PipeApplication addTaskLog error------", e);
         }

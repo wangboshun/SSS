@@ -28,12 +28,12 @@ import java.util.concurrent.CompletableFuture;
 public class DbUtils {
     private static final Logger logger = LoggerFactory.getLogger("DbUtils");
     @Autowired
-    private ThreadPoolTaskExecutor customExecutor;
+    private ThreadPoolTaskExecutor defaultExecutor;
     private static ThreadPoolTaskExecutor threadPool;
 
     @PostConstruct
     public void init() {
-        threadPool = this.customExecutor;
+        threadPool = this.defaultExecutor;
     }
 
     public static List<TableInfo> getTables(Connection connection) {

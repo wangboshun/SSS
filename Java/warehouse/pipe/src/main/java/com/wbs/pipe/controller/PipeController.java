@@ -33,4 +33,13 @@ public class PipeController {
         }
         return new ResponseResult().OK();
     }
+
+    @PostMapping(value = "/stop/{id}")
+    public ResponseResult stop(@PathVariable String id) {
+        boolean b = pipeApplication.stopTask(id);
+        if (!b) {
+            return new ResponseResult().FAILED();
+        }
+        return new ResponseResult().OK();
+    }
 }

@@ -16,8 +16,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Configuration
 public class ThreadPoolConfig {
 
-    @Bean(name = "customExecutor")
-    public ThreadPoolTaskExecutor customExecutor() {
+    @Bean(name = "defaultExecutor")
+    public ThreadPoolTaskExecutor defaultExecutor() {
         int processNum = Runtime.getRuntime().availableProcessors();
         int corePoolSize = (int) (processNum / (1 - 0.2));
         int maxPoolSize = (int) (processNum / (1 - 0.5));

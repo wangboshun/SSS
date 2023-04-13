@@ -39,8 +39,9 @@ public abstract class WriterAbstract implements IWriter {
     protected List<ColumnInfo> columnList;
     private Set<String> primarySet;
     Cache<String, List<ColumnInfo>> fifoCache = CacheUtil.newFIFOCache(100);
+
     @Autowired
-    private ThreadPoolTaskExecutor customExecutor;
+    private ThreadPoolTaskExecutor defaultExecutor;
     private static final int BATCH_SIZE = 10000;
 
     @Override
@@ -82,7 +83,7 @@ public abstract class WriterAbstract implements IWriter {
             }
         } else {
             List<List<DataRow>> partition = dt.split(10);// 分成10个线程
-            CompletableFuture[] array = partition.stream().map(item -> CompletableFuture.runAsync(() -> batchInsert(item), customExecutor).exceptionally(error -> {
+            CompletableFuture[] array = partition.stream().map(item -> CompletableFuture.runAsync(() -> batchInsert(item), defaultExecutor).exceptionally(error -> {
                 exceptionData.addAll(item);
                 return null;
             })).toArray(CompletableFuture[]::new);
@@ -119,7 +120,7 @@ public abstract class WriterAbstract implements IWriter {
             }
         } else {
             List<List<DataRow>> partition = dt.split(10);// 分成10个线程
-            CompletableFuture[] array = partition.stream().map(item -> CompletableFuture.runAsync(() -> batchUpdate(item), customExecutor).exceptionally(error -> {
+            CompletableFuture[] array = partition.stream().map(item -> CompletableFuture.runAsync(() -> batchUpdate(item), defaultExecutor).exceptionally(error -> {
                 exceptionData.addAll(item);
                 return null;
             })).toArray(CompletableFuture[]::new);
@@ -164,6 +165,10 @@ public abstract class WriterAbstract implements IWriter {
             pstm.executeBatch();
             pstm.clearBatch();
             connection.commit();
+            // 如果线程中断，停止写入
+            if (Thread.currentThread().isInterrupted()) {
+                return;
+            }
         } catch (Exception e) {
             logger.error("------WriterAbstract batchWrite error------", e);
             throw new RuntimeException("插入失败");
@@ -231,6 +236,10 @@ public abstract class WriterAbstract implements IWriter {
             pstm.executeBatch();
             pstm.clearBatch();
             connection.commit();
+            // 如果线程中断，停止更新
+            if (Thread.currentThread().isInterrupted()) {
+                return;
+            }
         } catch (Exception e) {
             logger.error("WriterAbstract batchUpdate", e);
             throw new RuntimeException("更新失败");
