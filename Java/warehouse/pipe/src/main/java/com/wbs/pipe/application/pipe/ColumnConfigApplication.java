@@ -1,4 +1,4 @@
-package com.wbs.pipe.application;
+package com.wbs.pipe.application.pipe;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import com.mongodb.client.FindIterable;
@@ -9,7 +9,7 @@ import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import com.wbs.common.enums.HttpEnum;
 import com.wbs.common.extend.ResponseResult;
-import com.wbs.pipe.model.ColumnConfigModel;
+import com.wbs.pipe.model.pipe.ColumnConfigModel;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;

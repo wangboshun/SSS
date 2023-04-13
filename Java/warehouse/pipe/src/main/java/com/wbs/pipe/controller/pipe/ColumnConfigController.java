@@ -1,8 +1,8 @@
-package com.wbs.pipe.controller;
+package com.wbs.pipe.controller.pipe;
 
 import com.wbs.common.extend.ResponseResult;
-import com.wbs.pipe.application.ColumnConfigApplication;
-import com.wbs.pipe.model.ColumnConfigModel;
+import com.wbs.pipe.application.pipe.ColumnConfigApplication;
+import com.wbs.pipe.model.pipe.ColumnConfigModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

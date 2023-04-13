@@ -1,8 +1,11 @@
-package com.wbs.pipe.application;
+package com.wbs.pipe.application.pipe;
 
 import cn.hutool.core.util.EnumUtil;
+import com.wbs.common.database.DbUtils;
 import com.wbs.common.database.base.DataTable;
 import com.wbs.common.database.base.DbTypeEnum;
+import com.wbs.common.database.base.model.ColumnInfo;
+import com.wbs.common.database.base.model.WhereInfo;
 import com.wbs.engine.core.base.WriteTypeEnum;
 import com.wbs.engine.core.clickhouse.ClickHouseReader;
 import com.wbs.engine.core.clickhouse.ClickHouseWriter;
@@ -13,7 +16,11 @@ import com.wbs.engine.core.pgsql.PgSqlWriter;
 import com.wbs.engine.core.sqlserver.SqlServerReader;
 import com.wbs.engine.core.sqlserver.SqlServerWriter;
 import com.wbs.engine.model.WriterResult;
-import com.wbs.pipe.model.ColumnConfigModel;
+import com.wbs.pipe.application.ConnectApplication;
+import com.wbs.pipe.application.SinkApplication;
+import com.wbs.pipe.application.SourceApplication;
+import com.wbs.pipe.application.TaskApplication;
+import com.wbs.pipe.model.pipe.ColumnConfigModel;
 import com.wbs.pipe.model.sink.SinkInfoModel;
 import com.wbs.pipe.model.source.SourceInfoModel;
 import com.wbs.pipe.model.task.TaskInfoModel;
@@ -27,6 +34,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
@@ -44,6 +52,7 @@ public class PipeApplication {
     private final SourceApplication sourceApplication;
     private final SinkApplication sinkApplication;
     private final ColumnConfigApplication columnConfigApplication;
+    private final WhereConfigApplication whereConfigApplication;
     private final ConnectApplication connectApplication;
     private final MySqlReader mySqlReader;
     private final MySqlWriter mySqlWriter;
@@ -65,11 +74,12 @@ public class PipeApplication {
     private Map<String, Future> threadMap = new HashMap<>();
 
 
-    public PipeApplication(TaskApplication taskApplication, SourceApplication sourceApplication, SinkApplication sinkApplication, ColumnConfigApplication columnConfigApplication, ConnectApplication connectApplication, MySqlReader mySqlReader, MySqlWriter mySqlWriter, SqlServerReader sqlServerReader, SqlServerWriter sqlServerWriter, ClickHouseReader clickHouseReader, ClickHouseWriter clickHouseWriter, PgSqlReader pgSqlReader, PgSqlWriter pgSqlWriter, ThreadPoolTaskExecutor defaultExecutor) {
+    public PipeApplication(TaskApplication taskApplication, SourceApplication sourceApplication, SinkApplication sinkApplication, ColumnConfigApplication columnConfigApplication, WhereConfigApplication whereConfigApplication, ConnectApplication connectApplication, MySqlReader mySqlReader, MySqlWriter mySqlWriter, SqlServerReader sqlServerReader, SqlServerWriter sqlServerWriter, ClickHouseReader clickHouseReader, ClickHouseWriter clickHouseWriter, PgSqlReader pgSqlReader, PgSqlWriter pgSqlWriter, ThreadPoolTaskExecutor defaultExecutor) {
         this.taskApplication = taskApplication;
         this.sourceApplication = sourceApplication;
         this.sinkApplication = sinkApplication;
         this.columnConfigApplication = columnConfigApplication;
+        this.whereConfigApplication = whereConfigApplication;
         this.connectApplication = connectApplication;
         this.mySqlReader = mySqlReader;
         this.mySqlWriter = mySqlWriter;
@@ -105,7 +115,7 @@ public class PipeApplication {
                 DataTable dataTable = readData(sourceId);
 
                 // 如果线程中断，停止后续
-                if ( Thread.currentThread().isInterrupted()) {
+                if (Thread.currentThread().isInterrupted()) {
                     this.et = LocalDateTime.now();
                     taskStatusEnum = TaskStatusEnum.CANCEL;
                 } else {
@@ -199,22 +209,41 @@ public class PipeApplication {
         Connection sourceConnection = connectApplication.getConnection(sourceInfo.getConnect_id());
         DbTypeEnum dbType = EnumUtil.getEnumMap(DbTypeEnum.class).get(sourceInfo.getType().toUpperCase());
         DataTable dataTable = new DataTable();
+        List<ColumnInfo> columnList = DbUtils.getColumns(sourceConnection, sourceInfo.getTable_name());
+        List<WhereInfo> whereList = whereConfigApplication.getWhereConfigByTask(currentTask.getId());
         String sql = format("select * from %s  ", sourceInfo.getTable_name());
+
         switch (dbType) {
             case MYSQL:
-                mySqlReader.config(sourceInfo.getTable_name(), sourceConnection);
-                dataTable = mySqlReader.readData(sql);
+                mySqlReader.setTableName(sourceInfo.getTable_name());
+                mySqlReader.setConnection(sourceConnection);
+                mySqlReader.setColumnList(columnList);
+                mySqlReader.setWhereList(whereList);
+                mySqlReader.config();
+                dataTable = mySqlReader.readData();
                 break;
             case SQLSERVER:
-                sqlServerReader.config(sourceInfo.getTable_name(), sourceConnection);
-                dataTable = sqlServerReader.readData(sql);
+                sqlServerReader.setTableName(sourceInfo.getTable_name());
+                sqlServerReader.setConnection(sourceConnection);
+                sqlServerReader.setColumnList(columnList);
+                sqlServerReader.setWhereList(whereList);
+                sqlServerReader.config();
+                dataTable = sqlServerReader.readData();
                 break;
             case CLICKHOUSE:
-                clickHouseReader.config(sourceInfo.getTable_name(), sourceConnection);
-                dataTable = clickHouseReader.readData(sql);
+                clickHouseReader.setTableName(sourceInfo.getTable_name());
+                clickHouseReader.setConnection(sourceConnection);
+                clickHouseReader.setColumnList(columnList);
+                clickHouseReader.setWhereList(whereList);
+                clickHouseReader.config();
+                dataTable = clickHouseReader.readData();
                 break;
             case POSTGRESQL:
-                pgSqlReader.config(sourceInfo.getTable_name(), sourceConnection);
+                pgSqlReader.setTableName(sourceInfo.getTable_name());
+                pgSqlReader.setConnection(sourceConnection);
+                pgSqlReader.setColumnList(columnList);
+                pgSqlReader.setWhereList(whereList);
+                pgSqlReader.config();
                 dataTable = pgSqlReader.readData(sql);
                 break;
             default:

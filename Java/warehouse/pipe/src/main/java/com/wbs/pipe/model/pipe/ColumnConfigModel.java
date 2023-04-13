@@ -1,4 +1,4 @@
-package com.wbs.pipe.model;
+package com.wbs.pipe.model.pipe;
 
 import com.wbs.common.extend.BaseStatusModel;
 import lombok.Getter;

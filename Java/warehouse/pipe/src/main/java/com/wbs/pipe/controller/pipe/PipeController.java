@@ -1,7 +1,7 @@
-package com.wbs.pipe.controller;
+package com.wbs.pipe.controller.pipe;
 
 import com.wbs.common.extend.ResponseResult;
-import com.wbs.pipe.application.PipeApplication;
+import com.wbs.pipe.application.pipe.PipeApplication;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
