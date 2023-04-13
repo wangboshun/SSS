@@ -142,6 +142,10 @@ public abstract class WriterAbstract implements IWriter {
      * @param rows
      */
     private void batchInsert(List<DataRow> rows) {
+        // 如果线程中断，停止写入
+        if (Thread.currentThread().isInterrupted()) {
+            return;
+        }
         PreparedStatement pstm = null;
         try {
             String sql = buildInsertSql();
@@ -165,10 +169,6 @@ public abstract class WriterAbstract implements IWriter {
             pstm.executeBatch();
             pstm.clearBatch();
             connection.commit();
-            // 如果线程中断，停止写入
-            if (Thread.currentThread().isInterrupted()) {
-                return;
-            }
         } catch (Exception e) {
             logger.error("------WriterAbstract batchWrite error------", e);
             throw new RuntimeException("插入失败");
@@ -211,6 +211,10 @@ public abstract class WriterAbstract implements IWriter {
      * @param rows
      */
     private void batchUpdate(List<DataRow> rows) {
+        // 如果线程中断，停止更新
+        if (Thread.currentThread().isInterrupted()) {
+            return;
+        }
         PreparedStatement pstm = null;
         try {
             // 非主键，这里做了特殊处理，因为sql语句中非主键的参数在前面，所以先把非主键和参数先封装进去
@@ -236,10 +240,6 @@ public abstract class WriterAbstract implements IWriter {
             pstm.executeBatch();
             pstm.clearBatch();
             connection.commit();
-            // 如果线程中断，停止更新
-            if (Thread.currentThread().isInterrupted()) {
-                return;
-            }
         } catch (Exception e) {
             logger.error("WriterAbstract batchUpdate", e);
             throw new RuntimeException("更新失败");
