@@ -6,6 +6,7 @@ import com.wbs.common.database.base.DataTable;
 import com.wbs.common.database.base.DbTypeEnum;
 import com.wbs.common.database.base.model.ColumnInfo;
 import com.wbs.common.database.base.model.WhereInfo;
+import com.wbs.engine.core.base.ReaderAbstract;
 import com.wbs.engine.core.base.WriteTypeEnum;
 import com.wbs.engine.core.clickhouse.ClickHouseReader;
 import com.wbs.engine.core.clickhouse.ClickHouseWriter;
@@ -38,8 +39,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
-import static java.lang.String.format;
-
 /**
  * @author WBS
  * @date 2023/3/9 14:53
@@ -65,6 +64,7 @@ public class PipeApplication {
     private final ThreadPoolTaskExecutor defaultExecutor;
 
 
+    private ReaderAbstract readerAbstract;
     private TaskStatusEnum taskStatusEnum;
     private TaskInfoModel currentTask;
     private LocalDateTime st;
@@ -208,49 +208,30 @@ public class PipeApplication {
         SourceInfoModel sourceInfo = sourceApplication.getSource(sourceId, null);
         Connection sourceConnection = connectApplication.getConnection(sourceInfo.getConnect_id());
         DbTypeEnum dbType = EnumUtil.getEnumMap(DbTypeEnum.class).get(sourceInfo.getType().toUpperCase());
-        DataTable dataTable = new DataTable();
         List<ColumnInfo> columnList = DbUtils.getColumns(sourceConnection, sourceInfo.getTable_name());
         List<WhereInfo> whereList = whereConfigApplication.getWhereConfigByTask(currentTask.getId());
-        String sql = format("select * from %s  ", sourceInfo.getTable_name());
-
         switch (dbType) {
             case MYSQL:
-                mySqlReader.setTableName(sourceInfo.getTable_name());
-                mySqlReader.setConnection(sourceConnection);
-                mySqlReader.setColumnList(columnList);
-                mySqlReader.setWhereList(whereList);
-                mySqlReader.config();
-                dataTable = mySqlReader.readData();
+                readerAbstract = mySqlReader;
                 break;
             case SQLSERVER:
-                sqlServerReader.setTableName(sourceInfo.getTable_name());
-                sqlServerReader.setConnection(sourceConnection);
-                sqlServerReader.setColumnList(columnList);
-                sqlServerReader.setWhereList(whereList);
-                sqlServerReader.config();
-                dataTable = sqlServerReader.readData();
+                readerAbstract = sqlServerReader;
                 break;
             case CLICKHOUSE:
-                clickHouseReader.setTableName(sourceInfo.getTable_name());
-                clickHouseReader.setConnection(sourceConnection);
-                clickHouseReader.setColumnList(columnList);
-                clickHouseReader.setWhereList(whereList);
-                clickHouseReader.config();
-                dataTable = clickHouseReader.readData();
+                readerAbstract = clickHouseReader;
                 break;
             case POSTGRESQL:
-                pgSqlReader.setTableName(sourceInfo.getTable_name());
-                pgSqlReader.setConnection(sourceConnection);
-                pgSqlReader.setColumnList(columnList);
-                pgSqlReader.setWhereList(whereList);
-                pgSqlReader.config();
-                dataTable = pgSqlReader.readData(sql);
+                readerAbstract = pgSqlReader;
                 break;
             default:
                 break;
         }
-
-        return dataTable;
+        readerAbstract.setTableName(sourceInfo.getTable_name());
+        readerAbstract.setConnection(sourceConnection);
+        readerAbstract.setColumnList(columnList);
+        readerAbstract.setWhereList(whereList);
+        readerAbstract.config();
+        return readerAbstract.readData();
     }
 
     /**
