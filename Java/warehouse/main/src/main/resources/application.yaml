@@ -7,13 +7,6 @@ spring:
   profiles:
     include: engine,common,iot,pipe
 
-mongodb:
-  host: "123.60.141.63"
-  port: 10010
-  username: "admin"
-  password: "mima123456mima"
-  database: "admin"
-
 springdoc:
   swagger-ui:
     path: "/docs"
