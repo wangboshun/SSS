@@ -9,8 +9,8 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import com.wbs.common.database.base.DbTypeEnum;
-import com.wbs.common.database.factory.ConnectionFactory;
-import com.wbs.common.database.factory.DataSourceFactory;
+import com.wbs.common.database.base.model.DataSourceInfo;
+import com.wbs.common.database.rdb.DataSourceManager;
 import com.wbs.common.enums.HttpEnum;
 import com.wbs.common.extend.ResponseResult;
 import com.wbs.pipe.model.connect.ConnectInfoModel;
@@ -18,7 +18,6 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,13 +34,11 @@ import static com.mongodb.client.model.Filters.or;
 @Service
 public class ConnectApplication {
     private final MongoCollection<ConnectInfoModel> collection;
-    private final DataSourceFactory dataSourceFactory;
-    private final ConnectionFactory connectionFactory;
+    private final DataSourceManager dataSourceManager;
 
-    public ConnectApplication(MongoDatabase defaultMongoDatabase, DataSourceFactory dataSourceFactory, ConnectionFactory connectionFactory) {
+    public ConnectApplication(MongoDatabase defaultMongoDatabase, DataSourceManager dataSourceManager) {
         this.collection = defaultMongoDatabase.getCollection("connect_info", ConnectInfoModel.class);
-        this.dataSourceFactory = dataSourceFactory;
-        this.connectionFactory = connectionFactory;
+        this.dataSourceManager = dataSourceManager;
     }
 
     /**
@@ -53,15 +50,18 @@ public class ConnectApplication {
     public Connection getConnection(String connectId) {
         try {
             ConnectInfoModel model = getConnectInfo(connectId, null);
-            String host = model.getHost();
-            int port = model.getPort();
-            String username = model.getUsername();
-            String password = model.getPassword();
-            String database = model.getDatabase();
-            String schema = model.getSchema();
-            DbTypeEnum dbType = EnumUtil.getEnumMap(DbTypeEnum.class).get(model.getType().toUpperCase());
-            DataSource dataSource = dataSourceFactory.createDataSource(model.getName(), host, port, username, password, database, schema, dbType);
-            return connectionFactory.createConnection(model.getName(), dataSource);
+            DataSourceInfo info = new DataSourceInfo();
+            info.setHost(model.getHost());
+            info.setPort(model.getPort());
+            info.setUsername(model.getUsername());
+            info.setPassword(model.getPassword());
+            info.setDatabase(model.getDatabase());
+            info.setSchema(model.getSchema());
+            info.setDatabase(model.getDatabase());
+            info.setDbType(EnumUtil.getEnumMap(DbTypeEnum.class).get(model.getType().toUpperCase()));
+            String sourceName = dataSourceManager.registerDataSource(info);
+            Connection connection = dataSourceManager.createConnection(sourceName);
+            return connection;
         } catch (Exception e) {
             return null;
         }

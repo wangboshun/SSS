@@ -50,10 +50,6 @@ public abstract class ReaderAbstract implements IReader {
         primarySet = columnList.stream().filter(x -> x.getPrimary() == 1).map(ColumnInfo::getName).collect(Collectors.toSet());
     }
 
-    private void buildWhere() {
-
-    }
-
     @Override
     public DataTable readData() {
         DataTable dt = new DataTable();

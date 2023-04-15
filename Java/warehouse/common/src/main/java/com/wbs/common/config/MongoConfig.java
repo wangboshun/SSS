@@ -2,7 +2,7 @@ package com.wbs.common.config;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
-import com.wbs.common.database.factory.MongoFactory;
+import com.wbs.common.database.nosql.MongoFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

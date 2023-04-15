@@ -1,4 +1,4 @@
-package com.wbs.common.database.factory;
+package com.wbs.common.database.nosql;
 
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
