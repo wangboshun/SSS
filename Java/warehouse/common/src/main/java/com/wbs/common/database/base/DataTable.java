@@ -127,8 +127,15 @@ public class DataTable extends ArrayList<DataRow> {
      * @param n
      * @return
      */
-    public List<List<DataRow>> split(int n) {
+    public List<DataTable> split(int n) {
+        List<DataTable> result = new ArrayList<>();
         int batchSize = (int) Math.ceil((double) this.size() / n);
-        return IntStream.range(0, n).parallel().mapToObj(i -> this.subList(i * batchSize, Math.min((i + 1) * batchSize, this.size()))).collect(Collectors.toList());
+        List<List<DataRow>> list = IntStream.range(0, n).parallel().mapToObj(i -> this.subList(i * batchSize, Math.min((i + 1) * batchSize, this.size()))).collect(Collectors.toList());
+        for (List<DataRow> rows : list) {
+            DataTable dt = new DataTable();
+            dt.addAll(rows);
+            result.add(dt);
+        }
+        return result;
     }
 }

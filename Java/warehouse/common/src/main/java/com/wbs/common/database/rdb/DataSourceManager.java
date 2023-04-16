@@ -19,41 +19,40 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DataSourceManager {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private static final ConcurrentHashMap<String, DataSource> dataSourceMap = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<String, DataSourceFactory> dataSourceFactorMap = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, Connection> connectionMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, DataSourceFactory> dataSourceFactorMap = new ConcurrentHashMap<>();
 
-    public String registerDataSource(DataSourceInfo info) {
+
+    /**
+     * 添加数据源
+     *
+     * @param info 数据源配置
+     * @return 数据源名称
+     */
+    public String addDataSource(DataSourceInfo info) {
+        DataSourceFactory factory = null;
         switch (info.getDbType()) {
-            case NONE:
-                break;
             case MYSQL:
-                MySqlDataSourceFactory mySqlDataSourceFactory = new MySqlDataSourceFactory();
-                mySqlDataSourceFactory.setSourceInfo(info);
-                dataSourceFactorMap.put(info.getName(), mySqlDataSourceFactory);
+                factory = new MySqlDataSourceFactory();
                 break;
             case SQLSERVER:
-                SqlServerDataSourceFactory sqlServerDataSourceFactory = new SqlServerDataSourceFactory();
-                sqlServerDataSourceFactory.setSourceInfo(info);
-                dataSourceFactorMap.put(info.getName(), sqlServerDataSourceFactory);
+                factory = new SqlServerDataSourceFactory();
                 break;
             case POSTGRESQL:
-                PostgreSqlDataSourceFactory postgreSqlDataSourceFactory = new PostgreSqlDataSourceFactory();
-                postgreSqlDataSourceFactory.setSourceInfo(info);
-                dataSourceFactorMap.put(info.getName(), postgreSqlDataSourceFactory);
+                factory = new PostgreSqlDataSourceFactory();
                 break;
             case CLICKHOUSE:
-                ClickHouseDataSourceFactory clickHouseDataSourceFactory = new ClickHouseDataSourceFactory();
-                clickHouseDataSourceFactory.setSourceInfo(info);
-                dataSourceFactorMap.put(info.getName(), clickHouseDataSourceFactory);
+                factory = new ClickHouseDataSourceFactory();
+                break;
+            default:
                 break;
         }
-
-        return info.getName();
-    }
-
-    public String registerDataSource(DataSourceFactory factory) {
-        dataSourceFactorMap.put(factory.getDataSourceName(), factory);
-        return factory.getDataSourceName();
+        if (factory != null) {
+            factory.config(info);
+            dataSourceFactorMap.put(info.getName(), factory);
+            return info.getName();
+        }
+        return null;
     }
 
     /**

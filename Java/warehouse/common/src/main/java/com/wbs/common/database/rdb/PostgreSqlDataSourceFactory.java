@@ -14,15 +14,12 @@ import javax.sql.DataSource;
 public class PostgreSqlDataSourceFactory implements DataSourceFactory {
     private DataSourceInfo sourceInfo;
 
-    public DataSourceInfo getSourceInfo() {
-        return sourceInfo;
-    }
-
-    public void setSourceInfo(DataSourceInfo sourceInfo) {
+    @Override
+    public void config(DataSourceInfo info) {
+        sourceInfo = info;
         String url = "jdbc:postgresql://" + sourceInfo.getHost() + ":" + sourceInfo.getPort() + "/" + sourceInfo.getDatabase() + "?currentSchema=" + sourceInfo.getSchema();
         sourceInfo.setUrl(url);
         sourceInfo.setName(SecureUtil.md5(url));
-        this.sourceInfo = sourceInfo;
     }
 
     @Override

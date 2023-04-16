@@ -1,6 +1,11 @@
 package com.wbs.engine.core.base;
 
 import com.wbs.common.database.base.DataTable;
+import com.wbs.common.database.base.model.ColumnInfo;
+import com.wbs.common.database.base.model.WhereInfo;
+
+import java.sql.Connection;
+import java.util.List;
 
 /**
  * @author WBS
@@ -9,7 +14,7 @@ import com.wbs.common.database.base.DataTable;
  */
 public interface IReader {
 
-    public void config();
+    public void config(String tableName, Connection connection, List<ColumnInfo> columnList, List<WhereInfo> whereList);
     public DataTable readData();
     public DataTable readData(String sql);
 }

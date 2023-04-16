@@ -16,15 +16,12 @@ import java.util.Properties;
 public class ClickHouseDataSourceFactory implements DataSourceFactory {
     private DataSourceInfo sourceInfo;
 
-    public DataSourceInfo getSourceInfo() {
-        return sourceInfo;
-    }
-
-    public void setSourceInfo(DataSourceInfo sourceInfo) {
+    @Override
+    public void config(DataSourceInfo info) {
+        sourceInfo = info;
         String url = "jdbc:clickhouse://" + sourceInfo.getHost() + ":" + sourceInfo.getPort() + "/" + sourceInfo.getDatabase();
         sourceInfo.setUrl(url);
         sourceInfo.setName(SecureUtil.md5(url));
-        this.sourceInfo = sourceInfo;
     }
 
     @Override

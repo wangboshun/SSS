@@ -1,5 +1,7 @@
 package com.wbs.common.database.rdb;
 
+import com.wbs.common.database.base.model.DataSourceInfo;
+
 import javax.sql.DataSource;
 
 /**
@@ -8,6 +10,9 @@ import javax.sql.DataSource;
  * @desciption DataSourceFactory
  */
 public interface DataSourceFactory {
+
+    void config(DataSourceInfo info);
+
     DataSource createDataSource();
 
     String getDataSourceName();

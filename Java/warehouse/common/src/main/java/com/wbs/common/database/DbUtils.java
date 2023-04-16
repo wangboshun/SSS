@@ -442,4 +442,68 @@ public class DbUtils {
             throw new Exception("setParam exception：" + e.getMessage());
         }
     }
+
+    /**
+     * 构建插入语句
+     */
+    public static String buildInsertSql(String tableName, List<ColumnInfo> columnList, DbTypeEnum dbType) {
+        StringBuilder columnSql = new StringBuilder();
+        StringBuilder valueSql = new StringBuilder();
+        for (ColumnInfo col : columnList) {
+            columnSql.append(DbUtils.convertName(col.getName(), dbType)).append(",");
+            valueSql.append("?,");
+        }
+        columnSql.deleteCharAt(columnSql.length() - 1);
+        valueSql.deleteCharAt(valueSql.length() - 1);
+        return String.format("INSERT INTO %s (%s) VALUES (%s)", DbUtils.convertName(tableName, dbType), columnSql, valueSql);
+    }
+
+    /**
+     * 构建更新语句
+     */
+    public static String buildUpdateSql(String tableName, List<ColumnInfo> columnList, Set<String> primarySet, DbTypeEnum dbType) {
+        StringBuilder columnSql = new StringBuilder();
+        StringBuilder primarySql = new StringBuilder();
+        for (ColumnInfo col : columnList) {
+            String columnName = col.getName();
+            // 主键
+            if (primarySet.contains(columnName)) {
+                primarySql.append(DbUtils.convertName(columnName, dbType)).append("=?");
+                primarySql.append(" AND ");
+            }
+            // 非主键
+            else {
+                columnSql.append(DbUtils.convertName(columnName, dbType)).append("=?");
+                columnSql.append(",");
+            }
+        }
+        columnSql.deleteCharAt(columnSql.length() - 1);
+        primarySql.delete(primarySql.length() - 4, primarySql.length());
+        return String.format("UPDATE %s SET %s WHERE %s", DbUtils.convertName(tableName, dbType), columnSql, primarySql);
+    }
+
+    /**
+     * 构建字段位置信息，用于更新用
+     */
+    public static Map<String, Integer> buildColumnSql(List<ColumnInfo> columnList, Set<String> primarySet) {
+        Integer paramIndex = 1;
+        Map<String, Integer> columnSort = new HashMap<String, Integer>();
+        for (ColumnInfo col : columnList) {
+            String columnName = col.getName();
+            if (primarySet.contains(columnName)) {
+                continue;
+            }
+            columnSort.put(columnName, paramIndex);
+            paramIndex++;
+        }
+
+        for (ColumnInfo col : columnList) {
+            String columnName = col.getName();
+            if (primarySet.contains(columnName)) {
+                columnSort.put(columnName, paramIndex);
+                paramIndex++;
+            }
+        }
+        return columnSort;
+    }
 }

@@ -1,9 +1,5 @@
 package com.wbs.engine.core.base;
 
-import cn.hutool.cache.Cache;
-import cn.hutool.cache.CacheUtil;
-import cn.hutool.crypto.SecureUtil;
-import com.mysql.cj.jdbc.ConnectionImpl;
 import com.wbs.common.database.DbUtils;
 import com.wbs.common.database.base.DataRow;
 import com.wbs.common.database.base.DataTable;
@@ -12,17 +8,20 @@ import com.wbs.common.database.base.model.ColumnInfo;
 import com.wbs.engine.model.WriterResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
+import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 /**
@@ -30,38 +29,23 @@ import java.util.stream.Collectors;
  * @date 2023/3/2 15:46
  * @desciption WriterAbstract
  */
-@Component
-public abstract class WriterAbstract implements IWriter {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+public class WriterAbstract implements IWriter {
+    private String tableName;
     protected DbTypeEnum dbType;
     private Connection connection;
-    private String tableName;
-    protected List<ColumnInfo> columnList;
     private Set<String> primarySet;
-    Cache<String, List<ColumnInfo>> fifoCache = CacheUtil.newFIFOCache(100);
-
-    @Autowired
-    private ThreadPoolTaskExecutor defaultExecutor;
+    private List<ColumnInfo> columnList;
     private static final int BATCH_SIZE = 10000;
-
-    @Override
-    public void config(String tableName, Connection connection) {
-        String url = ((ConnectionImpl) connection).getURL();
-        String md5 = SecureUtil.md5(url + "_" + tableName);
-        List<ColumnInfo> columns = fifoCache.get(md5);
-        if (columnList == null) {
-            columns = DbUtils.getColumns(connection, tableName);
-            fifoCache.put(md5, columns);
-        }
-        config(tableName, connection, columns);
-    }
+    private static final int THREAD_SIZE = 10;
+    private final ExecutorService executor = Executors.newFixedThreadPool(THREAD_SIZE, new CustomizableThreadFactory("writerThread---"));
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public void config(String tableName, Connection connection, List<ColumnInfo> columnList) {
-        this.connection = connection;
         this.tableName = tableName;
+        this.connection = connection;
         this.columnList = columnList;
-        this.primarySet = this.columnList.stream().filter(x -> x.getPrimary() == 1).map(ColumnInfo::getName).collect(Collectors.toSet());
+        this.primarySet = columnList.stream().filter(x -> x.getPrimary() == 1).map(ColumnInfo::getName).collect(Collectors.toSet());
     }
 
     /**
@@ -74,20 +58,27 @@ public abstract class WriterAbstract implements IWriter {
     public WriterResult insertData(DataTable dt) {
         DataTable exceptionData = new DataTable();
         LocalDateTime start = LocalDateTime.now();
+        DataTable exitsData = new DataTable();
+        DataTable errorData = new DataTable();
         // 如果小于设置批大小
         if (dt.size() < BATCH_SIZE) {
             try {
                 batchInsert(dt);
             } catch (Exception e) {
-                exceptionData.addAll(dt);
+                exitsData.addAll(findExitsData(dt));
+                errorData.addAll(findErrorData(dt, 1));
+                // exceptionData.addAll(dt);
             }
         } else {
-            List<List<DataRow>> partition = dt.split(10);// 分成10个线程
-            CompletableFuture[] array = partition.stream().map(item -> CompletableFuture.runAsync(() -> batchInsert(item), defaultExecutor).exceptionally(error -> {
-                exceptionData.addAll(item);
+            List<DataTable> partition = dt.split(THREAD_SIZE);// 分成10个线程
+            CompletableFuture[] array = partition.stream().map(item -> CompletableFuture.runAsync(() -> batchInsert(item), executor).exceptionally(error -> {
+                // exceptionData.addAll(item);
+                exitsData.addAll(findExitsData(item));
+                errorData.addAll(findErrorData(item, 1));
                 return null;
             })).toArray(CompletableFuture[]::new);
             CompletableFuture.allOf(array).join();
+            executor.shutdown();
         }
         LocalDateTime end = LocalDateTime.now();
         float tm = Duration.between(start, end).toMillis() / 1000f;
@@ -97,11 +88,10 @@ public abstract class WriterAbstract implements IWriter {
         return result;
     }
 
-
     /**
      * 更新数据
      *
-     * @param dt
+     * @param dt 数据集
      * @return 返回错误数据
      */
     @Override
@@ -118,12 +108,13 @@ public abstract class WriterAbstract implements IWriter {
                 exceptionData.addAll(dt);
             }
         } else {
-            List<List<DataRow>> partition = dt.split(10);// 分成10个线程
-            CompletableFuture[] array = partition.stream().map(item -> CompletableFuture.runAsync(() -> batchUpdate(item), defaultExecutor).exceptionally(error -> {
+            List<DataTable> partition = dt.split(THREAD_SIZE);// 分成10个线程
+            CompletableFuture[] array = partition.stream().map(item -> CompletableFuture.runAsync(() -> batchUpdate(item), executor).exceptionally(error -> {
                 exceptionData.addAll(item);
                 return null;
             })).toArray(CompletableFuture[]::new);
             CompletableFuture.allOf(array).join();
+            executor.shutdown();
         }
         LocalDateTime end = LocalDateTime.now();
         float tm = Duration.between(start, end).toMillis() / 1000f;
@@ -137,12 +128,12 @@ public abstract class WriterAbstract implements IWriter {
     /**
      * 批量写入
      *
-     * @param rows
+     * @param rows 数据集
      */
     private void batchInsert(List<DataRow> rows) {
         PreparedStatement pstm = null;
         try {
-            String sql = buildInsertSql();
+            String sql = DbUtils.buildInsertSql(tableName, columnList, dbType);
             this.connection.setAutoCommit(false);
             pstm = connection.prepareStatement(sql);
             int rowIndex = 0;
@@ -177,13 +168,12 @@ public abstract class WriterAbstract implements IWriter {
     /**
      * 单条写入
      *
-     * @param row
-     * @return
+     * @param row 数据
      */
     private boolean singleInsert(DataRow row) {
         PreparedStatement pstm = null;
         try {
-            String sql = buildInsertSql();
+            String sql = DbUtils.buildInsertSql(tableName, columnList, dbType);
             this.connection.setAutoCommit(true);
             pstm = connection.prepareStatement(sql);
             int paramIndex = 1;
@@ -205,18 +195,18 @@ public abstract class WriterAbstract implements IWriter {
     /**
      * 批量更新
      *
-     * @param rows
+     * @param dt 数据集
      */
-    private void batchUpdate(List<DataRow> rows) {
+    private void batchUpdate(DataTable dt) {
         PreparedStatement pstm = null;
         try {
             // 非主键，这里做了特殊处理，因为sql语句中非主键的参数在前面，所以先把非主键和参数先封装进去
-            String sql = buildUpdateSql();
+            String sql = DbUtils.buildUpdateSql(tableName, columnList, primarySet, dbType);
             this.connection.setAutoCommit(false);
             pstm = connection.prepareStatement(sql);
             int rowIndex = 0;
-            Map<String, Integer> columnSort = buildColumnSql();
-            for (DataRow row : rows) {
+            Map<String, Integer> columnSort = DbUtils.buildColumnSql(columnList, primarySet);
+            for (DataRow row : dt) {
                 // 如果线程中断，停止更新
                 if (Thread.currentThread().isInterrupted()) {
                     return;
@@ -247,16 +237,15 @@ public abstract class WriterAbstract implements IWriter {
     /**
      * 单条更新
      *
-     * @param row
-     * @return
+     * @param row 数据
      */
     private boolean singleUpdate(DataRow row) {
         PreparedStatement pstm = null;
         try {
-            String sql = buildUpdateSql();
+            String sql = DbUtils.buildUpdateSql(tableName, columnList, primarySet, dbType);
             this.connection.setAutoCommit(true);
             pstm = connection.prepareStatement(sql);
-            Map<String, Integer> columnSort = buildColumnSql();
+            Map<String, Integer> columnSort = DbUtils.buildColumnSql(columnList, primarySet);
             for (ColumnInfo col : this.columnList) {
                 String columnName = col.getName();
                 Integer paramIndex = columnSort.get(columnName);
@@ -275,14 +264,12 @@ public abstract class WriterAbstract implements IWriter {
     /**
      * 查找已存在数据
      *
-     * @param dt
-     * @return
+     * @param dt 数据
      */
     private DataTable findExitsData(DataTable dt) {
         DataTable exitsData = new DataTable();
         for (DataRow row : dt) {
-            boolean b = exists(row);
-            if (b) {
+            if (exists(row)) {
                 exitsData.add(row);
             }
         }
@@ -314,7 +301,7 @@ public abstract class WriterAbstract implements IWriter {
     /**
      * 构建返回值
      *
-     * @param exceptionData
+     * @param exceptionData 错误数据
      * @param type          1为插入，2为更新
      */
     private WriterResult builderResult(DataTable exceptionData, int type) {
@@ -341,76 +328,6 @@ public abstract class WriterAbstract implements IWriter {
             }
         }
         return result;
-    }
-
-    /**
-     * 构建字段位置信息，用于更新用
-     *
-     * @return
-     */
-    private Map<String, Integer> buildColumnSql() {
-        Integer paramIndex = 1;
-        Map<String, Integer> columnSort = new HashMap<String, Integer>();
-        for (ColumnInfo col : this.columnList) {
-            String columnName = col.getName();
-            if (this.primarySet.contains(columnName)) {
-                continue;
-            }
-            columnSort.put(columnName, paramIndex);
-            paramIndex++;
-        }
-
-        for (ColumnInfo col : this.columnList) {
-            String columnName = col.getName();
-            if (this.primarySet.contains(columnName)) {
-                columnSort.put(columnName, paramIndex);
-                paramIndex++;
-            }
-        }
-        return columnSort;
-    }
-
-    /**
-     * 构建插入语句
-     *
-     * @return
-     */
-    private String buildInsertSql() {
-        StringBuilder columnSql = new StringBuilder();
-        StringBuilder valueSql = new StringBuilder();
-        for (ColumnInfo col : this.columnList) {
-            columnSql.append(DbUtils.convertName(col.getName(), dbType)).append(",");
-            valueSql.append("?,");
-        }
-        columnSql.deleteCharAt(columnSql.length() - 1);
-        valueSql.deleteCharAt(valueSql.length() - 1);
-        return String.format("INSERT INTO %s (%s) VALUES (%s)", DbUtils.convertName(tableName, dbType), columnSql, valueSql);
-    }
-
-    /**
-     * 构建更新语句
-     *
-     * @return
-     */
-    private String buildUpdateSql() {
-        StringBuilder columnSql = new StringBuilder();
-        StringBuilder primarySql = new StringBuilder();
-        for (ColumnInfo col : this.columnList) {
-            String columnName = col.getName();
-            // 主键
-            if (this.primarySet.contains(columnName)) {
-                primarySql.append(DbUtils.convertName(columnName, dbType)).append("=?");
-                primarySql.append(" AND ");
-            }
-            // 非主键
-            else {
-                columnSql.append(DbUtils.convertName(columnName, dbType)).append("=?");
-                columnSql.append(",");
-            }
-        }
-        columnSql.deleteCharAt(columnSql.length() - 1);
-        primarySql.delete(primarySql.length() - 4, primarySql.length());
-        return String.format("UPDATE %s SET %s WHERE %s", DbUtils.convertName(tableName, dbType), columnSql, primarySql);
     }
 
     /**

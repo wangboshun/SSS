@@ -59,9 +59,8 @@ public class ConnectApplication {
             info.setSchema(model.getSchema());
             info.setDatabase(model.getDatabase());
             info.setDbType(EnumUtil.getEnumMap(DbTypeEnum.class).get(model.getType().toUpperCase()));
-            String sourceName = dataSourceManager.registerDataSource(info);
-            Connection connection = dataSourceManager.createConnection(sourceName);
-            return connection;
+            String sourceName = dataSourceManager.addDataSource(info);
+            return dataSourceManager.createConnection(sourceName);
         } catch (Exception e) {
             return null;
         }

@@ -6,15 +6,10 @@ import com.wbs.common.database.base.DataTable;
 import com.wbs.common.database.base.DbTypeEnum;
 import com.wbs.common.database.base.model.ColumnInfo;
 import com.wbs.common.database.base.model.WhereInfo;
+import com.wbs.engine.core.base.IReader;
+import com.wbs.engine.core.base.IWriter;
 import com.wbs.engine.core.base.WriteTypeEnum;
-import com.wbs.engine.core.clickhouse.ClickHouseReader;
-import com.wbs.engine.core.clickhouse.ClickHouseWriter;
-import com.wbs.engine.core.mysql.MySqlReader;
-import com.wbs.engine.core.mysql.MySqlWriter;
-import com.wbs.engine.core.pgsql.PgSqlReader;
-import com.wbs.engine.core.pgsql.PgSqlWriter;
-import com.wbs.engine.core.sqlserver.SqlServerReader;
-import com.wbs.engine.core.sqlserver.SqlServerWriter;
+import com.wbs.engine.core.base.EngineManager;
 import com.wbs.engine.model.WriterResult;
 import com.wbs.pipe.application.ConnectApplication;
 import com.wbs.pipe.application.SinkApplication;
@@ -38,8 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
-import static java.lang.String.format;
-
 /**
  * @author WBS
  * @date 2023/3/9 14:53
@@ -54,14 +47,6 @@ public class PipeApplication {
     private final ColumnConfigApplication columnConfigApplication;
     private final WhereConfigApplication whereConfigApplication;
     private final ConnectApplication connectApplication;
-    private final MySqlReader mySqlReader;
-    private final MySqlWriter mySqlWriter;
-    private final SqlServerReader sqlServerReader;
-    private final SqlServerWriter sqlServerWriter;
-    private final ClickHouseReader clickHouseReader;
-    private final ClickHouseWriter clickHouseWriter;
-    private final PgSqlReader pgSqlReader;
-    private final PgSqlWriter pgSqlWriter;
     private final ThreadPoolTaskExecutor defaultExecutor;
 
 
@@ -74,21 +59,13 @@ public class PipeApplication {
     private Map<String, Future> threadMap = new HashMap<>();
 
 
-    public PipeApplication(TaskApplication taskApplication, SourceApplication sourceApplication, SinkApplication sinkApplication, ColumnConfigApplication columnConfigApplication, WhereConfigApplication whereConfigApplication, ConnectApplication connectApplication, MySqlReader mySqlReader, MySqlWriter mySqlWriter, SqlServerReader sqlServerReader, SqlServerWriter sqlServerWriter, ClickHouseReader clickHouseReader, ClickHouseWriter clickHouseWriter, PgSqlReader pgSqlReader, PgSqlWriter pgSqlWriter, ThreadPoolTaskExecutor defaultExecutor) {
+    public PipeApplication(TaskApplication taskApplication, SourceApplication sourceApplication, SinkApplication sinkApplication, ColumnConfigApplication columnConfigApplication, WhereConfigApplication whereConfigApplication, ConnectApplication connectApplication, ThreadPoolTaskExecutor defaultExecutor) {
         this.taskApplication = taskApplication;
         this.sourceApplication = sourceApplication;
         this.sinkApplication = sinkApplication;
         this.columnConfigApplication = columnConfigApplication;
         this.whereConfigApplication = whereConfigApplication;
         this.connectApplication = connectApplication;
-        this.mySqlReader = mySqlReader;
-        this.mySqlWriter = mySqlWriter;
-        this.sqlServerReader = sqlServerReader;
-        this.sqlServerWriter = sqlServerWriter;
-        this.clickHouseReader = clickHouseReader;
-        this.clickHouseWriter = clickHouseWriter;
-        this.pgSqlReader = pgSqlReader;
-        this.pgSqlWriter = pgSqlWriter;
         this.defaultExecutor = defaultExecutor;
     }
 
@@ -159,42 +136,21 @@ public class PipeApplication {
         Connection connection = connectApplication.getConnection(sinkInfo.getConnect_id());
         DbTypeEnum dbType = EnumUtil.getEnumMap(DbTypeEnum.class).get(sinkInfo.getType().toUpperCase());
         WriteTypeEnum writeTypeEnum = EnumUtil.getEnumMap(WriteTypeEnum.class).get(this.currentTask.getExist_type().toUpperCase());
-        switch (dbType) {
-            case MYSQL:
-                mySqlWriter.config(sinkInfo.getTable_name(), connection);
-                insertResult = mySqlWriter.insertData(dataTable);
-                if (writeTypeEnum.equals(WriteTypeEnum.UPSERT) && insertResult.getExistData() != null) {
-                    updateResult = mySqlWriter.updateData(insertResult.getExistData());
+        List<ColumnInfo> columnList = DbUtils.getColumns(connection, sinkInfo.getTable_name());
+        IWriter writer = EngineManager.getWriter(dbType);
+        if (writer != null) {
+            writer.config(sinkInfo.getTable_name(), connection, columnList);
+            insertResult = writer.insertData(dataTable);
+            if (insertResult.getExistData() != null) {
+                // 如果是存在更新
+                if (writeTypeEnum.equals(WriteTypeEnum.UPSERT)) {
+                    updateResult = writer.updateData(insertResult.getExistData());
                 }
-                break;
-            case SQLSERVER:
-                sqlServerWriter.config(sinkInfo.getTable_name(), connection);
-                insertResult = sqlServerWriter.insertData(dataTable);
-                if (writeTypeEnum.equals(WriteTypeEnum.UPSERT) && insertResult.getExistData() != null) {
-                    updateResult = sqlServerWriter.updateData(insertResult.getExistData());
+                // 如果是存在忽略
+                else if (writeTypeEnum.equals(WriteTypeEnum.IGNORE)) {
+                    insertResult.setIgnoreCount(insertResult.getExistData().size());
                 }
-                break;
-            case CLICKHOUSE:
-                clickHouseWriter.config(sinkInfo.getTable_name(), connection);
-                insertResult = clickHouseWriter.insertData(dataTable);
-                if (writeTypeEnum.equals(WriteTypeEnum.UPSERT) && insertResult.getExistData() != null) {
-                    updateResult = clickHouseWriter.updateData(insertResult.getExistData());
-                }
-                break;
-            case POSTGRESQL:
-                pgSqlWriter.config(sinkInfo.getTable_name(), connection);
-                insertResult = pgSqlWriter.insertData(dataTable);
-                if (writeTypeEnum.equals(WriteTypeEnum.UPSERT) && insertResult.getExistData() != null) {
-                    updateResult = pgSqlWriter.updateData(insertResult.getExistData());
-                }
-                break;
-            default:
-                break;
-        }
-
-        // 如果是存在忽略
-        if (writeTypeEnum.equals(WriteTypeEnum.IGNORE) && insertResult.getExistData() != null) {
-            insertResult.setIgnoreCount(insertResult.getExistData().size());
+            }
         }
     }
 
@@ -206,48 +162,15 @@ public class PipeApplication {
      */
     private DataTable readData(String sourceId) {
         SourceInfoModel sourceInfo = sourceApplication.getSource(sourceId, null);
-        Connection sourceConnection = connectApplication.getConnection(sourceInfo.getConnect_id());
+        Connection connection = connectApplication.getConnection(sourceInfo.getConnect_id());
         DbTypeEnum dbType = EnumUtil.getEnumMap(DbTypeEnum.class).get(sourceInfo.getType().toUpperCase());
         DataTable dataTable = new DataTable();
-        List<ColumnInfo> columnList = DbUtils.getColumns(sourceConnection, sourceInfo.getTable_name());
+        List<ColumnInfo> columnList = DbUtils.getColumns(connection, sourceInfo.getTable_name());
         List<WhereInfo> whereList = whereConfigApplication.getWhereConfigByTask(currentTask.getId());
-        String sql = format("select * from %s  ", sourceInfo.getTable_name());
-
-        switch (dbType) {
-            case MYSQL:
-                mySqlReader.setTableName(sourceInfo.getTable_name());
-                mySqlReader.setConnection(sourceConnection);
-                mySqlReader.setColumnList(columnList);
-                mySqlReader.setWhereList(whereList);
-                mySqlReader.config();
-                dataTable = mySqlReader.readData();
-                break;
-            case SQLSERVER:
-                sqlServerReader.setTableName(sourceInfo.getTable_name());
-                sqlServerReader.setConnection(sourceConnection);
-                sqlServerReader.setColumnList(columnList);
-                sqlServerReader.setWhereList(whereList);
-                sqlServerReader.config();
-                dataTable = sqlServerReader.readData();
-                break;
-            case CLICKHOUSE:
-                clickHouseReader.setTableName(sourceInfo.getTable_name());
-                clickHouseReader.setConnection(sourceConnection);
-                clickHouseReader.setColumnList(columnList);
-                clickHouseReader.setWhereList(whereList);
-                clickHouseReader.config();
-                dataTable = clickHouseReader.readData();
-                break;
-            case POSTGRESQL:
-                pgSqlReader.setTableName(sourceInfo.getTable_name());
-                pgSqlReader.setConnection(sourceConnection);
-                pgSqlReader.setColumnList(columnList);
-                pgSqlReader.setWhereList(whereList);
-                pgSqlReader.config();
-                dataTable = pgSqlReader.readData(sql);
-                break;
-            default:
-                break;
+        IReader reader = EngineManager.getReader(dbType);
+        if (reader != null) {
+            reader.config(sourceInfo.getTable_name(), connection, columnList, whereList);
+            dataTable = reader.readData();
         }
 
         return dataTable;

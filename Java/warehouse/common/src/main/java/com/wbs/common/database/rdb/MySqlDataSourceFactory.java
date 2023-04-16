@@ -11,20 +11,15 @@ import javax.sql.DataSource;
  * @date 2023/4/15 11:44
  * @desciption MysqlDataSourceFactory
  */
-
 public class MySqlDataSourceFactory implements DataSourceFactory {
-
     private DataSourceInfo sourceInfo;
 
-    public DataSourceInfo getSourceInfo() {
-        return sourceInfo;
-    }
-
-    public void setSourceInfo(DataSourceInfo sourceInfo) {
-        String url = "jdbc:mysql://" + sourceInfo.getHost() + ":" + sourceInfo.getPort() + "/" + sourceInfo.getDatabase() + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&rewriteBatchedStatements=true&useInformationSchema=true&characterEncoding=UTF-8";
+    @Override
+    public void config(DataSourceInfo info) {
+        sourceInfo = info;
+        String url = "jdbc:mysql://" + info.getHost() + ":" + info.getPort() + "/" + info.getDatabase() + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&rewriteBatchedStatements=true&useInformationSchema=true&characterEncoding=UTF-8";
         sourceInfo.setUrl(url);
         sourceInfo.setName(SecureUtil.md5(url));
-        this.sourceInfo = sourceInfo;
     }
 
     @Override

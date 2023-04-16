@@ -14,15 +14,12 @@ import javax.sql.DataSource;
 public class SqlServerDataSourceFactory implements DataSourceFactory {
     private DataSourceInfo sourceInfo;
 
-    public DataSourceInfo getSourceInfo() {
-        return sourceInfo;
-    }
-
-    public void setSourceInfo(DataSourceInfo sourceInfo) {
+    @Override
+    public void config(DataSourceInfo info) {
+        sourceInfo = info;
         String url = "jdbc:sqlserver://" + sourceInfo.getHost() + ":" + sourceInfo.getPort() + ";database=" + sourceInfo.getDatabase() + ";integratedSecurity=false;encrypt=true;trustServerCertificate=true";
         sourceInfo.setUrl(url);
         sourceInfo.setName(SecureUtil.md5(url));
-        this.sourceInfo = sourceInfo;
     }
 
     @Override

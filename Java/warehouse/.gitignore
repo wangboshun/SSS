@@ -20,6 +20,7 @@ rebel.xml
 *.iws
 *.iml
 *.ipr
+*.yaml
 
 ### NetBeans ###
 /nbproject/private/

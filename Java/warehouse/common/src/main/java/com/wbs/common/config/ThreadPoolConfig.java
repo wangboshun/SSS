@@ -31,7 +31,7 @@ public class ThreadPoolConfig {
         // 活跃时间
         executor.setKeepAliveSeconds(60);
         // 线程名字前缀
-        executor.setThreadNamePrefix("线程---");
+        executor.setThreadNamePrefix("defaultExecutor---");
         /*
           拒绝处理策略
           CallerRunsPolicy()：交由调用方线程运行，比如 main 线程。
