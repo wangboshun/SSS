@@ -7,18 +7,13 @@ import com.wbs.common.database.base.DbTypeEnum;
 import com.wbs.common.database.base.model.ColumnInfo;
 import com.wbs.common.database.base.model.WhereInfo;
 import com.wbs.common.utils.DataUtils;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -26,28 +21,20 @@ import java.util.stream.Collectors;
  * @date 2023/3/2 15:37
  * @desciption ReaderAbstract
  */
-@Component
-@Setter
-@Getter
 public abstract class ReaderAbstract implements IReader {
+    private String tableName;
+    protected DbTypeEnum dbType;
+    private Connection connection;
+    private List<WhereInfo> whereList;
+    private List<ColumnInfo> columnList;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private Connection connection;
-    private String tableName;
-    private List<ColumnInfo> columnList;
-    private List<WhereInfo> whereList;
-
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    private Set<String> primarySet;
-
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    protected DbTypeEnum dbType;
-
     @Override
-    public void config() {
-        primarySet = columnList.stream().filter(x -> x.getPrimary() == 1).map(ColumnInfo::getName).collect(Collectors.toSet());
+    public void config(String tableName, Connection connection, List<ColumnInfo> columnList, List<WhereInfo> whereList) {
+        this.tableName = tableName;
+        this.connection = connection;
+        this.columnList = columnList;
+        this.whereList = whereList;
     }
 
     @Override
@@ -62,70 +49,68 @@ public abstract class ReaderAbstract implements IReader {
             sql.append(columnList.stream().map(ColumnInfo::getName).collect(Collectors.joining(",")));
             sql.append(" FROM ");
             sql.append(DbUtils.convertName(tableName, connection));
-            sql.append(lastStr);
-
-            if (whereList != null) {
-                for (WhereInfo item : whereList) {
-                    if (item.getValue() == null) {
-                        continue;
-                    }
-                    sql.append(DbUtils.convertName(item.getColumn(), dbType)).append(" ");
-                    // in和not in
-                    if (item.getSymbol().toLowerCase().contains("in")) {
-                        sql.append(item.getSymbol()).append("(");
-                        List<Object> valueList = DataUtils.toList(item.getValue());
-                        valueList.forEach(x -> {
-                            sql.append("?");
-                            sql.append(",");
-                        });
-                        sql.deleteCharAt(sql.length() - 1);
-                        sql.append(")");
-                    }
-                    // like
-                    else if (item.getSymbol().toLowerCase().contains("like")) {
-                        sql.append(item.getSymbol()).append(" ");
-                        sql.append("?");
-                    } else {
-                        sql.append(item.getSymbol()).append(" ").append("?");
-                    }
-                    lastStr = " " + item.getOperate() + " ";
-                    sql.append(lastStr);
-                }
+            if (whereList == null || whereList.isEmpty()) {
+                return readData(sql.toString());
             }
 
+            sql.append(lastStr);
+            for (WhereInfo item : whereList) {
+                if (item.getValue() == null) {
+                    continue;
+                }
+                sql.append(DbUtils.convertName(item.getColumn(), dbType)).append(" ");
+                // in和not in
+                if (item.getSymbol().toLowerCase().contains("in")) {
+                    sql.append(item.getSymbol()).append("(");
+                    List<Object> valueList = DataUtils.toList(item.getValue());
+                    valueList.forEach(x -> {
+                        sql.append("?");
+                        sql.append(",");
+                    });
+                    sql.deleteCharAt(sql.length() - 1);
+                    sql.append(")");
+                }
+                // like
+                else if (item.getSymbol().toLowerCase().contains("like")) {
+                    sql.append(item.getSymbol()).append(" ");
+                    sql.append("?");
+                } else {
+                    sql.append(item.getSymbol()).append(" ").append("?");
+                }
+                lastStr = " " + item.getOperate() + " ";
+                sql.append(lastStr);
+            }
             sql.delete(sql.length() - lastStr.length(), sql.length());
-
             pstmt = connection.prepareStatement(sql.toString(), ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 
-            if (whereList != null) {
-                int index = 1;
-                for (WhereInfo item : whereList) {
-                    if (item.getValue() == null) {
-                        continue;
-                    }
-                    String javaType = "";
-                    ColumnInfo column = columnList.stream().filter(x -> item.getColumn().equals(x.getName())).findAny().orElse(null);
-                    if (column != null) {
-                        javaType = column.getJavaType();
-                    }
-
-                    // in和not in
-                    if (item.getSymbol().toLowerCase().contains("in")) {
-                        List<Object> valueList = DataUtils.toList(item.getValue());
-                        for (int i = 0; i < valueList.size(); i++) {
-                            DbUtils.setParam(pstmt, index + i, valueList.get(i), valueList.get(i).getClass().getSimpleName());
-                        }
-                    } else {
-                        DbUtils.setParam(pstmt, index, item.getValue(), javaType);
-                    }
-                    index++;
+            int index = 1;
+            for (WhereInfo item : whereList) {
+                if (item.getValue() == null) {
+                    continue;
                 }
+                String javaType = "";
+                ColumnInfo column = columnList.stream().filter(x -> item.getColumn().equals(x.getName())).findAny().orElse(null);
+                if (column != null) {
+                    javaType = column.getJavaType();
+                }
+
+                // in和not in
+                if (item.getSymbol().toLowerCase().contains("in")) {
+                    List<Object> valueList = DataUtils.toList(item.getValue());
+                    for (int i = 0; i < valueList.size(); i++) {
+                        DbUtils.setParam(pstmt, index + i, valueList.get(i), valueList.get(i).getClass().getSimpleName());
+                    }
+                } else {
+                    DbUtils.setParam(pstmt, index, item.getValue(), javaType);
+                }
+                index++;
             }
             result = pstmt.executeQuery();
             dt = buildData(result);
         } catch (Exception e) {
             logger.error("------ReaderAbstract readData error------", e);
         } finally {
+            DbUtils.closeResultSet(result);
             DbUtils.closeStatement(pstmt);
         }
         return dt;
@@ -157,8 +142,8 @@ public abstract class ReaderAbstract implements IReader {
     /**
      * 构建返回集合
      *
-     * @param resultSet
-     * @return
+     * @param resultSet 数据集
+     * @return 数据
      */
     private DataTable buildData(ResultSet resultSet) {
         DataTable dt = new DataTable();

@@ -14,8 +14,6 @@ import java.util.List;
  * @desciption IWriter
  */
 public interface IWriter {
-    public void config(String tableName, Connection connection);
-
     public void config(String tableName, Connection connection, List<ColumnInfo> columnList);
 
     public WriterResult insertData(DataTable dt);
