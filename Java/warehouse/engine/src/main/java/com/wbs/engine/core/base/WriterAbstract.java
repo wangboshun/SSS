@@ -78,8 +78,8 @@ public class WriterAbstract implements IWriter {
                 return null;
             })).toArray(CompletableFuture[]::new);
             CompletableFuture.allOf(array).join();
-            executor.shutdown();
         }
+        executor.shutdown();
         LocalDateTime end = LocalDateTime.now();
         float tm = Duration.between(start, end).toMillis() / 1000f;
         WriterResult result = builderResult(exceptionData, 1);
@@ -114,8 +114,8 @@ public class WriterAbstract implements IWriter {
                 return null;
             })).toArray(CompletableFuture[]::new);
             CompletableFuture.allOf(array).join();
-            executor.shutdown();
         }
+        executor.shutdown();
         LocalDateTime end = LocalDateTime.now();
         float tm = Duration.between(start, end).toMillis() / 1000f;
         WriterResult result = builderResult(exceptionData, 2);
