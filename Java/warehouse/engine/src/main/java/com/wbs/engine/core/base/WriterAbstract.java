@@ -88,15 +88,14 @@ public class WriterAbstract implements IWriter {
                 int count = partition.size() / THREAD_SIZE;
                 for (int i = 0; i <= count; i++) {
                     List<DataTable> page = DataTable.getPage(partition, i, THREAD_SIZE);
-                    CompletableFuture[] array = page.stream().map(item -> CompletableFuture.runAsync(() -> {
-                        exceptionData.addAll(batchInsert(item));
-                    }, executor)).toArray(CompletableFuture[]::new);
-                    CompletableFuture.allOf(array).join();
+                    List<CompletableFuture<Void>> collect = page.stream().map(item -> CompletableFuture.runAsync(() -> exceptionData.addAll(batchInsert(item)), executor)).collect(Collectors.toList());
+                    // 使用join()方法使得主线程阻塞，并等待所有并行线程完成
+                    CompletableFuture.allOf(collect.toArray(new CompletableFuture[]{})).join();
                 }
             }
             this.connection.setAutoCommit(true);
             errorData.addAll(findErrorData(exceptionData, 1));
-            exceptionData.removeAll(errorData); // 并去差集
+            exceptionData.removeAll(errorData); // 去差集
             exitsData.addAll(exceptionData);
         } catch (Exception e) {
             System.out.println();
@@ -131,10 +130,9 @@ public class WriterAbstract implements IWriter {
                 int count = partition.size() / THREAD_SIZE;
                 for (int i = 0; i <= count; i++) {
                     List<DataTable> page = DataTable.getPage(partition, i, THREAD_SIZE);
-                    CompletableFuture[] array = page.stream().map(item -> CompletableFuture.runAsync(() -> {
-                        errorData.addAll(batchUpdate(item));
-                    }, executor)).toArray(CompletableFuture[]::new);
-                    CompletableFuture.allOf(array).join();
+                    List<CompletableFuture<Void>> collect = page.stream().map(item -> CompletableFuture.runAsync(() -> errorData.addAll(batchUpdate(item)), executor)).collect(Collectors.toList());
+                    // 使用join()方法使得主线程阻塞，并等待所有并行线程完成
+                    CompletableFuture.allOf(collect.toArray(new CompletableFuture[]{})).join();
                 }
             }
             this.connection.setAutoCommit(true);
