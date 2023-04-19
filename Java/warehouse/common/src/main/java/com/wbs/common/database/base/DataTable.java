@@ -1,5 +1,7 @@
 package com.wbs.common.database.base;
 
+import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -122,20 +124,56 @@ public class DataTable extends ArrayList<DataRow> {
     }
 
     /**
-     * 拆成n份
+     * 拆成N份
      *
-     * @param n
+     * @param arraySize
      * @return
      */
-    public List<DataTable> split(int n) {
+    public List<DataTable> splitArray(int arraySize) {
         List<DataTable> result = new ArrayList<>();
-        int batchSize = (int) Math.ceil((double) this.size() / n);
-        List<List<DataRow>> list = IntStream.range(0, n).parallel().mapToObj(i -> this.subList(i * batchSize, Math.min((i + 1) * batchSize, this.size()))).collect(Collectors.toList());
+        int batchSize = (int) Math.ceil((double) this.size() / arraySize);
+        List<List<DataRow>> list = IntStream.range(0, arraySize).parallel().mapToObj(i -> this.subList(i * batchSize, Math.min((i + 1) * batchSize, this.size()))).collect(Collectors.toList());
         for (List<DataRow> rows : list) {
             DataTable dt = new DataTable();
             dt.addAll(rows);
             result.add(dt);
         }
         return result;
+    }
+
+    /**
+     * 按批次拆分
+     *
+     * @param size
+     * @return
+     */
+    public List<DataTable> splitBatch(int size) {
+        List<DataTable> result = new ArrayList<>();
+        List<List<DataRow>> list = Lists.partition(this, size);
+        for (List<DataRow> rows : list) {
+            DataTable dt = new DataTable();
+            dt.addAll(rows);
+            result.add(dt);
+        }
+        return result;
+    }
+
+    /**
+     * datatable分页
+     *
+     * @param dt       dt
+     * @param pageNum  页码
+     * @param pageSize 页大小
+     */
+    public static List<DataTable> getPage(List<DataTable> dt, int pageNum, int pageSize) {
+        int startIndex = pageNum * pageSize;
+        int endIndex = startIndex + pageSize;
+        if (startIndex > dt.size()) {
+            startIndex = dt.size();
+        }
+        if (endIndex > dt.size()) {
+            endIndex = dt.size();
+        }
+        return dt.subList(startIndex, endIndex);
     }
 }

@@ -11,9 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -79,25 +77,29 @@ public class WriterAbstract implements IWriter {
     public WriterResult insertData(DataTable dt) {
         DataTable exitsData = new DataTable();
         DataTable errorData = new DataTable();
+        DataTable exceptionData = new DataTable();
         Instant start = Instant.now();
-        // 如果小于设置批大小
-        if (dt.size() < BATCH_SIZE) {
-            try {
-                batchInsert(dt);
-            } catch (Exception e) {
-                exitsData.addAll(findExitsData(dt));
-                dt.removeAll(exitsData); // 并去差集
-                errorData.addAll(findErrorData(dt, 1));
+        try {
+            // 如果小于设置批大小
+            if (dt.size() < BATCH_SIZE) {
+                exceptionData.addAll(batchInsert(dt));
+            } else {
+                List<DataTable> partition = dt.splitBatch(BATCH_SIZE);
+                int count = partition.size() / THREAD_SIZE;
+                for (int i = 0; i <= count; i++) {
+                    List<DataTable> page = DataTable.getPage(partition, i, THREAD_SIZE);
+                    CompletableFuture[] array = page.stream().map(item -> CompletableFuture.runAsync(() -> {
+                        exceptionData.addAll(batchInsert(item));
+                    }, executor)).toArray(CompletableFuture[]::new);
+                    CompletableFuture.allOf(array).join();
+                }
             }
-        } else {
-            List<DataTable> partition = dt.split(THREAD_SIZE);// 分成10个线程
-            CompletableFuture[] array = partition.stream().map(item -> CompletableFuture.runAsync(() -> batchInsert(item), executor).exceptionally(error -> {
-                exitsData.addAll(findExitsData(item));
-                item.removeAll(exitsData); // 并去差集
-                errorData.addAll(findErrorData(item, 1));
-                return null;
-            })).toArray(CompletableFuture[]::new);
-            CompletableFuture.allOf(array).join();
+            this.connection.setAutoCommit(true);
+            errorData.addAll(findErrorData(exceptionData, 1));
+            exceptionData.removeAll(errorData); // 并去差集
+            exitsData.addAll(exceptionData);
+        } catch (Exception e) {
+            System.out.println();
         }
         executor.shutdown();
         Instant end = Instant.now();
@@ -121,19 +123,23 @@ public class WriterAbstract implements IWriter {
         if (primarySet.isEmpty()) {
             throw new RuntimeException("该表没有主键，无法更新！");
         }
-        if (dt.size() < BATCH_SIZE) {
-            try {
-                batchUpdate(dt);
-            } catch (Exception e) {
-                errorData.addAll(findErrorData(dt, 2));
+        try {
+            if (dt.size() < BATCH_SIZE) {
+                errorData.addAll(batchUpdate(dt));
+            } else {
+                List<DataTable> partition = dt.splitBatch(BATCH_SIZE);
+                int count = partition.size() / THREAD_SIZE;
+                for (int i = 0; i <= count; i++) {
+                    List<DataTable> page = DataTable.getPage(partition, i, THREAD_SIZE);
+                    CompletableFuture[] array = page.stream().map(item -> CompletableFuture.runAsync(() -> {
+                        errorData.addAll(batchUpdate(item));
+                    }, executor)).toArray(CompletableFuture[]::new);
+                    CompletableFuture.allOf(array).join();
+                }
             }
-        } else {
-            List<DataTable> partition = dt.split(THREAD_SIZE);// 分成10个线程
-            CompletableFuture[] array = partition.stream().map(item -> CompletableFuture.runAsync(() -> batchUpdate(item), executor).exceptionally(error -> {
-                errorData.addAll(findErrorData(item, 2));
-                return null;
-            })).toArray(CompletableFuture[]::new);
-            CompletableFuture.allOf(array).join();
+            this.connection.setAutoCommit(true);
+        } catch (Exception e) {
+            System.out.println();
         }
         executor.shutdown();
         Instant end = Instant.now();
@@ -144,14 +150,14 @@ public class WriterAbstract implements IWriter {
         return result;
     }
 
-
     /**
      * 批量写入
      *
-     * @param rows 数据集
+     * @param dt 数据集
      */
-    private void batchInsert(List<DataRow> rows) {
+    private DataTable batchInsert(DataTable dt) {
         PreparedStatement pstm = null;
+        DataTable errorData = new DataTable();
         try {
             String sql = "";
             if (CharSequenceUtil.isEmpty(batchInsertSql)) {
@@ -161,10 +167,10 @@ public class WriterAbstract implements IWriter {
             this.connection.setAutoCommit(false);
             pstm = connection.prepareStatement(sql);
             int rowIndex = 0;
-            for (DataRow row : rows) {
+            for (DataRow row : dt) {
                 // 如果线程中断，停止写入
                 if (Thread.currentThread().isInterrupted()) {
-                    return;
+                    return errorData;
                 }
                 int paramIndex = 1;
                 for (ColumnInfo col : this.columnList) {
@@ -181,12 +187,21 @@ public class WriterAbstract implements IWriter {
             pstm.executeBatch();
             pstm.clearBatch();
             connection.commit();
-        } catch (Exception e) {
-            logger.error("------WriterAbstract batchWrite error------", e);
-            throw new RuntimeException("插入失败");
+        } catch (BatchUpdateException e1) {
+            int[] updateCounts = e1.getUpdateCounts();
+            for (int i = 0; i < updateCounts.length; i++) {
+                // 如果插入失败
+                if (updateCounts[i] == Statement.EXECUTE_FAILED) {
+                    errorData.add(dt.get(i));
+                }
+            }
+        } catch (Exception e2) {
+            logger.error("------WriterAbstract batchWrite error------", e2);
         } finally {
             DbUtils.closeStatement(pstm);
         }
+
+        return errorData;
     }
 
     /**
@@ -212,6 +227,9 @@ public class WriterAbstract implements IWriter {
             pstm.execute();
         } catch (Exception e) {
             logger.error("------WriterAbstract singleWrite error------", e);
+            if (e.getMessage().contains("Duplicate")) {
+                throw new RuntimeException("Duplicate");
+            }
             return false;
         } finally {
             DbUtils.closeStatement(pstm);
@@ -225,8 +243,9 @@ public class WriterAbstract implements IWriter {
      *
      * @param dt 数据集
      */
-    private void batchUpdate(DataTable dt) {
+    private DataTable batchUpdate(DataTable dt) {
         PreparedStatement pstm = null;
+        DataTable errorData = new DataTable();
         try {
             String sql = "";
             if (CharSequenceUtil.isEmpty(batchUpdateSql)) {
@@ -240,7 +259,7 @@ public class WriterAbstract implements IWriter {
             for (DataRow row : dt) {
                 // 如果线程中断，停止更新
                 if (Thread.currentThread().isInterrupted()) {
-                    return;
+                    return errorData;
                 }
                 for (ColumnInfo col : this.columnList) {
                     String columnName = col.getName();
@@ -257,12 +276,20 @@ public class WriterAbstract implements IWriter {
             pstm.executeBatch();
             pstm.clearBatch();
             connection.commit();
-        } catch (Exception e) {
-            logger.error("WriterAbstract batchUpdate", e);
-            throw new RuntimeException("更新失败");
+        } catch (BatchUpdateException e1) {
+            int[] updateCounts = e1.getUpdateCounts();
+            for (int i = 0; i < updateCounts.length; i++) {
+                // 如果插入失败
+                if (updateCounts[i] == Statement.EXECUTE_FAILED) {
+                    errorData.add(dt.get(i));
+                }
+            }
+        } catch (Exception e2) {
+            logger.error("WriterAbstract batchUpdate", e2);
         } finally {
             DbUtils.closeStatement(pstm);
         }
+        return errorData;
     }
 
     /**
@@ -319,8 +346,15 @@ public class WriterAbstract implements IWriter {
     private DataTable findErrorData(DataTable dt, int type) {
         DataTable result = new DataTable();
         dt.forEach(item -> {
-            if (type == 1 && !singleInsert(item)) {
-                result.add(item);
+            if (type == 1) {
+                try {
+                    boolean b = !singleInsert(item);
+                    // 只有错误才保存，如果是重复数据，不保存
+                    if (!b) {
+                        result.add(item);
+                    }
+                } catch (Exception e) {
+                }
             } else if (type == 2 && !singleUpdate(item)) {
                 result.add(item);
             }
