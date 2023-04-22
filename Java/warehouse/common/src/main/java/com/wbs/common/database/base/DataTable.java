@@ -3,8 +3,6 @@ package com.wbs.common.database.base;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * @author WBS
@@ -17,6 +15,10 @@ public class DataTable extends ArrayList<DataRow> {
 
     public DataTable() {
 
+    }
+
+    public DataTable(List<DataRow> rows) {
+        rows.forEach(this::addRow);
     }
 
     public DataTable(String name) {
@@ -119,23 +121,5 @@ public class DataTable extends ArrayList<DataRow> {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    /**
-     * 拆成n份
-     *
-     * @param n
-     * @return
-     */
-    public List<DataTable> split(int n) {
-        List<DataTable> result = new ArrayList<>();
-        int batchSize = (int) Math.ceil((double) this.size() / n);
-        List<List<DataRow>> list = IntStream.range(0, n).parallel().mapToObj(i -> this.subList(i * batchSize, Math.min((i + 1) * batchSize, this.size()))).collect(Collectors.toList());
-        for (List<DataRow> rows : list) {
-            DataTable dt = new DataTable();
-            dt.addAll(rows);
-            result.add(dt);
-        }
-        return result;
     }
 }

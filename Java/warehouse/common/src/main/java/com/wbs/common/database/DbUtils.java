@@ -483,9 +483,9 @@ public class DbUtils {
     }
 
     /**
-     * 构建字段位置信息，用于更新用
+     * 对字段位置进行排序，主键放在后面，用于更新用
      */
-    public static Map<String, Integer> buildColumnSql(List<ColumnInfo> columnList, Set<String> primarySet) {
+    public static Map<String, Integer> sortColumn(List<ColumnInfo> columnList, Set<String> primarySet) {
         Integer paramIndex = 1;
         Map<String, Integer> columnSort = new HashMap<String, Integer>();
         for (ColumnInfo col : columnList) {

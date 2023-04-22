@@ -2,20 +2,16 @@ package com.wbs.pipe.application.pipe;
 
 import cn.hutool.core.util.EnumUtil;
 import com.wbs.common.database.DbUtils;
-import com.wbs.common.database.base.DataTable;
 import com.wbs.common.database.base.DbTypeEnum;
 import com.wbs.common.database.base.model.ColumnInfo;
 import com.wbs.common.database.base.model.WhereInfo;
-import com.wbs.engine.core.base.IReader;
-import com.wbs.engine.core.base.IWriter;
-import com.wbs.engine.core.base.WriteTypeEnum;
 import com.wbs.engine.core.base.EngineManager;
+import com.wbs.engine.core.base.IReader;
 import com.wbs.engine.model.WriterResult;
 import com.wbs.pipe.application.ConnectApplication;
 import com.wbs.pipe.application.SinkApplication;
 import com.wbs.pipe.application.SourceApplication;
 import com.wbs.pipe.application.TaskApplication;
-import com.wbs.pipe.model.pipe.ColumnConfigModel;
 import com.wbs.pipe.model.sink.SinkInfoModel;
 import com.wbs.pipe.model.source.SourceInfoModel;
 import com.wbs.pipe.model.task.TaskInfoModel;
@@ -44,12 +40,9 @@ public class PipeApplication {
     private final TaskApplication taskApplication;
     private final SourceApplication sourceApplication;
     private final SinkApplication sinkApplication;
-    private final ColumnConfigApplication columnConfigApplication;
     private final WhereConfigApplication whereConfigApplication;
     private final ConnectApplication connectApplication;
     private final ThreadPoolTaskExecutor defaultExecutor;
-
-
     private TaskStatusEnum taskStatusEnum;
     private TaskInfoModel currentTask;
     private LocalDateTime st;
@@ -59,11 +52,10 @@ public class PipeApplication {
     private Map<String, Future> threadMap = new HashMap<>();
 
 
-    public PipeApplication(TaskApplication taskApplication, SourceApplication sourceApplication, SinkApplication sinkApplication, ColumnConfigApplication columnConfigApplication, WhereConfigApplication whereConfigApplication, ConnectApplication connectApplication, ThreadPoolTaskExecutor defaultExecutor) {
+    public PipeApplication(TaskApplication taskApplication, SourceApplication sourceApplication, SinkApplication sinkApplication, WhereConfigApplication whereConfigApplication, ConnectApplication connectApplication, ThreadPoolTaskExecutor defaultExecutor) {
         this.taskApplication = taskApplication;
         this.sourceApplication = sourceApplication;
         this.sinkApplication = sinkApplication;
-        this.columnConfigApplication = columnConfigApplication;
         this.whereConfigApplication = whereConfigApplication;
         this.connectApplication = connectApplication;
         this.defaultExecutor = defaultExecutor;
@@ -85,26 +77,24 @@ public class PipeApplication {
                 this.insertResult = new WriterResult();
                 this.updateResult = new WriterResult();
                 this.st = LocalDateTime.now();
-
-                String sinkId = this.currentTask.getSink_id();
                 String sourceId = this.currentTask.getSource_id();
-                taskStatusEnum = TaskStatusEnum.RUNNING;
-                DataTable dataTable = readData(sourceId);
-
-                // 如果线程中断，停止后续
-                if (Thread.currentThread().isInterrupted()) {
-                    this.et = LocalDateTime.now();
-                    taskStatusEnum = TaskStatusEnum.CANCEL;
-                } else {
-                    ColumnConfigModel columnConfig = columnConfigApplication.getColumnConfigByTask(taskId);
-                    if (columnConfig != null) {
-                        // 转换
-                        dataTable = dataTable.mapper(columnConfig.getMapper());
-                    }
-                    writeData(sinkId, dataTable);
-                    this.et = LocalDateTime.now();
-                    taskStatusEnum = TaskStatusEnum.COMPLETE;
+                String sinkId = this.currentTask.getSink_id();
+                String[] sinkArray = sinkId.split(",");
+                for (String sink : sinkArray) {
+                    SinkInfoModel sinkInfo = sinkApplication.getSink(sink, null);
                 }
+                SourceInfoModel sourceInfo = sourceApplication.getSource(sourceId, null);
+                Connection connection = connectApplication.getConnection(sourceInfo.getConnect_id());
+                DbTypeEnum dbType = EnumUtil.getEnumMap(DbTypeEnum.class).get(sourceInfo.getType().toUpperCase());
+                List<ColumnInfo> columnList = DbUtils.getColumns(connection, sourceInfo.getTable_name());
+                List<WhereInfo> whereList = whereConfigApplication.getWhereConfigByTask(currentTask.getId());
+                IReader reader = EngineManager.getReader(dbType);
+                if (reader != null) {
+                    taskStatusEnum = TaskStatusEnum.RUNNING;
+                    reader.config(sourceInfo.getTable_name(), connection, columnList, whereList);
+                    reader.readData();
+                }
+
             } catch (Exception e) {
                 taskStatusEnum = TaskStatusEnum.ERROR;
                 logger.error("startTask Exception", e);
@@ -121,59 +111,6 @@ public class PipeApplication {
         Future future = threadMap.get(taskId);
         future.cancel(true);
         return true;
-    }
-
-
-    /**
-     * 写入数据
-     *
-     * @param sinkId
-     * @param dataTable
-     * @return
-     */
-    private void writeData(String sinkId, DataTable dataTable) {
-        SinkInfoModel sinkInfo = sinkApplication.getSink(sinkId, null);
-        Connection connection = connectApplication.getConnection(sinkInfo.getConnect_id());
-        DbTypeEnum dbType = EnumUtil.getEnumMap(DbTypeEnum.class).get(sinkInfo.getType().toUpperCase());
-        WriteTypeEnum writeTypeEnum = EnumUtil.getEnumMap(WriteTypeEnum.class).get(this.currentTask.getExist_type().toUpperCase());
-        List<ColumnInfo> columnList = DbUtils.getColumns(connection, sinkInfo.getTable_name());
-        IWriter writer = EngineManager.getWriter(dbType);
-        if (writer != null) {
-            writer.config(sinkInfo.getTable_name(), connection, columnList);
-            insertResult = writer.insertData(dataTable);
-            if (insertResult.getExistData() != null) {
-                // 如果是存在更新
-                if (writeTypeEnum.equals(WriteTypeEnum.UPSERT)) {
-                    updateResult = writer.updateData(insertResult.getExistData());
-                }
-                // 如果是存在忽略
-                else if (writeTypeEnum.equals(WriteTypeEnum.IGNORE)) {
-                    insertResult.setIgnoreCount(insertResult.getExistData().size());
-                }
-            }
-        }
-    }
-
-    /**
-     * 读取数据
-     *
-     * @param sourceId
-     * @return
-     */
-    private DataTable readData(String sourceId) {
-        SourceInfoModel sourceInfo = sourceApplication.getSource(sourceId, null);
-        Connection connection = connectApplication.getConnection(sourceInfo.getConnect_id());
-        DbTypeEnum dbType = EnumUtil.getEnumMap(DbTypeEnum.class).get(sourceInfo.getType().toUpperCase());
-        DataTable dataTable = new DataTable();
-        List<ColumnInfo> columnList = DbUtils.getColumns(connection, sourceInfo.getTable_name());
-        List<WhereInfo> whereList = whereConfigApplication.getWhereConfigByTask(currentTask.getId());
-        IReader reader = EngineManager.getReader(dbType);
-        if (reader != null) {
-            reader.config(sourceInfo.getTable_name(), connection, columnList, whereList);
-            dataTable = reader.readData();
-        }
-
-        return dataTable;
     }
 
     /**

@@ -17,7 +17,7 @@ public class MySqlDataSourceFactory implements DataSourceFactory {
     @Override
     public void config(DataSourceInfo info) {
         sourceInfo = info;
-        String url = "jdbc:mysql://" + info.getHost() + ":" + info.getPort() + "/" + info.getDatabase() + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&rewriteBatchedStatements=true&useInformationSchema=true&characterEncoding=UTF-8";
+        String url = "jdbc:mysql://" + info.getHost() + ":" + info.getPort() + "/" + info.getDatabase() + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&useInformationSchema=true&characterEncoding=UTF-8";
         sourceInfo.setUrl(url);
         sourceInfo.setName(SecureUtil.md5(url));
     }

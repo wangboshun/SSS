@@ -19,7 +19,7 @@
     <properties>
         <java.version>1.8</java.version>
         <p6spy.version>3.9.1</p6spy.version>
-        <hutool.version>5.8.17</hutool.version>
+        <hutool.version>5.8.18</hutool.version>
         <guava.version>31.1-jre</guava.version>
         <mongodb.version>4.9.1</mongodb.version>
         <snakeyaml.version>2.0</snakeyaml.version>
@@ -29,9 +29,9 @@
         <kafka-clients.version>3.4.0</kafka-clients.version>
         <mssql-jdbc.version>12.2.0.jre8</mssql-jdbc.version>
         <projectlombok.version>1.18.26</projectlombok.version>
-        <clickhouse-jdbc.version>0.4.2</clickhouse-jdbc.version>
+        <clickhouse-jdbc.version>0.4.4</clickhouse-jdbc.version>
         <jackson-databind.version>2.14.2</jackson-databind.version>
-        <mysql-connector-j.version>8.0.32</mysql-connector-j.version>
+        <mysql-connector-j.version>8.0.33</mysql-connector-j.version>
         <therapi-runtime-javadoc-scribe.version>0.15.0</therapi-runtime-javadoc-scribe.version>
         <knife4j-openapi2-spring-boot-starter.version>4.1.0</knife4j-openapi2-spring-boot-starter.version>
     </properties>

@@ -1,6 +1,5 @@
 package com.wbs.engine.core.base;
 
-import com.wbs.common.database.base.DataTable;
 import com.wbs.common.database.base.model.ColumnInfo;
 import com.wbs.common.database.base.model.WhereInfo;
 
@@ -15,6 +14,6 @@ import java.util.List;
 public interface IReader {
 
     public void config(String tableName, Connection connection, List<ColumnInfo> columnList, List<WhereInfo> whereList);
-    public DataTable readData();
-    public DataTable readData(String sql);
+    public void readData();
+    public void readData(String sql);
 }
