@@ -30,5 +30,15 @@ public enum DbTypeEnum {
     /**
      * ClickHouse
      */
-    CLICKHOUSE
+    CLICKHOUSE,
+
+    /**
+     * RabbitMQ
+     */
+    RABBITMQ,
+
+    /**
+     * Kafka
+     */
+    KAFKA
 }

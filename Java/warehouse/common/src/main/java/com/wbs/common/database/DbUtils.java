@@ -8,11 +8,7 @@ import com.wbs.common.database.base.model.TableInfo;
 import com.wbs.common.utils.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.*;
@@ -24,23 +20,13 @@ import java.util.concurrent.CompletableFuture;
  * @date 2023/3/2 16:11
  * @desciption DbUtils
  */
-@Component
 public class DbUtils {
     private static final Logger logger = LoggerFactory.getLogger("DbUtils");
-    @Autowired
-    private ThreadPoolTaskExecutor defaultExecutor;
-    private static ThreadPoolTaskExecutor threadPool;
-
-    @PostConstruct
-    public void init() {
-        threadPool = this.defaultExecutor;
-    }
-
     public static List<TableInfo> getTables(Connection connection) {
         List<TableInfo> list = new ArrayList<>();
         try {
-            CompletableFuture<List<TableInfo>> future1 = CompletableFuture.supplyAsync(() -> getTableBaseInfo(connection), threadPool);
-            CompletableFuture<LinkedHashMap<String, Integer>> future2 = CompletableFuture.supplyAsync(() -> getTableRows(connection), threadPool);
+            CompletableFuture<List<TableInfo>> future1 = CompletableFuture.supplyAsync(() -> getTableBaseInfo(connection));
+            CompletableFuture<LinkedHashMap<String, Integer>> future2 = CompletableFuture.supplyAsync(() -> getTableRows(connection));
             CompletableFuture.allOf(future1, future2);
             list = future1.get();
             LinkedHashMap<String, Integer> rowsMap = future2.get();
@@ -131,9 +117,9 @@ public class DbUtils {
     public static List<ColumnInfo> getColumns(Connection connection, String tableName) {
         List<ColumnInfo> list = new ArrayList<>();
         try {
-            CompletableFuture<LinkedHashMap<String, String>> future1 = CompletableFuture.supplyAsync(() -> getColumnJavaType(connection, tableName), threadPool);
-            CompletableFuture<Set<String>> future2 = CompletableFuture.supplyAsync(() -> getPrimaryKey(connection, tableName), threadPool);
-            CompletableFuture<List<ColumnInfo>> future3 = CompletableFuture.supplyAsync(() -> getColumnBaseInfo(connection, tableName), threadPool);
+            CompletableFuture<LinkedHashMap<String, String>> future1 = CompletableFuture.supplyAsync(() -> getColumnJavaType(connection, tableName));
+            CompletableFuture<Set<String>> future2 = CompletableFuture.supplyAsync(() -> getPrimaryKey(connection, tableName));
+            CompletableFuture<List<ColumnInfo>> future3 = CompletableFuture.supplyAsync(() -> getColumnBaseInfo(connection, tableName));
             CompletableFuture.allOf(future1, future2, future3);
             LinkedHashMap<String, String> javaTypeMap = future1.get();
             Set<String> primarySet = future2.get();

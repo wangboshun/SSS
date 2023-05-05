@@ -1,19 +1,15 @@
 package com.wbs.common.database.base;
 
-import com.google.common.collect.Lists;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * @author WBS
  * @date 2023/3/3 8:58
  * @desciption DataTable
  */
-public class DataTable extends ArrayList<DataRow> {
+public class DataTable extends ArrayList<DataRow> implements Cloneable {
 
     private String name;
 
@@ -21,8 +17,19 @@ public class DataTable extends ArrayList<DataRow> {
 
     }
 
+    @Override
+    public DataTable clone() {
+        return (DataTable) super.clone();
+    }
+
     public DataTable(String name) {
         this.setName(name);
+    }
+
+    public DataTable(List<DataRow> rows) {
+        if(rows!=null&&rows.size() > 0){
+            rows.forEach(this::addRow);
+        }
     }
 
     /**
@@ -41,6 +48,13 @@ public class DataTable extends ArrayList<DataRow> {
      */
     public void addRow(DataRow row) {
         this.forEach(item -> item.putAll(row));
+    }
+
+    public DataTable addDt(DataTable dt) {
+        if(dt!=null){
+            this.addAll(dt);
+        }
+        return this;
     }
 
     /**
@@ -121,59 +135,5 @@ public class DataTable extends ArrayList<DataRow> {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    /**
-     * 拆成N份
-     *
-     * @param arraySize
-     * @return
-     */
-    public List<DataTable> splitArray(int arraySize) {
-        List<DataTable> result = new ArrayList<>();
-        int batchSize = (int) Math.ceil((double) this.size() / arraySize);
-        List<List<DataRow>> list = IntStream.range(0, arraySize).parallel().mapToObj(i -> this.subList(i * batchSize, Math.min((i + 1) * batchSize, this.size()))).collect(Collectors.toList());
-        for (List<DataRow> rows : list) {
-            DataTable dt = new DataTable();
-            dt.addAll(rows);
-            result.add(dt);
-        }
-        return result;
-    }
-
-    /**
-     * 按批次拆分
-     *
-     * @param size
-     * @return
-     */
-    public List<DataTable> splitBatch(int size) {
-        List<DataTable> result = new ArrayList<>();
-        List<List<DataRow>> list = Lists.partition(this, size);
-        for (List<DataRow> rows : list) {
-            DataTable dt = new DataTable();
-            dt.addAll(rows);
-            result.add(dt);
-        }
-        return result;
-    }
-
-    /**
-     * datatable分页
-     *
-     * @param dt       dt
-     * @param pageNum  页码
-     * @param pageSize 页大小
-     */
-    public static List<DataTable> getPage(List<DataTable> dt, int pageNum, int pageSize) {
-        int startIndex = pageNum * pageSize;
-        int endIndex = startIndex + pageSize;
-        if (startIndex > dt.size()) {
-            startIndex = dt.size();
-        }
-        if (endIndex > dt.size()) {
-            endIndex = dt.size();
-        }
-        return dt.subList(startIndex, endIndex);
     }
 }

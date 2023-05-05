@@ -15,7 +15,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 @EnableAsync
 @Configuration
 public class ThreadPoolConfig {
-
     @Bean(name = "defaultExecutor")
     public ThreadPoolTaskExecutor defaultExecutor() {
         int processNum = Runtime.getRuntime().availableProcessors();

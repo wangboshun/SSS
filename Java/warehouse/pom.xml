@@ -29,16 +29,15 @@
         <kafka-clients.version>3.4.0</kafka-clients.version>
         <mssql-jdbc.version>12.2.0.jre8</mssql-jdbc.version>
         <projectlombok.version>1.18.26</projectlombok.version>
-        <clickhouse-jdbc.version>0.4.2</clickhouse-jdbc.version>
-        <jackson-databind.version>2.14.2</jackson-databind.version>
-        <mysql-connector-j.version>8.0.32</mysql-connector-j.version>
+        <clickhouse-jdbc.version>0.4.5</clickhouse-jdbc.version>
+        <jackson-databind.version>2.15.0</jackson-databind.version>
+        <mysql-connector-j.version>8.0.33</mysql-connector-j.version>
         <therapi-runtime-javadoc-scribe.version>0.15.0</therapi-runtime-javadoc-scribe.version>
         <knife4j-openapi2-spring-boot-starter.version>4.1.0</knife4j-openapi2-spring-boot-starter.version>
     </properties>
 
     <modules>
         <module>main</module>
-        <module>engine</module>
         <module>common</module>
         <module>pipe</module>
     </modules>

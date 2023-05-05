@@ -1,8 +1,9 @@
 package com.wbs.pipe.model.task;
 
-import com.wbs.engine.model.WriterResult;
+import com.wbs.pipe.model.engine.WriterResult;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
  */
 @Setter
 @Getter
+@ToString
 public class TaskLogModel implements Serializable {
     private String id;
     private String task_id;

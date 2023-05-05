@@ -1,9 +1,9 @@
-package com.wbs.pipe.controller.pipe;
+package com.wbs.pipe.controller.engine;
 
 import com.wbs.common.database.base.model.WhereInfo;
 import com.wbs.common.extend.ResponseResult;
-import com.wbs.pipe.application.pipe.WhereConfigApplication;
-import com.wbs.pipe.model.pipe.WhereConfigModel;
+import com.wbs.pipe.application.WhereConfigApplication;
+import com.wbs.pipe.model.engine.WhereConfigModel;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

@@ -19,9 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DataSourceManager {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private static final ConcurrentHashMap<String, DataSource> dataSourceMap = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<String, Connection> connectionMap = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, DataSourceFactory> dataSourceFactorMap = new ConcurrentHashMap<>();
-
 
     /**
      * 添加数据源
@@ -78,19 +76,13 @@ public class DataSourceManager {
      * @param connectionName 名称
      */
     public Connection createConnection(String connectionName) {
-        Connection connection = connectionMap.get(connectionName);
         try {
-            if (connection != null && !connection.isClosed()) {
-                return connection;
-            }
             DataSource dataSource = getDataSource(connectionName);
-            connection = dataSource.getConnection();
-            connectionMap.put(connectionName, connection);
-            return connection;
+            return dataSource.getConnection();
         } catch (SQLException e) {
             logger.error("createConnection exception", e);
         }
-        return connection;
+        return null;
     }
 
     /**
@@ -98,20 +90,6 @@ public class DataSourceManager {
      */
     public void removeDataSource(String dataSourceName) {
         dataSourceFactorMap.remove(dataSourceName);
-    }
-
-    /**
-     * 移除连接
-     */
-    public void removeConnect(String connectionName) {
-        connectionMap.remove(connectionName);
-    }
-
-    /**
-     * 获取所有连接
-     */
-    public ConcurrentHashMap<String, Connection> getAllConnection() {
-        return connectionMap;
     }
 
     /**
