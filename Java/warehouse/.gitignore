@@ -19,8 +19,7 @@ rebel.xml
 .idea
 *.iws
 *.iml
-*.ipr
-*.yaml
+*.ipr 
 
 ### NetBeans ###
 /nbproject/private/
