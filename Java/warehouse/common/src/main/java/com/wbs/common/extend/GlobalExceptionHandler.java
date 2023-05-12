@@ -68,9 +68,6 @@ public class GlobalExceptionHandler {
 
     /**
      * 接口不存在
-     *
-     * @param e
-     * @return
      */
     @ExceptionHandler(NoHandlerFoundException.class)
     @ResponseBody

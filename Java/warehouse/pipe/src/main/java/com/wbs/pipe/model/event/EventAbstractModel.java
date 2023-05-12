@@ -6,6 +6,8 @@ import com.wbs.pipe.model.task.TaskInfoModel;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 /**
  * @author WBS
  * @date 2023/4/27 15:26
@@ -13,7 +15,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-public class EventAbstractModel {
+public class EventAbstractModel implements Serializable {
     private TaskInfoModel taskInfo;
     private DataTable dt;
     private boolean end;

@@ -27,7 +27,7 @@ public class DataTable extends ArrayList<DataRow> implements Cloneable {
     }
 
     public DataTable(List<DataRow> rows) {
-        if(rows!=null&&rows.size() > 0){
+        if (rows != null && rows.size() > 0) {
             rows.forEach(this::addRow);
         }
     }
@@ -51,7 +51,7 @@ public class DataTable extends ArrayList<DataRow> implements Cloneable {
     }
 
     public DataTable addDt(DataTable dt) {
-        if(dt!=null){
+        if (dt != null) {
             this.addAll(dt);
         }
         return this;

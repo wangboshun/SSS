@@ -1,6 +1,7 @@
 package com.wbs.pipe.model.task;
 
-import com.wbs.pipe.model.engine.WriterResult;
+import com.wbs.pipe.model.engine.InsertResult;
+import com.wbs.pipe.model.engine.UpdateResult;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -20,8 +21,8 @@ public class TaskLogModel implements Serializable {
     private String id;
     private String task_id;
     private String status;
-    private WriterResult insert;
-    private WriterResult update;
+    private InsertResult insert;
+    private UpdateResult update;
     private LocalDateTime ct;
     private LocalDateTime st;
     private LocalDateTime et;

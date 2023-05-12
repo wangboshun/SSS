@@ -5,14 +5,11 @@ import com.google.common.eventbus.Subscribe;
 import com.wbs.common.database.base.DbTypeEnum;
 import com.wbs.pipe.application.ConnectApplication;
 import com.wbs.pipe.application.engine.base.SubscriberAbstract;
-import com.wbs.pipe.application.engine.base.WriteTypeEnum;
-import com.wbs.pipe.model.engine.WriterResult;
 import com.wbs.pipe.model.event.PgSqlEventModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.stereotype.Component;
-
-import java.sql.SQLException;
 
 /**
  * @author WBS
@@ -20,6 +17,7 @@ import java.sql.SQLException;
  * @desciption PgSqlSubscriber
  */
 @Component
+@RabbitListener(bindings = {@QueueBinding(value = @Queue(value = "POSTGRESQL_Queue", durable = "false", autoDelete = "true"), exchange = @Exchange(value = "Pipe_Exchange"), key = "POSTGRESQL_RoutKey")})
 public class PgSqlSubscriber extends SubscriberAbstract {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -28,38 +26,15 @@ public class PgSqlSubscriber extends SubscriberAbstract {
         defaultEventBus.register(this);
     }
 
+    /**
+     * 监听消息
+     *
+     * @param message 数据消息
+     */
     @Subscribe
-    public void receive(PgSqlEventModel event) {
-        config(event.getTaskInfo(), event.getSinkInfo(), DbTypeEnum.POSTGRESQL);
-
-        WriterResult insertResult;
-        WriterResult updateResult;
-        try {
-            if (writer != null) {
-                writer.config( event.getSinkInfo().getTable_name(), connection, columnList);
-                insertResult = writer.insertData(event.getDt());
-                if (insertResult.getExistData() != null) {
-                    // 如果是存在更新
-                    if (writeTypeEnum.equals(WriteTypeEnum.UPSERT)) {
-                        updateResult = writer.updateData(insertResult.getExistData());
-                    }
-                    // 如果是存在忽略
-                    else if (writeTypeEnum.equals(WriteTypeEnum.IGNORE)) {
-                        insertResult.setIgnoreCount(insertResult.getExistData().size());
-                    }
-                }
-            }
-            connection.close();
-        } catch (Exception e1) {
-            logger.error("------PgSqlSubscriber receive error------", e1);
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e2) {
-                    logger.error("------PgSqlSubscriber receive error------", e2);
-                }
-            }
-        }
+    @RabbitHandler
+    public void receive(PgSqlEventModel message) {
+        config(message.getTaskInfo(), message.getSinkInfo(), DbTypeEnum.POSTGRESQL);
+        process(message);
     }
 }

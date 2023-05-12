@@ -28,6 +28,7 @@ import java.util.Map;
 public class MongoFactory {
     private final HashMap<String, MongoClient> clientMap = new HashMap<>();
     private final Logger logger = LoggerFactory.getLogger(getClass());
+
     /**
      * 获取所有客户端
      *

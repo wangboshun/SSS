@@ -6,7 +6,8 @@ import com.wbs.common.database.base.DataRow;
 import com.wbs.common.database.base.DataTable;
 import com.wbs.common.database.base.DbTypeEnum;
 import com.wbs.common.database.base.model.ColumnInfo;
-import com.wbs.pipe.model.engine.WriterResult;
+import com.wbs.pipe.model.engine.InsertResult;
+import com.wbs.pipe.model.engine.UpdateResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +56,7 @@ public class WriterAbstract implements IWriter {
      * @return 返回错误数据
      */
     @Override
-    public WriterResult insertData(DataTable dt) {
+    public InsertResult insertData(DataTable dt) {
         DataTable exitsData = new DataTable();
         DataTable errorData = new DataTable();
         DataTable exceptionData = new DataTable();
@@ -67,7 +68,7 @@ public class WriterAbstract implements IWriter {
         } catch (Exception e) {
 
         }
-        WriterResult result = builderResult(exitsData, errorData);
+        InsertResult result = builderResult(exitsData, errorData);
         result.setInsertCount(dt.size() - result.getExitsCount() - result.getErrorCount());
         return result;
     }
@@ -79,13 +80,14 @@ public class WriterAbstract implements IWriter {
      * @return 返回错误数据
      */
     @Override
-    public WriterResult updateData(DataTable dt) {
+    public UpdateResult updateData(DataTable dt) {
         DataTable errorData = new DataTable();
+        DataTable updateData = new DataTable();
         if (primarySet.isEmpty()) {
             throw new RuntimeException("该表没有主键，无法更新！");
         }
         errorData.addAll(batchUpdate(dt));
-        WriterResult result = builderResult(null, errorData);
+        UpdateResult result = builderResult(errorData);
         result.setUpdateCount(dt.size() - result.getErrorCount());
         return result;
     }
@@ -230,12 +232,26 @@ public class WriterAbstract implements IWriter {
      * @param exitsData 重复数据
      * @param errorData 错误数据
      */
-    private WriterResult builderResult(DataTable exitsData, DataTable errorData) {
-        WriterResult result = new WriterResult();
+    private InsertResult builderResult(DataTable exitsData, DataTable errorData) {
+        InsertResult result = new InsertResult();
         if (exitsData != null && !exitsData.isEmpty()) {
             result.setExistData(exitsData);
             result.setExitsCount(exitsData.size());
         }
+        if (errorData != null && !errorData.isEmpty()) {
+            result.setErrorData(errorData);
+            result.setErrorCount(errorData.size());
+        }
+        return result;
+    }
+
+    /**
+     * 构建返回值
+     *
+     * @param errorData 错误数据
+     */
+    private UpdateResult builderResult(DataTable errorData) {
+        UpdateResult result = new UpdateResult();
         if (errorData != null && !errorData.isEmpty()) {
             result.setErrorData(errorData);
             result.setErrorCount(errorData.size());

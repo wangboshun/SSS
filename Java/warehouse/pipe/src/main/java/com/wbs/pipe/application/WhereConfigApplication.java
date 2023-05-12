@@ -45,7 +45,7 @@ public class WhereConfigApplication {
         if (CharSequenceUtil.isNotBlank(taskId)) {
             Bson query = eq("task_id", taskId);
             WhereConfigModel model = collection.find(query).first();
-            if(model != null){
+            if (model != null) {
                 return model.getFilter();
             }
             return null;

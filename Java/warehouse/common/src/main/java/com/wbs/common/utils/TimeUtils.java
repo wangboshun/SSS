@@ -40,7 +40,7 @@ public class TimeUtils {
         }
         // 数据库里面秒为00的时候，把秒的格式删除掉
         if (val.contains(":") && (val.split(":").length < 3)) {
-                format=format.replace(":ss", "");
+            format = format.replace(":ss", "");
 
         }
         return format;

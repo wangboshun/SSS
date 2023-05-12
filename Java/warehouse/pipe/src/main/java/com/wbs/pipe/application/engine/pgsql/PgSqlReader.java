@@ -15,8 +15,8 @@ import java.util.List;
  */
 public class PgSqlReader extends ReaderAbstract {
     @Override
-    public void config(String taskId,String tableName, Connection connection, List<ColumnInfo> columnList, List<WhereInfo> whereList) {
+    public void config(String taskId, String tableName, Connection connection, List<ColumnInfo> columnList, List<WhereInfo> whereList) {
         this.dbType = DbTypeEnum.POSTGRESQL;
-        super.config(taskId,tableName, connection, columnList,whereList);
+        super.config(taskId, tableName, connection, columnList, whereList);
     }
 }

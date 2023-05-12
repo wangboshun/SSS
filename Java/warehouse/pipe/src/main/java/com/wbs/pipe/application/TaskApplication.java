@@ -141,9 +141,9 @@ public class TaskApplication {
      */
     public void addTaskLog(TaskLogModel model) {
         try {
-             ObjectId id = new ObjectId();
-             model.setId(id.toString());
-             model.setCt(LocalDateTime.now());
+            ObjectId id = new ObjectId();
+            model.setId(id.toString());
+            model.setCt(LocalDateTime.now());
             taskLogCollection.insertOne(model);
         } catch (Exception e) {
             logger.error("------PipeApplication addTaskLog error------", e);

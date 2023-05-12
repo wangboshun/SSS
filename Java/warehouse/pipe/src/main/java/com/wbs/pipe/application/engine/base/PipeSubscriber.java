@@ -10,6 +10,7 @@ import com.wbs.pipe.model.event.EventAbstractModel;
 import com.wbs.pipe.model.event.PipeEventModel;
 import com.wbs.pipe.model.sink.SinkInfoModel;
 import com.wbs.pipe.model.task.TaskInfoModel;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,15 +20,17 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class PipeSubscriber {
-
     private final AsyncEventBus defaultEventBus;
     private final TaskApplication taskApplication;
     private final SinkApplication sinkApplication;
 
-    public PipeSubscriber(AsyncEventBus defaultEventBus, TaskApplication taskApplication, SinkApplication sinkApplication) {
+    private final RabbitTemplate rabbitTemplate;
+
+    public PipeSubscriber(AsyncEventBus defaultEventBus, TaskApplication taskApplication, SinkApplication sinkApplication, RabbitTemplate rabbitmqTemplate, RabbitTemplate rabbitTemplate) {
         this.defaultEventBus = defaultEventBus;
         this.taskApplication = taskApplication;
         this.sinkApplication = sinkApplication;
+        this.rabbitTemplate = rabbitTemplate;
         defaultEventBus.register(this);
     }
 
@@ -35,6 +38,7 @@ public class PipeSubscriber {
     public void receive(PipeEventModel event) {
         TaskInfoModel taskInfo = taskApplication.getTask(event.getTaskId(), null);
         String[] ids = taskInfo.getSink_id().split(",");
+        String exchange = "Pipe_Exchange";
         for (String sinkId : ids) {
             SinkInfoModel sinkInfo = sinkApplication.getSink(sinkId, null);
             DbTypeEnum dbType = EnumUtil.getEnumMap(DbTypeEnum.class).get(sinkInfo.getType().toUpperCase());
@@ -48,7 +52,13 @@ public class PipeSubscriber {
             e.setBatchIndex(event.getBatchIndex());
             e.setBatchSize(event.getBatchSize());
             e.setEnd(event.isEnd());
-            defaultEventBus.post(e);
+
+            // eventbus发送消息
+            // defaultEventBus.post(e);
+
+            // rabbitmq发送消息
+            String routingKey = dbType + "_RoutKey";
+            rabbitTemplate.convertAndSend(exchange, routingKey, e);
         }
     }
 }

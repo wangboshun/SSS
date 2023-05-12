@@ -15,8 +15,8 @@ import java.util.List;
  */
 public class ClickHouseReader extends ReaderAbstract {
     @Override
-    public void config(String taskId,String tableName, Connection connection, List<ColumnInfo> columnList, List<WhereInfo> whereList) {
+    public void config(String taskId, String tableName, Connection connection, List<ColumnInfo> columnList, List<WhereInfo> whereList) {
         this.dbType = DbTypeEnum.CLICKHOUSE;
-        super.config(taskId,tableName, connection, columnList,whereList);
+        super.config(taskId, tableName, connection, columnList, whereList);
     }
 }

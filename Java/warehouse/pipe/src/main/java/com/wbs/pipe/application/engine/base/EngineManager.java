@@ -1,7 +1,6 @@
 package com.wbs.pipe.application.engine.base;
 
 import com.wbs.common.database.base.DbTypeEnum;
-import com.wbs.pipe.model.event.*;
 import com.wbs.pipe.application.engine.clickhouse.ClickHouseReader;
 import com.wbs.pipe.application.engine.clickhouse.ClickHouseWriter;
 import com.wbs.pipe.application.engine.mysql.MySqlReader;
@@ -10,6 +9,7 @@ import com.wbs.pipe.application.engine.pgsql.PgSqlReader;
 import com.wbs.pipe.application.engine.pgsql.PgSqlWriter;
 import com.wbs.pipe.application.engine.sqlserver.SqlServerReader;
 import com.wbs.pipe.application.engine.sqlserver.SqlServerWriter;
+import com.wbs.pipe.model.event.*;
 
 /**
  * @author WBS

@@ -89,7 +89,7 @@ public class SourceController {
 
     @GetMapping(value = "/columns/{id}/{table}")
     public ResponseResult columns(@PathVariable String id, @PathVariable String table) {
-        List<ColumnInfo> list = sourceApplication.getColumns(id,table);
+        List<ColumnInfo> list = sourceApplication.getColumns(id, table);
         if (list.isEmpty()) {
             return new ResponseResult().NULL();
         }

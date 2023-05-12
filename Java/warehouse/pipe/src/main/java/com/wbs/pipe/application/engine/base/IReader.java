@@ -13,7 +13,9 @@ import java.util.List;
  */
 public interface IReader {
 
-    public void config(String taskId,String tableName, Connection connection, List<ColumnInfo> columnList, List<WhereInfo> whereList);
+    public void config(String taskId, String tableName, Connection connection, List<ColumnInfo> columnList, List<WhereInfo> whereList);
+
     public void readData();
+
     public void readData(String sql);
 }

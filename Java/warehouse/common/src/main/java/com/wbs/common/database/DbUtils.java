@@ -22,6 +22,7 @@ import java.util.concurrent.CompletableFuture;
  */
 public class DbUtils {
     private static final Logger logger = LoggerFactory.getLogger("DbUtils");
+
     public static List<TableInfo> getTables(Connection connection) {
         List<TableInfo> list = new ArrayList<>();
         try {
