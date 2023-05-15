@@ -15,7 +15,7 @@ import lombok.ToString;
 @ToString
 public class PipeEventModel {
     private String taskId;
-    private DataTable dt;
+    private DataTable table;
     private boolean end;
     private int batchIndex;
     private int batchSize;

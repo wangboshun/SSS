@@ -20,13 +20,17 @@ public class UpdateResult implements Serializable {
     private int errorCount;
 
     public void updateTotal(UpdateResult updateResult) {
-        if (this.getErrorData() == null) {
-            this.setErrorData(new DataTable());
+        if (updateResult == null) {
+            return;
         }
-        if (updateResult != null) {
-            this.setErrorData(this.getErrorData().addDt(updateResult.getErrorData()));
-            this.setUpdateCount(updateResult.getUpdateCount() + this.getUpdateCount());
-            this.setErrorCount(updateResult.getErrorCount() + this.getErrorCount());
+        if (updateResult.getErrorData() != null) {
+            if (this.errorData == null) {
+                this.errorData = updateResult.getErrorData();
+            } else {
+                this.errorData = this.errorData.addTable(updateResult.getErrorData());
+            }
         }
+        this.updateCount = updateResult.getUpdateCount() + this.updateCount;
+        this.errorCount = updateResult.getErrorCount() + this.errorCount;
     }
 }

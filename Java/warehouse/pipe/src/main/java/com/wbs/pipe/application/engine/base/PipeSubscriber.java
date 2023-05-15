@@ -48,7 +48,7 @@ public class PipeSubscriber {
             }
             e.setTaskInfo(taskInfo);
             e.setSinkInfo(sinkInfo);
-            e.setDt(event.getDt());
+            e.setTable(event.getTable());
             e.setBatchIndex(event.getBatchIndex());
             e.setBatchSize(event.getBatchSize());
             e.setEnd(event.isEnd());

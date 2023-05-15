@@ -127,9 +127,9 @@ public class DbUtils {
             list = future3.get();
             list.forEach(item -> {
                 if (primarySet.contains(item.getName())) {
-                    item.setPrimary(1);
+                    item.setPrimary(true);
                 } else {
-                    item.setPrimary(0);
+                    item.setPrimary(false);
                 }
                 item.setJavaType(javaTypeMap.get(item.getName()));
             });
@@ -159,12 +159,12 @@ public class DbUtils {
                 model.setTable(tableName);
                 model.setScale(resultSet.getInt(ResultEnum.DECIMAL_DIGITS.name()));
                 model.setDbType(resultSet.getString(ResultEnum.TYPE_NAME.name()));
-                model.setLenght(resultSet.getInt(ResultEnum.COLUMN_SIZE.name()));
+                model.setLength(resultSet.getInt(ResultEnum.COLUMN_SIZE.name()));
                 // 是否可空
                 if (resultSet.getString(ResultEnum.IS_NULLABLE.name()).equals("YES")) {
-                    model.setIsNullable(1);
+                    model.setNullable(true);
                 } else {
-                    model.setIsNullable(0);
+                    model.setNullable(false);
                 }
                 list.add(model);
             }

@@ -91,7 +91,7 @@ public class SubscriberAbstract {
         try {
             if (writer != null) {
                 writer.config(message.getSinkInfo().getTable_name(), connection, columnList);
-                insertResult = writer.insertData(message.getDt());
+                insertResult = writer.insertData(message.getTable());
                 if (insertResult.getExistData() != null) {
                     // 如果是存在更新
                     if (writeTypeEnum.equals(WriteTypeEnum.UPSERT)) {

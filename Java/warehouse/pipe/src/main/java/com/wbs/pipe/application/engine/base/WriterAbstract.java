@@ -20,8 +20,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
-
 /**
  * @author WBS
  * @date 2023/3/2 15:46
@@ -45,7 +43,7 @@ public class WriterAbstract implements IWriter {
         this.tableName = tableName;
         this.connection = connection;
         this.columnList = columnList;
-        this.primarySet = columnList.stream().filter(x -> x.getPrimary() == 1).map(ColumnInfo::getName).collect(Collectors.toSet());
+        this.primarySet = columnList.stream().filter(ColumnInfo::isPrimary).map(ColumnInfo::getName).collect(Collectors.toSet());
         this.columnSort = DbUtils.sortColumn(columnList, primarySet);
     }
 
@@ -57,16 +55,16 @@ public class WriterAbstract implements IWriter {
      */
     @Override
     public InsertResult insertData(DataTable dt) {
-        DataTable exitsData = new DataTable();
-        DataTable errorData = new DataTable();
-        DataTable exceptionData = new DataTable();
+        DataTable exitsData = new DataTable(dt);
+        DataTable errorData = new DataTable(dt);
+        DataTable exceptionData = new DataTable(dt);
         try {
-            exceptionData.addAll(batchInsert(dt));
-            errorData.addAll(findErrorData(exceptionData));
-            exceptionData.removeAll(errorData); // 去差集
-            exitsData.addAll(exceptionData);
+            exceptionData.addTable(batchInsert(dt));
+            errorData.addTable(findErrorData(exceptionData));
+            exceptionData = exceptionData.deleteTable(errorData); // 去差集
+            exitsData.addTable(exceptionData);
         } catch (Exception e) {
-
+            logger.error("WriterAbstract insertData", e);
         }
         InsertResult result = builderResult(exitsData, errorData);
         result.setInsertCount(dt.size() - result.getExitsCount() - result.getErrorCount());
@@ -81,12 +79,12 @@ public class WriterAbstract implements IWriter {
      */
     @Override
     public UpdateResult updateData(DataTable dt) {
-        DataTable errorData = new DataTable();
-        DataTable updateData = new DataTable();
+        DataTable errorData = new DataTable(dt);
+        DataTable updateData = new DataTable(dt);
         if (primarySet.isEmpty()) {
             throw new RuntimeException("该表没有主键，无法更新！");
         }
-        errorData.addAll(batchUpdate(dt));
+        errorData.addTable(batchUpdate(dt));
         UpdateResult result = builderResult(errorData);
         result.setUpdateCount(dt.size() - result.getErrorCount());
         return result;
@@ -99,7 +97,7 @@ public class WriterAbstract implements IWriter {
      */
     private DataTable batchInsert(DataTable dt) {
         PreparedStatement pstm = null;
-        DataTable errorData = new DataTable();
+        DataTable errorData = new DataTable(dt);
         try {
             String sql = "";
             if (CharSequenceUtil.isEmpty(batchInsertSql)) {
@@ -108,14 +106,14 @@ public class WriterAbstract implements IWriter {
             sql = batchInsertSql;
             this.connection.setAutoCommit(false);
             pstm = connection.prepareStatement(sql);
-            for (DataRow row : dt) {
+            for (DataRow row : dt.getRows()) {
                 // 如果线程中断，停止写入
                 if (Thread.currentThread().isInterrupted()) {
                     return errorData;
                 }
                 int paramIndex = 1;
                 for (ColumnInfo col : this.columnList) {
-                    DbUtils.setParam(pstm, paramIndex, row.get(col.getName()), col.getJavaType());
+                    DbUtils.setParam(pstm, paramIndex, row.getValue(col.getName()), col.getJavaType());
                     paramIndex++;
                 }
                 pstm.addBatch();
@@ -128,11 +126,10 @@ public class WriterAbstract implements IWriter {
             for (int i = 0; i < updateCounts.length; i++) {
                 // 如果插入失败
                 if (updateCounts[i] == Statement.EXECUTE_FAILED) {
-                    errorData.add(dt.get(i));
+                    errorData.addRow(dt.getRow(i));
                 }
             }
-            DataTable news = new DataTable(dt.stream().filter(item -> !errorData.contains(item)).collect(toList()));
-            batchInsert(news);
+            batchInsert(dt.deleteTable(errorData));
         } catch (Exception e2) {
             logger.error("------WriterAbstract batchWrite error------", e2);
         } finally {
@@ -148,7 +145,7 @@ public class WriterAbstract implements IWriter {
      */
     private DataTable batchUpdate(DataTable dt) {
         PreparedStatement pstm = null;
-        DataTable errorData = new DataTable();
+        DataTable errorData = new DataTable(dt);
         try {
             String sql = "";
             if (CharSequenceUtil.isEmpty(batchUpdateSql)) {
@@ -158,7 +155,7 @@ public class WriterAbstract implements IWriter {
             sql = batchUpdateSql;
             this.connection.setAutoCommit(false);
             pstm = connection.prepareStatement(sql);
-            for (DataRow row : dt) {
+            for (DataRow row : dt.getRows()) {
                 // 如果线程中断，停止更新
                 if (Thread.currentThread().isInterrupted()) {
                     return errorData;
@@ -166,7 +163,7 @@ public class WriterAbstract implements IWriter {
                 for (ColumnInfo col : this.columnList) {
                     String columnName = col.getName();
                     Integer paramIndex = columnSort.get(columnName);
-                    DbUtils.setParam(pstm, paramIndex, row.get(columnName), col.getJavaType());
+                    DbUtils.setParam(pstm, paramIndex, row.getValue(columnName), col.getJavaType());
                 }
                 pstm.addBatch();
             }
@@ -178,11 +175,10 @@ public class WriterAbstract implements IWriter {
             for (int i = 0; i < updateCounts.length; i++) {
                 // 如果插入失败
                 if (updateCounts[i] == Statement.EXECUTE_FAILED) {
-                    errorData.add(dt.get(i));
+                    errorData.addRow(dt.getRows().get(i));
                 }
             }
-            DataTable news = new DataTable(dt.stream().filter(item -> !errorData.contains(item)).collect(toList()));
-            batchUpdate(news);
+            batchUpdate(dt.deleteTable(errorData));
         } catch (Exception e2) {
             logger.error("WriterAbstract batchUpdate", e2);
         } finally {
@@ -197,8 +193,8 @@ public class WriterAbstract implements IWriter {
      * @param dt 数据
      */
     private DataTable findErrorData(DataTable dt) {
-        DataTable result = new DataTable();
-        dt.forEach(item -> {
+        DataTable result = new DataTable(dt);
+        dt.getRows().forEach(item -> {
             PreparedStatement pstm = null;
             try {
                 String sql = "";
@@ -210,14 +206,14 @@ public class WriterAbstract implements IWriter {
                 pstm = connection.prepareStatement(sql);
                 int paramIndex = 1;
                 for (ColumnInfo col : this.columnList) {
-                    DbUtils.setParam(pstm, paramIndex, item.get(col.getName()), col.getJavaType());
+                    DbUtils.setParam(pstm, paramIndex, item.getValue(col.getName()), col.getJavaType());
                     paramIndex++;
                 }
                 pstm.execute();
             } catch (Exception e) {
                 // 如果不是主键冲突错误，就当做是错误数据
                 if (!e.getMessage().contains("Duplicate")) {
-                    result.add(item);
+                    result.addRow(item);
                 }
             } finally {
                 DbUtils.closeStatement(pstm);
@@ -234,11 +230,11 @@ public class WriterAbstract implements IWriter {
      */
     private InsertResult builderResult(DataTable exitsData, DataTable errorData) {
         InsertResult result = new InsertResult();
-        if (exitsData != null && !exitsData.isEmpty()) {
+        if (exitsData != null && !exitsData.getRows().isEmpty()) {
             result.setExistData(exitsData);
             result.setExitsCount(exitsData.size());
         }
-        if (errorData != null && !errorData.isEmpty()) {
+        if (errorData != null && !errorData.getRows().isEmpty()) {
             result.setErrorData(errorData);
             result.setErrorCount(errorData.size());
         }
@@ -252,7 +248,7 @@ public class WriterAbstract implements IWriter {
      */
     private UpdateResult builderResult(DataTable errorData) {
         UpdateResult result = new UpdateResult();
-        if (errorData != null && !errorData.isEmpty()) {
+        if (errorData != null && !errorData.getRows().isEmpty()) {
             result.setErrorData(errorData);
             result.setErrorCount(errorData.size());
         }

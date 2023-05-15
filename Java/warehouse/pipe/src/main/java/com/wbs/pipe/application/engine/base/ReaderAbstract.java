@@ -3,6 +3,7 @@ package com.wbs.pipe.application.engine.base;
 import cn.hutool.extra.spring.SpringUtil;
 import com.google.common.eventbus.AsyncEventBus;
 import com.wbs.common.database.DbUtils;
+import com.wbs.common.database.base.DataColumn;
 import com.wbs.common.database.base.DataRow;
 import com.wbs.common.database.base.DataTable;
 import com.wbs.common.database.base.DbTypeEnum;
@@ -143,27 +144,30 @@ public abstract class ReaderAbstract implements IReader {
      */
     private void buildData(ResultSet resultSet) {
         try {
-            DataTable dt = new DataTable();
+            DataTable dt = new DataTable(tableName);
+            for (ColumnInfo col : this.columnList) {
+                dt.addColumn(new DataColumn(col.getName(), col.getJavaType(), col.isPrimary()));
+            }
             int batchIndex = 1;
             while (resultSet.next()) {
                 // 如果线程中断，停止查询
                 if (Thread.currentThread().isInterrupted()) {
                     break;
                 }
-                DataRow dr = new DataRow(this.columnList.size());
+                DataRow row = new DataRow();
                 for (ColumnInfo col : this.columnList) {
                     String columnName = col.getName();
-                    dr.put(columnName, resultSet.getObject(columnName));
+                    row.setValue(columnName, resultSet.getObject(columnName));
                 }
-                dt.add(dr);
-                if (dt.size() >= BATCH_SIZE) {
-                    sendEvent(dt.clone(), batchIndex, false);
+                dt.addRow(row);
+                if (dt.getRows().size() >= BATCH_SIZE) {
+                    sendEvent(dt.copy(), batchIndex, false);
                     dt.clear();
                     batchIndex++;
                 }
             }
-            if (!dt.isEmpty()) {
-                sendEvent(dt.clone(), batchIndex, true);
+            if (!dt.getRows().isEmpty()) {
+                sendEvent(dt.copy(), batchIndex, true);
                 dt.clear();
             }
         } catch (Exception e) {
@@ -175,7 +179,7 @@ public abstract class ReaderAbstract implements IReader {
         PipeEventModel event = new PipeEventModel();
         event.setTaskId(taskId);
         event.setBatchSize(BATCH_SIZE);
-        event.setDt(dt);
+        event.setTable(dt);
         event.setEnd(isEnd);
         event.setBatchIndex(batchIndex);
         asyncEventBus.post(event);

@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Getter
 public class EventAbstractModel implements Serializable {
     private TaskInfoModel taskInfo;
-    private DataTable dt;
+    private DataTable table;
     private boolean end;
     private int batchIndex;
     private int batchSize;

@@ -35,9 +35,9 @@ public class ColumnInfo implements Serializable {
     private String comment;
 
     /**
-     * 主键，1代表主键
+     * 是否主键
      */
-    private int primary;
+    private boolean isPrimary;
 
     /**
      * 对应java类型
@@ -47,7 +47,7 @@ public class ColumnInfo implements Serializable {
     /**
      * 可否为空
      */
-    private int isNullable;
+    private boolean isNullable;
 
     /**
      * 小数点保留位
@@ -57,5 +57,5 @@ public class ColumnInfo implements Serializable {
     /**
      * 数据长度
      */
-    private int lenght;
+    private int length;
 }

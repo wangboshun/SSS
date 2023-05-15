@@ -13,6 +13,6 @@ import lombok.Setter;
 public class MySqlEventModel extends EventAbstractModel {
     @Override
     public String toString() {
-        return "taskId:" + getTaskInfo().getName() + ",sinkName:" + getSinkInfo().getName() + ",dt:" + getDt().size() + ",batchIndex:" + getBatchIndex() + ",batchSize:" + getBatchSize() + ",isEnd:" + isEnd();
+        return "taskId:" + getTaskInfo().getName() + ",sinkName:" + getSinkInfo().getName() + ",dt:" + getTable().size() + ",batchIndex:" + getBatchIndex() + ",batchSize:" + getBatchSize() + ",isEnd:" + isEnd();
     }
 }

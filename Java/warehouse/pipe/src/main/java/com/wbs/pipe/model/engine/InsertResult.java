@@ -23,20 +23,27 @@ public class InsertResult implements Serializable {
     private int ignoreCount;
 
     public void insertTotal(InsertResult insertResult) {
-        if (this.getErrorData() == null) {
-            this.setErrorData(new DataTable());
+        if (insertResult == null) {
+            return;
         }
-        if (this.getExistData() == null) {
-            this.setExistData(new DataTable());
+        if (insertResult.getErrorData() != null) {
+            if (this.errorData == null) {
+                this.errorData = insertResult.getErrorData();
+            } else {
+                this.errorData = this.errorData.addTable(insertResult.getErrorData());
+            }
         }
+        if (insertResult.getExistData() != null) {
+            if (this.existData == null) {
+                this.existData = insertResult.getExistData();
+            } else {
+                this.existData = this.existData.addTable(insertResult.getExistData());
+            }
 
-        if (insertResult != null) {
-            this.setErrorData(this.getErrorData().addDt(insertResult.getErrorData()));
-            this.setExistData(this.getExistData().addDt(insertResult.getExistData()));
-            this.setInsertCount(insertResult.getInsertCount() + this.getInsertCount());
-            this.setErrorCount(insertResult.getErrorCount() + this.getErrorCount());
-            this.setExitsCount(insertResult.getExitsCount() + this.getExitsCount());
-            this.setIgnoreCount(insertResult.getIgnoreCount() + +this.getIgnoreCount());
         }
+        this.insertCount = insertResult.getInsertCount() + this.insertCount;
+        this.errorCount = insertResult.getErrorCount() + this.errorCount;
+        this.exitsCount = insertResult.getExitsCount() + this.exitsCount;
+        this.ignoreCount = insertResult.getIgnoreCount() + +this.ignoreCount;
     }
 }
