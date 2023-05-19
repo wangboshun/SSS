@@ -10,7 +10,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * @desciption DataRow
  */
 public class DataRow implements Serializable {
-    private Map<String, Object> data = new ConcurrentHashMap<>();
+    private Map<String, Object> data;
+
+    public DataRow() {
+        data = new ConcurrentHashMap<>();
+    }
 
     public Map<String, Object> getData() {
         return data;

@@ -12,6 +12,11 @@ public class DataColumn  implements Serializable {
     private String dataType;
     private boolean isPrimary;
 
+
+    public DataColumn(){
+
+    }
+
     public DataColumn(String name, String dataType) {
         this.name = name;
         this.dataType = dataType;

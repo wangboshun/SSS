@@ -1,14 +1,20 @@
 package com.wbs.pipe.application.engine.sqlserver;
 
-import com.google.common.eventbus.AsyncEventBus;
+import cn.hutool.json.JSONUtil;
 import com.google.common.eventbus.Subscribe;
 import com.wbs.common.database.base.DbTypeEnum;
+import com.wbs.common.extend.eventbus.TopicAsyncEventBus;
 import com.wbs.pipe.application.ConnectApplication;
+import com.wbs.pipe.application.engine.base.IPipeSubscriber;
 import com.wbs.pipe.application.engine.base.SubscriberAbstract;
-import com.wbs.pipe.model.event.SqlServerEventModel;
+import com.wbs.pipe.model.event.MessageEventModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.annotation.*;
+import org.springframework.amqp.rabbit.annotation.Exchange;
+import org.springframework.amqp.rabbit.annotation.Queue;
+import org.springframework.amqp.rabbit.annotation.QueueBinding;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,24 +23,44 @@ import org.springframework.stereotype.Component;
  * @desciption SqlServerSubscriber
  */
 @Component
-@RabbitListener(bindings = {@QueueBinding(value = @Queue(value = "SQLSERVER_Queue", durable = "false", autoDelete = "true"), exchange = @Exchange(value = "Pipe_Exchange"), key = "SQLSERVER_RoutKey")})
-public class SqlServerSubscriber extends SubscriberAbstract {
+public class SqlServerSubscriber extends SubscriberAbstract implements IPipeSubscriber {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public SqlServerSubscriber(AsyncEventBus defaultEventBus, ConnectApplication connectApplication) {
+    public SqlServerSubscriber(TopicAsyncEventBus topicAsyncEventBus, ConnectApplication connectApplication) {
         super(connectApplication);
-        defaultEventBus.register(this);
+        topicAsyncEventBus.register(DbTypeEnum.SQLSERVER + "_TOPIC", this);
     }
 
     /**
-     * 监听消息
-     *
-     * @param message 数据消息
+     * eventbus
      */
     @Subscribe
-    @RabbitHandler
-    public void receive(SqlServerEventModel message) {
-        config(message.getTaskInfo(), message.getSinkInfo(), DbTypeEnum.SQLSERVER);
-        process(message);
+    @Override
+    public void eventBusReceive(String message) {
+        run(message);
+    }
+
+    /**
+     * rabbitmq
+     */
+    @RabbitListener(errorHandler = "rabbitMessageErrorHandler", bindings = {@QueueBinding(value = @Queue(value = "SQLSERVER_QUEUE", durable = "false", autoDelete = "true"), exchange = @Exchange(value = "PIPE_EXCHANGE"), key = "SQLSERVER_ROUTKEY")})
+    @Override
+    public void rabbitMqReceive(String message) {
+        run(message);
+    }
+
+    /**
+     * kafka
+     */
+    @KafkaListener(topics = {"SQLSERVER_TOPIC"},groupId = "PIPE_GROUP", errorHandler = "kafkaMessageErrorHandler")
+    public void kafkaReceive(String message) {
+        run(message);
+    }
+
+    @Override
+    public void run(String message) {
+        MessageEventModel model = JSONUtil.toBean(message, MessageEventModel.class);
+        config(model.getTaskInfo(), model.getSinkInfo(), DbTypeEnum.SQLSERVER);
+        process(model);
     }
 }

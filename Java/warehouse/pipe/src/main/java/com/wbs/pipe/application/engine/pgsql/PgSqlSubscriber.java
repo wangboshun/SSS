@@ -1,14 +1,20 @@
 package com.wbs.pipe.application.engine.pgsql;
 
-import com.google.common.eventbus.AsyncEventBus;
+import cn.hutool.json.JSONUtil;
 import com.google.common.eventbus.Subscribe;
 import com.wbs.common.database.base.DbTypeEnum;
+import com.wbs.common.extend.eventbus.TopicAsyncEventBus;
 import com.wbs.pipe.application.ConnectApplication;
+import com.wbs.pipe.application.engine.base.IPipeSubscriber;
 import com.wbs.pipe.application.engine.base.SubscriberAbstract;
-import com.wbs.pipe.model.event.PgSqlEventModel;
+import com.wbs.pipe.model.event.MessageEventModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.annotation.*;
+import org.springframework.amqp.rabbit.annotation.Exchange;
+import org.springframework.amqp.rabbit.annotation.Queue;
+import org.springframework.amqp.rabbit.annotation.QueueBinding;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,24 +23,44 @@ import org.springframework.stereotype.Component;
  * @desciption PgSqlSubscriber
  */
 @Component
-@RabbitListener(bindings = {@QueueBinding(value = @Queue(value = "POSTGRESQL_Queue", durable = "false", autoDelete = "true"), exchange = @Exchange(value = "Pipe_Exchange"), key = "POSTGRESQL_RoutKey")})
-public class PgSqlSubscriber extends SubscriberAbstract {
+public class PgSqlSubscriber extends SubscriberAbstract implements IPipeSubscriber {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public PgSqlSubscriber(AsyncEventBus defaultEventBus, ConnectApplication connectApplication) {
+    public PgSqlSubscriber(TopicAsyncEventBus topicAsyncEventBus, ConnectApplication connectApplication) {
         super(connectApplication);
-        defaultEventBus.register(this);
+        topicAsyncEventBus.register(DbTypeEnum.POSTGRESQL+ "_TOPIC", this);
     }
 
     /**
-     * 监听消息
-     *
-     * @param message 数据消息
+     * eventbus
      */
     @Subscribe
-    @RabbitHandler
-    public void receive(PgSqlEventModel message) {
-        config(message.getTaskInfo(), message.getSinkInfo(), DbTypeEnum.POSTGRESQL);
-        process(message);
+    @Override
+    public void eventBusReceive(String message) {
+        run(message);
+    }
+
+    /**
+     * rabbitmq
+     */
+    @RabbitListener(errorHandler = "rabbitMessageErrorHandler", bindings = {@QueueBinding(value = @Queue(value = "POSTGRESQL_QUEUE", durable = "false", autoDelete = "true"), exchange = @Exchange( value = "PIPE_EXCHANGE"), key = "POSTGRESQL_ROUTKEY")})
+    @Override
+    public void rabbitMqReceive(String message) {
+        run(message);
+    }
+
+    /**
+     * kafka
+     */
+    @KafkaListener(topics = {"POSTGRESQL_TOPIC"},groupId = "PIPE_GROUP", errorHandler = "kafkaMessageErrorHandler")
+    public void kafkaReceive(String message) {
+        run(message);
+    }
+
+    @Override
+    public void run(String message) {
+        MessageEventModel model = JSONUtil.toBean(message, MessageEventModel.class);
+        config(model.getTaskInfo(), model.getSinkInfo(), DbTypeEnum.POSTGRESQL);
+        process(model);
     }
 }

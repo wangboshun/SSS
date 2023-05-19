@@ -26,14 +26,14 @@
         <springdoc.version>1.7.0</springdoc.version>
         <oshi-core.version>6.4.2</oshi-core.version>
         <postgresql.version>42.6.0</postgresql.version>
+        <jackson-core.version>2.15.1</jackson-core.version>
         <kafka-clients.version>3.4.0</kafka-clients.version>
         <mssql-jdbc.version>12.2.0.jre8</mssql-jdbc.version>
         <projectlombok.version>1.18.26</projectlombok.version>
         <clickhouse-jdbc.version>0.4.6</clickhouse-jdbc.version>
-        <jackson-databind.version>2.15.0</jackson-databind.version>
+        <jackson-databind.version>2.15.1</jackson-databind.version>
         <mysql-connector-j.version>8.0.33</mysql-connector-j.version>
         <therapi-runtime-javadoc-scribe.version>0.15.0</therapi-runtime-javadoc-scribe.version>
-        <knife4j-openapi2-spring-boot-starter.version>4.1.0</knife4j-openapi2-spring-boot-starter.version>
     </properties>
 
     <modules>
@@ -66,6 +66,12 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
@@ -77,10 +83,21 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-logging</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson-core.version}</version>
+
+        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -221,12 +238,6 @@
                     <groupId>org.yaml</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
-            <version>${knife4j-openapi2-spring-boot-starter.version}</version>
         </dependency>
 
         <dependency>

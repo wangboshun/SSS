@@ -13,8 +13,8 @@ import java.time.format.DateTimeFormatter;
  */
 public class TimeUtils {
 
-    public static final String DATE_FORMAT = "yyyyy-MM-dd HH:mm:ss";
-    public static final String DATE_FORMAT_MILLISECOND = "yyyyy-MM-dd HH:mm:ss.SSS";
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_FORMAT_MILLISECOND = "yyyy-MM-dd HH:mm:ss.SSS";
 
     public static String getDateFormat(String val) {
         String format = TimeUtils.DATE_FORMAT;

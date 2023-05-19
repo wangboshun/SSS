@@ -25,6 +25,11 @@ public class PipeController {
         this.pipeApplication = pipeApplication;
     }
 
+    /**
+     * 开启任务
+     * @param id 任务id
+     * @return
+     */
     @PostMapping(value = "/start/{id}")
     public ResponseResult start(@PathVariable String id) {
         boolean b = pipeApplication.startTask(id);
@@ -34,6 +39,10 @@ public class PipeController {
         return new ResponseResult().OK();
     }
 
+    /**
+     * 停止任务
+     * @param id 任务id
+     */
     @PostMapping(value = "/stop/{id}")
     public ResponseResult stop(@PathVariable String id) {
         boolean b = pipeApplication.stopTask(id);

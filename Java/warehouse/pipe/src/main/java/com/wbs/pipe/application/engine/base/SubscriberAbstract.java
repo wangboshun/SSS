@@ -11,7 +11,7 @@ import com.wbs.common.database.base.model.ColumnInfo;
 import com.wbs.pipe.application.ConnectApplication;
 import com.wbs.pipe.model.engine.InsertResult;
 import com.wbs.pipe.model.engine.UpdateResult;
-import com.wbs.pipe.model.event.EventAbstractModel;
+import com.wbs.pipe.model.event.MessageEventModel;
 import com.wbs.pipe.model.sink.SinkInfoModel;
 import com.wbs.pipe.model.task.TaskInfoModel;
 import com.wbs.pipe.model.task.TaskLogModel;
@@ -58,7 +58,7 @@ public class SubscriberAbstract {
     /**
      * 任务日志更新
      */
-    public void taskLogUpdate(EventAbstractModel event, InsertResult insertResult, UpdateResult updateResult) {
+    public void taskLogUpdate(MessageEventModel event, InsertResult insertResult, UpdateResult updateResult) {
         Bson query = Filters.eq("task_id", event.getTaskInfo().getId());
         Bson sort = Filters.eq("ct", -1);
         TaskLogModel model = taskLogCollection.find(query).sort(sort).first();
@@ -85,7 +85,7 @@ public class SubscriberAbstract {
         }
     }
 
-    public void process(EventAbstractModel message) {
+    public void process(MessageEventModel message) {
         InsertResult insertResult = null;
         UpdateResult updateResult = null;
         try {

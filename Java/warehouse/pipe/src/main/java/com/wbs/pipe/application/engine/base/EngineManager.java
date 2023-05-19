@@ -9,7 +9,6 @@ import com.wbs.pipe.application.engine.pgsql.PgSqlReader;
 import com.wbs.pipe.application.engine.pgsql.PgSqlWriter;
 import com.wbs.pipe.application.engine.sqlserver.SqlServerReader;
 import com.wbs.pipe.application.engine.sqlserver.SqlServerWriter;
-import com.wbs.pipe.model.event.*;
 
 /**
  * @author WBS
@@ -43,21 +42,6 @@ public class EngineManager {
                 return new ClickHouseReader();
             case POSTGRESQL:
                 return new PgSqlReader();
-            default:
-                return null;
-        }
-    }
-
-    public static EventAbstractModel getEvent(DbTypeEnum dbType) {
-        switch (dbType) {
-            case MYSQL:
-                return new MySqlEventModel();
-            case SQLSERVER:
-                return new SqlServerEventModel();
-            case POSTGRESQL:
-                return new PgSqlEventModel();
-            case CLICKHOUSE:
-                return new ClickHouseEventModel();
             default:
                 return null;
         }
