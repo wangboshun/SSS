@@ -6,7 +6,7 @@ import com.wbs.common.database.base.DbTypeEnum;
 import com.wbs.common.database.base.model.ColumnInfo;
 import com.wbs.common.database.base.model.WhereInfo;
 import com.wbs.pipe.application.engine.base.EngineManager;
-import com.wbs.pipe.application.engine.base.IReader;
+import com.wbs.pipe.application.engine.base.db.IDbReader;
 import com.wbs.pipe.model.source.SourceInfoModel;
 import com.wbs.pipe.model.task.TaskInfoModel;
 import com.wbs.pipe.model.task.TaskLogModel;
@@ -69,7 +69,7 @@ public class PipeApplication {
                 DbTypeEnum dbType = EnumUtil.getEnumMap(DbTypeEnum.class).get(sourceInfo.getType().toUpperCase());
                 List<ColumnInfo> columnList = DbUtils.getColumns(connection, sourceInfo.getTable_name());
                 List<WhereInfo> whereList = whereConfigApplication.getWhereConfigByTask(this.currentTask.getId());
-                IReader reader = EngineManager.getReader(dbType);
+                IDbReader reader = EngineManager.getReader(dbType);
                 if (reader != null) {
                     taskStatusEnum = TaskStatusEnum.RUNNING;
                     addTaskLog();

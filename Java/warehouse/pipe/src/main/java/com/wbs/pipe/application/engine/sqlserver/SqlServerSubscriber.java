@@ -3,10 +3,9 @@ package com.wbs.pipe.application.engine.sqlserver;
 import cn.hutool.json.JSONUtil;
 import com.google.common.eventbus.Subscribe;
 import com.wbs.common.database.base.DbTypeEnum;
-import com.wbs.common.extend.eventbus.TopicAsyncEventBus;
-import com.wbs.pipe.application.ConnectApplication;
+import com.wbs.common.extend.TopicAsyncEventBus;
 import com.wbs.pipe.application.engine.base.IPipeSubscriber;
-import com.wbs.pipe.application.engine.base.SubscriberAbstract;
+import com.wbs.pipe.application.engine.base.db.DbSubscriberBase;
 import com.wbs.pipe.model.event.MessageEventModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,11 +22,11 @@ import org.springframework.stereotype.Component;
  * @desciption SqlServerSubscriber
  */
 @Component
-public class SqlServerSubscriber extends SubscriberAbstract implements IPipeSubscriber {
+public class SqlServerSubscriber extends DbSubscriberBase implements IPipeSubscriber {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public SqlServerSubscriber(TopicAsyncEventBus topicAsyncEventBus, ConnectApplication connectApplication) {
-        super(connectApplication);
+    public SqlServerSubscriber(TopicAsyncEventBus topicAsyncEventBus) {
+        super();
         topicAsyncEventBus.register(DbTypeEnum.SQLSERVER + "_TOPIC", this);
     }
 
@@ -52,13 +51,16 @@ public class SqlServerSubscriber extends SubscriberAbstract implements IPipeSubs
     /**
      * kafka
      */
-    @KafkaListener(topics = {"SQLSERVER_TOPIC"},groupId = "PIPE_GROUP", errorHandler = "kafkaMessageErrorHandler")
+    @KafkaListener(topics = {"SQLSERVER_TOPIC"}, groupId = "PIPE_GROUP", errorHandler = "kafkaMessageErrorHandler")
     public void kafkaReceive(String message) {
         run(message);
     }
 
     @Override
     public void run(String message) {
+        if (messageTimeout(message)) {
+            return;
+        }
         MessageEventModel model = JSONUtil.toBean(message, MessageEventModel.class);
         config(model.getTaskInfo(), model.getSinkInfo(), DbTypeEnum.SQLSERVER);
         process(model);

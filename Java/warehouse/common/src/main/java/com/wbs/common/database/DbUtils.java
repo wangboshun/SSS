@@ -126,11 +126,7 @@ public class DbUtils {
             Set<String> primarySet = future2.get();
             list = future3.get();
             list.forEach(item -> {
-                if (primarySet.contains(item.getName())) {
-                    item.setPrimary(true);
-                } else {
-                    item.setPrimary(false);
-                }
+                item.setPrimary(primarySet.contains(item.getName()));
                 item.setJavaType(javaTypeMap.get(item.getName()));
             });
         } catch (Exception e) {
@@ -161,11 +157,7 @@ public class DbUtils {
                 model.setDbType(resultSet.getString(ResultEnum.TYPE_NAME.name()));
                 model.setLength(resultSet.getInt(ResultEnum.COLUMN_SIZE.name()));
                 // 是否可空
-                if (resultSet.getString(ResultEnum.IS_NULLABLE.name()).equals("YES")) {
-                    model.setNullable(true);
-                } else {
-                    model.setNullable(false);
-                }
+                model.setNullable(resultSet.getString(ResultEnum.IS_NULLABLE.name()).equals("YES"));
                 list.add(model);
             }
         } catch (Exception e) {
@@ -474,7 +466,7 @@ public class DbUtils {
      */
     public static Map<String, Integer> sortColumn(List<ColumnInfo> columnList, Set<String> primarySet) {
         Integer paramIndex = 1;
-        Map<String, Integer> columnSort = new HashMap<String, Integer>();
+        Map<String, Integer> columnSort = new HashMap<>();
         for (ColumnInfo col : columnList) {
             String columnName = col.getName();
             if (primarySet.contains(columnName)) {

@@ -1,4 +1,4 @@
-package com.wbs.pipe.application.engine.base;
+package com.wbs.pipe.application.engine.base.db;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import com.wbs.common.database.DbUtils;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @date 2023/3/2 15:46
  * @desciption WriterAbstract
  */
-public class WriterAbstract implements IWriter {
+public class DbWriterBase implements IDbWriter {
     private String tableName;
     private String batchInsertSql;
     private String batchUpdateSql;
@@ -80,7 +80,6 @@ public class WriterAbstract implements IWriter {
     @Override
     public UpdateResult updateData(DataTable dt) {
         DataTable errorData = new DataTable(dt);
-        DataTable updateData = new DataTable(dt);
         if (primarySet.isEmpty()) {
             throw new RuntimeException("该表没有主键，无法更新！");
         }

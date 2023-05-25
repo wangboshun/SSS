@@ -18,4 +18,18 @@ public class SinkInfoModel extends BaseStatusModel {
     private String type;
     private String desc;
     private String connect_id;
+
+    /*
+     * rabbitmq字段
+     */
+    private String exchange_name;
+    private String exchange_type;
+    private String queue_name;
+    private String virtual_host;
+    private String routing_key;
+
+    /*
+     * kafka字段
+     */
+    private String topic;
 }

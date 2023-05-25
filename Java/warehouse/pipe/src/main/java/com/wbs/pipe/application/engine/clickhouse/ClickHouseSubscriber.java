@@ -3,10 +3,9 @@ package com.wbs.pipe.application.engine.clickhouse;
 import cn.hutool.json.JSONUtil;
 import com.google.common.eventbus.Subscribe;
 import com.wbs.common.database.base.DbTypeEnum;
-import com.wbs.common.extend.eventbus.TopicAsyncEventBus;
-import com.wbs.pipe.application.ConnectApplication;
+import com.wbs.common.extend.TopicAsyncEventBus;
 import com.wbs.pipe.application.engine.base.IPipeSubscriber;
-import com.wbs.pipe.application.engine.base.SubscriberAbstract;
+import com.wbs.pipe.application.engine.base.db.DbSubscriberBase;
 import com.wbs.pipe.model.event.MessageEventModel;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
@@ -21,10 +20,10 @@ import org.springframework.stereotype.Component;
  * @desciption ClickHouseSubscriber
  */
 @Component
-public class ClickHouseSubscriber extends SubscriberAbstract implements IPipeSubscriber {
+public class ClickHouseSubscriber extends DbSubscriberBase implements IPipeSubscriber {
 
-    public ClickHouseSubscriber(TopicAsyncEventBus topicAsyncEventBus, ConnectApplication connectApplication) {
-        super(connectApplication);
+    public ClickHouseSubscriber(TopicAsyncEventBus topicAsyncEventBus) {
+        super();
         topicAsyncEventBus.register(DbTypeEnum.CLICKHOUSE + "_TOPIC", this);
     }
 
@@ -49,13 +48,16 @@ public class ClickHouseSubscriber extends SubscriberAbstract implements IPipeSub
     /**
      * kafka
      */
-    @KafkaListener(topics = {"CLICKHOUSE_TOPIC"},groupId = "PIPE_GROUP", errorHandler = "kafkaMessageErrorHandler")
+    @KafkaListener(topics = {"CLICKHOUSE_TOPIC"}, groupId = "PIPE_GROUP", errorHandler = "kafkaMessageErrorHandler")
     public void kafkaReceive(String message) {
         run(message);
     }
 
     @Override
     public void run(String message) {
+        if (messageTimeout(message)) {
+            return;
+        }
         MessageEventModel model = JSONUtil.toBean(message, MessageEventModel.class);
         config(model.getTaskInfo(), model.getSinkInfo(), DbTypeEnum.CLICKHOUSE);
         process(model);

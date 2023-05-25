@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author WBS
@@ -18,8 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class DataSourceManager {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private static final ConcurrentHashMap<String, DataSource> dataSourceMap = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<String, DataSourceFactory> dataSourceFactorMap = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, DataSource> DATA_SOURCE_MAP = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, DataSourceFactory> DATA_SOURCE_FACTOR_MAP = new ConcurrentHashMap<>();
 
     /**
      * 添加数据源
@@ -47,7 +48,7 @@ public class DataSourceManager {
         }
         if (factory != null) {
             factory.config(info);
-            dataSourceFactorMap.put(info.getName(), factory);
+            DATA_SOURCE_FACTOR_MAP.put(info.getName(), factory);
             return info.getName();
         }
         return null;
@@ -59,12 +60,12 @@ public class DataSourceManager {
      * @param dataSourceName 名称
      */
     public DataSource getDataSource(String dataSourceName) {
-        DataSource dataSource = dataSourceMap.get(dataSourceName);
+        DataSource dataSource = DATA_SOURCE_MAP.get(dataSourceName);
         if (dataSource == null) {
-            DataSourceFactory factory = dataSourceFactorMap.get(dataSourceName);
+            DataSourceFactory factory = DATA_SOURCE_FACTOR_MAP.get(dataSourceName);
             if (factory != null) {
                 dataSource = factory.createDataSource();
-                dataSourceMap.put(dataSourceName, dataSource);
+                DATA_SOURCE_MAP.put(dataSourceName, dataSource);
             }
         }
         return dataSource;
@@ -89,13 +90,13 @@ public class DataSourceManager {
      * 移除数据源
      */
     public void removeDataSource(String dataSourceName) {
-        dataSourceFactorMap.remove(dataSourceName);
+        DATA_SOURCE_FACTOR_MAP.remove(dataSourceName);
     }
 
     /**
      * 获取所有数据源
      */
-    public ConcurrentHashMap<String, DataSource> getAllDataSource() {
-        return dataSourceMap;
+    public ConcurrentMap<String, DataSource> getAllDataSource() {
+        return DATA_SOURCE_MAP;
     }
 }

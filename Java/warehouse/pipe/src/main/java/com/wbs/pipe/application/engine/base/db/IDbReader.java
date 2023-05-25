@@ -1,4 +1,4 @@
-package com.wbs.pipe.application.engine.base;
+package com.wbs.pipe.application.engine.base.db;
 
 import com.wbs.common.database.base.model.ColumnInfo;
 import com.wbs.common.database.base.model.WhereInfo;
@@ -11,7 +11,7 @@ import java.util.List;
  * @date 2023/3/2 15:29
  * @desciption IReader
  */
-public interface IReader {
+public interface IDbReader {
 
     public void config(String taskId, String tableName, Connection connection, List<ColumnInfo> columnList, List<WhereInfo> whereList);
 

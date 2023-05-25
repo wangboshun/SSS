@@ -27,6 +27,7 @@ public class PipeController {
 
     /**
      * 开启任务
+     *
      * @param id 任务id
      * @return
      */
@@ -41,6 +42,7 @@ public class PipeController {
 
     /**
      * 停止任务
+     *
      * @param id 任务id
      */
     @PostMapping(value = "/stop/{id}")

@@ -85,8 +85,7 @@ public class DataTable implements Serializable {
      */
     public void addColumns(List<DataColumn> list) {
         for (DataColumn column : list) {
-            String name = column.getName();
-            if (this.columns.stream().noneMatch(x -> x.getName().equals(name))) {
+            if (this.columns.stream().noneMatch(x -> x.getName().equals(column.getName()))) {
                 this.columns.add(column);
             }
         }

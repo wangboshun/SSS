@@ -36,7 +36,7 @@ public class TimeUtils {
         }
         // 只有毫秒
         else if (!val.contains("T") && !val.contains("Z") && val.contains(".")) {
-            format = "yyyy-MM-dd HH:mm:ss.SSS";
+            format = DATE_FORMAT_MILLISECOND;
         }
         // 数据库里面秒为00的时候，把秒的格式删除掉
         if (val.contains(":") && (val.split(":").length < 3)) {

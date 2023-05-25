@@ -47,11 +47,9 @@ public class WhereConfigApplication {
             WhereConfigModel model = collection.find(query).first();
             if (model != null) {
                 return model.getFilter();
-            }
-            return null;
-        } else {
-            return null;
+            } 
         }
+        return null;
     }
 
     public ResponseResult addWhereConfig(WhereConfigModel model) {

@@ -31,12 +31,9 @@ public class DataUtils {
     public static List<Object> toList(Object obj) {
         List<Object> list = new ArrayList<>();
         if (obj instanceof ArrayList<?>) {
-            for (Object o : (List<?>) obj) {
-                list.add(o);
-            }
-            return list;
+            list.addAll((List<?>) obj);
         }
-        return null;
+        return list;
     }
 
     public static int toInt(String value) {

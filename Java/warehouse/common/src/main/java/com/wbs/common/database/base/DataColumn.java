@@ -7,13 +7,13 @@ import java.io.Serializable;
  * @date 2023/5/13 22:27
  * @desciption DataColumn
  */
-public class DataColumn  implements Serializable {
+public class DataColumn implements Serializable {
     private String name;
     private String dataType;
     private boolean isPrimary;
 
 
-    public DataColumn(){
+    public DataColumn() {
 
     }
 

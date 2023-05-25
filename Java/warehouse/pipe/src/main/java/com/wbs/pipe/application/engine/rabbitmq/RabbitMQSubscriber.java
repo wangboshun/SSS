@@ -1,11 +1,11 @@
-package com.wbs.pipe.application.engine.pgsql;
+package com.wbs.pipe.application.engine.rabbitmq;
 
 import cn.hutool.json.JSONUtil;
 import com.google.common.eventbus.Subscribe;
-import com.wbs.common.database.base.DbTypeEnum;
+import com.wbs.common.enums.MQTypeEnum;
 import com.wbs.common.extend.TopicAsyncEventBus;
-import com.wbs.pipe.application.engine.base.db.DbSubscriberBase;
 import com.wbs.pipe.application.engine.base.IPipeSubscriber;
+import com.wbs.pipe.application.engine.base.mq.MQSubscriberBase;
 import com.wbs.pipe.model.event.MessageEventModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,15 +19,15 @@ import org.springframework.stereotype.Component;
 /**
  * @author WBS
  * @date 2023/4/26 11:25
- * @desciption PgSqlSubscriber
+ * @desciption RabbitMQSubscriber
  */
 @Component
-public class PgSqlSubscriber extends DbSubscriberBase implements IPipeSubscriber {
+public class RabbitMQSubscriber extends MQSubscriberBase implements IPipeSubscriber {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public PgSqlSubscriber(TopicAsyncEventBus topicAsyncEventBus) {
+    public RabbitMQSubscriber(TopicAsyncEventBus topicAsyncEventBus) {
         super();
-        topicAsyncEventBus.register(DbTypeEnum.POSTGRESQL + "_TOPIC", this);
+        topicAsyncEventBus.register(MQTypeEnum.RABBITMQ + "_TOPIC", this);
     }
 
     /**
@@ -42,7 +42,7 @@ public class PgSqlSubscriber extends DbSubscriberBase implements IPipeSubscriber
     /**
      * rabbitmq
      */
-    @RabbitListener(errorHandler = "rabbitMessageErrorHandler", bindings = {@QueueBinding(value = @Queue(value = "POSTGRESQL_QUEUE", durable = "false", autoDelete = "true"), exchange = @Exchange(value = "PIPE_EXCHANGE"), key = "POSTGRESQL_ROUTKEY")})
+    @RabbitListener(errorHandler = "rabbitMessageErrorHandler", bindings = {@QueueBinding(value = @Queue(value = "RABBITMQ_QUEUE", durable = "false", autoDelete = "true"), exchange = @Exchange(value = "PIPE_EXCHANGE"), key = "RABBITMQ_ROUTKEY")})
     @Override
     public void rabbitMqReceive(String message) {
         run(message);
@@ -51,7 +51,7 @@ public class PgSqlSubscriber extends DbSubscriberBase implements IPipeSubscriber
     /**
      * kafka
      */
-    @KafkaListener(topics = {"POSTGRESQL_TOPIC"}, groupId = "PIPE_GROUP", errorHandler = "kafkaMessageErrorHandler")
+    @KafkaListener(topics = {"RABBITMQ_TOPIC"}, groupId = "PIPE_GROUP", errorHandler = "kafkaMessageErrorHandler")
     public void kafkaReceive(String message) {
         run(message);
     }
@@ -62,7 +62,7 @@ public class PgSqlSubscriber extends DbSubscriberBase implements IPipeSubscriber
             return;
         }
         MessageEventModel model = JSONUtil.toBean(message, MessageEventModel.class);
-        config(model.getTaskInfo(), model.getSinkInfo(), DbTypeEnum.POSTGRESQL);
+        config(model.getTaskInfo(), model.getSinkInfo(), MQTypeEnum.RABBITMQ);
         process(model);
     }
 }

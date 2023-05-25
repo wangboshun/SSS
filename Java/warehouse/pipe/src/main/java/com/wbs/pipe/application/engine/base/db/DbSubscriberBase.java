@@ -1,4 +1,4 @@
-package com.wbs.pipe.application.engine.base;
+package com.wbs.pipe.application.engine.base.db;
 
 import cn.hutool.core.util.EnumUtil;
 import cn.hutool.extra.spring.SpringUtil;
@@ -8,7 +8,9 @@ import com.mongodb.client.model.Filters;
 import com.wbs.common.database.DbUtils;
 import com.wbs.common.database.base.DbTypeEnum;
 import com.wbs.common.database.base.model.ColumnInfo;
+import com.wbs.common.utils.TimeUtils;
 import com.wbs.pipe.application.ConnectApplication;
+import com.wbs.pipe.application.engine.base.EngineManager;
 import com.wbs.pipe.model.engine.InsertResult;
 import com.wbs.pipe.model.engine.UpdateResult;
 import com.wbs.pipe.model.event.MessageEventModel;
@@ -19,6 +21,7 @@ import com.wbs.pipe.model.task.TaskStatusEnum;
 import org.bson.conversions.Bson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
@@ -29,29 +32,46 @@ import java.util.List;
 /**
  * @author WBS
  * @date 2023/5/4 15:33
- * @desciption SubscriberAbstract
+ * @desciption DbSubscriberBase
  */
 @Component
-public class SubscriberAbstract {
+public class DbSubscriberBase {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final MongoDatabase defaultMongoDatabase;
     private final MongoCollection<TaskLogModel> taskLogCollection;
     private final ConnectApplication connectApplication;
-    protected WriteTypeEnum writeTypeEnum;
-    protected IWriter writer;
+    protected DbWriteTypeEnum dbWriteTypeEnum;
+    protected IDbWriter writer;
     protected Connection connection;
     protected List<ColumnInfo> columnList;
 
-    public SubscriberAbstract(ConnectApplication connectApplication) {
-        this.connectApplication = connectApplication;
-        defaultMongoDatabase = SpringUtil.getBean("defaultMongoDatabase");
+    @Value("${pipe.message-timeout}")
+    private int messageTimeout;
+
+    public DbSubscriberBase() {
+        this.connectApplication = SpringUtil.getBean("connectApplication");
+        MongoDatabase defaultMongoDatabase = SpringUtil.getBean("defaultMongoDatabase");
         this.taskLogCollection = defaultMongoDatabase.getCollection("task_log", TaskLogModel.class);
+    }
+
+    /**
+     * 消息超时过期
+     *
+     * @param message
+     */
+    public boolean messageTimeout(String message) {
+        if (messageTimeout == 0) {
+            messageTimeout = 30;
+        }
+        String str = message.substring(message.lastIndexOf("sendTime") + 11, message.lastIndexOf("sendTime") + 30);
+        LocalDateTime sendTime = TimeUtils.strToDate(str).plusSeconds(messageTimeout);
+        // 如果sendTime在now之前
+        return sendTime.isBefore(LocalDateTime.now());
     }
 
     public void config(TaskInfoModel taskInfo, SinkInfoModel sinkInfo, DbTypeEnum dbTypeEnum) {
         connection = connectApplication.getConnection(sinkInfo.getConnect_id());
         columnList = DbUtils.getColumns(connection, sinkInfo.getTable_name());
-        writeTypeEnum = EnumUtil.getEnumMap(WriteTypeEnum.class).get(taskInfo.getExist_type().toUpperCase());
+        dbWriteTypeEnum = EnumUtil.getEnumMap(DbWriteTypeEnum.class).get(taskInfo.getExist_type().toUpperCase());
         writer = EngineManager.getWriter(dbTypeEnum);
     }
 
@@ -81,7 +101,6 @@ public class SubscriberAbstract {
             }
             query = Filters.eq("_id", model.getId());
             taskLogCollection.replaceOne(query, model);
-            System.out.println(model.toString());
         }
     }
 
@@ -94,11 +113,11 @@ public class SubscriberAbstract {
                 insertResult = writer.insertData(message.getTable());
                 if (insertResult.getExistData() != null) {
                     // 如果是存在更新
-                    if (writeTypeEnum.equals(WriteTypeEnum.UPSERT)) {
+                    if (dbWriteTypeEnum.equals(DbWriteTypeEnum.UPSERT)) {
                         updateResult = writer.updateData(insertResult.getExistData());
                     }
                     // 如果是存在忽略
-                    else if (writeTypeEnum.equals(WriteTypeEnum.IGNORE)) {
+                    else if (dbWriteTypeEnum.equals(DbWriteTypeEnum.IGNORE)) {
                         insertResult.setIgnoreCount(insertResult.getExistData().size());
                     }
                 }
@@ -116,6 +135,5 @@ public class SubscriberAbstract {
                 }
             }
         }
-        System.out.println(message.toString());
     }
 }

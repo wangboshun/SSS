@@ -3,6 +3,7 @@ package com.wbs.common.config;
 import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 /**
  * @author WBS
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
  * @desciption RabbitMqConfig
  */
 @Configuration
+@Import(RabbitAutoConfiguration.class)
 @ConditionalOnProperty(value = "spring.rabbitmq.enable") // 如果开启rabbitmq,才进行配置
-public class RabbitMqConfig extends RabbitAutoConfiguration {
+public class RabbitMqConfig  {
 }

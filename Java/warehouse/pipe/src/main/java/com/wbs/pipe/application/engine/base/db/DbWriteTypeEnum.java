@@ -1,11 +1,11 @@
-package com.wbs.pipe.application.engine.base;
+package com.wbs.pipe.application.engine.base.db;
 
 /**
  * @author WBS
  * @date 2023/4/10 16:28
  * @desciption WriteEnum
  */
-public enum WriteTypeEnum {
+public enum DbWriteTypeEnum {
     /**
      * 插入更新
      */

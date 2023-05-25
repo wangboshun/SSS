@@ -1,4 +1,4 @@
-package com.wbs.pipe.application.engine.base;
+package com.wbs.pipe.application.engine.base.db;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.google.common.eventbus.AsyncEventBus;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @date 2023/3/2 15:37
  * @desciption ReaderAbstract
  */
-public abstract class ReaderAbstract implements IReader {
+public abstract class DbReaderBase implements IDbReader {
     private String taskId;
     private String tableName;
     protected DbTypeEnum dbType;
@@ -33,7 +33,7 @@ public abstract class ReaderAbstract implements IReader {
     private List<WhereInfo> whereList;
     private List<ColumnInfo> columnList;
     private AsyncEventBus asyncEventBus;
-    private final static int BATCH_SIZE = 1000;
+    private static final int BATCH_SIZE = 1000;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override

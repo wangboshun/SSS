@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @author WBS
@@ -22,4 +23,5 @@ public class MessageEventModel implements Serializable {
     private int batchIndex;
     private int batchSize;
     private SinkInfoModel sinkInfo;
+    private LocalDateTime sendTime;
 }
