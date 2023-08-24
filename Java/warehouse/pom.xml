@@ -25,7 +25,7 @@
         <springdoc.version>1.7.0</springdoc.version>
         <oshi-core.version>6.4.2</oshi-core.version>
         <postgresql.version>42.6.0</postgresql.version>
-        <spring-kafka.version>2.9.8</spring-kafka.version>
+        <spring-kafka.version>2.9.11</spring-kafka.version>
         <jackson-core.version>2.15.1</jackson-core.version>
         <kafka-clients.version>3.4.0</kafka-clients.version>
         <mssql-jdbc.version>12.2.0.jre8</mssql-jdbc.version>
