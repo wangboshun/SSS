@@ -17,7 +17,7 @@ import java.util.Map;
 
 public interface SinkBase {
 
-    void config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, List<ColumnConfigModel> columnList, Integer version);
+    boolean config(SinkConfigModel sinkConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, List<ColumnConfigModel> columnList, Integer version);
 
     void start(List<Map<String, Object>> list);
 

@@ -17,10 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -60,8 +57,13 @@ public class TableConfigApplication extends ServiceImpl<TableConfigMapper, Table
      */
     public List<Map<String, String>> getTables(String connectId) {
         ConnectConfigModel connectConfig = connectConfigApplication.getById(connectId);
-        Connection connection = ConnectionFactory.getConnection(connectConfig);
-        return DbEx.getTables(connection);
+        try {
+            Connection connection = ConnectionFactory.getConnection(connectConfig);
+            return DbEx.getTables(connection);
+        } catch (Exception e) {
+            logger.error("getTables ", e);
+            return null;
+        }
     }
 
     /**
@@ -71,8 +73,13 @@ public class TableConfigApplication extends ServiceImpl<TableConfigMapper, Table
      */
     public List<String> getDataBases(String connectId) {
         ConnectConfigModel connectConfig = connectConfigApplication.getById(connectId);
-        Connection connection = ConnectionFactory.getConnection(connectConfig);
-        return DbEx.getDataBases(connection);
+        try {
+            Connection connection = ConnectionFactory.getConnection(connectConfig);
+            return DbEx.getDataBases(connection);
+        } catch (Exception e) {
+            logger.error("getDataBases ", e);
+            return null;
+        }
     }
 
     /**
@@ -82,8 +89,13 @@ public class TableConfigApplication extends ServiceImpl<TableConfigMapper, Table
      */
     public List<String> getSchemas(String connectId) {
         ConnectConfigModel connectConfig = connectConfigApplication.getById(connectId);
-        Connection connection = ConnectionFactory.getConnection(connectConfig);
-        return DbEx.getSchemas(connection);
+        try {
+            Connection connection = ConnectionFactory.getConnection(connectConfig);
+            return DbEx.getSchemas(connection);
+        } catch (Exception e) {
+            logger.error("getSchemas ", e);
+            return null;
+        }
     }
 
     /**
@@ -136,10 +148,13 @@ public class TableConfigApplication extends ServiceImpl<TableConfigMapper, Table
             }
 
         } catch (Exception e) {
-            logger.error("addTableConfig ", e);
-            System.out.println("addTableConfig : " + e.getMessage());
+            logger.error("getTableColumns ", e);
         } finally {
-            DbEx.release(connection, stmt, result);
+            try {
+                DbEx.release(connection, stmt, result);
+            } catch (SQLException e) {
+                logger.error("release ", e);
+            }
         }
         return list;
     }
@@ -159,7 +174,12 @@ public class TableConfigApplication extends ServiceImpl<TableConfigMapper, Table
             return SaResult.error("表信息已存在！");
         }
         ConnectConfigModel connectConfig = connectConfigApplication.getById(connectId);
-        Connection connection = ConnectionFactory.getConnection(connectConfig);
+        Connection connection = null;
+        try {
+            connection = ConnectionFactory.getConnection(connectConfig);
+        } catch (SQLException e) {
+            logger.error("addTableConfig ", e);
+        }
         if (connection == null) {
             return SaResultEx.error(MessageCodeEnum.DB_ERROR, "获取数据连接失败！");
         }

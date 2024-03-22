@@ -346,3 +346,5 @@ healthchecksdb
 /SSS.WorkService/TimedHostedService.cs
 /SSS_Data.db
 /PY/data_agent/logs
+/Java/warehouse/engine/src/main/resources/rebel.xml
+/Java/warehouse/iot/src/main/resources/rebel.xml

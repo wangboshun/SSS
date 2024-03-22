@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface SourceBase {
 
-    void config(SourceConfigModel sourceConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, List<ColumnConfigModel> columnList, int version);
+    boolean config(SourceConfigModel sourceConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, List<ColumnConfigModel> columnList, int version);
 
     void start();
 

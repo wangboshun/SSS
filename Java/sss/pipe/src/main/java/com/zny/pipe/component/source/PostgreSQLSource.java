@@ -14,5 +14,9 @@ import org.springframework.stereotype.Component;
 @Component
 @SourceTypeAnnotation(DbTypeEnum.PostgreSql)
 public class PostgreSQLSource extends SourceAbstract {
-
+    @Override
+    public void start() {
+        super.start();
+        System.out.println("PostgreSQLSource start");
+    }
 }

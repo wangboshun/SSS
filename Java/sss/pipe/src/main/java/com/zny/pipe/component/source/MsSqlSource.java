@@ -14,5 +14,9 @@ import org.springframework.stereotype.Component;
 @Component
 @SourceTypeAnnotation(DbTypeEnum.MsSql)
 public class MsSqlSource extends SourceAbstract {
-
+    @Override
+    public void start() {
+        super.start();
+        System.out.println("MsSqlSource start");
+    }
 }

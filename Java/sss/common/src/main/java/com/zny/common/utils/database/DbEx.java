@@ -21,7 +21,7 @@ public class DbEx {
      *
      * @param connection 连接
      */
-    public static List<Map<String, String>> getTables(Connection connection) {
+    public static List<Map<String, String>> getTables(Connection connection) throws SQLException {
         List<Map<String, String>> list = new ArrayList<>();
         ResultSet rs = null;
         try {
@@ -46,7 +46,7 @@ public class DbEx {
                 list.add(map);
             }
         } catch (SQLException e) {
-            System.out.println("getTables : " + e.getMessage());
+            throw new SQLException("getTables exception：" + e.getMessage());
         } finally {
             DbEx.release(rs);
         }
@@ -58,7 +58,7 @@ public class DbEx {
      *
      * @param connection 连接
      */
-    public static List<String> getDataBases(Connection connection) {
+    public static List<String> getDataBases(Connection connection) throws SQLException {
         List<String> list = new ArrayList<>();
         ResultSet rs = null;
         try {
@@ -68,7 +68,7 @@ public class DbEx {
                 list.add(rs.getString("TABLE_CAT"));
             }
         } catch (SQLException e) {
-            System.out.println("getDataBases : " + e.getMessage());
+            throw new SQLException("getDataBases exception：" + e.getMessage());
         } finally {
             DbEx.release(rs);
         }
@@ -80,7 +80,7 @@ public class DbEx {
      *
      * @param connection 连接
      */
-    public static List<String> getSchemas(Connection connection) {
+    public static List<String> getSchemas(Connection connection) throws SQLException {
         List<String> list = new ArrayList<>();
         ResultSet rs = null;
         try {
@@ -90,7 +90,7 @@ public class DbEx {
                 list.add(rs.getString("table_schem"));
             }
         } catch (SQLException e) {
-            System.out.println("getSchemas : " + e.getMessage());
+            throw new SQLException("getSchemas exception：" + e.getMessage());
         } finally {
             DbEx.release(rs);
         }
@@ -103,7 +103,7 @@ public class DbEx {
      * @param connection 连接
      * @param tableName  表名
      */
-    public static List<TableInfo> getTableInfo(Connection connection, String tableName) {
+    public static List<TableInfo> getTableInfo(Connection connection, String tableName) throws SQLException {
         Statement stmt = null;
         ResultSet result = null;
         List<TableInfo> list = new ArrayList<>();
@@ -128,13 +128,13 @@ public class DbEx {
                 }
                 list.add(model);
             }
-
+            return list;
         } catch (Exception e) {
-            System.out.println("getTableInfo : " + e.getMessage());
+            DbEx.release(stmt, result);
+            throw new SQLException("getTableInfo exception：" + e.getMessage());
         } finally {
             DbEx.release(stmt, result);
         }
-        return list;
     }
 
     /**
@@ -143,7 +143,7 @@ public class DbEx {
      * @param connection 连接
      * @param tableName  表名
      */
-    public static Map<String, String> getPrimaryKey(Connection connection, String tableName) {
+    public static Map<String, String> getPrimaryKey(Connection connection, String tableName) throws SQLException {
         Map<String, String> map = new HashMap<>();
         ResultSet rs = null;
         try {
@@ -154,7 +154,7 @@ public class DbEx {
             }
 
         } catch (SQLException e) {
-            System.out.println("getPrimaryKey : " + e.getMessage());
+            throw new SQLException("getPrimaryKey exception：" + e.getMessage());
         } finally {
             DbEx.release(rs);
         }
@@ -167,7 +167,7 @@ public class DbEx {
      * @param connection 连接
      * @param sql        sql
      */
-    public static int getCount(Connection connection, String sql) {
+    public static int getCount(Connection connection, String sql) throws SQLException {
         Statement stmt = null;
         ResultSet result = null;
         int count = 0;
@@ -194,7 +194,7 @@ public class DbEx {
                 count = result.getInt(1);
             }
         } catch (Exception e) {
-            System.out.println("SourceAbstract getCount: " + e.getMessage());
+            throw new SQLException("getCount exception：" + e.getMessage());
         } finally {
             release(stmt, result);
         }
@@ -227,7 +227,7 @@ public class DbEx {
      * @param tableName  表名
      * @param connection 数据库连接
      */
-    public static String convertName(String tableName, Connection connection) {
+    public static String convertName(String tableName, Connection connection) throws SQLException {
         try {
             String driverName = connection.getMetaData().getDriverName().toUpperCase();
             if (driverName.contains("MYSQL")) {
@@ -241,7 +241,7 @@ public class DbEx {
                 return convertName(tableName, DbTypeEnum.ClickHouse);
             }
         } catch (SQLException e) {
-            System.out.println("convertTabName : " + e.getMessage());
+            throw new SQLException("convertName exception：" + e.getMessage());
         }
         return tableName;
     }
@@ -253,7 +253,7 @@ public class DbEx {
      * @param stmt       声明
      * @param rs         结果集
      */
-    public static void release(Connection connection, Statement stmt, ResultSet rs) {
+    public static void release(Connection connection, Statement stmt, ResultSet rs) throws SQLException {
         try {
             if (rs != null) {
                 rs.close();
@@ -265,7 +265,7 @@ public class DbEx {
                 connection.close();
             }
         } catch (SQLException e) {
-            System.out.println("DbEx release: " + e.getMessage());
+            throw new SQLException("release exception：" + e.getMessage());
         }
     }
 
@@ -275,7 +275,7 @@ public class DbEx {
      * @param connection 数据库链接
      * @param stmt       声明
      */
-    public static void release(Connection connection, Statement stmt) {
+    public static void release(Connection connection, Statement stmt) throws SQLException {
         release(connection, stmt, null);
     }
 
@@ -284,7 +284,7 @@ public class DbEx {
      *
      * @param connection 链接
      */
-    public static void release(Connection connection) {
+    public static void release(Connection connection) throws SQLException {
         release(connection, null, null);
     }
 
@@ -293,7 +293,7 @@ public class DbEx {
      *
      * @param stmt 声明
      */
-    public static void release(Statement stmt) {
+    public static void release(Statement stmt) throws SQLException {
         release(null, stmt, null);
     }
 
@@ -303,7 +303,7 @@ public class DbEx {
      * @param stmt 声明
      * @param rs   结果集
      */
-    public static void release(Statement stmt, ResultSet rs) {
+    public static void release(Statement stmt, ResultSet rs) throws SQLException {
         release(null, stmt, rs);
     }
 
@@ -312,7 +312,7 @@ public class DbEx {
      *
      * @param rs 结果集
      */
-    public static void release(ResultSet rs) {
+    public static void release(ResultSet rs) throws SQLException {
         release(null, null, rs);
     }
 
@@ -324,7 +324,7 @@ public class DbEx {
      * @param val   值
      * @param type  java类型
      */
-    public static void setParam(PreparedStatement pstm, int index, Object val, String type) {
+    public static void setParam(PreparedStatement pstm, int index, Object val, String type) throws SQLException {
         try {
             type = type.toUpperCase();
             switch (type) {
@@ -347,6 +347,7 @@ public class DbEx {
                     break;
             }
         } catch (SQLException e) {
+            throw new SQLException("setParam exception：" + e.getMessage());
         }
     }
 
@@ -358,7 +359,7 @@ public class DbEx {
      * @param val   值
      * @param type  java类型
      */
-    public static void setParam(PreparedStatement pstm, int index, String val, String type) {
+    public static void setParam(PreparedStatement pstm, int index, String val, String type) throws SQLException {
         try {
             type = type.toUpperCase();
             switch (type) {
@@ -399,6 +400,7 @@ public class DbEx {
                     break;
             }
         } catch (SQLException e) {
+            throw new SQLException("setParam exception：" + e.getMessage());
         }
     }
 }

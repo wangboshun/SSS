@@ -13,11 +13,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SwaggerConfig {
     @Bean
-    public GroupedOpenApi iotApi() {
-        return GroupedOpenApi.builder().group("iot").pathsToMatch("/iot/**").build();
-    }
-
-    @Bean
     public GroupedOpenApi userApi() {
         return GroupedOpenApi.builder().group("user").pathsToMatch("/user/**").build();
     }

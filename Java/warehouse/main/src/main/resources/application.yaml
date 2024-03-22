@@ -1,0 +1,63 @@
+server:
+  port: 1234
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration   #排除默认的RabbitMQ自动配置类
+      - org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration   #排除默认的Kafka自动配置类
+  main:
+    allow-bean-definition-overriding: true  #当遇到相同名字的时候，允许覆盖注册
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+    throw-exception-if-no-handler-found: true
+  profiles:
+    include: common,pipe
+  web:
+    resources:
+      add-mappings: false
+  rabbitmq:
+    enable: true #是否开启rabbitmq
+    host: "123456"
+    port: 10003
+    username: "admin"
+    password: "123456"
+    virtual-host: "/"
+  kafka:
+    enable: true #是否开启kafka
+    bootstrap-servers: "123456:10006"
+    producer:
+      #key,value序列化器选择
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      #key, value的反序列化器
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: com.wbs.pipe.model.event
+mongodb:
+  host: "123456"
+  port: 10010
+  username: "admin"
+  password: "123456"
+  database: "admin"
+
+springdoc:
+  swagger-ui:
+    path: "/docs"
+    enabled: true
+  api-docs:
+    path: "/swagger.json"
+    enabled: true
+
+pipe:
+  send-type: "rabbitmq"  #消息队列使用形式，memory、rabbitmq、kafka
+
+logging:
+  config: "classpath:logback-spring.xml"
+  file:
+    path: logs

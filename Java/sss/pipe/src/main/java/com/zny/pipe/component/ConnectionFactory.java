@@ -8,7 +8,6 @@ import org.postgresql.ds.PGSimpleDataSource;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Properties;
 
 /**
  * @author WBS
@@ -17,7 +16,7 @@ import java.util.Properties;
  */
 
 public class ConnectionFactory {
-    public static Connection getConnection(ConnectConfigModel connectConfig) {
+    public static Connection getConnection(ConnectConfigModel connectConfig) throws SQLException {
         try {
             String connectStr = "";
             switch (connectConfig.getDb_type()) {
@@ -25,37 +24,26 @@ public class ConnectionFactory {
                     connectStr = "jdbc:mysql://" + connectConfig.getHost() + ":" + connectConfig.getPort() + "/" + connectConfig.getDb_name() + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&rewriteBatchedStatements=true";
                     MysqlDataSource mysqlDataSource = new MysqlDataSource();
                     mysqlDataSource.setURL(connectStr);
-                    mysqlDataSource.setUser(connectConfig.getUsername());
-                    mysqlDataSource.setPassword(connectConfig.getPassword());
-                    return mysqlDataSource.getConnection();
+                    return mysqlDataSource.getConnection(connectConfig.getUsername(), connectConfig.getPassword());
                 case 1:
                     connectStr = "jdbc:sqlserver://" + connectConfig.getHost() + ":" + connectConfig.getPort() + ";database=" + connectConfig.getDb_name() + ";integratedSecurity=false;encrypt=true;trustServerCertificate=true";
                     SQLServerDataSource sqlServerDataSource = new SQLServerDataSource();
                     sqlServerDataSource.setURL(connectStr);
-                    sqlServerDataSource.setUser(connectConfig.getUsername());
-                    sqlServerDataSource.setPassword(connectConfig.getPassword());
-                    return sqlServerDataSource.getConnection();
+                    return sqlServerDataSource.getConnection(connectConfig.getUsername(), connectConfig.getPassword());
                 case 2:
-                    connectStr = "jdbc:postgresql://" + connectConfig.getHost() + ":" + connectConfig.getPort() + "/" + connectConfig.getDb_name();
+                    connectStr = "jdbc:postgresql://" + connectConfig.getHost() + ":" + connectConfig.getPort() + "/" + connectConfig.getDb_name() + "?currentSchema=" + connectConfig.getDb_schema();
                     PGSimpleDataSource pgSimpleDataSource = new PGSimpleDataSource();
                     pgSimpleDataSource.setURL(connectStr);
-                    pgSimpleDataSource.setCurrentSchema(connectConfig.getDb_schema());
-                    pgSimpleDataSource.setUser(connectConfig.getUsername());
-                    pgSimpleDataSource.setPassword(connectConfig.getPassword());
-                    return pgSimpleDataSource.getConnection();
+                    return pgSimpleDataSource.getConnection(connectConfig.getUsername(), connectConfig.getPassword());
                 case 3:
                     connectStr = "jdbc:clickhouse://" + connectConfig.getHost() + ":" + connectConfig.getPort() + "/" + connectConfig.getDb_name();
-                    Properties properties = new Properties();
-                    properties.setProperty("user", connectConfig.getUsername());
-                    properties.setProperty("password", connectConfig.getPassword());
-                    ClickHouseDataSource clickHouseDataSource = new ClickHouseDataSource(connectStr,properties);
-                    return clickHouseDataSource.getConnection();
+                    ClickHouseDataSource clickHouseDataSource = new ClickHouseDataSource(connectStr);
+                    return clickHouseDataSource.getConnection(connectConfig.getUsername(), connectConfig.getPassword());
                 default:
                     return null;
             }
         } catch (SQLException e) {
-            System.out.println("getConnection exception:" + e.getMessage());
-            return null;
+            throw new SQLException("Connection exception：" + e.getMessage());
         }
     }
 }

@@ -65,20 +65,37 @@ public class SourceAbstract implements SourceBase {
      * @param taskConfig    任务信息
      */
     @Override
-    public void config(SourceConfigModel sourceConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, List<ColumnConfigModel> columnList, int version) {
+    public boolean config(SourceConfigModel sourceConfig, ConnectConfigModel connectConfig, TaskConfigModel taskConfig, List<ColumnConfigModel> columnList, int version) {
         this.sourceConfig = sourceConfig;
         this.connectConfig = connectConfig;
         this.taskConfig = taskConfig;
         this.version = version;
         this.columnList = columnList;
-        connection = ConnectionFactory.getConnection(connectConfig);
-        this.cacheKey = RedisKeyEnum.SOURCE_TIME_CACHE + ":" + taskConfig.getId() + ":" + version;
-        dbType = DbTypeEnum.values()[this.connectConfig.getDb_type()];
-        if (connection != null) {
-            setStatus(TaskStatusEnum.CREATE);
+        try {
+            connection = ConnectionFactory.getConnection(connectConfig);
+            this.cacheKey = RedisKeyEnum.SOURCE_TIME_CACHE + ":" + taskConfig.getId() + ":" + version;
+            dbType = DbTypeEnum.values()[this.connectConfig.getDb_type()];
+
+            if (connection != null) {
+                setStatus(TaskStatusEnum.CREATE);
+                tableName = this.sourceConfig.getTable_name();
+                try {
+                    //如果获取表结构抛出异常，例如表不存在
+                    tableInfo = DbEx.getTableInfo(connection, tableName);
+                    return true;
+                } catch (SQLException e) {
+                    setStatus(TaskStatusEnum.CONNECT_FAIL);
+                    logger.error("getTableInfo exception", e);
+                    return false;
+                }
+            } else {
+                setStatus(TaskStatusEnum.CONNECT_FAIL);
+                return false;
+            }
+        } catch (SQLException e) {
+            logger.error("SourceAbstract config", e);
+            return false;
         }
-        tableName = this.sourceConfig.getTable_name();
-        tableInfo = DbEx.getTableInfo(connection, tableName);
     }
 
     /**
@@ -87,7 +104,6 @@ public class SourceAbstract implements SourceBase {
     @Override
     public void start() {
         setStatus(TaskStatusEnum.RUNNING);
-        System.out.println("SourceAbstract start");
         getData();
     }
 
@@ -135,11 +151,19 @@ public class SourceAbstract implements SourceBase {
                 list.clear();
             }
         } catch (SQLException e) {
-            DbEx.release(connection, pstm, result);
-            logger.error("SourceAbstract getData", e);
-            System.out.println("SourceAbstract getData: " + e.getMessage());
+            try {
+                logger.error("release", e);
+                DbEx.release(connection, pstm, result);
+            } catch (SQLException ex) {
+                logger.error("release", ex);
+            }
+
         } finally {
-            DbEx.release(pstm, result);
+            try {
+                DbEx.release(pstm, result);
+            } catch (SQLException e) {
+                logger.error("release", e);
+            }
         }
         this.stop();
     }
@@ -147,7 +171,7 @@ public class SourceAbstract implements SourceBase {
     /**
      * 发送数据
      */
-    public void sendData(List<Map<String, Object>> list, int currentIndex) {
+    private void sendData(List<Map<String, Object>> list, int currentIndex) {
         String exchange = "Pipe_Exchange";
         String routingKey = (DbTypeEnum.values()[taskConfig.getSink_type()]).toString() + "_RoutKey";
         Gson gson = GsonEx.getInstance();
@@ -180,7 +204,7 @@ public class SourceAbstract implements SourceBase {
         }
         //按数据时间获取
         else if (sourceConfig.getGet_type() == 1) {
-           return sourceConfig.getTime_column();
+            return sourceConfig.getTime_column();
         }
         return tm;
     }
