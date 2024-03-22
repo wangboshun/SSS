@@ -16,8 +16,8 @@ import static com.mongodb.client.model.Filters.eq;
 
 public class Test {
     public static void main(String[] args) {
-        Test_TS();
-//        Test();
+//        Test_TS();
+        Test();
 //        CRUDE();
     }
 
@@ -93,34 +93,32 @@ public class Test {
                 tm_array.add(t.plusMinutes(i * 5));
             }
             System.out.println(LocalDateTime.now());
+            BigDecimal v = new BigDecimal("100.12");
+            Document doc = new Document();
+            doc.put("AA", v);
+            doc.put("BB", v);
+            doc.put("CC", v);
+            doc.put("DD", v);
+            doc.put("EE", v);
+            doc.put("FF", v);
+            doc.put("GG", v);
+            doc.put("HH", v);
+            doc.put("II", v);
+            doc.put("JJ", v);
             for (String stcd : stcd_array) {
 //                new Thread(() -> {
                 List<Document> sensorList = new ArrayList<>();
+                doc.put("STCD", stcd);
                 for (LocalDateTime tm : tm_array) {
-                    Document doc = new Document();
-                    BigDecimal v = new BigDecimal("100.12");
-                    doc.put("STCD", stcd);
                     doc.put("TM", tm);
-                    doc.put("AA", v);
-                    doc.put("BB", v);
-                    doc.put("CC", v);
-                    doc.put("DD", v);
-                    doc.put("EE", v);
-                    doc.put("FF", v);
-                    doc.put("GG", v);
-                    doc.put("HH", v);
-                    doc.put("II", v);
-                    doc.put("JJ", v);
                     sensorList.add(doc);
                     if (sensorList.size() > 1000) {
                         InsertManyResult manyResult = collection.insertMany(sensorList);
-//                        System.out.println(Thread.currentThread().getName() + "插入：" + manyResult.getInsertedIds());
                         sensorList.clear();
                     }
                 }
                 if (sensorList.size() > 0) {
                     InsertManyResult manyResult = collection.insertMany(sensorList);
-//                    System.out.println(Thread.currentThread().getName() + "插入：" + manyResult.getInsertedIds());
                     sensorList.clear();
                 }
 //                }, "线程---" + stcd).start();
@@ -148,36 +146,34 @@ public class Test {
                 tm_array.add(t.plusMinutes(i * 5));
             }
             System.out.println(LocalDateTime.now());
+            BigDecimal v = new BigDecimal("100.12");
+            Document doc = new Document();
+            Map<String, BigDecimal> children = new HashMap<>();
+            children.put("AA", v);
+            children.put("BB", v);
+            children.put("CC", v);
+            children.put("DD", v);
+            children.put("EE", v);
+            children.put("FF", v);
+            children.put("GG", v);
+            children.put("HH", v);
+            children.put("II", v);
+            children.put("JJ", v);
+            doc.put("data", children);
             for (String stcd : stcd_array) {
+                doc.put("STCD", stcd);
 //                new Thread(() -> {
                 List<Document> sensorList = new ArrayList<>();
                 for (LocalDateTime tm : tm_array) {
-                    Document doc = new Document();
-                    doc.put("STCD", stcd);
                     doc.put("TM", tm);
-                    BigDecimal v = new BigDecimal("100.12");
-                    Map<String, BigDecimal> children = new HashMap<>();
-                    children.put("AA", v);
-                    children.put("BB", v);
-                    children.put("CC", v);
-                    children.put("DD", v);
-                    children.put("EE", v);
-                    children.put("FF", v);
-                    children.put("GG", v);
-                    children.put("HH", v);
-                    children.put("II", v);
-                    children.put("JJ", v);
-                    doc.put("data", children);
                     sensorList.add(doc);
                     if (sensorList.size() > 1000) {
                         InsertManyResult manyResult = collection.insertMany(sensorList);
-//                        System.out.println(Thread.currentThread().getName() + "插入：" + manyResult.getInsertedIds());
                         sensorList.clear();
                     }
                 }
                 if (sensorList.size() > 0) {
                     InsertManyResult manyResult = collection.insertMany(sensorList);
-//                    System.out.println(Thread.currentThread().getName() + "插入：" + manyResult.getInsertedIds());
                     sensorList.clear();
                 }
 //                }, "线程---" + stcd).start();

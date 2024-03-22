@@ -25,14 +25,14 @@ public class FlowMain {
         job.setMapperClass(flowMapper.class);
         job.setReducerClass(flowReduce.class);
 
-        //按照流量进行排序，那么bean是key，手机号是value
+        // 按照流量进行排序，那么bean是key，手机号是value
         job.setMapOutputKeyClass(FlowBean.class);
         job.setMapOutputValueClass(Text.class);
 
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(FlowBean.class);
 
-        FileInputFormat.setInputPaths(job, new Path("/output"));  //这里是上次flow的结果
+        FileInputFormat.setInputPaths(job, new Path("/output"));  // 这里是上次flow的结果
         FileOutputFormat.setOutputPath(job, new Path("/output2"));
 
         boolean b = job.waitForCompletion(true);

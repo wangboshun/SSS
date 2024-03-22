@@ -92,7 +92,7 @@ public class hdfs {
                 System.out.println("权限：" + status.getPermission());
                 System.out.println("类型：" + (status.isFile() ? "文件" : "文件夹"));
 
-                //查看块信息
+                // 查看块信息
                 BlockLocation[] blockLocations = status.getBlockLocations();
                 System.out.println(Arrays.toString(blockLocations));
             }

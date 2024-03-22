@@ -44,7 +44,7 @@ public class FlowBean implements WritableComparable<FlowBean> {
         this.sumFlow = sumFlow;
     }
 
-    //重写方法
+    // 重写方法
     public void setSumFlow() {
         this.sumFlow = this.upFlow + this.downFlow;
     }
@@ -75,10 +75,10 @@ public class FlowBean implements WritableComparable<FlowBean> {
     @Override
     public int compareTo(FlowBean o) {
         if (this.sumFlow > o.sumFlow) {
-            //倒序
+            // 倒序
             return -1;
         } else if (this.sumFlow < o.sumFlow) {
-            //顺序
+            // 顺序
             return 1;
         } else {
             return 0;

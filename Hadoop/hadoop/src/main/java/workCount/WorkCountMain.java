@@ -20,32 +20,32 @@ public class WorkCountMain {
 
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
 
-          //1、获取job
-          Configuration cnf = new Configuration();
+        // 1、获取job
+        Configuration cnf = new Configuration();
 //          cnf.set("fs.defaultFS", "hdfs://localhost:9000");
-          Job job = Job.getInstance(cnf);
+        Job job = Job.getInstance(cnf);
 
-          //设置jar包
-          job.setJarByClass(WorkCountMain.class);
+        // 设置jar包
+        job.setJarByClass(WorkCountMain.class);
 
-          //关联map、reduce
-          job.setMapperClass(WordCountMapper.class);
-          job.setReducerClass(WordCountReducer.class);
+        // 关联map、reduce
+        job.setMapperClass(WordCountMapper.class);
+        job.setReducerClass(WordCountReducer.class);
 
-          //设置mapper输出的key、value类型
-          job.setMapOutputKeyClass(Text.class);
-          job.setMapOutputValueClass(LongWritable.class);
+        // 设置mapper输出的key、value类型
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(LongWritable.class);
 
-          //设置最终数据输出的key、value类型
-          job.setOutputKeyClass(Text.class);
-          job.setOutputValueClass(LongWritable.class);
+        // 设置最终数据输出的key、value类型
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(LongWritable.class);
 
-          //设置数据的输入和输出路径
-          FileInputFormat.setInputPaths(job, new Path("D:\\SSS\\Hadoop\\hadoop\\src\\main\\java\\workCount\\input"));
-          FileOutputFormat.setOutputPath(job, new Path("D:\\SSS\\Hadoop\\hadoop\\src\\main\\java\\workCount\\output"));
+        // 设置数据的输入和输出路径
+        FileInputFormat.setInputPaths(job, new Path("D:\\SSS\\Hadoop\\hadoop\\src\\main\\java\\workCount\\input"));
+        FileOutputFormat.setOutputPath(job, new Path("D:\\SSS\\Hadoop\\hadoop\\src\\main\\java\\workCount\\output"));
 
-          //提交job
-          boolean b = job.waitForCompletion(true);
+        // 提交job
+        boolean b = job.waitForCompletion(true);
 
     }
 

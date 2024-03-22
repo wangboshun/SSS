@@ -33,10 +33,10 @@ public class FlowMain {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(FlowBean.class);
 
-        //自定义分区开始
+        // 自定义分区开始
         job.setPartitionerClass(DefaultPartition.class);
         job.setNumReduceTasks(5);
-        //自定义分区结束
+        // 自定义分区结束
 
 //        FileInputFormat.setInputPaths(job, new Path("/input3"));
 //        FileOutputFormat.setOutputPath(job, new Path("/output3"));

@@ -21,34 +21,34 @@ public class WorkCountMain {
 
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
 
-        //1、获取job
+        // 1、获取job
         Configuration cnf = new Configuration();
         cnf.set("fs.defaultFS", "hdfs://192.168.245.101:9000");
         Job job = Job.getInstance(cnf);
 
-        //设置jar包
+        // 设置jar包
         job.setJarByClass(WorkCountMain.class);
 
-        //关联map、reduce
+        // 关联map、reduce
         job.setMapperClass(WordCountMapper.class);
         job.setReducerClass(WordCountReducer.class);
 
-        //设置mapper输出的key、value类型
+        // 设置mapper输出的key、value类型
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(LongWritable.class);
 
-        //设置最终数据输出的key、value类型
+        // 设置最终数据输出的key、value类型
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(LongWritable.class);
 
-        //Combiner
+        // Combiner
         job.setCombinerClass(WorkCountCombiner.class);
 
-        //设置数据的输入和输出路径
+        // 设置数据的输入和输出路径
         FileInputFormat.setInputPaths(job, new Path("/input"));
         FileOutputFormat.setOutputPath(job, new Path("/output"));
 
-        //提交job
+        // 提交job
         boolean b = job.waitForCompletion(true);
 
     }

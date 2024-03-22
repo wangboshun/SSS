@@ -43,7 +43,7 @@ public class FlowBean implements Writable {
         this.sumFlow = sumFlow;
     }
 
-    //重写方法
+    // 重写方法
     public void setSumFlow() {
         this.sumFlow = this.upFlow + this.downFlow;
     }

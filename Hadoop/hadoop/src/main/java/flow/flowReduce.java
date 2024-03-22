@@ -14,18 +14,18 @@ public class flowReduce extends Reducer<Text, FlowBean, Text, FlowBean> {
         long upFlow = 0;
         long downFlow = 0;
 
-        //遍历集合累加值
+        // 遍历集合累加值
         for (FlowBean flowBean : values) {
             upFlow += flowBean.getUpFlow();
             downFlow += flowBean.getDownFlow();
         }
 
-        //封装值
+        // 封装值
         outV.setUpFlow(upFlow);
         outV.setDownFlow(downFlow);
         outV.setSumFlow();
 
-        //写出
+        // 写出
         context.write(key, outV);
     }
 }

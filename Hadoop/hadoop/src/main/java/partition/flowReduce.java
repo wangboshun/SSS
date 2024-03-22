@@ -13,15 +13,15 @@ public class flowReduce extends Reducer<Text, FlowBean, Text, FlowBean> {
     protected void reduce(Text key, Iterable<FlowBean> values, Context context) throws IOException, InterruptedException {
         String str = "";
 
-        //遍历集合累加值
+        // 遍历集合累加值
         for (FlowBean flowBean : values) {
             str += flowBean.getStr();
         }
 
-        //封装值
+        // 封装值
         outV.setStr(str);
 
-        //写出
+        // 写出
         context.write(key, outV);
     }
 }

@@ -12,7 +12,7 @@ public class DefaultPartition extends Partitioner<Text, FlowBean> {
     @Override
     public int getPartition(Text text, FlowBean flowBean, int i) {
 
-        String phone = text.toString();//手机号
+        String phone = text.toString();// 手机号
 
         phone = phone.substring(0, 3);
 
