@@ -1,0 +1,2 @@
+select  JSONExtractString(content, 'properties')  from table limit 1
+select  JSON_VALUE(JSONExtractRaw(content, 'properties'), '$.float08') table limit 1
