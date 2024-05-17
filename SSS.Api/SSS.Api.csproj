@@ -51,13 +51,13 @@
     <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.1.0" />
     <PackageReference Include="MiniProfiler.EntityFrameworkCore" Version="4.1.0" />
     <PackageReference Include="MiniProfiler.Providers.SqlServer" Version="4.1.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.0" />
     <PackageReference Include="Quartz" Version="3.0.7" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc5" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="5.0.0-rc9" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.0.0-rc5" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.6.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.7.0" />
     <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
     <ProjectReference Include="..\SSS.Api.Seedwork\SSS.Api.Seedwork.csproj" />
     <ProjectReference Include="..\SSS.Application.Job\SSS.Application.Job.csproj" />
