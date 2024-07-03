@@ -1,6 +1,5 @@
-﻿using System.Data;
-
-using Microsoft.Data.Analysis;
+﻿using Microsoft.Data.Analysis;
+using System.Data;
 
 namespace Common.Utils
 {

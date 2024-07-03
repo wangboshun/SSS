@@ -1,10 +1,8 @@
-﻿using System.Net;
+﻿using Furion;
+using Microsoft.AspNetCore.Http;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
-
-using Furion;
-
-using Microsoft.AspNetCore.Http;
 
 namespace Common.Middleware;
 

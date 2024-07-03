@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+	<ItemGroup>
+		<PackageReference Include="Furion.Pure" Version="4.9.4.3" />
+	</ItemGroup>
+
 </Project>

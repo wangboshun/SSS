@@ -1,10 +1,7 @@
-using System.Net;
-
 using Common.Utils;
-
 using Furion;
-
 using Microsoft.AspNetCore.Http;
+using System.Net;
 
 namespace Common.Middleware;
 

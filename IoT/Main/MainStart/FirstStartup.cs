@@ -1,17 +1,13 @@
-using System.IO.Compression;
-
-using Common.Ext; 
+using Common.Ext;
 using Common.Ext.Jwt;
-
 using Furion;
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Primitives;
-
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System.IO.Compression;
 
 namespace Start;
 

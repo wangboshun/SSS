@@ -1,10 +1,7 @@
-using System.Text.Json.Serialization;
-
 using FreeSql.DataAnnotations;
-
 using Furion.DistributedIDGenerator;
-
 using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Common.Database;
 
