@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TestRepository\TestRepository.csproj" />
+    <PackageReference Include="Furion.Pure" Version="4.9.4.3" />
   </ItemGroup>
 
-	<ItemGroup> 
-		<PackageReference Include="Furion.Pure" Version="4.9.4.3" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DeviceEntity\DeviceEntity.csproj" />
+  </ItemGroup>
 
 </Project>

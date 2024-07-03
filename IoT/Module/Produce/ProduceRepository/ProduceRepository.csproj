@@ -6,12 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\TestRepository\TestRepository.csproj" />
-  </ItemGroup>
-
-	<ItemGroup> 
-		<PackageReference Include="Furion.Pure" Version="4.9.4.3" />
-	</ItemGroup>
-
 </Project>

@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="FreeSql" Version="3.2.830" />
+		<PackageReference Include="FreeSql" Version="3.2.832" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\Common\Common\Common.csproj" />

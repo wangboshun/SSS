@@ -1,0 +1,12 @@
+新建类库：dotnet new classlib --framework "net8.0" -n DeviceEntity  -o Module/Device/DeviceEntity
+
+添加指定包：dotnet add  Module/Device/DeviceApplication package Furion.Pure  -v 1.0.0 （不加为最新版）    
+
+引用类库：dotnet add Module/Device/DeviceApplication reference Module/Device/DeviceEntity
+
+添加到解决方案：dotnet sln add Module/Device/DeviceRepository  --solution-folder Module/Device     
+
+
+https://learn.microsoft.com/zh-cn/dotnet/core/tools/dotnet-new
+https://learn.microsoft.com/zh-cn/dotnet/core/tools/dotnet-sln
+https://learn.microsoft.com/zh-cn/dotnet/core/tools/dotnet-add-package
