@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+
+using Newtonsoft.Json;
+
+namespace GatewayEntity.HTTP.Dto
+{
+    public class HttpGatewayOpenDto
+    {
+        [JsonProperty("host")]
+        [JsonPropertyName("host")]
+        public required string Host {set;get;}
+
+        [JsonProperty("port")]
+        [JsonPropertyName("port")]
+        public required int Port { set; get; }
+    }
+}
