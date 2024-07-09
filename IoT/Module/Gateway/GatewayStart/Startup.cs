@@ -17,7 +17,7 @@ namespace GatewayStart.Start
             services.AddEventBus(builder =>
             {
                 // 注册  事件订阅者
-                builder.AddSubscriber<ReportEventSubscriber>(); 
+                builder.AddSubscriber<ReportSubscriber>(); 
             });
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -1,28 +1,15 @@
-﻿using System;
-using System.Net;
-using System.Text;
-
-using Azure.Core;
-
+﻿using System.Net;
+using System.Text; 
 using Common.Utils;
 
-using DeviceEntity;
-
-using FreeRedis;
-
+using DeviceEntity; 
 using Furion.DataEncryption;
 using Furion.DependencyInjection;
 using Furion.DistributedIDGenerator;
 using Furion.EventBus;
-using Furion.JsonSerialization;
+using Furion.JsonSerialization; 
 
-using GatewayApplication.EventBus;
-
-using GatewayEntity;
-
-using StackExchange.Profiling.Data;
-
-using static Microsoft.CodeAnalysis.CSharp.SyntaxTokenParser;
+using GatewayEntity; 
 
 namespace GatewayApplication.HTTP
 {

@@ -4,16 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-
 using Newtonsoft.Json;
 
-namespace GatewayEntity.HTTP.Dto
+namespace GatewayEntity.MQTT.Dto
 {
-    public class HttpGatewayStartDto
+    public class MtttGatewayStartDto
     {
         [JsonProperty("host")]
         [JsonPropertyName("host")]
-        public required string Host {set;get;}
+        public required string Host { set; get; }
 
         [JsonProperty("port")]
         [JsonPropertyName("port")]

@@ -1,23 +1,21 @@
 ﻿using Furion.DynamicApiController;
+using GatewayApplication.MQTT;
 
-using GatewayApplication.HTTP;
-
-using GatewayEntity.HTTP.Dto;
-
+using GatewayEntity.MQTT.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 
 namespace GatewayController
 {
-    [ApiDescriptionSettings("网关服务", Tag = "HTTP网关服务")]
-    [Route("gateway/http")]
-    public class HttpGatewayController : IDynamicApiController
+    [ApiDescriptionSettings("网关服务", Tag = "MQTT网关服务")]
+    [Route("gateway/mqtt")]
+    public class MqttGatewayController : IDynamicApiController
     {
-        private readonly HttpGateway _httpGateway;
+        private readonly MqttGateway _mqttGateway;
 
-        public HttpGatewayController(HttpGateway httpGateway)
+        public MqttGatewayController(MqttGateway mqttGateway)
         {
-            _httpGateway = httpGateway;
+            _mqttGateway = mqttGateway;
         }
 
         /// <summary>
@@ -26,9 +24,9 @@ namespace GatewayController
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost("start")]
-        public string Start([FromBody] HttpGatewayStartDto input)
+        public string Start([FromBody] MtttGatewayStartDto input)
         {
-            _httpGateway.Start(input.Host, input.Port); 
+            _mqttGateway.Start(input.Host, input.Port); 
             return "ok";
         }
 
@@ -39,7 +37,7 @@ namespace GatewayController
         [HttpPost("stop/{id}")]
         public string Stop([FromRoute] string id)
         {
-            _httpGateway.Stop(id);
+            _mqttGateway.Stop(id);
             return "ok";
         }
     }

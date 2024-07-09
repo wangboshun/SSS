@@ -7,9 +7,9 @@ using GatewayEntity;
 
 namespace GatewayApplication.EventBus
 {
-    public class ReportEventSubscriber : IEventSubscriber
+    public class ReportSubscriber : IEventSubscriber
     {
-        public ReportEventSubscriber()
+        public ReportSubscriber()
         {
 
         }
