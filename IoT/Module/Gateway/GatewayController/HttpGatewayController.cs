@@ -25,10 +25,10 @@ namespace GatewayController
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost("open")]
-        public string OpenService([FromBody] HttpGatewayOpenDto input)
+        [HttpPost("start")]
+        public string Start([FromBody] HttpGatewayOpenDto input)
         {
-            _httpGateway.OpenService(input.Host, input.Port);
+            _httpGateway.Start(input.Host, input.Port); 
             return "ok";
         }
 
@@ -36,10 +36,10 @@ namespace GatewayController
         /// 关闭服务
         /// </summary>
         /// <returns></returns>
-        [HttpPost("close/{id}")]
-        public string CloseService([FromRoute] string id)
+        [HttpPost("stop/{id}")]
+        public string Stop([FromRoute] string id)
         {
-            _httpGateway.CloseService(id);
+            _httpGateway.Stop(id);
             return "ok";
         }
     }

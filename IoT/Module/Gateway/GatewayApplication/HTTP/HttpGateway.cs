@@ -1,27 +1,42 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 
+using Azure.Core;
+
+using Common.Utils;
+
+using DeviceEntity;
+
+using FreeRedis;
+
+using Furion.DataEncryption;
 using Furion.DependencyInjection;
 using Furion.DistributedIDGenerator;
+using Furion.EventBus;
+using Furion.JsonSerialization;
 
-using Microsoft.AspNetCore.Http.HttpResults;
+using GatewayApplication.EventBus;
+
+using GatewayEntity;
+
+using StackExchange.Profiling.Data;
+
+using static Microsoft.CodeAnalysis.CSharp.SyntaxTokenParser;
 
 namespace GatewayApplication.HTTP
 {
     public class HttpGateway : ITransient
     {
         private static Dictionary<string, HttpListener> dict = new Dictionary<string, HttpListener>();
+        private readonly IEventPublisher _eventPublisher;
 
-        public HttpGateway()
+        public HttpGateway(IEventPublisher eventPublisher)
         {
-
+            _eventPublisher = eventPublisher;
         }
 
-        public async void OpenService(string host, int port)
+        public async void Start(string host, int port)
         {
             try
             {
@@ -34,15 +49,16 @@ namespace GatewayApplication.HTTP
             }
             catch (Exception e)
             {
-
+                Console.WriteLine(e);
             }
         }
 
-        public void CloseService(string id)
+        public void Stop(string id)
         {
             if (dict.TryGetValue(id, out HttpListener? httpListener))
             {
                 httpListener.Close();
+                dict.Remove(id);
             }
         }
 
@@ -51,33 +67,123 @@ namespace GatewayApplication.HTTP
             while (httpListener.IsListening)
             {
                 var context = await httpListener.GetContextAsync();
-                var request = context.Request;
-                using (Stream body = request.InputStream)
+                var result = await RequestAsync(context);
+                await ResponseAsync(context, result);
+            }
+        }
+
+        private async Task<object> RequestAsync(HttpListenerContext context)
+        {
+            var request = context.Request;
+            if (request.HttpMethod.Equals("POST"))
+            {
+                using Stream body = request.InputStream;
+                using StreamReader reader = new StreamReader(body, Encoding.UTF8);
+                string content = await reader.ReadToEndAsync();
+                var router = request.RawUrl?.Split("/", StringSplitOptions.RemoveEmptyEntries);
+
+                //路由
+                // {productId}/{deviceId}/online 上线
+                // {productId}/{deviceId}}/properties/report 属性上报
+                if (router != null && router.Length > 2)
                 {
-                    using (StreamReader reader = new StreamReader(body, Encoding.UTF8))
+                    // token检测
+                    var (valid, code, msg) = Auth(request);
+                    if (valid)
                     {
-                        string content = await reader.ReadToEndAsync();
-                        StringBuilder sb = new StringBuilder();
-                        sb.AppendLine($"Url:{request.Url}");
-                        sb.AppendLine($"RemoteIP:{request.RemoteEndPoint}");
-                        sb.AppendLine($"Body:{content}");
-                        Console.WriteLine($"Request---> {sb.ToString()}");
+                        var produceId = router[0];
+                        var deviceId = router[1];
+                        var type = router[2];
+                        var reportType = "";
+
+                        // 上线
+                        if (type.Equals("online"))
+                        {
+                            reportType = "ONLINE";
+                            ReportEntity reportEntity = new ReportEntity();
+                            reportEntity.ProduceId = produceId;
+                            reportEntity.DeviceId = deviceId;
+                            reportEntity.MsgType = reportType;
+                            reportEntity.TM = DateTime.Now;
+                            reportEntity.Id = TimeUtils.DateTimeToString(reportEntity.TM, false, false, true);
+                            await _eventPublisher.PublishAsync("Http:Online", JSON.Serialize(reportEntity));
+                        }
+                        // 属性上报
+                        else if (type.Equals("properties"))
+                        {
+                            var action = router[3];
+                            if (action.Equals("report"))
+                            {
+                                reportType = "REPORT";
+                                ReportEntity reportEntity = new ReportEntity();
+                                reportEntity.ProduceId = produceId;
+                                reportEntity.DeviceId = deviceId;
+                                reportEntity.MsgType = reportType;
+                                reportEntity.Content = content;
+                                reportEntity.TM = DateTime.Now;
+                                reportEntity.Id = TimeUtils.DateTimeToString(reportEntity.TM, false, false, true);
+                                await _eventPublisher.PublishAsync("Http:Report", JSON.Serialize(reportEntity)); 
+                            }
+                        }
+
+                        //设备影子
+                        DeviceShadowEntity shadowEntity = new DeviceShadowEntity();
+                        shadowEntity.DeviceId = deviceId;
+                        shadowEntity.MsgType = reportType;
+                        shadowEntity.IP = request.RemoteEndPoint.ToString();
+                        shadowEntity.Content = content;
+                        shadowEntity.CreateTime = DateTime.Now;
+                        await _eventPublisher.PublishAsync("Device:Shadow", JSON.Serialize(shadowEntity)); 
+                        return ResponseUtils.Ok();
+                    }
+                    else
+                    {
+                        return ResponseUtils.Fail(msg, code);
                     }
                 }
-
-                var response = context.Response;
-                using (Stream body = response.OutputStream)
+                else
                 {
-                    using (StreamWriter writer = new StreamWriter(body, Encoding.UTF8))
-                    {
-                        writer.WriteLine("OK");
-                        StringBuilder sb = new StringBuilder();
-                        sb.AppendLine($"RemoteIP:{request.RemoteEndPoint}");
-                        sb.AppendLine($"Result:OK");
-                        Console.WriteLine($"Response---> {sb.ToString()}");
-                    }
+                    return ResponseUtils.Fail("路由错误", (int)HttpStatusCode.NotFound);
                 }
             }
+            return ResponseUtils.Fail("请求方法错误", (int)HttpStatusCode.MethodNotAllowed);
+        } 
+
+        private async Task ResponseAsync(HttpListenerContext context, object result)
+        {
+            var request = context.Request;
+            var response = context.Response;
+            using Stream outStream = response.OutputStream;
+            response.AddHeader("Content-type", "application/json");
+            response.ContentEncoding = Encoding.UTF8;
+            byte[] b = Encoding.UTF8.GetBytes(JSON.Serialize(result));
+            await outStream.WriteAsync(b, 0, b.Length);
+        }
+
+        /// <summary>
+        /// token检测
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        private Tuple<bool, int, string> Auth(HttpListenerRequest request)
+        {
+            var token = request.Headers["Authorization"];
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return new Tuple<bool, int, string>(false, (int)HttpStatusCode.Unauthorized, "未授权");
+            }
+            var (isValid, tokenData, validationResult) = JWTEncryption.Validate(token);
+            if (!isValid)
+            {
+                return new Tuple<bool, int, string>(false, (int)HttpStatusCode.Forbidden, "授权错误");
+            }
+
+            var expire = Convert.ToDateTime(validationResult.Claims["Expire"]);
+            if (expire < DateTime.Now)
+            {
+                return new Tuple<bool, int, string>(false, (int)HttpStatusCode.Forbidden, "授权过期");
+            }
+            return new Tuple<bool, int, string>(true, (int)HttpStatusCode.OK, "OK");
         }
     }
 }

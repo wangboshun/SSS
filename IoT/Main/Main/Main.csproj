@@ -13,7 +13,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Module\Gateway\GatewayStart\GatewayStart.csproj" />
 	  <ProjectReference Include="..\MainStart\MainStart.csproj" />
 	</ItemGroup>
 	

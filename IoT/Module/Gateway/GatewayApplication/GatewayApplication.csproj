@@ -5,7 +5,16 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="EventBus\DeviceEventSubscriber.cs~RF5b0d9db.TMP" />
+  </ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Furion.Pure" Version="4.9.4.3" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\Common\Common\Common.csproj" />
+	  <ProjectReference Include="..\..\Device\DeviceEntity\DeviceEntity.csproj" />
+	  <ProjectReference Include="..\GatewayEntity\GatewayEntity.csproj" />
 	</ItemGroup> 
 </Project>

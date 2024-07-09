@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text;
 
 namespace Common.Utils;
 
@@ -24,12 +25,26 @@ public class TimeUtils
     /// </summary>
     /// <param name="time"></param>
     /// <param name="hasMilliseconds">是否包含毫秒</param>
+    /// <param name="hasMicroseconds">是否包含微秒</param> 
     /// <returns></returns>
-    public static long DateTimeToTimestamp(DateTime time, bool hasMilliseconds = false)
+    public static long DateTimeToTimestamp(
+        DateTime time,
+        bool hasMilliseconds = false,
+        bool hasMicroseconds = false,
+        bool hasNanoseconds = false)
     {
-        return hasMilliseconds
-            ? (time.ToUniversalTime().Ticks - START_TIMESTAMP) / 10000
-            : (time.ToUniversalTime().Ticks - START_TIMESTAMP) / 10000000;
+        if (hasMilliseconds)
+        {
+            return (time.ToUniversalTime().Ticks - START_TIMESTAMP) / 10000;
+        }
+        else if (hasMicroseconds)
+        {
+            return (time.ToUniversalTime().Ticks - START_TIMESTAMP) / 10;
+        }
+        else
+        {
+            return (time.ToUniversalTime().Ticks - START_TIMESTAMP) / 10000000;
+        }
     }
 
     /// <summary>
@@ -52,6 +67,40 @@ public class TimeUtils
     public static string DateTimeToString(DateTime time, string format = "yyyy-MM-dd HH:mm:ss")
     {
         return Convert.ToDateTime(time).ToString(format);
+    }
+
+    /// <summary>
+    /// 日期时间转字符串,转为数字
+    /// </summary>
+    /// <param name="time"></param>
+    /// <param name="hasMilliseconds"></param>
+    /// <param name="hasMicroseconds"></param>
+    /// <param name="hasNanoseconds"></param>
+    /// <returns></returns>
+    public static string DateTimeToString(
+        DateTime time,
+        bool hasMilliseconds = false,
+        bool hasMicroseconds = false,
+        bool hasNanoseconds = false)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.Append(DateTimeToString(time, "yyyyMMddHHmmss"));
+        if (hasMilliseconds)
+        {
+            sb.Append(time.Millisecond);
+        }
+        if (hasMicroseconds)
+        {
+            sb.Append(time.Millisecond);
+            sb.Append(time.Microsecond);
+        }
+        if (hasNanoseconds)
+        {
+            sb.Append(time.Millisecond);
+            sb.Append(time.Microsecond);
+            sb.Append(time.Nanosecond);
+        }
+        return sb.ToString();
     }
 
     /// <summary>

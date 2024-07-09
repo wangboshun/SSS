@@ -1,0 +1,6 @@
+HTTP网关：
+    http://{host:port}/{productId}/{deviceId}/online 上线
+    http://{host:port}/{productId}/{deviceId}}/properties/report 属性上报
+
+MQTT网关：
+    /{productId}/{deviceId}/properties/report  上报设备属性

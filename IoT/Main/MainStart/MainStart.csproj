@@ -13,7 +13,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Common\Common\Common.csproj" />
-	  <ProjectReference Include="..\..\Module\Test\TestStart\TestStart.csproj" />
+	  <ProjectReference Include="..\..\Module\Gateway\GatewayStart\GatewayStart.csproj" />
 	</ItemGroup>
 
 </Project>
