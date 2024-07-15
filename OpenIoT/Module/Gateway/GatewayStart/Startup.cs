@@ -1,12 +1,12 @@
 ﻿using Furion;
-
 using GatewayApplication.EventBus;
-
+using GatewayApplication.HTTP;
+using GatewayApplication.MQTT;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GatewayStart.Start
+namespace GatewayStart
 {
     [AppStartup(100)]
     public class Startup : AppStartup
@@ -17,7 +17,9 @@ namespace GatewayStart.Start
             services.AddEventBus(builder =>
             {
                 // 注册  事件订阅者
-                builder.AddSubscriber<ReportSubscriber>(); 
+                builder.AddSubscriber<MessageSubscriber>(); 
+                builder.AddSubscriber<HttpMessageSubscriber>(); 
+                builder.AddSubscriber<MqttMessageSubscriber>(); 
             });
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

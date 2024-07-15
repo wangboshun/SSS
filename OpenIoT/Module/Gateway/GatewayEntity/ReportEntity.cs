@@ -6,17 +6,20 @@ using Newtonsoft.Json;
 
 namespace GatewayEntity
 {
+    /// <summary>
+    /// 报文
+    /// </summary>
     public class ReportEntity
     {
         [Column(Name = "id")]
         [JsonProperty("id")]
         [JsonPropertyName("id")]
-        public string Id { set; get; }
-
-        [Column(Name = "produce_id")]
-        [JsonProperty("produce_id")]
-        [JsonPropertyName("produce_id")]
-        public string ProduceId { set; get; }
+        public string Id { set; get; } 
+        
+        [Column(Name = "ip")]
+        [JsonProperty("ip")]
+        [JsonPropertyName("ip")]
+        public string IP { set; get; }
 
         [Column(Name = "device_id")]
         [JsonProperty("device_id")]

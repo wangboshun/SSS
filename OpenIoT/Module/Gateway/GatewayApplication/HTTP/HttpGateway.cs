@@ -1,21 +1,19 @@
 ﻿using System.Net;
-using System.Text; 
+using System.Text;
 using Common.Utils;
-
-using DeviceEntity; 
+using DeviceEntity;
 using Furion.DataEncryption;
 using Furion.DependencyInjection;
 using Furion.DistributedIDGenerator;
 using Furion.EventBus;
-using Furion.JsonSerialization; 
-
-using GatewayEntity; 
+using Furion.JsonSerialization;
+using GatewayEntity;
 
 namespace GatewayApplication.HTTP
 {
     public class HttpGateway : ITransient
     {
-        private static Dictionary<string, HttpListener> dict = new Dictionary<string, HttpListener>();
+        private static Dictionary<string, HttpListener> HTTP_DICT = new Dictionary<string, HttpListener>();
         private readonly IEventPublisher _eventPublisher;
 
         public HttpGateway(IEventPublisher eventPublisher)
@@ -31,7 +29,7 @@ namespace GatewayApplication.HTTP
                 HttpListener httpListener = new HttpListener();
                 httpListener.Prefixes.Add($"http://{host}:{port}/");
                 httpListener.Start();
-                dict.Add(id, httpListener);
+                HTTP_DICT.Add(id, httpListener);
                 await Task.Run(() => Listen(httpListener));
             }
             catch (Exception e)
@@ -42,10 +40,10 @@ namespace GatewayApplication.HTTP
 
         public void Stop(string id)
         {
-            if (dict.TryGetValue(id, out HttpListener? httpListener))
+            if (HTTP_DICT.TryGetValue(id, out HttpListener? httpListener))
             {
                 httpListener.Close();
-                dict.Remove(id);
+                HTTP_DICT.Remove(id);
             }
         }
 
@@ -64,7 +62,7 @@ namespace GatewayApplication.HTTP
             var request = context.Request;
             if (request.HttpMethod.Equals("POST"))
             {
-                using Stream body = request.InputStream;
+                await using Stream body = request.InputStream;
                 using StreamReader reader = new StreamReader(body, Encoding.UTF8);
                 string content = await reader.ReadToEndAsync();
                 var router = request.RawUrl?.Split("/", StringSplitOptions.RemoveEmptyEntries);
@@ -72,7 +70,7 @@ namespace GatewayApplication.HTTP
                 //路由
                 // {productId}/{deviceId}/online 上线
                 // {productId}/{deviceId}}/properties/report 属性上报
-                if (router != null && router.Length > 2)
+                if (router is { Length: > 2 })
                 {
                     // token检测
                     var (valid, code, msg) = Auth(request);
@@ -87,11 +85,13 @@ namespace GatewayApplication.HTTP
                         if (type.Equals("online"))
                         {
                             reportType = "ONLINE";
-                            ReportEntity reportEntity = new ReportEntity();
-                            reportEntity.ProduceId = produceId;
-                            reportEntity.DeviceId = deviceId;
-                            reportEntity.MsgType = reportType;
-                            reportEntity.TM = DateTime.Now;
+                            ReportEntity reportEntity = new ReportEntity
+                            {
+                                DeviceId = deviceId,
+                                MsgType = reportType,
+                                IP = request.RemoteEndPoint.ToString(),
+                                TM = DateTime.Now
+                            };
                             reportEntity.Id = TimeUtils.DateTimeToString(reportEntity.TM, false, false, true);
                             await _eventPublisher.PublishAsync("Http:Online", JSON.Serialize(reportEntity));
                         }
@@ -102,25 +102,29 @@ namespace GatewayApplication.HTTP
                             if (action.Equals("report"))
                             {
                                 reportType = "REPORT";
-                                ReportEntity reportEntity = new ReportEntity();
-                                reportEntity.ProduceId = produceId;
-                                reportEntity.DeviceId = deviceId;
-                                reportEntity.MsgType = reportType;
-                                reportEntity.Content = content;
-                                reportEntity.TM = DateTime.Now;
+                                ReportEntity reportEntity = new ReportEntity
+                                {
+                                    DeviceId = deviceId,
+                                    MsgType = reportType,
+                                    Content = content,
+                                    IP = request.RemoteEndPoint.ToString(),
+                                    TM = DateTime.Now
+                                };
                                 reportEntity.Id = TimeUtils.DateTimeToString(reportEntity.TM, false, false, true);
-                                await _eventPublisher.PublishAsync("Http:Report", JSON.Serialize(reportEntity)); 
+                                await _eventPublisher.PublishAsync("Http:PropertiesReport", JSON.Serialize(reportEntity));
                             }
                         }
 
                         //设备影子
-                        DeviceShadowEntity shadowEntity = new DeviceShadowEntity();
-                        shadowEntity.DeviceId = deviceId;
-                        shadowEntity.MsgType = reportType;
-                        shadowEntity.IP = request.RemoteEndPoint.ToString();
-                        shadowEntity.Content = content;
-                        shadowEntity.CreateTime = DateTime.Now;
-                        await _eventPublisher.PublishAsync("Device:Shadow", JSON.Serialize(shadowEntity)); 
+                        DeviceShadowEntity shadowEntity = new DeviceShadowEntity
+                        {
+                            DeviceId = deviceId,
+                            MsgType = reportType,
+                            IP = request.RemoteEndPoint.ToString(),
+                            Content = content,
+                            CreateTime = DateTime.Now
+                        };
+                        await _eventPublisher.PublishAsync("Device:Shadow", JSON.Serialize(shadowEntity));
                         return ResponseUtils.Ok();
                     }
                     else
@@ -133,14 +137,14 @@ namespace GatewayApplication.HTTP
                     return ResponseUtils.Fail("路由错误", (int)HttpStatusCode.NotFound);
                 }
             }
+
             return ResponseUtils.Fail("请求方法错误", (int)HttpStatusCode.MethodNotAllowed);
-        } 
+        }
 
         private async Task ResponseAsync(HttpListenerContext context, object result)
-        {
-            var request = context.Request;
+        { 
             var response = context.Response;
-            using Stream outStream = response.OutputStream;
+            await using Stream outStream = response.OutputStream;
             response.AddHeader("Content-type", "application/json");
             response.ContentEncoding = Encoding.UTF8;
             byte[] b = Encoding.UTF8.GetBytes(JSON.Serialize(result));
@@ -159,6 +163,7 @@ namespace GatewayApplication.HTTP
             {
                 return new Tuple<bool, int, string>(false, (int)HttpStatusCode.Unauthorized, "未授权");
             }
+
             var (isValid, tokenData, validationResult) = JWTEncryption.Validate(token);
             if (!isValid)
             {
@@ -170,6 +175,7 @@ namespace GatewayApplication.HTTP
             {
                 return new Tuple<bool, int, string>(false, (int)HttpStatusCode.Forbidden, "授权过期");
             }
+
             return new Tuple<bool, int, string>(true, (int)HttpStatusCode.OK, "OK");
         }
     }
