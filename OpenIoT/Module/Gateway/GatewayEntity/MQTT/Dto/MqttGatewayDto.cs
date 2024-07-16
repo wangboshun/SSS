@@ -10,6 +10,10 @@ namespace GatewayEntity.MQTT.Dto
 {
     public class MtttGatewayStartDto
     {
+        [JsonProperty("id")]
+        [JsonPropertyName("id")]
+        public required string Id { set; get; }
+        
         [JsonProperty("host")]
         [JsonPropertyName("host")]
         public required string Host { set; get; }

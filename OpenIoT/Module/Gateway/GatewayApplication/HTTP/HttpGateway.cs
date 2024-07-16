@@ -3,8 +3,7 @@ using System.Text;
 using Common.Utils;
 using DeviceEntity;
 using Furion.DataEncryption;
-using Furion.DependencyInjection;
-using Furion.DistributedIDGenerator;
+using Furion.DependencyInjection; 
 using Furion.EventBus;
 using Furion.JsonSerialization;
 using GatewayEntity;
@@ -16,7 +15,7 @@ namespace GatewayApplication.HTTP
     /// </summary>
     public class HttpGateway : ITransient
     {
-        private static Dictionary<string, HttpListener> HTTP_DICT = new Dictionary<string, HttpListener>();
+        private static Dictionary<string, HttpListener> HTTP_DICT = new();
         private readonly IEventPublisher _eventPublisher;
 
         public HttpGateway(IEventPublisher eventPublisher)
@@ -24,11 +23,10 @@ namespace GatewayApplication.HTTP
             _eventPublisher = eventPublisher;
         }
 
-        public async void Start(string host, int port)
+        public async void Start(string id,string host, int port)
         {
             try
-            {
-                var id = ShortIDGen.NextID();
+            { 
                 HttpListener httpListener = new HttpListener();
                 httpListener.Prefixes.Add($"http://{host}:{port}/");
                 httpListener.Start();

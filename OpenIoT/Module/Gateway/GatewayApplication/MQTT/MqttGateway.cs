@@ -2,10 +2,10 @@
 using Common.Utils;
 using DeviceEntity;
 using Furion.DependencyInjection;
-using Furion.DistributedIDGenerator;
 using Furion.EventBus;
 using Furion.JsonSerialization;
 using GatewayEntity;
+using GatewayEntity.MQTT.Dto;
 using MQTTnet;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
@@ -51,7 +51,8 @@ namespace GatewayApplication.MQTT
     /// </summary>
     public class MqttGateway : ITransient
     {
-        private static Dictionary<string, MqttServer> MQTT_SERVER_DICT = new Dictionary<string, MqttServer>();
+        private static Dictionary<string, MqttServer> MQTT_SERVER_DICT = new();
+        private static HashSet<string> CLIENT_SET = [];
         private readonly IEventPublisher _eventPublisher;
 
         public MqttGateway(IEventPublisher eventPublisher)
@@ -59,11 +60,15 @@ namespace GatewayApplication.MQTT
             _eventPublisher = eventPublisher;
         }
 
-        public async void Start(string host, int port)
+        public async void Start(string id, string host, int port)
+        {
+            await Task.Run(() => { CreateServer(id, host, port); });
+        }
+
+        private async void CreateServer(string id, string host, int port)
         {
             try
             {
-                var id = ShortIDGen.NextID();
                 var mqttFactory = new MqttFactory();
                 var mqttServerOptions = new MqttServerOptionsBuilder()
                     .WithDefaultEndpoint()
@@ -93,11 +98,8 @@ namespace GatewayApplication.MQTT
                 mqttServer.SessionDeletedAsync += SessionDeletedAsync;
                 mqttServer.StoppedAsync += StoppedAsync;
 
-                await Task.Run(async () =>
-                {
-                    await mqttServer.StartAsync();
-                    MQTT_SERVER_DICT.Add(id, mqttServer);
-                });
+                await mqttServer.StartAsync();
+                MQTT_SERVER_DICT.Add(id, mqttServer);
             }
             catch (Exception e)
             {
@@ -352,6 +354,7 @@ namespace GatewayApplication.MQTT
         private async Task ClientDisconnectedAsync(ClientDisconnectedEventArgs arg)
         {
             Console.WriteLine($"客户端断开连接  ClientDisconnectedAsync--->{JSON.Serialize(arg)}");
+            CLIENT_SET.Remove(arg.ClientId);
             ReportEntity reportEntity = new ReportEntity
             {
                 DeviceId = arg.ClientId,
@@ -371,6 +374,7 @@ namespace GatewayApplication.MQTT
         private async Task ClientConnectedAsync(ClientConnectedEventArgs arg)
         {
             Console.WriteLine($"客户端连接成功  ClientConnectedAsync--->{JSON.Serialize(arg)}");
+            CLIENT_SET.Add(arg.ClientId);
             ReportEntity reportEntity = new ReportEntity
             {
                 DeviceId = arg.ClientId,
@@ -403,6 +407,47 @@ namespace GatewayApplication.MQTT
 
         public void Stop(string id)
         {
+            if (MQTT_SERVER_DICT.TryGetValue(id, out MqttServer? mqttServer))
+            {
+                mqttServer.StopAsync();
+                MQTT_SERVER_DICT.Remove(id);
+            }
+        }
+
+        public List<MqttClientOutDto>? GetClients(string id)
+        {
+            if (MQTT_SERVER_DICT.TryGetValue(id, out MqttServer? mqttServer))
+            {
+                var clients = mqttServer.GetClientsAsync().Result;
+                List<MqttClientOutDto>? list = clients.Select(item => new MqttClientOutDto
+                {
+                    ClientId = item.Id,
+                    IP = item.Endpoint,
+                    ConnectTime = item.ConnectedTimestamp,
+                    LastTime = item.LastPacketSentTimestamp,
+                    SendSize = item.BytesSent,
+                    SendCount = item.SentPacketsCount,
+                    SendMessageCount = item.SentApplicationMessagesCount,
+
+                    ReceiveSize = item.BytesReceived,
+                    ReceiveCount = item.ReceivedPacketsCount,
+                    ReceiveMessageCount = item.ReceivedApplicationMessagesCount
+                }).ToList();
+                return list;
+            } 
+            return null;
+        }
+
+        public void KO(string id)
+        {
+            foreach (var (key, mqttServer) in MQTT_SERVER_DICT)
+            {
+                var clients = GetClients(key);
+                if (clients != null && clients.Any(x => x.ClientId.Equals(id)))
+                {
+                    mqttServer.DisconnectClientAsync(id);
+                }
+            }
         }
     }
 }

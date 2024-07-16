@@ -28,7 +28,7 @@ namespace GatewayController
         [HttpPost("start")]
         public string Start([FromBody] HttpGatewayStartDto input)
         {
-            _httpGateway.Start(input.Host, input.Port); 
+            _httpGateway.Start(input.Id, input.Host, input.Port); 
             return "ok";
         }
 

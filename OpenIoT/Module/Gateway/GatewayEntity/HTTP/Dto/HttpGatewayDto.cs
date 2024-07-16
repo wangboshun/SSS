@@ -11,6 +11,10 @@ namespace GatewayEntity.HTTP.Dto
 {
     public class HttpGatewayStartDto
     {
+        [JsonProperty("id")]
+        [JsonPropertyName("id")]
+        public required string Id { set; get; }
+        
         [JsonProperty("host")]
         [JsonPropertyName("host")]
         public required string Host {set;get;}

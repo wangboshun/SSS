@@ -1,6 +1,6 @@
-﻿using Furion.DynamicApiController;
+﻿using Common.Utils;
+using Furion.DynamicApiController;
 using GatewayApplication.MQTT;
-
 using GatewayEntity.MQTT.Dto;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,7 +26,7 @@ namespace GatewayController
         [HttpPost("start")]
         public string Start([FromBody] MtttGatewayStartDto input)
         {
-            _mqttGateway.Start(input.Host, input.Port); 
+            _mqttGateway.Start(input.Id, input.Host, input.Port);
             return "ok";
         }
 
@@ -38,6 +38,28 @@ namespace GatewayController
         public string Stop([FromRoute] string id)
         {
             _mqttGateway.Stop(id);
+            return "ok";
+        }
+
+        /// <summary>
+        /// 获取已连接客户端
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("{id}/clients")]
+        public object GetClients([FromRoute] string id)
+        {
+            var result = _mqttGateway.GetClients(id);
+            return result != null ? ResponseUtils.Ok(result) : ResponseUtils.Fail();
+        }
+
+        /// <summary>
+        /// 踢下线
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("ko/{id}")]
+        public string KO([FromRoute] string id)
+        {
+            _mqttGateway.KO(id);
             return "ok";
         }
     }
