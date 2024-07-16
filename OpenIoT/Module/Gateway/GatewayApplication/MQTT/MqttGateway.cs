@@ -7,10 +7,48 @@ using Furion.EventBus;
 using Furion.JsonSerialization;
 using GatewayEntity;
 using MQTTnet;
+using MQTTnet.Protocol;
 using MQTTnet.Server;
 
 namespace GatewayApplication.MQTT
 {
+    /// <summary>
+    /// Mqtt网关
+    /// 
+    /// 在线：
+    ///   1.ValidatingConnectionAsync
+    ///   2.PreparingSessionAsync
+    ///   3.InterceptingOutboundPacketAsync
+    ///   4.ClientConnectedAsync
+    ///
+    /// 离线：
+    ///   1.InterceptingInboundPacketAsync
+    ///   2.SessionDeletedAsync
+    ///   3.ClientDisconnectedAsync
+    ///
+    /// 上报：
+    ///   1.InterceptingInboundPacketAsync
+    ///   2.InterceptingPublishAsync
+    ///   3.ApplicationMessageNotConsumedAsync
+    ///
+    /// 在线+订阅：
+    ///   1.ValidatingConnectionAsync
+    ///   2.PreparingSessionAsync
+    ///   3.InterceptingOutboundPacketAsync
+    ///   4.ClientConnectedAsync
+    ///   5.InterceptingInboundPacketAsync
+    ///   6.InterceptingSubscriptionAsync
+    ///   7.ClientSubscribedTopicAsync
+    ///   8.InterceptingOutboundPacketAsync
+    ///  
+    /// 上报+订阅：
+    ///   1.InterceptingInboundPacketAsync
+    ///   2.InterceptingPublishAsync
+    ///   3.InterceptingClientEnqueueAsync
+    ///   4.InterceptingOutboundPacketAsync
+    ///   5.ApplicationMessageEnqueuedOrDroppedAsync
+    /// 
+    /// </summary>
     public class MqttGateway : ITransient
     {
         private static Dictionary<string, MqttServer> MQTT_SERVER_DICT = new Dictionary<string, MqttServer>();
@@ -32,28 +70,28 @@ namespace GatewayApplication.MQTT
                     .WithDefaultEndpointPort(port).Build();
 
                 var mqttServer = mqttFactory.CreateMqttServer(mqttServerOptions);
-                mqttServer.ValidatingConnectionAsync += ValidatingConnectionAsync; //验证
-                mqttServer.ClientConnectedAsync += ClientConnectedAsync; //客户端连接成功
-                mqttServer.ClientDisconnectedAsync += ClientDisconnectedAsync; //客户端断开连接
-                mqttServer.ClientSubscribedTopicAsync += ClientSubscribedTopicAsync; //客户端订阅topic
-                mqttServer.ClientUnsubscribedTopicAsync += ClientUnsubscribedTopicAsync; //客户端取消订阅topic
-                mqttServer.InterceptingPublishAsync += InterceptingPublishAsync; //
-                mqttServer.ClientAcknowledgedPublishPacketAsync += ClientAcknowledgedPublishPacketAsync; //7
-                mqttServer.InterceptingSubscriptionAsync += InterceptingSubscriptionAsync; //8
-                mqttServer.InterceptingUnsubscriptionAsync += InterceptingUnsubscriptionAsync; //9
-                mqttServer.ApplicationMessageEnqueuedOrDroppedAsync += ApplicationMessageEnqueuedOrDroppedAsync; //10
-                mqttServer.QueuedApplicationMessageOverwrittenAsync += QueuedApplicationMessageOverwrittenAsync; //11
-                mqttServer.RetainedMessagesClearedAsync += RetainedMessagesClearedAsync; //12
-                mqttServer.RetainedMessageChangedAsync += RetainedMessageChangedAsync; //13
-                mqttServer.LoadingRetainedMessageAsync += LoadingRetainedMessageAsync; //14
-                mqttServer.InterceptingOutboundPacketAsync += InterceptingOutboundPacketAsync; //15
-                mqttServer.InterceptingInboundPacketAsync += InterceptingInboundPacketAsync; //16
-                mqttServer.InterceptingClientEnqueueAsync += InterceptingClientEnqueueAsync; //17
-                mqttServer.StartedAsync += StartedAsync; //开始
+                mqttServer.ValidatingConnectionAsync += ValidatingConnectionAsync;
+                mqttServer.ClientConnectedAsync += ClientConnectedAsync;
+                mqttServer.ClientDisconnectedAsync += ClientDisconnectedAsync;
+                mqttServer.ClientSubscribedTopicAsync += ClientSubscribedTopicAsync;
+                mqttServer.ClientUnsubscribedTopicAsync += ClientUnsubscribedTopicAsync;
+                mqttServer.InterceptingPublishAsync += InterceptingPublishAsync;
+                mqttServer.ClientAcknowledgedPublishPacketAsync += ClientAcknowledgedPublishPacketAsync;
+                mqttServer.InterceptingSubscriptionAsync += InterceptingSubscriptionAsync;
+                mqttServer.InterceptingUnsubscriptionAsync += InterceptingUnsubscriptionAsync;
+                mqttServer.ApplicationMessageEnqueuedOrDroppedAsync += ApplicationMessageEnqueuedOrDroppedAsync;
+                mqttServer.QueuedApplicationMessageOverwrittenAsync += QueuedApplicationMessageOverwrittenAsync;
+                mqttServer.RetainedMessagesClearedAsync += RetainedMessagesClearedAsync;
+                mqttServer.RetainedMessageChangedAsync += RetainedMessageChangedAsync;
+                mqttServer.LoadingRetainedMessageAsync += LoadingRetainedMessageAsync;
+                mqttServer.InterceptingOutboundPacketAsync += InterceptingOutboundPacketAsync;
+                mqttServer.InterceptingInboundPacketAsync += InterceptingInboundPacketAsync;
+                mqttServer.InterceptingClientEnqueueAsync += InterceptingClientEnqueueAsync;
+                mqttServer.StartedAsync += StartedAsync;
                 mqttServer.ApplicationMessageNotConsumedAsync += ApplicationMessageNotConsumedAsync;
                 mqttServer.PreparingSessionAsync += PreparingSessionAsync;
                 mqttServer.SessionDeletedAsync += SessionDeletedAsync;
-                mqttServer.StoppedAsync += StoppedAsync; //停止
+                mqttServer.StoppedAsync += StoppedAsync;
 
                 await Task.Run(async () =>
                 {
@@ -78,12 +116,22 @@ namespace GatewayApplication.MQTT
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// 删除会话
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <returns></returns>
         private Task SessionDeletedAsync(SessionDeletedEventArgs arg)
         {
             Console.WriteLine($"SessionDeletedAsync--->{JSON.Serialize(arg)}");
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// 会话预处理
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <returns></returns>
         private Task PreparingSessionAsync(EventArgs arg)
         {
             Console.WriteLine($"PreparingSessionAsync--->{JSON.Serialize(arg)}");
@@ -227,7 +275,7 @@ namespace GatewayApplication.MQTT
         private async Task InterceptingPublishAsync(InterceptingPublishEventArgs arg)
         {
             Console.WriteLine($"拦截客户端的消息  InterceptingPublishAsync--->{JSON.Serialize(arg)}");
-            var msg = Encoding.UTF8.GetString(arg.ApplicationMessage.PayloadSegment); 
+            var msg = Encoding.UTF8.GetString(arg.ApplicationMessage.PayloadSegment);
             var router = arg.ApplicationMessage.Topic?.Split("/", StringSplitOptions.RemoveEmptyEntries);
             if (router is { Length: > 3 })
             {
@@ -250,12 +298,12 @@ namespace GatewayApplication.MQTT
                         await _eventPublisher.PublishAsync("Mqtt:PropertiesReport", JSON.Serialize(reportEntity));
                     }
                 }
-                
+
                 //设备影子
                 DeviceShadowEntity shadowEntity = new DeviceShadowEntity
                 {
                     DeviceId = arg.ClientId,
-                    MsgType = reportType, 
+                    MsgType = reportType,
                     Content = msg,
                     CreateTime = DateTime.Now
                 };
@@ -327,7 +375,7 @@ namespace GatewayApplication.MQTT
             {
                 DeviceId = arg.ClientId,
                 MsgType = "ONLINE",
-                IP =arg.Endpoint,
+                IP = arg.Endpoint,
                 TM = DateTime.Now
             };
             reportEntity.Id = TimeUtils.DateTimeToString(reportEntity.TM, false, false, true);
@@ -345,6 +393,11 @@ namespace GatewayApplication.MQTT
             var userName = arg.UserName;
             var passWord = arg.Password;
             var deviceId = arg.ClientId;
+            if (!userName.Equals("admin") || !passWord.Equals("123456"))
+            {
+                arg.ReasonCode = MqttConnectReasonCode.BadUserNameOrPassword;
+            }
+
             return Task.CompletedTask;
         }
 

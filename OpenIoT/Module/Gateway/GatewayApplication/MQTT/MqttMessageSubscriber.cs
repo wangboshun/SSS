@@ -26,7 +26,7 @@ namespace GatewayApplication.MQTT
         }
 
         [EventSubscribe("Mqtt:PropertiesReport")]
-        public async Task MqttProperties(EventHandlerExecutingContext context)
+        public async Task MqttPropertiesReport(EventHandlerExecutingContext context)
         {
             var report = JSON.Deserialize<ReportEntity>(context.Source.Payload.ToString());
             await Task.CompletedTask;

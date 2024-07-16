@@ -26,7 +26,7 @@ namespace GatewayApplication.HTTP
         }
 
         [EventSubscribe("Http:PropertiesReport")]
-        public async Task HttpProperties(EventHandlerExecutingContext context)
+        public async Task HttpPropertiesReport(EventHandlerExecutingContext context)
         {
             Console.WriteLine($"Http:Report--->{context.Source.Payload.ToString()}");
             var report = JSON.Deserialize<ReportEntity>(context.Source.Payload.ToString());

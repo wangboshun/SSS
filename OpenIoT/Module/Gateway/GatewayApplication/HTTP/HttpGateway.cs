@@ -11,6 +11,9 @@ using GatewayEntity;
 
 namespace GatewayApplication.HTTP
 {
+    /// <summary>
+    /// Http网关
+    /// </summary>
     public class HttpGateway : ITransient
     {
         private static Dictionary<string, HttpListener> HTTP_DICT = new Dictionary<string, HttpListener>();
