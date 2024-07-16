@@ -1,8 +1,9 @@
-﻿using System.Net;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using System.Text;
 using Furion.DependencyInjection;
 using GatewayEntity.TCP;
+using TouchSocket.Core;
+using TouchSocket.Sockets;
 
 namespace GatewayApplication.TCP
 {
@@ -13,42 +14,80 @@ namespace GatewayApplication.TCP
 
         public async void Start(string id, string host, int port)
         {
-            IPAddress address = IPAddress.Parse(host);
-            TcpListener listener = new TcpListener(address, port);
-            listener.Start();
-            TCP_SERVER_DICT.Add(id, listener);
-
-            while (true)
-            {
-                if (listener.Pending())
+            var service = new TcpService();
+            service.Connecting = Connecting;
+            service.Connected = Connected;
+            service.Disconnecting = Disconnecting;
+            service.Disconnected = Disconnected;
+            service.Received = Received;
+            await service.SetupAsync(new TouchSocketConfig()
+                .SetServerName(id)
+                .SetListenOptions(option =>
                 {
-                    TcpClient client = await listener.AcceptTcpClientAsync();
-                    var ip = client.Client.RemoteEndPoint;
-                    await Task.Run(() =>
+                    option.Add(new TcpListenOption()
                     {
-                        NetworkStream stream = client.GetStream();
-                        while (true)
-                        {
-                            if (stream.DataAvailable)
-                            {
-                                byte[] data = new byte[1024];
-                                int len = stream.Read(data, 0, 1024);
-                                string msg = Encoding.UTF8.GetString(data, 0, len);
-                            }
-
-                            if (!IsOnline(client))
-                            {
-                                Console.WriteLine("Connect Closed.");
-                                break;
-                            }
-
-                            Thread.Sleep(1);
-                        }
+                        IpHost = $"{host}:{port}",
+                        Name = id,
                     });
-                }
+                }));
 
-                Thread.Sleep(1);
-            }
+            await service.StartAsync();
+        }
+
+        /// <summary>
+        /// 从客户端收到信息
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="e"></param>
+        /// <returns></returns> 
+        private Task Received(SocketClient client, ReceivedDataEventArgs e)
+        {
+            var msg = Encoding.UTF8.GetString(e.ByteBlock.Buffer, 0, e.ByteBlock.Len);
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// 有客户端断开连接
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="e"></param>
+        /// <returns></returns> 
+        private Task Disconnected(SocketClient client, DisconnectEventArgs e)
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// 有客户端正在断开连接，只有当主动断开时才有效
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="e"></param>
+        /// <returns></returns> 
+        private Task Disconnecting(SocketClient client, DisconnectEventArgs e)
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// 有客户端成功连接
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="e"></param>
+        /// <returns></returns> 
+        private Task Connected(SocketClient client, ConnectedEventArgs e)
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// 有客户端正在连接
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        private Task Connecting(SocketClient client, ConnectingEventArgs e)
+        {
+            return Task.CompletedTask;
         }
 
         public void Stop(string id)
@@ -62,17 +101,6 @@ namespace GatewayApplication.TCP
 
         public void KO(string id)
         {
-        }
-
-        /// <summary>
-        /// 是否在线
-        /// </summary>
-        /// <param name="client"></param>
-        /// <returns></returns>
-        private bool IsOnline(TcpClient client)
-        {
-            return !((client.Client.Poll(15000, SelectMode.SelectRead) && (client.Client.Available == 0)) ||
-                     !client.Client.Connected);
         }
     }
 }
