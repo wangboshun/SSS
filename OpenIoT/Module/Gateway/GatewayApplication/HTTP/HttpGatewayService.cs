@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Concurrent;
+using System.Net;
 using System.Text;
 using Common.Utils;
 using DeviceEntity;
@@ -13,12 +14,12 @@ namespace GatewayApplication.HTTP
     /// <summary>
     /// Http网关
     /// </summary>
-    public class HttpGateway : ITransient
+    public class HttpGatewayService : ITransient
     {
-        private static Dictionary<string, HttpListener> HTTP_DICT = new();
+        private static ConcurrentDictionary<string, HttpListener> HTTP_DICT = new();
         private readonly IEventPublisher _eventPublisher;
 
-        public HttpGateway(IEventPublisher eventPublisher)
+        public HttpGatewayService(IEventPublisher eventPublisher)
         {
             _eventPublisher = eventPublisher;
         }
@@ -30,7 +31,7 @@ namespace GatewayApplication.HTTP
                 HttpListener httpListener = new HttpListener();
                 httpListener.Prefixes.Add($"http://{host}:{port}/");
                 httpListener.Start();
-                HTTP_DICT.Add(id, httpListener);
+                HTTP_DICT.TryAdd(id, httpListener);
                 await Task.Run(() => Listen(httpListener));
             }
             catch (Exception e)
@@ -41,10 +42,9 @@ namespace GatewayApplication.HTTP
 
         public void Stop(string id)
         {
-            if (HTTP_DICT.TryGetValue(id, out HttpListener? httpListener))
+            if (HTTP_DICT.TryRemove(id, out HttpListener? listener))
             {
-                httpListener.Close();
-                HTTP_DICT.Remove(id);
+                listener.Close(); 
             }
         }
 

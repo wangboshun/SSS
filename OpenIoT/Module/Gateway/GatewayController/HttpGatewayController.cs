@@ -13,11 +13,11 @@ namespace GatewayController
     [Route("gateway/http")]
     public class HttpGatewayController : IDynamicApiController
     {
-        private readonly HttpGateway _httpGateway;
+        private readonly HttpGatewayService _httpGatewayService;
 
-        public HttpGatewayController(HttpGateway httpGateway)
+        public HttpGatewayController(HttpGatewayService httpGatewayService)
         {
-            _httpGateway = httpGateway;
+            _httpGatewayService = httpGatewayService;
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace GatewayController
         [HttpPost("start")]
         public string Start([FromBody] HttpGatewayStartDto input)
         {
-            _httpGateway.Start(input.Id, input.Host, input.Port); 
+            _httpGatewayService.Start(input.Id, input.Host, input.Port); 
             return "ok";
         }
 
@@ -39,7 +39,7 @@ namespace GatewayController
         [HttpPost("stop/{id}")]
         public string Stop([FromRoute] string id)
         {
-            _httpGateway.Stop(id);
+            _httpGatewayService.Stop(id);
             return "ok";
         }
     }

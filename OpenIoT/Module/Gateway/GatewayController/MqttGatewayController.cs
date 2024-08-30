@@ -11,11 +11,11 @@ namespace GatewayController
     [Route("gateway/mqtt")]
     public class MqttGatewayController : IDynamicApiController
     {
-        private readonly MqttGateway _mqttGateway;
+        private readonly MqttGatewayService _mqttGatewayService;
 
-        public MqttGatewayController(MqttGateway mqttGateway)
+        public MqttGatewayController(MqttGatewayService mqttGatewayService)
         {
-            _mqttGateway = mqttGateway;
+            _mqttGatewayService = mqttGatewayService;
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace GatewayController
         [HttpPost("start")]
         public string Start([FromBody] MtttGatewayStartDto input)
         {
-            _mqttGateway.Start(input.Id, input.Host, input.Port);
+            _mqttGatewayService.Start(input.Id, input.Host, input.Port);
             return "ok";
         }
 
@@ -37,7 +37,7 @@ namespace GatewayController
         [HttpPost("stop/{id}")]
         public string Stop([FromRoute] string id)
         {
-            _mqttGateway.Stop(id);
+            _mqttGatewayService.Stop(id);
             return "ok";
         }
 
@@ -48,7 +48,7 @@ namespace GatewayController
         [HttpGet("{id}/clients")]
         public object GetClients([FromRoute] string id)
         {
-            var result = _mqttGateway.GetClients(id);
+            var result = _mqttGatewayService.GetClients(id);
             return result != null ? ResponseUtils.Ok(result) : ResponseUtils.Fail();
         }
 
@@ -56,10 +56,10 @@ namespace GatewayController
         /// 踢下线
         /// </summary>
         /// <returns></returns>
-        [HttpPost("ko/{id}")]
-        public string KO([FromRoute] string id)
+        [HttpPost("ko")]
+        public string KO([FromBody] MqttGatewayKOInputDto input)
         {
-            _mqttGateway.KO(id);
+            _mqttGatewayService.KO(input);
             return "ok";
         }
     }

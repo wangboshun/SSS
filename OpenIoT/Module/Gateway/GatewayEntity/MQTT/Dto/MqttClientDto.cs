@@ -48,7 +48,7 @@ public class MqttClientOutDto
     public long ReceiveCount { set; get; }
     
     /// <summary>
-    /// 接收数据次数（不包含消息和心跳包）
+    /// 接收数据次数（不包含心跳包）
     /// </summary>
     [JsonProperty("receive_msg_count")]
     [JsonPropertyName("receive_msg_count")]
@@ -69,7 +69,7 @@ public class MqttClientOutDto
     public long SendCount { set; get; }
     
     /// <summary>
-    /// 发送消息数据次数（不包含消息和心跳包）
+    /// 发送消息数据次数（不包含心跳包）
     /// </summary>
     [JsonProperty("send_msg_count")]
     [JsonPropertyName("send_msg_count")]

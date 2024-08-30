@@ -2,6 +2,7 @@
 using GatewayApplication.EventBus;
 using GatewayApplication.HTTP;
 using GatewayApplication.MQTT;
+using GatewayApplication.TCP;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +21,7 @@ namespace GatewayStart
                 builder.AddSubscriber<MessageSubscriber>(); 
                 builder.AddSubscriber<HttpMessageSubscriber>(); 
                 builder.AddSubscriber<MqttMessageSubscriber>(); 
+                builder.AddSubscriber<TcpMessageSubscriber>(); 
             });
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -1,3 +1,4 @@
+using System.IO.Compression;
 using Common.Ext;
 using Common.Ext.Jwt;
 using Furion;
@@ -7,9 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using System.IO.Compression;
 
-namespace Start;
+namespace MainStart;
 
 [AppStartup(999)]
 public class FirstStartup : AppStartup

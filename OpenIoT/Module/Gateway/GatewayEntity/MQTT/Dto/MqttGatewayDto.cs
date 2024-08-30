@@ -22,4 +22,15 @@ namespace GatewayEntity.MQTT.Dto
         [JsonPropertyName("port")]
         public required int Port { set; get; }
     }
+    
+    public class MqttGatewayKOInputDto
+    {
+        [JsonProperty("server_id")]
+        [JsonPropertyName("server_id")]
+        public required string ServerId { set; get; }
+        
+        [JsonProperty("client_id")]
+        [JsonPropertyName("client_id")]
+        public required string ClientId { set; get; } 
+    }
 }

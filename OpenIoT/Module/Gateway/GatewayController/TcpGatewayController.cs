@@ -1,7 +1,6 @@
 ﻿using Common.Utils;
 using Furion.DynamicApiController;
-using GatewayApplication.TCP;
-using GatewayEntity.MQTT.Dto;
+using GatewayApplication.TCP; 
 using GatewayEntity.TCP;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,11 +11,11 @@ namespace GatewayController
     [Route("gateway/tcp")]
     public class TcpGatewayController : IDynamicApiController
     {
-        private readonly TcpGateway _tcpGateway;
+        private readonly TcpGatewayService _tcpGatewayService;
 
-        public TcpGatewayController(TcpGateway tcpGateway)
+        public TcpGatewayController(TcpGatewayService tcpGatewayService)
         {
-            _tcpGateway = tcpGateway;
+            _tcpGatewayService = tcpGatewayService;
         }
 
         /// <summary>
@@ -27,7 +26,7 @@ namespace GatewayController
         [HttpPost("start")]
         public string Start([FromBody] TcpGatewayStartDto input)
         {
-            _tcpGateway.Start(input.Id, input.Host, input.Port);
+            _tcpGatewayService.Start(input.Id, input.Host, input.Port);
             return "ok";
         }
 
@@ -38,7 +37,7 @@ namespace GatewayController
         [HttpPost("stop/{id}")]
         public string Stop([FromRoute] string id)
         {
-            _tcpGateway.Stop(id);
+            _tcpGatewayService.Stop(id);
             return "ok";
         }
 
@@ -49,7 +48,7 @@ namespace GatewayController
         [HttpGet("{id}/clients")]
         public object GetClients([FromRoute] string id)
         {
-            var result = _tcpGateway.GetClients(id);
+            var result = _tcpGatewayService.GetClients(id);
             return result != null ? ResponseUtils.Ok(result) : ResponseUtils.Fail();
         }
 
@@ -57,10 +56,10 @@ namespace GatewayController
         /// 踢下线
         /// </summary>
         /// <returns></returns>
-        [HttpPost("ko/{id}")]
-        public string KO([FromRoute] string id)
+        [HttpPost("ko")]
+        public string KO([FromBody] TcpGatewayKOInputDto input)
         {
-            _tcpGateway.KO(id);
+            _tcpGatewayService.KO(input);
             return "ok";
         }
     }

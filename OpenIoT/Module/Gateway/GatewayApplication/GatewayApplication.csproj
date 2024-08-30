@@ -7,7 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Furion.Pure" Version="4.9.4.4" />
+		<PackageReference Include="Furion.Pure" Version="4.9.4.6" />
 		<PackageReference Include="MQTTnet" Version="4.3.6.1152" />
 		<PackageReference Include="TouchSocket" Version="2.0.11" />
 	</ItemGroup>
