@@ -32,7 +32,7 @@
         <projectlombok.version>1.18.26</projectlombok.version>
         <clickhouse-jdbc.version>0.4.6</clickhouse-jdbc.version>
         <jackson-databind.version>2.15.1</jackson-databind.version>
-        <mysql-connector-j.version>8.0.33</mysql-connector-j.version>
+        <mysql-connector-j.version>8.2.0</mysql-connector-j.version>
         <therapi-runtime-javadoc-scribe.version>0.15.0</therapi-runtime-javadoc-scribe.version>
     </properties>
 
