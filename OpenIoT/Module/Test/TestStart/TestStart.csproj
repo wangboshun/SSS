@@ -11,7 +11,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Furion.Pure" Version="4.9.4.6" />
+		<PackageReference Include="Furion.Pure" Version="4.9.6.20" />
 	</ItemGroup>
 
 </Project>
